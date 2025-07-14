@@ -1,13 +1,13 @@
 <template>
     <div>
-        <div class="m-4 text-center">
-            <h1 class="mb-3">Products</h1>
+       <div class="m-4 text-center">
+            <h1 class="text-2xl font-medium text-blue-600 md:text-3xl">Login</h1>
         </div>     
     </div>
 </template>
 <script>
     export default {
-        name: "ProductsPage", 
+        name: "Login", 
         data() {
             return {
             }
