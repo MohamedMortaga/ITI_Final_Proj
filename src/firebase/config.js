@@ -1,6 +1,7 @@
 import { initializeApp, getApps, getApp } from "firebase/app"
 import { getFirestore } from "firebase/firestore"
-import { getAuth } from "firebase/auth"
+import { getAuth, GoogleAuthProvider } from "firebase/auth"
+
 
 const firebaseConfig = {
   apiKey: "AIzaSyDzUUKgvADh2XtOatPYcWt2umQbZSyiNF4",
@@ -12,9 +13,10 @@ const firebaseConfig = {
 }
 
 // prevent re-initialization
+const googleProvider = new GoogleAuthProvider()
 const app = getApps().length ? getApp() : initializeApp(firebaseConfig)
 
 const db = getFirestore(app)
 const auth = getAuth(app)
 
-export { db, auth }
+export { db, auth ,googleProvider}

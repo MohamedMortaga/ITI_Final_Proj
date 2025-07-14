@@ -1,30 +1,38 @@
-import { ref } from 'vue'
-import { auth } from '../firebase/config'
-import { createUserWithEmailAndPassword } from 'firebase/auth'
+// src/composables/useSignup.js
+import { ref } from 'vue';
+import { createUserWithEmailAndPassword, signInWithPopup } from 'firebase/auth';
+import { auth, googleProvider } from '@/firebase/config';
 
-const error = ref(null) // Fixed typo from 'erro' to 'error'
-const isPending = ref(false)
+const error = ref(null);
+const userName = ref(null);
 
 const signup = async (email, password) => {
-    error.value = null // Reset error
-    isPending.value = true
+  error.value = null;
+  try {
+    const res = await createUserWithEmailAndPassword(auth, email, password);
+    if (!res.user) throw Error('Signup failed');
+    console.log('Signed up:', res.user);
+  } catch (err) {
+    console.log(err.message);
+    error.value = err.message;
+  }
+};
 
-    try {
-        const res = await createUserWithEmailAndPassword(auth, email, password)
-        if (!res) {
-            throw new Error('Could not complete signup')
-        }
-        // No need to set error.value = null here, as it's already handled
-        isPending.value = false
-    } catch (err) {
-        error.value = err.message
-        console.log(error.value)
-        isPending.value = false
-    }
-}
+const signupWithGoogle = async () => {
+  error.value = null;
+  try {
+    const result = await signInWithPopup(auth, googleProvider);
+    const user = result.user;
+    userName.value = user.displayName;
+    console.log('Signed up with Google:', user.displayName);
+  } catch (err) {
+    error.value = err.message;
+    console.error('Google signup error:', err.message);
+  }
+};
 
 const useSignup = () => {
-    return { error, isPending, signup } // Now 'error' matches the defined variable
-}
+  return { signup, signupWithGoogle, error, userName };
+};
 
-export default useSignup
+export default useSignup;

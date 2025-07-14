@@ -1,26 +1,47 @@
 import { ref, watchEffect } from 'vue'
-
-// firebase imports
 import { db } from '../firebase/config'
 import { collection, onSnapshot } from 'firebase/firestore'
 
-const getCollection = (c) => {
+const getCollection = (collectionName) => {
   const documents = ref(null)
+  const error = ref(null)
 
-  // collection reference
-  let colRef = collection(db, c)
 
-  onSnapshot(colRef, snapshot => {
-    let results = []
-    snapshot.docs.forEach(doc => {
-      results.push({...doc.data(), id: doc.id})
-    })
-    documents.value = results
+  let unsub
+
+ 
+  try {
+    const colRef = collection(db, collectionName)
+
+    unsub = onSnapshot(
+      colRef,
+      (snapshot) => {
+        let results = []
+        snapshot.docs.forEach(doc => {
+          results.push({ ...doc.data(), id: doc.id })
+        })
+        documents.value = results
+        error.value = null
+      },
+      (err) => {
+        console.log(err.message)
+        documents.value = null
+        error.value = 'Could not fetch data'
+      }
+    )
+  } catch (err) {
+    console.log('Firestore error:', err.message)
+    error.value = 'Failed to connect to collection'
+  }
+
+  
+  watchEffect((onInvalidate) => {
+    if (typeof unsub === 'function') {
+      onInvalidate(() => unsub())
+    }
   })
-    watchEffect((onInvalidate) =>{
-    onInvalidate(() => unsab())
-    })
 
-  return { documents }
+  return { documents, error }
 }
+
 export default getCollection

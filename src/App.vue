@@ -1,7 +1,8 @@
 <template>
-  <Navbar v-if="!$route.meta.hideNavbar"/>
+  <!-- <Navbar v-if="!$route.meta.hideNavbar"/> -->
+   <Navbar v-show="!$route.meta.hideNavbar"/>
+
   <router-view></router-view>
-  <!-- <router-link to="/admin" v-if="user">Admin Dashboard</router-link> -->
 
 </template>
 

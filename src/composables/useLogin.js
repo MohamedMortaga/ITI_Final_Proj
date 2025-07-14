@@ -1,13 +1,13 @@
 import { ref } from 'vue';
-import { getAuth, signInWithEmailAndPassword } from 'firebase/auth';
+import { getAuth, signInWithEmailAndPassword, signInWithPopup } from 'firebase/auth';
+import { auth, googleProvider } from '@/firebase/config';
 
 const error = ref(null);
+const userName = ref(null);  
 
 const login = async (email, password) => {
   error.value = null;
-
   try {
-    const auth = getAuth();
     const res = await signInWithEmailAndPassword(auth, email, password);
     if (!res.user) throw Error('Login failed');
     console.log("Logged in:", res.user);
@@ -17,8 +17,21 @@ const login = async (email, password) => {
   }
 };
 
+const loginWithGoogle = async () => {
+  error.value = null;
+  try {
+    const result = await signInWithPopup(auth, googleProvider);
+    const user = result.user;
+    userName.value = user.displayName; 
+    console.log('Signed in as:', user.displayName);
+  } catch (err) {
+    console.error('Google sign-in error:', err.message);
+    error.value = err.message;
+  }
+};
+
 const useLogin = () => {
-  return { login, error };
+  return { login, loginWithGoogle, error, userName };
 };
 
 export default useLogin;
