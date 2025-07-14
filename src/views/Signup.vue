@@ -18,29 +18,39 @@
             </div>
             <button type="submit"
                     class="w-full max-w-xs rounded-md bg-blue-600 py-2 text-white hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500">
-                Log In
+                Sign UP
             </button>
+            <div v-if="error">
+                {{ error }}
+            </div>
         </form>
     </div>
 </template>
 
 <script>
 import { ref } from 'vue';
-
+import { useRouter } from 'vue-router';
+import useSignup from '../../composables/useSignup';
 export default {
     name: "Signup",
     setup() {
         const email = ref('');
         const password = ref('');
-        
+        const { signup , error } = useSignup();
+        const router = useRouter();
         const handleSubmit = async () => {
+            await signup(email.value, password.value);
+            if(!error.value){
+                router.push({ name: 'Home' });
+            }
             console.log(email.value, password.value);
         };
 
         return {
             email,
             password,
-            handleSubmit
+            handleSubmit,
+            error
         };
     }
 }
