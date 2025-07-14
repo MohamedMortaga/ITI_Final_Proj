@@ -30,7 +30,7 @@
 <script>
 import { ref } from 'vue';
 import { useRouter } from 'vue-router';
-import useSignup from '../../composables/useSignup';
+import useSignup from '../composables/useSignup';
 export default {
     name: "Signup",
     setup() {
