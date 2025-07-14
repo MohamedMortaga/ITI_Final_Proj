@@ -41,7 +41,7 @@ export default {
         const handleSubmit = async () => {
             await signup(email.value, password.value);
             if(!error.value){
-                router.push({ name: 'Home' });
+                router.push({ name: 'HomePage' });
             }
             console.log(email.value, password.value);
         };
