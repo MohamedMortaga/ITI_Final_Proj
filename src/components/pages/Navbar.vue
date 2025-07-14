@@ -16,6 +16,7 @@
                             <div class="flex space-x-4">
                                 <router-link to="/Home" class="text-gray-300 hover:bg-gray-700 hover:text-white rounded-md px-3 py-2 text-xl font-medium" :class="{ 'bg-gray-900 text-white': $route.path === '/Home' }" aria-current="page">Home</router-link>
                                 <router-link to="/" class="text-gray-300 hover:bg-gray-700 hover:text-white rounded-md px-3 py-2 text-xl font-medium" :class="{ 'bg-gray-900 text-white': $route.path === '/' }">Login</router-link>
+                                <router-link to="/Signup" class="text-gray-300 hover:bg-gray-700 hover:text-white rounded-md px-3 py-2 text-xl font-medium" :class="{ 'bg-gray-900 text-white': $route.path === '/Signup' }">Sign Up</router-link>
                                 <router-link to="/Logout" class="text-gray-300 hover:bg-gray-700 hover:text-white rounded-md px-3 py-2 text-xl font-medium" :class="{ 'bg-gray-900 text-white': $route.path === '/Logout' }">Logout</router-link>
                             </div>
                         </div>
@@ -27,6 +28,7 @@
                 <div class="space-y-1 px-2 pt-2 pb-3 flex flex-col">
                     <router-link to="/Home" class="text-gray-300 hover:bg-gray-700 hover:text-white rounded-md px-3 py-2 text-xl font-medium" :class="{ 'bg-gray-900 text-white': $route.path === '/Home' }" aria-current="page">Home</router-link>
                     <router-link to="/" class="text-gray-300 hover:bg-gray-700 hover:text-white rounded-md px-3 py-2 text-xl font-medium" :class="{ 'bg-gray-900 text-white': $route.path === '/' }">Login</router-link>
+                    <router-link to="/Signup" class="text-gray-300 hover:bg-gray-700 hover:text-white rounded-md px-3 py-2 text-xl font-medium" :class="{ 'bg-gray-900 text-white': $route.path === '/Signup' }">Sign Up</router-link>
                     <router-link to="/Logout" class="text-gray-300 hover:bg-gray-700 hover:text-white rounded-md px-3 py-2 text-xl font-medium" :class="{ 'bg-gray-900 text-white': $route.path === '/Logout' }">Logout</router-link>
                 </div>
             </DisclosurePanel>

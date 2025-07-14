@@ -1,7 +1,7 @@
 <template>
     <div>
         <div class="m-4 text-center">
-            <h1 class="text-2xl font-medium text-blue-600 md:text-3xl">Login</h1>  
+            <h1 class="text-2xl font-medium text-blue-600 md:text-3xl">Signup</h1>  
         </div>     
         <form class="mt-6 flex flex-col items-center space-y-4" @submit.prevent="handleSubmit">
             <div class="w-full max-w-xs">
@@ -28,7 +28,7 @@
 import { ref } from 'vue';
 
 export default {
-    name: "Login",
+    name: "Signup",
     setup() {
         const email = ref('');
         const password = ref('');
