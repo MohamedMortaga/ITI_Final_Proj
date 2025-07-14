@@ -7,10 +7,11 @@ import Errorr from './components/pages/Errorr.vue';
 import Login from './components/pages/Login.vue';
 import './assets/main.css'
 const routes = [
-    { path: '/', component: Home, alias: '/home' },
+    { path: '/', component: Login ,alias: '/login' },
+    { path: '/Home', component: Home, alias: '/home' },
     { path: '/Logout', component: Logout },
     { path: '/:pathMatch(.*)*', component: Errorr, meta: { hideNavbar: true } },
-    { path: '/Login', component: Login },
+    ,
 ];
 
 const router = createRouter({
