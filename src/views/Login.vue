@@ -8,40 +8,44 @@
       <!-- Email Field -->
       <div class="w-full max-w-xs">
         <label for="email" class="block text-sm font-medium text-gray-700">Email</label>
-        <input type="email" id="email" v-model="email" required
+        <input
+          type="email"
+          id="email"
+          v-model="email"
+          required
           class="mt-1 w-full rounded-md border border-gray-300 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
-          placeholder="Enter your email" />
+          placeholder="Enter your email"
+        />
       </div>
 
       <!-- Password Field -->
       <div class="w-full max-w-xs">
         <label for="password" class="block text-sm font-medium text-gray-700">Password</label>
-        <input type="password" id="password" v-model="password" required
+        <input
+          type="password"
+          id="password"
+          v-model="password"
+          required
           class="mt-1 w-full rounded-md border border-gray-300 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
-          placeholder="Enter your password" />
+          placeholder="Enter your password"
+        />
       </div>
 
       <!-- Submit Button -->
-      <button type="submit"
-        class="w-full max-w-xs rounded-md bg-blue-600 py-2 text-white hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500">
+      <button
+        type="submit"
+        class="w-full max-w-xs rounded-md bg-blue-600 py-2 text-white hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500"
+      >
         Log In
       </button>
       <!-- Google login -->
-      <button @click="handleGoogleLogin"
-        class="mt-4 bg-white text-black border border-gray-300 py-2 px-4 rounded hover:bg-gray-100 flex items-center gap-2">
+      <button
+        @click="handleGoogleLogin"
+        class="mt-4 bg-white text-black border border-gray-300 py-2 px-4 rounded hover:bg-gray-100 flex items-center gap-2"
+      >
         <img src="https://img.icons8.com/color/16/000000/google-logo.png" alt="google" />
         Sign in with Google
       </button>
-      <!-- Greeting After Google Login -->
-      <div v-if="userName" class="mt-4 text-center text-green-600">
-        👋 Welcome {{ userName }}!
-        <br />
-        <button @click="router.push({ name: 'HomePage' })" class="mt-2 bg-green-500 text-white px-4 py-2 rounded">
-          Continue to Home
-        </button>
-      </div>
-
-
       <!-- Error Message -->
       <div v-if="error" class="text-red-600 text-sm mt-2">
         {{ error }}
@@ -55,8 +59,9 @@ import { ref } from 'vue';
 import { useRouter } from 'vue-router';
 import useLogin from '../composables/useLogin';
 import Swal from 'sweetalert2';
+
 export default {
-  name: "Login",
+  name: 'Login',
   setup() {
     const email = ref('');
     const password = ref('');
@@ -67,20 +72,19 @@ export default {
       await login(email.value, password.value);
       if (!error.value) {
         Swal.fire({
-          title: "Login successful! Welcome to our community!",
-          icon: "success",
-          draggable: true
+          title: 'Login successful! Welcome to our community!',
+          icon: 'success',
+          draggable: true,
         });
         router.push({ name: 'HomePage' });
-      }
-      else {
-          Swal.fire({
-            position: "top-end",
-            icon: "error",
-            title: "Oops Login unsuccessful... " +err.message,
-            showConfirmButton: false,
-            timer: 1500
-          });
+      } else {
+        Swal.fire({
+          position: 'top-end',
+          icon: 'error',
+          title: `Oops, login unsuccessful: ${error.value}`,
+          showConfirmButton: false,
+          timer: 1500,
+        });
       }
     };
 
@@ -88,20 +92,19 @@ export default {
       await loginWithGoogle();
       if (!error.value) {
         Swal.fire({
-          title: "Login using Google successful! Welcome to our community!",
-          icon: "success",
-          draggable: true
+          title: 'Login using Google successful! Welcome to our community!',
+          icon: 'success',
+          draggable: true,
         });
         router.push({ name: 'HomePage' });
-      }
-      else{
-          Swal.fire({
-            position: "top-end",
-            icon: "error",
-            title: "Oops Login unsuccessful... " +err.message,
-            showConfirmButton: false,
-            timer: 1500
-          });
+      } else {
+        Swal.fire({
+          position: 'top-end',
+          icon: 'error',
+          title: `Oops, login unsuccessful: ${error.value}`,
+          showConfirmButton: false,
+          timer: 1500,
+        });
       }
     };
 
@@ -110,10 +113,12 @@ export default {
       password,
       handleSubmit,
       handleGoogleLogin,
-      error
+      error,
+      userName,
+      router,
     };
-  }
-}
+  },
+};
 </script>
 
 <style scoped></style>

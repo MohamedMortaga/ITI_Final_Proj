@@ -6,7 +6,7 @@ import Home from '@/views/Home.vue'
 import Errorr from '@/components/pages/Errorr.vue'
 import Login from '@/views/Login.vue'
 import Signup from '@/views/Signup.vue'
-import AdminDashboard from '@/views/AdminDashboard.vue'
+import AddProduct from '@/views/AddProduct.vue'
 import ProductDetails from '@/views/ProductDetails.vue'
 
 const routes = [
@@ -20,7 +20,7 @@ const routes = [
     meta: { requiresAuth: true }
   },
   { path: '/logout', component: Logout },
-  { path: '/admin', component: AdminDashboard },
+  { path: '/addProduct', component: AddProduct },
   { path: '/:pathMatch(.*)*', component: Errorr, meta: { hideNavbar: true } },
   { path: '/product/:id', component: ProductDetails, name: 'ProductDetails' }
 ]
