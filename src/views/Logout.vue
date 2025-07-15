@@ -7,6 +7,7 @@
 <script>
 import { getAuth, signOut } from 'firebase/auth';
 import { useRouter } from 'vue-router';
+import Swal from 'sweetalert2';
 
 export default {
   name: "Logout",
@@ -18,6 +19,13 @@ export default {
       console.log('User signed out');
       router.push({ name: 'Login' }); 
     }).catch((error) => {
+      Swal.fire({
+          position: "top-end",
+          icon: "error",
+          title: "Oops Logout unsuccessful... " +err.message,
+          showConfirmButton: false,
+          timer: 1500
+      });
       console.error('Logout error:', error);
     });
 

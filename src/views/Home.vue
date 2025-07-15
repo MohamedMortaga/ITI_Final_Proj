@@ -20,6 +20,7 @@
 <script>
 import CreateProduct from '../composables/CreateProduct';
 import getCollection from '../composables/getCollection';
+
     export default {
         name: "HomePage",
         components:{ CreateProduct },

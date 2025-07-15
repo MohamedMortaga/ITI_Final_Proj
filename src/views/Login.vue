@@ -54,7 +54,7 @@
 import { ref } from 'vue';
 import { useRouter } from 'vue-router';
 import useLogin from '../composables/useLogin';
-
+import Swal from 'sweetalert2';
 export default {
   name: "Login",
   setup() {
@@ -66,14 +66,42 @@ export default {
     const handleSubmit = async () => {
       await login(email.value, password.value);
       if (!error.value) {
+        Swal.fire({
+          title: "Login successful! Welcome to our community!",
+          icon: "success",
+          draggable: true
+        });
         router.push({ name: 'HomePage' });
+      }
+      else {
+          Swal.fire({
+            position: "top-end",
+            icon: "error",
+            title: "Oops Login unsuccessful... " +err.message,
+            showConfirmButton: false,
+            timer: 1500
+          });
       }
     };
 
     const handleGoogleLogin = async () => {
       await loginWithGoogle();
       if (!error.value) {
+        Swal.fire({
+          title: "Login using Google successful! Welcome to our community!",
+          icon: "success",
+          draggable: true
+        });
         router.push({ name: 'HomePage' });
+      }
+      else{
+          Swal.fire({
+            position: "top-end",
+            icon: "error",
+            title: "Oops Login unsuccessful... " +err.message,
+            showConfirmButton: false,
+            timer: 1500
+          });
       }
     };
 

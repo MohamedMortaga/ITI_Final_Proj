@@ -1,7 +1,7 @@
 import { ref, watchEffect } from 'vue'
 import { db } from '../firebase/config'
 import { collection, onSnapshot } from 'firebase/firestore'
-
+import Swal from 'sweetalert2';
 const getCollection = (collectionName) => {
   const documents = ref(null)
   const error = ref(null)
@@ -30,6 +30,13 @@ const getCollection = (collectionName) => {
       }
     )
   } catch (err) {
+     Swal.fire({
+              position: "top-end",
+              icon: "error",
+              title: "Oops... " +err.message,
+              showConfirmButton: false,
+              timer: 1500
+        });
     console.log('Firestore error:', err.message)
     error.value = 'Failed to connect to collection'
   }

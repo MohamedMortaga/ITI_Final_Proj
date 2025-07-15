@@ -30,7 +30,7 @@
 import { ref } from 'vue';
 import { useRouter } from 'vue-router';
 import useSignup from '../composables/useSignup';
-
+import Swal from 'sweetalert2';
 export default {
   name: "Signup",
   setup() {
@@ -42,6 +42,13 @@ export default {
     const handleSubmit = async () => {
       await signup(email.value, password.value);
       if (!error.value) {
+            Swal.fire({
+              position: "top-end",
+              icon: "success",
+              title: "Registration successful! Welcome to our community!",
+              showConfirmButton: false,
+              timer: 1500
+            });
         router.push({ name: 'HomePage' });
       }
     };
@@ -49,6 +56,13 @@ export default {
   const handleGoogleSignup = async () => {
   await signupWithGoogle();
   if (!error.value) {
+     Swal.fire({
+        position: "top-end",
+        icon: "success",
+        title: "Registration using Google successful! Welcome to our community!",
+        showConfirmButton: false,
+        timer: 1500
+      });
     router.push({ name: 'HomePage' }); 
   }
 };

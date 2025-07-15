@@ -37,6 +37,7 @@
 import { ref, onMounted } from 'vue'
 import { collection, addDoc, deleteDoc, updateDoc, doc, getDocs } from 'firebase/firestore'
 import { db } from '@/firebase/config'
+import Swal from 'sweetalert2'
 
 const products = ref([])
 const form = ref({ title: '', type: '', price: '', details: '' })
@@ -44,19 +45,47 @@ const isEdit = ref(false)
 let editId = null
 
 const loadProducts = async () => {
-  const snapshot = await getDocs(collection(db, 'products'))
-  products.value = snapshot.docs.map(doc => ({ ...doc.data(), id: doc.id }))
+  try {
+    const snapshot = await getDocs(collection(db, 'products'))
+    products.value = snapshot.docs.map(doc => ({ ...doc.data(), id: doc.id }))
+  } catch (err) {
+    console.error("Failed to load products:", err.message)
+  }
 }
 
 const submitForm = async () => {
-  if (isEdit.value) {
-    const docRef = doc(db, 'products', editId)
-    await updateDoc(docRef, form.value)
-  } else {
-    await addDoc(collection(db, 'products'), form.value)
+  try {
+    if (isEdit.value) {
+      const docRef = doc(db, 'products', editId)
+      await updateDoc(docRef, form.value)
+      Swal.fire({
+        position: "center",
+        icon: "success",
+        title: "Update operation successful...",
+        showConfirmButton: false,
+        timer: 1500
+      })
+    } else {
+      await addDoc(collection(db, 'products'), form.value)
+      Swal.fire({
+        position: "center",
+        icon: "success",
+        title: "Add operation successful...",
+        showConfirmButton: false,
+        timer: 1500
+      })
+    }
+    resetForm()
+    await loadProducts()
+  } catch (err) {
+    Swal.fire({
+      position: "center",
+      icon: "error",
+      title: "unsuccessful... " + err.message,
+      showConfirmButton: false,
+      timer: 1500
+    })
   }
-  resetForm()
-  loadProducts()
 }
 
 const editProduct = (product) => {
@@ -66,8 +95,25 @@ const editProduct = (product) => {
 }
 
 const deleteProduct = async (id) => {
-  await deleteDoc(doc(db, 'products', id))
-  loadProducts()
+  try {
+    await deleteDoc(doc(db, 'products', id))
+    Swal.fire({
+      position: "center",
+      icon: "success",
+      title: "Delete operation successful...",
+      showConfirmButton: false,
+      timer: 1500
+    })
+    await loadProducts()
+  } catch (err) {
+    Swal.fire({
+      position: "center",
+      icon: "error",
+      title: "unsuccessful... " + err.message,
+      showConfirmButton: false,
+      timer: 1500
+    })
+  }
 }
 
 const resetForm = () => {
