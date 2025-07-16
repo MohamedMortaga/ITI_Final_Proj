@@ -32,7 +32,9 @@ const routes = [
   { path: '/logout', component: Logout },
   { path: '/addProduct', component: AddProduct },
   { path: '/:pathMatch(.*)*', component: Errorr, meta: { hideNavbar: true } },
-  { path: '/product/:id', component: ProductDetails, name: 'ProductDetails' }
+  { path: '/product/:id', component: ProductDetails, name: 'ProductDetails' },
+  
+
 ]
 
 const router = createRouter({

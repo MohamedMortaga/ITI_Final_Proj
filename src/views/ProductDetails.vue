@@ -15,9 +15,11 @@
       <!-- Product Info -->
       <div class="md:w-1/2">
         <h1 class="text-3xl font-bold text-pink-600 mb-4">{{ product.title }}</h1>
-        <p class="text-gray-700 mb-2">
-          <span class="font-semibold text-gray-800">Type:</span> {{ product.type }}
-        </p>
+       <p class="text-gray-700 mb-2">
+  <span class="font-semibold text-gray-800">Category:</span>
+  {{ product.category || product.type }}
+</p>
+
         <p class="text-pink-500 font-bold mb-2">
           <span class="font-semibold text-gray-800">Price:</span> {{ product.price }} EGP
         </p>
