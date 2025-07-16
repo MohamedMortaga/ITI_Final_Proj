@@ -3,7 +3,7 @@
     class="min-h-screen flex items-center justify-center bg-white px-4 sm:px-6 lg:px-8"
   >
     <div
-      class="max-w-4xl w-full flex flex-col lg:flex-row items-center justify-between xl:max-w-5xl"
+      class="max-w-6xl w-full flex flex-col lg:flex-row items-center justify-between xl:max-w-7xl 2xl:max-w-[1500px]"
     >
       <!-- Form Section -->
       <div class="w-full lg:w-1/2 p-6 lg:p-10 xl:p-12">
