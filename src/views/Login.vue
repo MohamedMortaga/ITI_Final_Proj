@@ -1,6 +1,6 @@
 <template>
   <div
-    class="min-h-screen flex items-center justify-center bg-white px-4 sm:px-6 lg:px-8"
+    class="min-h-screen flex items-center justify-center bg-white px-4 sm:px-6 lg:px-8 overflow-y-hidden"
   >
     <div
       class="max-w-6xl w-full flex flex-col lg:flex-row items-center justify-between xl:max-w-7xl 2xl:max-w-[1500px]"
@@ -83,7 +83,11 @@
             class="flex justify-between items-center text-xs text-gray-600 lg:text-xs xl:text-sm"
           >
             <label class="flex items-center">
-              <input type="checkbox" class="mr-1 lg:mr-1 xl:mr-2 xl:h-5 xl:w-5" />
+              <input
+                type="checkbox"
+                v-model="rememberMe"
+                class="mr-1 lg:mr-1 xl:mr-2 xl:h-5 xl:w-5"
+              />
               Remember me
             </label>
             <a href="#" class="text-teal-600">Forgot Password ?</a>
@@ -138,7 +142,7 @@
 </template>
 
 <script>
-import { ref } from "vue";
+import { ref, onMounted } from "vue";
 import { useRouter } from "vue-router";
 import useLogin from "../composables/useLogin";
 import Swal from "sweetalert2";
@@ -149,10 +153,31 @@ export default {
     const email = ref("");
     const password = ref("");
     const passwordVisible = ref(false);
+    const rememberMe = ref(false);
     const { login, loginWithGoogle, error, userName } = useLogin();
     const router = useRouter();
 
+    // Load saved email and password from localStorage when component mounts
+    onMounted(() => {
+      const savedEmail = localStorage.getItem("rememberedEmail");
+      const savedPassword = localStorage.getItem("rememberedPassword");
+      if (savedEmail && savedPassword) {
+        email.value = savedEmail;
+        password.value = savedPassword;
+        rememberMe.value = true;
+      }
+    });
+
     const handleSubmit = async () => {
+      // Save email and password to localStorage if "Remember me" is checked
+      if (rememberMe.value) {
+        localStorage.setItem("rememberedEmail", email.value);
+        localStorage.setItem("rememberedPassword", password.value);
+      } else {
+        localStorage.removeItem("rememberedEmail");
+        localStorage.removeItem("rememberedPassword");
+      }
+
       await login(email.value, password.value);
       if (!error.value) {
         Swal.fire({
@@ -201,6 +226,7 @@ export default {
     return {
       email,
       password,
+      rememberMe,
       handleSubmit,
       handleGoogleLogin,
       error,
