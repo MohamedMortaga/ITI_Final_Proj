@@ -1,32 +1,26 @@
 <template>
   <!-- <Navbar v-if="!$route.meta.hideNavbar"/> -->
-   <Navbar v-show="!$route.meta.hideNavbar"/>
+  <Navbar v-show="!$route.meta.hideNavbar" />
 
   <router-view></router-view>
-
 </template>
 
 <script>
-import Navbar from './components/pages/Navbar.vue'; 
-
+import Navbar from "./components/pages/Navbar.vue";
 
 export default {
-  name: 'App',
+  name: "App",
   components: {
     Navbar,
   },
   provide() {
-    return {
-    };
+    return {};
   },
   data() {
-    return {
-    };
+    return {};
   },
-  methods: {
-  },
+  methods: {},
 };
 </script>
 
-<style>
-</style>
+<style></style>

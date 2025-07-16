@@ -20,38 +20,21 @@
           >
         </p>
 
-        <form class="space-y-6 xl:space-y-8" @submit.prevent="handleSubmit">
+        <form class="space-y-4 xl:space-y-6" @submit.prevent="handleSubmit">
           <div>
             <label
               for="email"
               class="block text-sm text-gray-700 mb-1 lg:text-sm xl:text-base"
               >Email</label
             >
-            <div class="flex items-center border-b border-gray-400 py-2 xl:py-3">
-              <svg
-                class="h-5 w-5 text-gray-500 mr-2 lg:h-5 lg:w-5 xl:h-6 xl:w-6"
-                fill="none"
-                stroke="currentColor"
-                stroke-width="2"
-                viewBox="0 0 24 24"
-              >
-                <path d="M4 4h16v16H4z" stroke="none" />
-                <path
-                  d="M4 4l8 8 8-8M4 20h16V4H4v16z"
-                  fill="none"
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                />
-              </svg>
-              <input
-                id="email"
-                v-model="email"
-                type="email"
-                required
-                placeholder="Enter Your email address"
-                class="w-full focus:outline-none text-sm lg:text-sm xl:text-base"
-              />
-            </div>
+            <input
+              id="email"
+              v-model="email"
+              type="email"
+              required
+              placeholder="Enter your email address"
+              class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-teal-600 text-sm lg:text-sm xl:text-base"
+            />
           </div>
 
           <div>
@@ -60,53 +43,39 @@
               class="block text-sm text-gray-700 mb-1 lg:text-sm xl:text-base"
               >Password</label
             >
-            <div class="flex items-center border-b border-gray-400 py-2 xl:py-3">
-              <svg
-                class="h-5 w-5 text-gray-500 mr-2 lg:h-5 lg:w-5 xl:h-6 xl:w-6"
-                fill="none"
-                stroke="currentColor"
-                stroke-width="2"
-                viewBox="0 0 24 24"
-              >
-                <path
-                  d="M12 17a2 2 0 100-4 2 2 0 000 4z"
-                  fill="none"
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                />
-                <path
-                  d="M4 8V6a4 4 0 018 0v2m-6 4h12v8H6v-8z"
-                  fill="none"
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                />
-              </svg>
+            <div class="relative">
               <input
                 id="password"
                 v-model="password"
                 type="password"
                 required
                 placeholder="Enter Your email Password"
-                class="w-full focus:outline-none text-sm lg:text-sm xl:text-base"
+                class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-teal-600 text-sm lg:text-sm xl:text-base"
               />
-              <svg
-                class="h-5 w-5 text-gray-500 ml-2 lg:h-5 lg:w-5 xl:h-6 xl:w-6"
-                fill="none"
-                stroke="currentColor"
-                stroke-width="2"
-                viewBox="0 0 24 24"
+              <button
+                type="button"
+                class="absolute right-2 top-2 text-gray-500 hover:text-gray-700"
+                @click="togglePasswordVisibility"
               >
-                <path
-                  d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                />
-                <path
-                  d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                />
-              </svg>
+                <svg
+                  class="h-5 w-5"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="2"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                  />
+                  <path
+                    d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                  />
+                </svg>
+              </button>
             </div>
           </div>
 
@@ -179,6 +148,7 @@ export default {
   setup() {
     const email = ref("");
     const password = ref("");
+    const passwordVisible = ref(false);
     const { login, loginWithGoogle, error, userName } = useLogin();
     const router = useRouter();
 
@@ -222,6 +192,12 @@ export default {
       }
     };
 
+    const togglePasswordVisibility = () => {
+      passwordVisible.value = !passwordVisible.value;
+      const passwordInput = document.getElementById("password");
+      passwordInput.type = passwordVisible.value ? "text" : "password";
+    };
+
     return {
       email,
       password,
@@ -230,6 +206,7 @@ export default {
       error,
       userName,
       router,
+      togglePasswordVisibility,
     };
   },
 };

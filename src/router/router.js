@@ -11,8 +11,18 @@ import ProductDetails from '@/views/ProductDetails.vue'
 
 const routes = [
   { path: '/', redirect: '/login' },
-  { path: '/login', component: Login },
-  { path: '/signup', component: Signup },
+  {
+    path: '/signup',
+    name: 'Signup',
+    component: Signup,
+    meta: { hideNavbar: true }
+  },
+  {
+    path: '/login',
+    name: 'Login',
+    component: Login,
+    meta: { hideNavbar: true }
+  },
   {
     path: '/home',
     name: 'HomePage',
@@ -27,9 +37,8 @@ const routes = [
 
 const router = createRouter({
   history: createWebHistory(),
-  routes,
+  routes
 })
-
 
 router.beforeEach((to, from, next) => {
   const auth = getAuth()
