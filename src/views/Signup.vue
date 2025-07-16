@@ -1,94 +1,188 @@
 <template>
-  <div class="p-6 max-w-md mx-auto">
-    <h1 class="text-2xl font-bold text-center text-pink-600 mb-6">Sign Up</h1>
+  <div class="min-h-screen flex items-center justify-center bg-white px-4 sm:px-6 lg:px-8 overflow-y-hidden">
+    <div
+      class="max-w-6xl w-full flex flex-col lg:flex-row items-center justify-between xl:max-w-7xl 2xl:max-w-[1500px]">
 
-    <form @submit.prevent="handleSubmit" class="space-y-4">
-      <input v-model="email" type="email" placeholder="Email" class="input" />
-      <input v-model="password" type="password" placeholder="Password" class="input" />
-      <button type="submit" class="btn">Sign Up</button>
-    </form>
+      <!-- Form Section -->
+      <div class="w-full lg:w-1/2 p-6 lg:p-10 xl:p-12">
+        <div class="mb-6 text-left xl:mb-8">
+          <h1 class="text-3xl font-bold text-teal-600 lg:text-3xl xl:text-4xl">Rento</h1>
+        </div>
 
-    <div class="text-center my-4 text-gray-500">— OR —</div>
+        <h2 class="text-2xl font-semibold mb-4 lg:text-2xl xl:text-3xl">Sign Up</h2>
+        <p class="text-gray-600 mb-6 lg:text-base xl:text-lg">
+          If you already have an account register
+ You can<br />
+          <router-link to="/Login" class="text-teal-600 font-semibold">Login here!</router-link>
+        </p>
 
-    <button @click="handleGoogleSignup" class="google-btn">
-      <img src="https://img.icons8.com/color/16/000000/google-logo.png" />
-      Sign Up with Google
+        <form @submit.prevent="handleSubmit" class="space-y-4 xl:space-y-6">
+          <!-- Username -->
+          <div>
+            <label for="username" class="block text-sm text-black mb-1">Username</label>
+            <input
+              id="username"
+              v-model="username"
+              type="text"
+              required
+              placeholder="Enter your username"
+      class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-teal-600 text-sm lg:text-sm xl:text-base"
+            />
+          </div>
+
+          <!-- Email -->
+          <div>
+            <label for="email" class="block text-sm text-black mb-1">Email</label>
+            <input
+              id="email"
+              v-model="email"
+              type="email"
+              required
+              placeholder="Enter your email address"
+      class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-teal-600 text-sm lg:text-sm xl:text-base"
+            />
+          </div>
+
+          <!-- Password -->
+          <div>
+            <label for="password" class="block text-sm text-black mb-1">Password</label>
+            <div class="relative">
+              <input
+                id="password"
+                v-model="password"
+                :type="passwordVisible ? 'text' : 'password'"
+                required
+                placeholder="Enter your password"
+      class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-teal-600 text-sm lg:text-sm xl:text-base"
+              />
+              <button
+                type="button"
+                class="absolute right-3 top-1/2 -translate-y-1/2 transform text-gray-500 hover:text-gray-700 text-lg"
+                @click="togglePasswordVisibility"
+                aria-label="Toggle password visibility">
+                <i :class="['fas', passwordVisible ? 'fa-eye-slash' : 'fa-eye']"></i>
+              </button>
+            </div>
+          </div>
+
+        <!-- Confirm Password -->
+<div>
+  <label for="confirmPassword" class="block text-sm text-black mb-1">Confirm Password</label>
+  <div class="relative">
+    <input
+      id="confirmPassword"
+      v-model="confirmPassword"
+      :type="confirmPasswordVisible ? 'text' : 'password'"
+      required
+      placeholder="Confirm your password"
+      class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-teal-600 text-sm lg:text-sm xl:text-base"
+    />
+    <button
+      type="button"
+      class="absolute right-3 top-1/2 -translate-y-1/2 transform text-gray-500 hover:text-gray-700 text-lg"
+      @click="toggleConfirmPasswordVisibility"
+      aria-label="Toggle confirm password visibility">
+      <i :class="confirmPasswordVisible ? 'fas fa-eye-slash' : 'fas fa-eye'"></i>
     </button>
+  </div>
+</div>
 
-    <div v-if="userName" class="mt-4 text-green-600 text-center">
-      👋 Welcome {{ userName }}!
-      <button @click="router.push({ name: 'HomePage' })" class="btn mt-2 bg-green-600">
-        Continue to Home
-      </button>
+
+          <button
+            type="submit"
+            class="w-full bg-teal-600 text-white rounded-md py-3 font-semibold hover:bg-teal-700">
+            Sign Up
+          </button>
+
+          <!-- <div class="text-center text-gray-500 text-lg font-semibold">or continue with</div> -->
+
+          <!-- <div class="flex gap-3 items-center justify-center">
+            <button type="button" class="flex justify-center items-center rounded-md py-3 hover:bg-gray-100 gap-2">
+              <img src="../assets/google.png" alt="google" class="h-6 w-6" />
+            </button>
+            <button type="button" class="flex justify-center items-center rounded-md py-3 hover:bg-gray-100 gap-2">
+              <img src="../assets/Facebook.png" alt="facebook" class="h-6 w-6" />
+            </button>
+          </div> -->
+
+          <div v-if="error" class="text-red-600 text-sm mt-2 text-center">
+            {{ error }}
+          </div>
+        </form>
+      </div>
+
+      <!-- Illustration Section -->
+      <div class="hidden lg:block w-full lg:w-1/2 mt-8 lg:mt-0">
+        <img src="../assets/login.png" alt="Login Illustration" class="w-full h-auto" />
+      </div>
     </div>
-
-    <p v-if="error" class="text-red-600 mt-2 text-sm text-center">{{ error }}</p>
   </div>
 </template>
 
 <script>
 import { ref } from 'vue';
 import { useRouter } from 'vue-router';
-import useSignup from '../composables/useSignup';
 import Swal from 'sweetalert2';
+import useSignup from '../composables/useSignup';
+
 export default {
-  name: "Signup",
+  name: 'Signup',
   setup() {
+    const username = ref('');
     const email = ref('');
     const password = ref('');
-    const { signup, signupWithGoogle, error, userName } = useSignup();
+    const confirmPassword = ref('');
+    const passwordVisible = ref(false);
+    const confirmPasswordVisible = ref(false);
+    const { signup, signupWithGoogle, error } = useSignup();
     const router = useRouter();
 
     const handleSubmit = async () => {
-      await signup(email.value, password.value);
+      if (password.value !== confirmPassword.value) {
+        Swal.fire({
+          icon: 'warning',
+          title: 'Passwords do not match',
+          showConfirmButton: true,
+        });
+        return;
+      }
+      await signup(email.value, password.value, username.value);
       if (!error.value) {
-            Swal.fire({
-              position: "top-end",
-              icon: "success",
-              title: "Registration successful! Welcome to our community!",
-              showConfirmButton: false,
-              timer: 1500
-            });
+        Swal.fire({
+          icon: 'success',
+          title: 'Signed up successfully!',
+          timer: 1500,
+          showConfirmButton: false
+        });
         router.push({ name: 'HomePage' });
       }
     };
 
-  const handleGoogleSignup = async () => {
-  await signupWithGoogle();
-  if (!error.value) {
-     Swal.fire({
-        position: "top-end",
-        icon: "success",
-        title: "Registration using Google successful! Welcome to our community!",
-        showConfirmButton: false,
-        timer: 1500
-      });
-    router.push({ name: 'HomePage' }); 
-  }
-};
+    const togglePasswordVisibility = () => {
+      passwordVisible.value = !passwordVisible.value;
+    };
 
+    const toggleConfirmPasswordVisibility = () => {
+      confirmPasswordVisible.value = !confirmPasswordVisible.value;
+    };
 
     return {
+      username,
       email,
       password,
+      confirmPassword,
+      passwordVisible,
+      confirmPasswordVisible,
+      togglePasswordVisibility,
+      toggleConfirmPasswordVisibility,
       handleSubmit,
-      handleGoogleSignup,
       error,
-      userName,
-      router
     };
-  }
-}
+  },
+};
 </script>
 
 <style scoped>
-.input {
-  @apply block w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-pink-500;
-}
-.btn {
-  @apply w-full py-2 bg-pink-600 text-white rounded hover:bg-pink-700;
-}
-.google-btn {
-  @apply flex items-center justify-center gap-2 w-full py-2 border border-gray-300 rounded hover:bg-gray-100;
-}
+/* Tailwind handles styling */
+
 </style>
