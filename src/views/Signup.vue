@@ -6,7 +6,7 @@
       class="max-w-6xl w-full flex flex-col lg:flex-row items-center justify-between xl:max-w-7xl 2xl:max-w-[1500px]"
     >
       <!-- Form Section -->
-      <div class="w-full lg:w-1/2 p-6 lg:p-10 xl:p-12">
+      <div class="w-full lg:w System: -1/2 p-6 lg:p-10 xl:p-12">
         <div class="mb-6 text-left xl:mb-8">
           <h1 class="text-3xl font-bold text-teal-600 lg:text-3xl xl:text-4xl">Rento</h1>
         </div>
@@ -103,16 +103,19 @@
             Sign Up
           </button>
 
-          <!-- <div class="text-center text-gray-500 text-lg font-semibold">or continue with</div> -->
+          <div class="text-center text-gray-500 text-lg font-semibold">
+            or continue with
+          </div>
 
-          <!-- <div class="flex gap-3 items-center justify-center">
-            <button type="button" class="flex justify-center items-center rounded-md py-3 hover:bg-gray-100 gap-2">
+          <div class="flex gap-3 items-center justify-center">
+            <button
+              @click="handleGoogleSignup"
+              type="button"
+              class="flex justify-center items-center rounded-md py-3 hover:bg-gray-100 gap-2"
+            >
               <img src="../assets/google.png" alt="google" class="h-6 w-6" />
             </button>
-            <button type="button" class="flex justify-center items-center rounded-md py-3 hover:bg-gray-100 gap-2">
-              <img src="../assets/Facebook.png" alt="facebook" class="h-6 w-6" />
-            </button>
-          </div> -->
+          </div>
 
           <div v-if="error" class="text-red-600 text-sm mt-2 text-center">
             {{ error }}
@@ -156,11 +159,23 @@ export default {
         return;
       }
       await signup(email.value, password.value, username.value);
-      
       if (!error.value) {
         Swal.fire({
           icon: "success",
           title: "Signed up successfully!",
+          timer: 1500,
+          showConfirmButton: false,
+        });
+        router.push({ name: "HomePage" });
+      }
+    };
+
+    const handleGoogleSignup = async () => {
+      await signupWithGoogle();
+      if (!error.value) {
+        Swal.fire({
+          icon: "success",
+          title: "Signed up with Google successfully!",
           timer: 1500,
           showConfirmButton: false,
         });
@@ -186,6 +201,7 @@ export default {
       togglePasswordVisibility,
       toggleConfirmPasswordVisibility,
       handleSubmit,
+      handleGoogleSignup,
       error,
     };
   },

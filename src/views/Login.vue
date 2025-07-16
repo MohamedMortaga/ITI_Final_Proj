@@ -16,7 +16,7 @@
           If you don't have an account register<br />
           You can
           <router-link to="/Signup" class="text-teal-600 font-semibold"
-            >Register here !</router-link
+            >Register here!</router-link
           >
         </p>
 
@@ -110,17 +110,6 @@
                 class="h-6 w-6 lg:h-6 lg:w-6 xl:h-8 xl:w-8"
               />
             </button>
-           <button
-  @click="handleFacebookLogin"
-  type="button"
-  class="flex justify-center items-center rounded-md py-3 gap-2 xl:py-4 xl:gap-3"
->
-  <img
-    src="../assets/Facebook.png"
-    alt="facebook"
-    class="h-6 w-6 lg:h-6 lg:w-6 xl:h-8 xl:w-8"
-/>
-</button>
           </div>
 
           <!-- Error -->
@@ -304,18 +293,7 @@ export default {
         });
       }
     };
-const { loginWithFacebook } = useLogin();
 
-const handleFacebookLogin = async () => {
-  await loginWithFacebook();
-  if (!error.value) {
-    Swal.fire({
-      title: "Login using Facebook successful! 🎉",
-      icon: "success",
-    });
-    router.push({ name: "HomePage" });
-  }
-};
     const togglePasswordVisibility = () => {
       passwordVisible.value = !passwordVisible.value;
     };
@@ -335,8 +313,6 @@ const handleFacebookLogin = async () => {
       error,
       userName,
       router,
-      handleFacebookLogin
-
     };
   },
 };
@@ -345,7 +321,6 @@ const handleFacebookLogin = async () => {
 <style scoped>
 input:-webkit-autofill {
   box-shadow: 0 0 0px 1000px #ffffff inset !important;
-  /* bg-white */
   -webkit-text-fill-color: #000 !important;
   border: 1px solid #737373 !important;
   transition: background-color 5000s ease-in-out 0s;
