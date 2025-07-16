@@ -7,17 +7,35 @@ import {
 } from 'firebase/auth';
 import { auth, googleProvider } from '@/firebase/config';
 import Swal from 'sweetalert2';
+import { updateProfile } from 'firebase/auth';
+import { doc, setDoc } from 'firebase/firestore';
+import { db } from '@/firebase/config';
+
 
 const error = ref(null);
 const userName = ref(null);
 
 // ✅ Email/Password Signup + Email Verification
-const signup = async (email, password) => {
+const signup = async (email, password, username) => {
   error.value = null;
 
   try {
     const res = await createUserWithEmailAndPassword(auth, email, password);
     if (!res.user) throw new Error('Signup failed');
+
+    // ✅ Update displayName
+    await updateProfile(res.user, {
+      displayName: username,
+      
+    });
+    
+    await setDoc(doc(db, 'users', res.user.uid), {
+  uid: res.user.uid,
+  email: email,
+  displayName: username,
+  createdAt: new Date(),
+});
+
 
     // ✅ Send the verification email
     await sendEmailVerification(res.user);
@@ -38,6 +56,7 @@ const signup = async (email, password) => {
     error.value = err.message;
   }
 };
+
 
 // ✅ Google Signup (No email verification needed; Google handles it)
 const signupWithGoogle = async () => {

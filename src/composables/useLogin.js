@@ -4,6 +4,10 @@ import { auth, googleProvider } from '@/firebase/config';
 import Swal from 'sweetalert2';
 const error = ref(null);
 const userName = ref(null);  
+import { FacebookAuthProvider } from 'firebase/auth';
+
+const facebookProvider = new FacebookAuthProvider();
+
 
 const login = async (email, password) => {
   error.value = null;
@@ -43,9 +47,24 @@ const loginWithGoogle = async () => {
     error.value = err.message;
   }
 };
-
+const loginWithFacebook = async () => {
+  error.value = null;
+  try {
+    const result = await signInWithPopup(auth, facebookProvider);
+    const user = result.user;
+    console.log('Logged in with Facebook:', user.displayName);
+  } catch (err) {
+    console.error('Facebook login error:', err.message);
+    error.value = err.message;
+    Swal.fire({
+      icon: 'error',
+      title: 'Oops...',
+      text: 'Facebook login failed: ' + err.message,
+    });
+  }
+};
 const useLogin = () => {
-  return { login, loginWithGoogle, error, userName };
+  return {  loginWithFacebook, login, loginWithGoogle, error, userName };
 };
 
 export default useLogin;

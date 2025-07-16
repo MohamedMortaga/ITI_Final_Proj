@@ -110,16 +110,17 @@
                 class="h-6 w-6 lg:h-6 lg:w-6 xl:h-8 xl:w-8"
               />
             </button>
-            <button
-              type="button"
-              class="flex justify-center items-center rounded-md py-3 gap-2 xl:py-4 xl:gap-3"
-            >
-              <img
-                src="../assets/Facebook.png"
-                alt="facebook"
-                class="h-6 w-6 lg:h-6 lg:w-6 xl:h-8 xl:w-8"
-              />
-            </button>
+           <button
+  @click="handleFacebookLogin"
+  type="button"
+  class="flex justify-center items-center rounded-md py-3 gap-2 xl:py-4 xl:gap-3"
+>
+  <img
+    src="../assets/Facebook.png"
+    alt="facebook"
+    class="h-6 w-6 lg:h-6 lg:w-6 xl:h-8 xl:w-8"
+/>
+</button>
           </div>
 
           <!-- Error -->
@@ -303,7 +304,18 @@ export default {
         });
       }
     };
+const { loginWithFacebook } = useLogin();
 
+const handleFacebookLogin = async () => {
+  await loginWithFacebook();
+  if (!error.value) {
+    Swal.fire({
+      title: "Login using Facebook successful! 🎉",
+      icon: "success",
+    });
+    router.push({ name: "HomePage" });
+  }
+};
     const togglePasswordVisibility = () => {
       passwordVisible.value = !passwordVisible.value;
     };
@@ -323,6 +335,8 @@ export default {
       error,
       userName,
       router,
+      handleFacebookLogin
+
     };
   },
 };

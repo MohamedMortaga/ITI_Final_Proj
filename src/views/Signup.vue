@@ -156,6 +156,7 @@ export default {
         return;
       }
       await signup(email.value, password.value, username.value);
+      
       if (!error.value) {
         Swal.fire({
           icon: "success",
