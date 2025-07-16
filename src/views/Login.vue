@@ -139,6 +139,49 @@
         />
       </div>
     </div>
+
+    <!-- Forgot Password Modal -->
+    <div
+      v-if="isModalOpen"
+      class="fixed inset-0 bg-gray-600 bg-opacity-50 flex items-center justify-center z-50"
+    >
+      <div class="bg-white rounded-lg p-6 w-full max-w-md">
+        <h3 class="text-lg font-semibold text-gray-900 mb-4">Reset Your Password</h3>
+        <p class="text-sm text-gray-600 mb-4">
+          Enter your email address to receive a password reset link.
+        </p>
+        <form @submit.prevent="handleForgotPassword">
+          <div class="mb-4">
+            <label for="reset-email" class="block text-sm text-gray-700 mb-1"
+              >Email</label
+            >
+            <input
+              id="reset-email"
+              v-model="resetEmail"
+              type="email"
+              required
+              placeholder="Enter your email address"
+              class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-teal-600 text-sm"
+            />
+          </div>
+          <div class="flex justify-end gap-2">
+            <button
+              type="button"
+              @click="isModalOpen = false"
+              class="px-4 py-2 text-sm text-gray-600 hover:text-gray-800"
+            >
+              Cancel
+            </button>
+            <button
+              type="submit"
+              class="px-4 py-2 bg-teal-600 text-white rounded-md text-sm font-semibold hover:bg-teal-700"
+            >
+              Send Reset Link
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
   </div>
 </template>
 
@@ -222,7 +265,7 @@ export default {
 
     const showForgotPasswordModal = () => {
       isModalOpen.value = true;
-      resetEmail.value = email.value; // Pre-fill with login form email if available
+      resetEmail.value = email.value;
     };
 
     const handleForgotPassword = async () => {
@@ -270,8 +313,12 @@ export default {
       password,
       rememberMe,
       passwordVisible,
+      isModalOpen,
+      resetEmail,
       handleSubmit,
       handleGoogleLogin,
+      showForgotPasswordModal,
+      handleForgotPassword,
       togglePasswordVisibility,
       error,
       userName,
