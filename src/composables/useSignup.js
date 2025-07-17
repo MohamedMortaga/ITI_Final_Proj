@@ -2,58 +2,106 @@ import { ref } from 'vue';
 import {
   createUserWithEmailAndPassword,
   signInWithPopup,
-  sendEmailVerification
+  updateProfile,
+  sendEmailVerification,
 } from 'firebase/auth';
 import { auth, googleProvider } from '@/firebase/config';
+import { doc, setDoc } from 'firebase/firestore';
+import { db } from '@/firebase/config';
 import Swal from 'sweetalert2';
 
 const error = ref(null);
 const userName = ref(null);
 
-// Email/Password Signup + Email Verification
-const signup = async (email, password) => {
+const signup = async (email, password, displayName) => {
   error.value = null;
+  userName.value = null;
 
   try {
-    const res = await createUserWithEmailAndPassword(auth, email, password);
-    if (!res.user) throw new Error('Signup failed');
+    // Create user with email and password
+    const userCredential = await createUserWithEmailAndPassword(auth, email, password);
+    const user = userCredential.user;
+    if (!user) throw new Error('Could not complete signup');
 
-    // Send the verification email
-    await sendEmailVerification(res.user);
+    // Update user profile with displayName
+    await updateProfile(user, { displayName });
+
+    // Send email verification
+    await sendEmailVerification(user, {
+      url: `${window.location.origin}/login`, // Redirect to login page after verification
+    });
+
+    // Optionally store user data in Firestore
+    await setDoc(doc(db, 'users', user.uid), {
+      email: user.email,
+      displayName: displayName,
+      createdAt: new Date(),
+    });
+
+    // Update userName ref for immediate use
+    userName.value = displayName;
 
     Swal.fire({
       icon: 'success',
-      title: 'Account created!',
-      text: 'A verification email has been sent. Please check your inbox before logging in.',
+      title: 'Account Created!',
+      text: 'A verification email has been sent to your inbox. Please verify your email before logging in.',
+      timer: 3000,
+      showConfirmButton: true,
     });
 
+    return user;
   } catch (err) {
+    error.value = err.message;
     Swal.fire({
       icon: 'error',
-      title: 'Oops...',
-      text: 'Registration unsuccessful! ' + err.message,
+      title: 'Signup Failed',
+      text: `Registration unsuccessful: ${err.message}`,
+      showConfirmButton: true,
     });
-    console.error(err);
-    error.value = err.message;
+    console.error('Signup error:', err.message);
+    return null;
   }
 };
 
-// Google Signup (No email verification needed; Google handles it)
 const signupWithGoogle = async () => {
   error.value = null;
+  userName.value = null;
+
   try {
-    const result = await signInWithPopup(auth, googleProvider);
-    const user = result.user;
-    userName.value = user.displayName;
-    console.log('Signed up with Google:', user.displayName);
+    // Sign in with Google
+    const userCredential = await signInWithPopup(auth, googleProvider);
+    const user = userCredential.user;
+    if (!user) throw new Error('Could not complete Google signup');
+
+    // Optionally store user data in Firestore
+    await setDoc(doc(db, 'users', user.uid), {
+      email: user.email,
+      displayName: user.displayName || 'Google User',
+      createdAt: new Date(),
+    });
+
+    // Update userName ref
+    userName.value = user.displayName || 'Google User';
+
+    Swal.fire({
+      icon: 'success',
+      title: 'Signed Up with Google!',
+      text: `Welcome, ${user.displayName || 'User'}!`,
+      timer: 1500,
+      showConfirmButton: false,
+    });
+
+    return user;
   } catch (err) {
+    error.value = err.message;
     Swal.fire({
       icon: 'error',
-      title: 'Oops...',
-      text: 'Registration unsuccessful! ' + err.message,
+      title: 'Google Signup Failed',
+      text: `Registration unsuccessful: ${err.message}`,
+      showConfirmButton: true,
     });
-    error.value = err.message;
     console.error('Google signup error:', err.message);
+    return null;
   }
 };
 
