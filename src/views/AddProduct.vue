@@ -128,9 +128,9 @@
           alt="Product Image"
           class="mt-2 max-w-full h-32 object-cover rounded"
         />
-        <p v-if="product.img" class="text-sm text-gray-500 mt-2 dark:text-gray-400">
+        <!-- <p v-if="product.img" class="text-sm text-gray-500 mt-2 dark:text-gray-400">
           Image URL: {{ product.img }}
-        </p>
+        </p> -->
         <p v-else class="text-sm text-red-500 mt-2 dark:text-red-400">
           No image available.
         </p>

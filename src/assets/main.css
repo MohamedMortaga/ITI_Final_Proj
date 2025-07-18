@@ -4,6 +4,9 @@
 
 body {
   font-family: 'Nunito', sans-serif;
+  margin: 0;
+  padding: 0;
+box-sizing: border-box;
 }
 
 input::-ms-reveal,
@@ -156,3 +159,4 @@ input[type="password"]::-webkit-clear-button {
 .bg-default {
   background-color: var(--bg-default);
 }
+

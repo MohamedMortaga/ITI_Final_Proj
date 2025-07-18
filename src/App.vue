@@ -1,7 +1,6 @@
 <template>
   <!-- <Navbar v-if="!$route.meta.hideNavbar"/> -->
   <Navbar v-show="!$route.meta.hideNavbar" />
-
   <router-view></router-view>
 </template>
 
