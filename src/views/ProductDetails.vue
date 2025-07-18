@@ -6,11 +6,12 @@
     >
       <!-- Product Image -->
       <div class="md:w-1/2">
-        <img
-          :src="product.imageUrl || require('@/assets/logo.png')"
-          alt="Product Image"
-          class="w-full h-auto rounded-lg object-cover"
-        />
+      <img
+  :src="product.img || require('@/assets/logo.png')"
+  alt="Product Image"
+  class="w-full h-auto rounded-lg object-cover"
+/>
+
       </div>
 
       <!-- Product Info -->

@@ -4,16 +4,11 @@
     <div class="border-b border-gray-50 dark:border-gray-800 w-full pb-4">
       <div class="mt-4 md:flex items-center w-full container mx-auto">
         <select
-          class="flex justify-left p-2 md:w-[184px] me-5 md:border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500 text-gray-800 dark:text-gray-100 bg-white dark:bg-gray-800 dark:border-gray-700"
-        >
+          class="flex justify-left p-2 md:w-[184px] me-5 md:border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500 text-gray-800 dark:text-gray-100 bg-white dark:bg-gray-800 dark:border-gray-700">
           <option>Cairo</option>
         </select>
-        <input
-          v-model="searchQuery"
-          type="text"
-          placeholder="Search for product to rent?"
-          class="w-full md:max-w-[724px] p-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500 text-gray-800 dark:text-gray-100 placeholder-gray-400 dark:placeholder-gray-500 bg-white dark:bg-gray-800 dark:border-gray-700"
-        />
+        <input v-model="searchQuery" type="text" placeholder="Search for product to rent?"
+          class="w-full md:max-w-[724px] p-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500 text-gray-800 dark:text-gray-100 placeholder-gray-400 dark:placeholder-gray-500 bg-white dark:bg-gray-800 dark:border-gray-700" />
       </div>
     </div>
 
@@ -22,26 +17,19 @@
 
     <!-- Navigation Bar -->
     <div
-      class="flex justify-center gap-3 md:gap-10 lg:gap-12 mb-4 text-sm font-medium text-gray-700 dark:text-gray-200"
-    >
+      class="flex justify-center gap-3 md:gap-10 lg:gap-12 mb-4 text-sm font-medium text-gray-700 dark:text-gray-200">
       <button @click="selectedCategory = ''" class="hover:text-primary-500 text-base">
         All
       </button>
-      <button
-        v-for="cat in categories"
-        :key="cat"
-        @click="selectedCategory = cat"
-        class="hover:text-primary-500 md:text-lg text-base"
-      >
+      <button v-for="cat in categories" :key="cat" @click="selectedCategory = cat"
+        class="hover:text-primary-500 md:text-lg text-base">
         {{ cat }}
       </button>
     </div>
 
     <!-- Banner -->
     <div class="relative mb-6">
-      <div
-        class="bg-teal-500 h-32 rounded-lg flex items-center justify-center text-white text-lg font-semibold"
-      >
+      <div class="bg-teal-500 h-32 rounded-lg flex items-center justify-center text-white text-lg font-semibold">
         Featured Products
       </div>
       <div class="absolute top-4 left-4 bg-orange-500 text-white px-4 py-2 rounded">
@@ -59,11 +47,14 @@
     </div>
     <!-- Products Grid -->
     <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 p-6">
-      <div
-        v-for="product in filteredProducts"
-        :key="product.id"
-        class="border rounded-lg p-4 shadow-sm"
-      >
+    
+
+      <div v-for="product in filteredProducts" :key="product.id" class="border rounded-lg p-4 shadow-sm">
+         <img
+  :src="product.img || require('@/assets/test.png')"
+  alt="product image"
+/>
+
         <h2 class="text-xl font-bold mb-2 text-primary-500">
           {{ product.title }}
         </h2>
@@ -81,20 +72,13 @@
           <span v-if="product.rating" class="text-yellow-400">
             ⭐ {{ product.rating }} ★
           </span>
-          <button
-            v-if="!isAuthenticated"
-            @click="promptLogin"
-            class="bg-teal-500 text-white px-4 py-1 rounded hover:bg-teal-600"
-            aria-label="Log in to rent this product"
-          >
+          <button v-if="!isAuthenticated" @click="promptLogin"
+            class="bg-teal-500 text-white px-4 py-1 rounded hover:bg-teal-600" aria-label="Log in to rent this product">
             Rent Now
           </button>
-          <router-link
-            v-else
-            :to="{ name: 'ProductDetails', params: { id: product.id } }"
+          <router-link v-else :to="{ name: 'ProductDetails', params: { id: product.id } }"
             class="bg-teal-500 text-white px-4 py-1 rounded hover:bg-teal-600"
-            :aria-label="`View details for ${product.title}`"
-          >
+            :aria-label="`View details for ${product.title}`">
             Rent Now
           </router-link>
         </div>

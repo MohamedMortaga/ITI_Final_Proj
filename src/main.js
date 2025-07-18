@@ -7,6 +7,7 @@ import 'sweetalert2/dist/sweetalert2.min.css';
 import '@fortawesome/fontawesome-free/css/all.css'
 import '@fortawesome/fontawesome-free/js/all.js'
 import './styles/variables.css';
+import './assets/main.css';
 
 
 createApp(App).use(router).mount('#app');

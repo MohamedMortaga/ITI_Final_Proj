@@ -1,6 +1,7 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
 body {
   font-family: 'Nunito', sans-serif;
 }
@@ -18,4 +19,140 @@ input[type="password"]::-webkit-textfield-decoration-container {
 input[type="password"]::-webkit-inner-spin-button,
 input[type="password"]::-webkit-clear-button {
   display: none;
+}
+
+:root {
+  --Colors-Basic-Black: rgb(0 0 0);
+  --Colors-Basic-White: rgb(255 255 255);
+  --Colors-Error-100: rgb(246 144 136);
+  --Colors-Error-200: rgb(242 99 89);
+  --Colors-Error-25: rgb(253 233 231);
+  --Colors-Error-300: rgb(239 54 42);
+  --Colors-Error-400: rgb(213 29 16);
+  --Colors-Error-50: rgb(250 188 184);
+  --Colors-Error-500: rgb(166 23 13);
+  --Colors-Error-600: rgb(119 16 9);
+  --Colors-Error-700: rgb(71 10 5);
+  --Colors-Error-800: rgb(24 3 2);
+  --Colors-Gray-100: rgb(191 191 191);
+  --Colors-Gray-200: rgb(166 166 166);
+  --Colors-Gray-25: rgb(242 242 242);
+  --Colors-Gray-300: rgb(140 140 140);
+  --Colors-Gray-400: rgb(115 115 115);
+  --Colors-Gray-50: rgb(217 217 217);
+  --Colors-Gray-500: rgb(89 89 89);
+  --Colors-Gray-600: rgb(64 64 64);
+  --Colors-Gray-700: rgb(38 38 38);
+  --Colors-Gray-800: rgb(13 13 13);
+  --Colors-Primary-100: rgb(128 254 234);
+  --Colors-Primary-200: rgb(78 254 225);
+  --Colors-Primary-25: rgb(230 255 251);
+  --Colors-Primary-300: rgb(27 253 217);
+  --Colors-Primary-400: rgb(2 228 191);
+  --Colors-Primary-50: rgb(179 254 242);
+  --Colors-Primary-500: rgb(1 177 149);
+  --Colors-Primary-600: rgb(1 127 106);
+  --Colors-Primary-700: rgb(1 76 64);
+  --Colors-Primary-800: rgb(0 25 21);
+  --Colors-Success-100: rgb(139 244 195);
+  --Colors-Success-200: rgb(92 239 171);
+  --Colors-Success-25: rgb(232 253 243);
+  --Colors-Success-300: rgb(46 234 147);
+  --Colors-Success-400: rgb(21 209 121);
+  --Colors-Success-50: rgb(185 248 219);
+  --Colors-Success-500: rgb(16 163 94);
+  --Colors-Success-600: rgb(11 116 67);
+  --Colors-Success-700: rgb(7 70 40);
+  --Colors-Success-800: rgb(2 23 13);
+  --Colors-Warning-100: rgb(251 199 132);
+  --Colors-Warning-200: rgb(249 177 82);
+  --Colors-Warning-25: rgb(254 244 230);
+  --Colors-Warning-300: rgb(248 155 33);
+  --Colors-Warning-400: rgb(222 129 7);
+  --Colors-Warning-50: rgb(253 222 181);
+  --Colors-Warning-500: rgb(173 100 6);
+  --Colors-Warning-600: rgb(123 72 4);
+  --Colors-Warning-700: rgb(74 43 2);
+  --Colors-Warning-800: rgb(25 14 1);
+  --Radius-2xl: 40px;
+  --Radius-3xl: 500px;
+  --Radius-lg: 16px;
+  --Radius-md: 8px;
+  --Radius-none: 0px;
+  --Radius-sm: 4px;
+  --Radius-xl: 24px;
+  --Spacing-1: 8px;
+  --Spacing-10: 44px;
+  --Spacing-11: 48px;
+  --Spacing-12: 56px;
+  --Spacing-2: 12px;
+  --Spacing-3: 16px;
+  --Spacing-4: 20px;
+  --Spacing-5: 24px;
+  --Spacing-6: 28px;
+  --Spacing-7: 32px;
+  --Spacing-8: 36px;
+  --Spacing-9: 40px;
+  --Spacing-half: 4px;
+}
+.light {
+  --Color-Boarder-Border-Primary: var(--Colors-Gray-50);
+  --Color-Boarder-Surface-Brand: var(--Colors-Primary-500);
+  --Color-Surface-Surface-Brand: var(--Colors-Primary-500);
+  --Color-Surface-Surface-Invert: var(--Colors-Gray-800);
+  --Color-Surface-Surface-Primary: var(--Colors-Basic-White);
+  --Color-Surface-Surface-Secondary: var(--Colors-Gray-400);
+  --Color-Surface-Surface-Tertiary: var(--Colors-Basic-White);
+  --Color-Text-Text-Brand: var(--Colors-Primary-500);
+  --Color-Text-Text-Invert: var(--Colors-Gray-25);
+  --Color-Text-Text-Primary: var(--Colors-Gray-800);
+  --Color-Text-Text-Secondary: var(--Colors-Gray-400);
+  --Radius-Radius-Fullyrounded: var(--Radius-3xl);
+  --Radius-Radius-Minimal: var(--Radius-sm);
+  --Radius-Radius-None: var(--Radius-none);
+  --Radius-Radius-SemiRounded: var(--Radius-lg);
+  --Spacing-Spacing-2xl: var(--Spacing-4);
+  --Spacing-Spacing-3xl: var(--Spacing-5);
+  --Spacing-Spacing-4xl: var(--Spacing-6);
+  --Spacing-Spacing-5xl: var(--Spacing-7);
+  --Spacing-Spacing-6xl: var(--Spacing-8);
+  --Spacing-Spacing-lg: var(--Spacing-2);
+  --Spacing-Spacing-md: var(--Spacing-1);
+  --Spacing-Spacing-sm: var(--Spacing-half);
+  --Spacing-Spacing-xl: var(--Spacing-3);
+}
+
+.dark {
+  --Color-Boarder-Border-Primary: var(--Colors-Gray-600);
+  --Color-Boarder-Surface-Brand: var(--Colors-Primary-500);
+  --Color-Surface-Surface-Brand: var(--Colors-Primary-500);
+  --Color-Surface-Surface-Invert: var(--Colors-Basic-White);
+  --Color-Surface-Surface-Primary: var(--Colors-Gray-700);
+  --Color-Surface-Surface-Secondary: var(--Colors-Gray-200);
+  --Color-Surface-Surface-Tertiary: var(--Colors-Gray-700);
+  --Color-Text-Text-Brand: var(--Colors-Primary-500);
+  --Color-Text-Text-Invert: var(--Colors-Gray-800);
+  --Color-Text-Text-Primary: var(--Colors-Gray-25);
+  --Color-Text-Text-Secondary: var(--Colors-Gray-100);
+  --Radius-Radius-Fullyrounded: var(--Radius-3xl);
+  --Radius-Radius-Minimal: var(--Radius-sm);
+  --Radius-Radius-None: var(--Radius-none);
+  --Radius-Radius-SemiRounded: var(--Radius-lg);
+  --Spacing-Spacing-2xl: var(--Spacing-4);
+  --Spacing-Spacing-3xl: var(--Spacing-5);
+  --Spacing-Spacing-4xl: var(--Spacing-6);
+  --Spacing-Spacing-5xl: var(--Spacing-7);
+  --Spacing-Spacing-6xl: var(--Spacing-8);
+  --Spacing-Spacing-lg: var(--Spacing-2);
+  --Spacing-Spacing-md: var(--Spacing-1);
+  --Spacing-Spacing-sm: var(--Spacing-half);
+  --Spacing-Spacing-xl: var(--Spacing-3);
+}
+
+.text-default {
+  color: var(--text-default);
+}
+
+.bg-default {
+  background-color: var(--bg-default);
 }

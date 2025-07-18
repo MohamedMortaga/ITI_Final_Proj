@@ -1,6 +1,7 @@
 import { initializeApp, getApps, getApp } from 'firebase/app';
 import { getFirestore } from 'firebase/firestore';
 import { getAuth, GoogleAuthProvider, FacebookAuthProvider } from 'firebase/auth';
+import { getStorage } from 'firebase/storage';
 
 
 
@@ -31,3 +32,4 @@ facebookProvider.addScope('email public_profile'); // Request email and public p
 googleProvider.addScope('profile email'); // Ensure profile and email access
 
 export default app;
+export const storage = getStorage(app);

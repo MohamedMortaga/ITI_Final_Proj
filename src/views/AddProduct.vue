@@ -28,13 +28,14 @@
       />
       <img
         v-if="form.image"
+        :key="form.image"
         :src="form.image"
-        alt="Uploaded Image Preview"
+        alt="Product Image"
         class="mt-2 max-w-full h-32 object-cover rounded"
       />
-      <p v-if="form.image" class="text-sm text-gray-4-500 mt-2 dark:text-gray-400">
+      <!-- <p v-if="form.image" class="text-sm text-gray-500 mt-2 dark:text-gray-400">
         Preview URL: {{ form.image }}
-      </p>
+      </p> -->
       <p v-else class="text-sm text-red-500 mt-2 dark:text-red-400">
         No image uploaded yet.
       </p>
@@ -182,7 +183,7 @@ const form = ref({
   category: "",
   price: "",
   details: "",
-  image: "",
+  image: null, // Initialize as null to ensure reactivity
   imagePath: "",
 });
 const isEdit = ref(false);
@@ -190,6 +191,7 @@ const editId = ref(null);
 const currentUser = ref(null);
 const searchQuery = ref("");
 const selectedCategory = ref("");
+const uploading = ref(false);
 
 const loadCategories = async () => {
   try {
@@ -277,40 +279,34 @@ const highlightText = (text) => {
 
 const handleImageUpload = async (event) => {
   const file = event.target.files[0];
-  if (file) {
-    if (!file.type.match("image.*")) {
-      Swal.fire({
-        position: "center",
-        icon: "error",
-        title: "Please select an image file.",
-      });
-      return;
-    }
-    if (file.size > 2 * 1024 * 1024) {
-      Swal.fire({
-        position: "center",
-        icon: "error",
-        title: "Image size should not exceed 2MB.",
-      });
-      return;
-    }
+  if (!file) return;
 
-    try {
-      const storagePath = `products/${Date.now()}_${file.name}`;
-      const imageRef = storageRef(storage, storagePath);
-      const snapshot = await uploadBytes(imageRef, file);
-      const imageUrl = await getDownloadURL(snapshot.ref);
-      form.value.image = imageUrl;
-      form.value.imagePath = storagePath;
-      console.log("Image uploaded successfully, URL:", imageUrl);
-    } catch (err) {
-      console.error("Image upload error:", err);
-      Swal.fire({
-        position: "center",
-        icon: "error",
-        title: `Image upload failed: ${err.message}`,
-      });
-    }
+  uploading.value = true;
+
+  try {
+    // Local preview before upload
+    const reader = new FileReader();
+    reader.onload = (e) => {
+      form.value.image = e.target.result; // Set local image for preview
+      console.log("Local preview URL:", form.value.image);
+    };
+    reader.readAsDataURL(file);
+
+    // Upload to Firebase
+    const storagePath = `products/${Date.now()}_${file.name}`;
+    const imageRef = storageRef(storage, storagePath);
+    const snapshot = await uploadBytes(imageRef, file);
+    const imageUrl = await getDownloadURL(snapshot.ref);
+
+    form.value.image = imageUrl; // Update with Firebase URL after upload
+    form.value.imagePath = storagePath;
+    console.log("Image uploaded to Firebase:", imageUrl);
+    console.log("form.value.image set to:", form.value.image);
+  } catch (err) {
+    console.error("Upload error:", err);
+    Swal.fire({ icon: "error", title: "Image upload failed", text: err.message });
+  } finally {
+    uploading.value = false;
   }
 };
 
@@ -428,7 +424,7 @@ const resetForm = () => {
     category: "",
     price: "",
     details: "",
-    image: "",
+    image: null,
     imagePath: "",
   };
   isEdit.value = false;
