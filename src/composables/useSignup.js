@@ -32,9 +32,9 @@ const signup = async (email, password, displayName) => {
       url: `${window.location.origin}/login`, // Redirect to login page after verification
     });
 
-    // Store user data in Firestore
+    // Store user data in Firestore with lowercase email
     await setDoc(doc(db, 'users', user.uid), {
-      email: user.email,
+      email: user.email.toLowerCase(),
       displayName: displayName,
       createdAt: new Date(),
     });
@@ -77,9 +77,9 @@ const signupWithGoogle = async () => {
     const user = userCredential.user;
     if (!user) throw new Error('Could not complete Google signup');
 
-    // Store user data in Firestore
+    // Store user data in Firestore with lowercase email
     await setDoc(doc(db, 'users', user.uid), {
-      email: user.email,
+      email: user.email.toLowerCase(),
       displayName: user.displayName || 'Google User',
       createdAt: new Date(),
     });
