@@ -1,55 +1,69 @@
 <template>
   <div class="m-4 text-center">
-    <h1 class="text-2xl font-medium text-primary-500 md:text-3xl">Home</h1>
-
     <!-- Search Bar -->
-    <div class="mt-4">
-      <div class="p-6 text-2xl font-semibold text-gray-700 dark:text-gray-200">
-        Hi {{ displayName || "User" }} 👋
+    <div class="border-b border-gray-50 dark:border-gray-800 w-full pb-4">
+      <div class="mt-4 md:flex items-center w-full container mx-auto">
+        <select
+          class="flex justify-left p-2 md:w-[184px] me-5 md:border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500 text-gray-800 dark:text-gray-100 bg-white dark:bg-gray-800 dark:border-gray-700"
+        >
+          <option>Cairo</option>
+        </select>
+        <input
+          v-model="searchQuery"
+          type="text"
+          placeholder="Search for product to rent?"
+          class="w-full md:max-w-[724px] p-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500 text-gray-800 dark:text-gray-100 placeholder-gray-400 dark:placeholder-gray-500 bg-white dark:bg-gray-800 dark:border-gray-700"
+        />
       </div>
-      <input
-        v-model="searchQuery"
-        type="text"
-        placeholder="Search products by title..."
-        class="w-full max-w-md p-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500 text-gray-800 dark:text-gray-100 placeholder-gray-400 bg-white dark:bg-gray-800"
-      />
     </div>
 
     <!-- Category Filter Buttons -->
-    <div class="flex justify-center flex-wrap gap-2 mb-6 mt-4">
+    <div class="flex justify-center flex-wrap gap-2 mb-6 mt-4"></div>
+
+    <!-- Navigation Bar -->
+    <div
+      class="flex justify-center gap-3 md:gap-10 lg:gap-12 mb-4 text-sm font-medium text-gray-700 dark:text-gray-200"
+    >
+      <button @click="selectedCategory = ''" class="hover:text-primary-500 text-base">
+        All
+      </button>
       <button
         v-for="cat in categories"
         :key="cat"
         @click="selectedCategory = cat"
-        :class="[
-          selectedCategory === cat
-            ? 'bg-primary-500 text-white'
-            : 'bg-gray-100 text-gray-700 dark:bg-gray-800 dark:text-gray-200',
-          'px-4 py-2 rounded transition',
-        ]"
+        class="hover:text-primary-500 md:text-lg text-base"
       >
         {{ cat }}
       </button>
-      <button
-        @click="selectedCategory = ''"
-        :class="[
-          selectedCategory === ''
-            ? 'bg-primary-500 text-white'
-            : 'bg-gray-100 text-gray-700 dark:bg-gray-800 dark:text-gray-200',
-          'px-4 py-2 rounded transition',
-        ]"
-      >
-        All
-      </button>
     </div>
 
+    <!-- Banner -->
+    <div class="relative mb-6">
+      <div
+        class="bg-teal-500 h-32 rounded-lg flex items-center justify-center text-white text-lg font-semibold"
+      >
+        Featured Products
+      </div>
+      <div class="absolute top-4 left-4 bg-orange-500 text-white px-4 py-2 rounded">
+        AD
+      </div>
+      <div class="absolute top-4 right-4 bg-orange-500 text-white px-4 py-2 rounded">
+        AD
+      </div>
+    </div>
+
+    <h1 class="text-2xl font-medium text-primary-500 md:text-3xl">Home</h1>
+
+    <div class="p-6 text-2xl font-semibold text-gray-700 dark:text-gray-200">
+      Hi {{ displayName || "User" }} 👋
+    </div>
     <!-- Products Grid -->
     <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 p-6">
       <router-link
         v-for="product in filteredProducts"
         :key="product.id"
         :to="{ name: 'ProductDetails', params: { id: product.id } }"
-        class="bg-white dark:bg-gray-900 text-gray-800 dark:text-gray-200 rounded-2xl shadow-lg p-5 hover:shadow-2xl transition-all duration-300 border border-primary-100 block cursor-pointer"
+        class="bg-white dark:bg-gray-900 text-gray-800 dark:text-gray-200 rounded-2xl shadow-lg p-5 hover:shadow-2xl transition-all duration-300 border border-primary-100 dark:border-gray-800 block cursor-pointer"
       >
         <h2
           class="text-xl font-bold mb-2 text-primary-500"
@@ -64,6 +78,11 @@
         <p class="text-sm">
           <span class="font-medium">Details:</span> {{ product.details }}
         </p>
+        <!-- Additional styling to match image -->
+        <div class="flex justify-between items-center mt-2">
+          <span class="text-yellow-400">⭐ 4.5 ★</span>
+          <button class="bg-teal-500 text-white px-4 py-1 rounded">Rent Now</button>
+        </div>
       </router-link>
     </div>
   </div>
@@ -86,7 +105,6 @@ export default {
     const categories = ref([]);
     const auth = getAuth();
 
-    // Load categories from Firestore
     const loadCategories = async () => {
       const snapshot = await getDocs(collection(db, "categories"));
       categories.value = snapshot.docs
@@ -94,7 +112,6 @@ export default {
         .sort((a, b) => a.localeCompare(b));
     };
 
-    // Fetch authenticated user's displayName
     onMounted(() => {
       loadCategories();
       onAuthStateChanged(auth, (user) => {

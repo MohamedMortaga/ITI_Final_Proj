@@ -1,12 +1,15 @@
 <template>
-  <div class="p-6 max-w-4xl mx-auto">
-    <h1 class="text-2xl font-bold mb-6 text-center text-pink-600">
+  <div class="p-6 max-w-4xl mx-auto bg-white dark:bg-gray-900">
+    <h1 class="text-2xl font-bold mb-6 text-center text-pink-600 dark:text-pink-400">
       Admin Dashboard - Products
     </h1>
 
     <!-- Add / Edit Form -->
-    <form @submit.prevent="submitForm" class="bg-white p-4 rounded-xl shadow-md mb-6">
-      <h2 class="text-xl font-semibold mb-4">
+    <form
+      @submit.prevent="submitForm"
+      class="bg-white p-4 rounded-xl shadow-md mb-6 dark:bg-gray-800"
+    >
+      <h2 class="text-xl font-semibold mb-4 dark:text-gray-200">
         {{ isEdit ? "Edit Product" : "Add New Product" }}
       </h2>
 
@@ -14,21 +17,32 @@
         v-model="form.title"
         type="text"
         placeholder="Title"
-        class="input"
+        class="input dark:bg-gray-700 dark:border-gray-600 dark:text-gray-200"
         required
       />
-      <input type="file" @change="handleImageUpload" accept="image/*" class="input" />
+      <input
+        type="file"
+        @change="handleImageUpload"
+        accept="image/*"
+        class="input dark:bg-gray-700 dark:border-gray-600 dark:text-gray-200"
+      />
       <img
         v-if="form.image"
         :src="form.image"
         alt="Uploaded Image Preview"
         class="mt-2 max-w-full h-32 object-cover rounded"
       />
-      <p v-if="form.image" class="text-sm text-gray-4-500 mt-2">
+      <p v-if="form.image" class="text-sm text-gray-4-500 mt-2 dark:text-gray-400">
         Preview URL: {{ form.image }}
       </p>
-      <p v-else class="text-sm text-red-500 mt-2">No image uploaded yet.</p>
-      <select v-model="form.category" class="input" required>
+      <p v-else class="text-sm text-red-500 mt-2 dark:text-red-400">
+        No image uploaded yet.
+      </p>
+      <select
+        v-model="form.category"
+        class="input dark:bg-gray-700 dark:border-gray-600 dark:text-gray-200"
+        required
+      >
         <option disabled value="">Select Category</option>
         <option v-for="cat in categories" :key="cat.id" :value="cat.name">
           {{ cat.name }}
@@ -38,12 +52,19 @@
         v-model.number="form.price"
         type="number"
         placeholder="Price"
-        class="input"
+        class="input dark:bg-gray-700 dark:border-gray-600 dark:text-gray-200"
         required
       />
-      <textarea v-model="form.details" placeholder="Details" class="input"></textarea>
+      <textarea
+        v-model="form.details"
+        placeholder="Details"
+        class="input dark:bg-gray-700 dark:border-gray-600 dark:text-gray-200"
+      ></textarea>
 
-      <button type="submit" class="bg-pink-600 text-white py-2 px-4 rounded mt-2">
+      <button
+        type="submit"
+        class="bg-pink-600 text-white py-2 px-4 rounded mt-2 dark:bg-pink-700"
+      >
         {{ isEdit ? "Update Product" : "Add Product" }}
       </button>
     </form>
@@ -54,7 +75,7 @@
         v-model="searchQuery"
         type="text"
         placeholder="Search products by title..."
-        class="w-full max-w-md p-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-pink-500 text-blue-600"
+        class="w-full max-w-md p-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-pink-500 text-blue-600 dark:text-blue-400 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-500"
       />
     </div>
 
@@ -66,7 +87,8 @@
         @click="selectedCategory = cat.name"
         :class="{
           'bg-pink-600 text-white': selectedCategory === cat.name,
-          'bg-gray-200 text-gray-700': selectedCategory !== cat.name,
+          'bg-gray-200 text-gray-700 dark:bg-gray-800 dark:text-gray-200':
+            selectedCategory !== cat.name,
         }"
         class="px-4 py-2 rounded"
       >
@@ -76,7 +98,8 @@
         @click="selectedCategory = ''"
         :class="{
           'bg-pink-600 text-white': selectedCategory === '',
-          'bg-gray-200 text-gray-700': selectedCategory !== '',
+          'bg-gray-200 text-gray-700 dark:bg-gray-800 dark:text-gray-200':
+            selectedCategory !== '',
         }"
         class="px-4 py-2 rounded"
       >
@@ -89,10 +112,10 @@
       <div
         v-for="product in filteredProducts"
         :key="product.id"
-        class="bg-white p-4 rounded-xl shadow-md"
+        class="bg-white p-4 rounded-xl shadow-md dark:bg-gray-800 dark:text-gray-200"
       >
         <h3
-          class="font-bold text-pink-600 text-lg"
+          class="font-bold text-pink-600 text-lg dark:text-pink-400"
           v-html="highlightText(product.title)"
         ></h3>
         <p><strong>Category:</strong> {{ product.category }}</p>
@@ -104,18 +127,29 @@
           alt="Product Image"
           class="mt-2 max-w-full h-32 object-cover rounded"
         />
-        <p v-if="product.img" class="text-sm text-gray-500 mt-2">
+        <p v-if="product.img" class="text-sm text-gray-500 mt-2 dark:text-gray-400">
           Image URL: {{ product.img }}
         </p>
-        <p v-else class="text-sm text-red-500 mt-2">No image available.</p>
+        <p v-else class="text-sm text-red-500 mt-2 dark:text-red-400">
+          No image available.
+        </p>
 
         <div class="flex gap-2 mt-3">
-          <button @click="editProduct(product)" class="text-blue-600">Edit</button>
-          <button @click="deleteProduct(product.id)" class="text-red-600">Delete</button>
+          <button @click="editProduct(product)" class="text-blue-600 dark:text-blue-400">
+            Edit
+          </button>
+          <button
+            @click="deleteProduct(product.id)"
+            class="text-red-600 dark:text-red-400"
+          >
+            Delete
+          </button>
         </div>
       </div>
     </div>
-    <div v-else class="text-center text-gray-500 py-10 text-lg">No products found.</div>
+    <div v-else class="text-center text-gray-500 py-10 text-lg dark:text-gray-400">
+      No products found.
+    </div>
   </div>
 </template>
 
@@ -238,7 +272,7 @@ const highlightText = (text) => {
   if (!searchQuery.value || !text) return text;
   const query = searchQuery.value.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
   const regex = new RegExp(`(${query})`, "gi");
-  return text.replace(regex, '<span class="text-blue-600">$1</span>');
+  return text.replace(regex, '<span class="text-blue-600 dark:text-blue-400">$1</span>');
 };
 
 const handleImageUpload = async (event) => {
@@ -415,15 +449,29 @@ input,
 select,
 textarea {
   transition: all 0.3s ease;
-  color: #2563eb; /* Tailwind's blue-600 for input text */
+  color: #2563eb;
 }
 input:focus,
 select:focus,
 textarea:focus {
-  border-color: #ec4899; /* Tailwind's pink-500 */
+  border-color: #ec4899;
   outline: none;
 }
 input::placeholder {
-  color: #9ca3af; /* Tailwind's gray-400 for placeholder */
+  color: #9ca3af;
+}
+.dark input,
+.dark select,
+.dark textarea {
+  background-color: #1a1a1a;
+  color: #d1d5db;
+}
+.dark input:focus,
+.dark select:focus,
+.dark textarea:focus {
+  border-color: #f472b6;
+}
+.dark input::placeholder {
+  color: #6b7280;
 }
 </style>
