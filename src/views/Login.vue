@@ -187,7 +187,7 @@
 <script>
 import { ref, onMounted } from "vue";
 import { useRouter } from "vue-router";
-import { getAuth, sendPasswordResetEmail } from "firebase/auth";
+import { getAuth, sendPasswordResetEmail, onAuthStateChanged } from "firebase/auth";
 import useLogin from "../composables/useLogin";
 import Swal from "sweetalert2";
 
@@ -212,6 +212,19 @@ export default {
         password.value = savedPassword;
         rememberMe.value = true;
       }
+      // Check if user is already authenticated and redirect to homepage
+      onAuthStateChanged(auth, (user) => {
+        if (user) {
+          Swal.fire({
+            position: "top-end",
+            icon: "info",
+            title: "You are already logged in",
+            showConfirmButton: false,
+            timer: 1500,
+          });
+          router.push({ name: "HomePage" });
+        }
+      });
     });
 
     const handleSubmit = async () => {

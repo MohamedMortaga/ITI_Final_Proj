@@ -1,5 +1,5 @@
 import { createRouter, createWebHistory } from 'vue-router';
-import { getAuth, onAuthStateChanged } from 'firebase/auth';
+import { getAuth } from 'firebase/auth';
 import Swal from 'sweetalert2';
 
 import Logout from '@/views/Logout.vue';
@@ -11,7 +11,7 @@ import AddProduct from '@/views/AddProduct.vue';
 import ProductDetails from '@/views/ProductDetails.vue';
 
 const routes = [
-  { path: '/', redirect: '/login' },
+  { path: '/', redirect: '/home' }, // Changed redirect to /home for unauthenticated access
   {
     path: '/signup',
     name: 'Signup',
@@ -28,7 +28,7 @@ const routes = [
     path: '/home',
     name: 'HomePage',
     component: Home,
-    meta: { requiresAuth: true, requiresVerifiedEmail: true },
+    meta: { requiresAuth: false, requiresVerifiedEmail: false }, // Allow access without auth
   },
   {
     path: '/logout',
@@ -64,42 +64,74 @@ const router = createRouter({
 router.beforeEach((to, from, next) => {
   const auth = getAuth();
 
-  // Use onAuthStateChanged to ensure auth state is resolved
-  onAuthStateChanged(auth, (user) => {
-    if (to.meta.requiresAuth && !user) {
-      // Redirect to login if authentication is required and user is not logged in
+  // Create a promise to handle the auth state
+  const checkAuth = () => {
+    return new Promise((resolve, reject) => {
+      const unsubscribe = auth.onAuthStateChanged(
+        (user) => {
+          unsubscribe(); // Unsubscribe to prevent memory leaks
+          resolve(user);
+        },
+        (error) => {
+          unsubscribe();
+          reject(error);
+        }
+      );
+    });
+  };
+
+  checkAuth()
+    .then((user) => {
+      // Redirect authenticated users from login/signup to homepage
+      if ((to.name === 'Login' || to.name === 'Signup') && user) {
+        Swal.fire({
+          position: 'top-end',
+          icon: 'info',
+          title: 'You are already logged in',
+          showConfirmButton: false,
+          timer: 1500,
+        });
+        return next('/home');
+      }
+
+      // If route requires auth and user is not logged in
+      if (to.meta.requiresAuth && !user) {
+        Swal.fire({
+          icon: 'warning',
+          title: 'Authentication Required',
+          text: 'Please log in to access this page.',
+          timer: 2000,
+          showConfirmButton: false,
+        });
+        return next('/login');
+      }
+
+      // If route requires email verification and user is not verified
+      if (to.meta.requiresVerifiedEmail && user && !user.emailVerified) {
+        Swal.fire({
+          icon: 'warning',
+          title: 'Email Verification Required',
+          text: 'Please verify your email address to access this page.',
+          timer: 3000,
+          showConfirmButton: true,
+        });
+        return next('/login');
+      }
+
+      // Proceed to the requested route
+      next();
+    })
+    .catch((error) => {
+      // Handle Firebase auth errors (e.g., network issues)
+      console.error('Auth state error:', error);
       Swal.fire({
-        icon: 'warning',
-        title: 'Authentication Required',
-        text: 'Please log in to access this page.',
-        timer: 2000,
-        showConfirmButton: false,
-      });
-      next('/login');
-    } else if (to.meta.requiresVerifiedEmail && user && !user.emailVerified) {
-      // Redirect to login if email is not verified
-      Swal.fire({
-        icon: 'warning',
-        title: 'Email Verification Required',
-        text: 'Please verify your email address to access this page.',
-        timer: 3000,
+        icon: 'error',
+        title: 'Authentication Error',
+        text: 'An error occurred while checking your authentication status. Please try again.',
         showConfirmButton: true,
       });
       next('/login');
-    } else {
-      next();
-    }
-  }, (error) => {
-    // Handle Firebase auth errors (e.g., network issues)
-    console.error('Auth state error:', error);
-    Swal.fire({
-      icon: 'error',
-      title: 'Authentication Error',
-      text: 'An error occurred while checking your authentication status. Please try again.',
-      showConfirmButton: true,
     });
-    next('/login');
-  });
 });
 
 export default router;

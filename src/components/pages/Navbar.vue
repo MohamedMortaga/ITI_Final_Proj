@@ -94,6 +94,7 @@
                 </label>
               </div>
               <router-link
+                v-if="!isAuthenticated"
                 to="/login"
                 class="bg-success-500 text-white px-4 py-2 rounded-md text-xl font-medium hover:bg-success-600"
                 :class="{
@@ -101,8 +102,16 @@
                   'dark:bg-success-600': isDarkMode,
                 }"
               >
-                Logout
+                Login
               </router-link>
+              <button
+                v-else
+                @click="handleLogout"
+                class="bg-success-500 text-white px-4 py-2 rounded-md text-xl font-medium hover:bg-success-600"
+                :class="{ 'dark:bg-success-600': isDarkMode }"
+              >
+                Logout
+              </button>
             </div>
           </div>
           <!-- Mobile layout with Rento on the right -->
@@ -186,6 +195,7 @@
             Contact
           </router-link>
           <router-link
+            v-if="!isAuthenticated"
             to="/login"
             class="bg-success-500 text-white hover:bg-success-600 rounded-md px-3 py-2 text-xl font-medium"
             :class="{
@@ -193,8 +203,16 @@
               'dark:bg-success-600': isDarkMode,
             }"
           >
-            Logout
+            Login
           </router-link>
+          <button
+            v-else
+            @click="handleLogout"
+            class="bg-success-500 text-white hover:bg-success-600 rounded-md px-3 py-2 text-xl font-medium"
+            :class="{ 'dark:bg-success-600': isDarkMode }"
+          >
+            Logout
+          </button>
           <div class="mt-2">
             <input
               type="checkbox"
@@ -215,10 +233,16 @@
 <script setup>
 import { Disclosure, DisclosureButton, DisclosurePanel } from "@headlessui/vue";
 import { Bars3Icon, XMarkIcon } from "@heroicons/vue/24/outline";
-import { ref, watch } from "vue";
+import { ref, watch, onMounted } from "vue";
+import { getAuth, signOut } from "firebase/auth";
+import { useRouter } from "vue-router";
+import Swal from "sweetalert2";
 
 const open = ref(false);
 const isDarkMode = ref(false);
+const isAuthenticated = ref(false);
+const auth = getAuth();
+const router = useRouter();
 
 // Initialize dark mode based on system preference or saved state
 const initializeDarkMode = () => {
@@ -231,8 +255,42 @@ const initializeDarkMode = () => {
   document.body.classList.toggle("dark", isDarkMode.value);
 };
 
+// Initialize authentication state
+const initializeAuth = () => {
+  auth.onAuthStateChanged((user) => {
+    isAuthenticated.value = !!user;
+  });
+};
+
+// Handle logout
+const handleLogout = async () => {
+  try {
+    await signOut(auth);
+    Swal.fire({
+      position: "top-end",
+      icon: "success",
+      title: "Successfully logged out",
+      showConfirmButton: false,
+      timer: 1500,
+    });
+    router.push("/home");
+  } catch (err) {
+    Swal.fire({
+      position: "top-end",
+      icon: "error",
+      title: `Logout failed: ${err.message}`,
+      showConfirmButton: false,
+      timer: 1500,
+    });
+    router.push("/home");
+  }
+};
+
 // Run initialization on mount
-initializeDarkMode();
+onMounted(() => {
+  initializeDarkMode();
+  initializeAuth();
+});
 
 // Watch for changes in isDarkMode and update body class and localStorage
 watch(isDarkMode, (newValue) => {

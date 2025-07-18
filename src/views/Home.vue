@@ -55,35 +55,50 @@
     <h1 class="text-2xl font-medium text-primary-500 md:text-3xl">Home</h1>
 
     <div class="p-6 text-2xl font-semibold text-gray-700 dark:text-gray-200">
-      Hi {{ displayName || "User" }} 👋
+      Hi {{ displayName || "Guest" }} 👋
     </div>
     <!-- Products Grid -->
     <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 p-6">
-      <router-link
+      <div
         v-for="product in filteredProducts"
         :key="product.id"
-        :to="{ name: 'ProductDetails', params: { id: product.id } }"
-        class="bg-white dark:bg-gray-900 text-gray-800 dark:text-gray-200 rounded-2xl shadow-lg p-5 hover:shadow-2xl transition-all duration-300 border border-primary-100 dark:border-gray-800 block cursor-pointer"
+        class="border rounded-lg p-4 shadow-sm"
       >
-        <h2
-          class="text-xl font-bold mb-2 text-primary-500"
-          v-html="highlightText(product.title)"
-        ></h2>
+        <h2 class="text-xl font-bold mb-2 text-primary-500">
+          {{ product.title }}
+        </h2>
         <p class="text-sm mb-1">
-          <span class="font-medium">Category:</span> {{ product.category }}
+          <span class="font-medium">Category:</span> {{ product.category || "N/A" }}
         </p>
         <p class="font-semibold mb-1 text-primary-500">
           <span class="font-medium">Price:</span> {{ product.price }} EGP
         </p>
         <p class="text-sm">
-          <span class="font-medium">Details:</span> {{ product.details }}
+          <span class="font-medium">Details:</span>
+          {{ product.details || "No details available" }}
         </p>
-        <!-- Additional styling to match image -->
         <div class="flex justify-between items-center mt-2">
-          <span class="text-yellow-400">⭐ 4.5 ★</span>
-          <button class="bg-teal-500 text-white px-4 py-1 rounded">Rent Now</button>
+          <span v-if="product.rating" class="text-yellow-400">
+            ⭐ {{ product.rating }} ★
+          </span>
+          <button
+            v-if="!isAuthenticated"
+            @click="promptLogin"
+            class="bg-teal-500 text-white px-4 py-1 rounded hover:bg-teal-600"
+            aria-label="Log in to rent this product"
+          >
+            Rent Now
+          </button>
+          <router-link
+            v-else
+            :to="{ name: 'ProductDetails', params: { id: product.id } }"
+            class="bg-teal-500 text-white px-4 py-1 rounded hover:bg-teal-600"
+            :aria-label="`View details for ${product.title}`"
+          >
+            Rent Now
+          </router-link>
         </div>
-      </router-link>
+      </div>
     </div>
   </div>
 </template>
@@ -91,9 +106,11 @@
 <script>
 import { ref, computed, onMounted } from "vue";
 import { getAuth, onAuthStateChanged } from "firebase/auth";
+import { useRouter } from "vue-router";
 import getCollection from "../composables/getCollection";
 import { collection, getDocs } from "firebase/firestore";
 import { db } from "@/firebase/config";
+import Swal from "sweetalert2";
 
 export default {
   name: "HomePage",
@@ -102,8 +119,10 @@ export default {
     const searchQuery = ref("");
     const selectedCategory = ref("");
     const displayName = ref("");
+    const isAuthenticated = ref(false);
     const categories = ref([]);
     const auth = getAuth();
+    const router = useRouter();
 
     const loadCategories = async () => {
       const snapshot = await getDocs(collection(db, "categories"));
@@ -112,13 +131,29 @@ export default {
         .sort((a, b) => a.localeCompare(b));
     };
 
+    const promptLogin = () => {
+      Swal.fire({
+        position: "top-end",
+        icon: "warning",
+        title: "Please log in to rent products",
+        showConfirmButton: true,
+        confirmButtonText: "Go to Login",
+      }).then((result) => {
+        if (result.isConfirmed) {
+          router.push({ name: "Login" });
+        }
+      });
+    };
+
     onMounted(() => {
       loadCategories();
       onAuthStateChanged(auth, (user) => {
         if (user) {
+          isAuthenticated.value = true;
           displayName.value = user.displayName || "User";
         } else {
-          displayName.value = "User";
+          isAuthenticated.value = false;
+          displayName.value = "Guest";
         }
       });
     });
@@ -155,6 +190,8 @@ export default {
       highlightText,
       displayName,
       categories,
+      isAuthenticated,
+      promptLogin,
     };
   },
 };
