@@ -9,6 +9,7 @@ import Login from '@/views/Login.vue';
 import Signup from '@/views/Signup.vue';
 import AddProduct from '@/views/AddProduct.vue';
 import ProductDetails from '@/views/ProductDetails.vue';
+import AllProducts from "../views/AllProducts.vue";
 
 const routes = [
   { path: '/', redirect: '/home' }, // Redirect to /home for unauthenticated access
@@ -54,6 +55,7 @@ const routes = [
     component: Errorr,
     meta: { hideNavbar: true },
   },
+  { path: "/all-products", name: "AllProducts", component: AllProducts },
 ];
 
 const router = createRouter({

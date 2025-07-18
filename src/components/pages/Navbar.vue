@@ -38,21 +38,18 @@
                   class="lg:text-xl md:text-md text-sm font-medium hover:text-[var(--Color-Text-Text-Brand)]"
                   :class="{
                     'text-[var(--Color-Text-Text-Brand)]': $route.path === '/home',
-                    'text-[var(--Color-Text-Text-Primary)] hover:text-[var(--Color-Text-Text-Brand)]':
-                      $route.path !== '/home',
+                    'text-[var(--Color-Text-Text-Primary)] hover:text-[var(--Color-Text-Text-Brand)]': $route.path !== '/home',
                   }"
                 >
                   Home
                 </router-link>
 
                 <router-link
-                  to="/browse-tools"
+                  to="/all-products"
                   class="lg:text-xl md:text-md text-sm font-medium hover:text-[var(--Color-Text-Text-Brand)]"
                   :class="{
-                    'text-[var(--Color-Text-Text-Brand)]':
-                      $route.path === '/browse-tools',
-                    'text-[var(--Color-Text-Text-Primary)] hover:text-[var(--Color-Text-Text-Brand)]':
-                      $route.path !== '/browse-tools',
+                    'text-[var(--Color-Text-Text-Brand)]': $route.path === '/all-products',
+                    'text-[var(--Color-Text-Text-Primary)] hover:text-[var(--Color-Text-Text-Brand)]': $route.path !== '/all-products',
                   }"
                 >
                   Browse Tools
