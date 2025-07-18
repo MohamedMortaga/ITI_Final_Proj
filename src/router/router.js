@@ -11,7 +11,7 @@ import AddProduct from '@/views/AddProduct.vue';
 import ProductDetails from '@/views/ProductDetails.vue';
 
 const routes = [
-  { path: '/', redirect: '/home' }, // Changed redirect to /home for unauthenticated access
+  { path: '/', redirect: '/home' }, // Redirect to /home for unauthenticated access
   {
     path: '/signup',
     name: 'Signup',
@@ -82,8 +82,8 @@ router.beforeEach((to, from, next) => {
 
   checkAuth()
     .then((user) => {
-      // Redirect authenticated users from login/signup to homepage
-      if ((to.name === 'Login' || to.name === 'Signup') && user) {
+      // Redirect authenticated and email-verified users from login/signup to homepage
+      if ((to.name === 'Login' || to.name === 'Signup') && user && user.emailVerified) {
         Swal.fire({
           position: 'top-end',
           icon: 'info',

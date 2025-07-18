@@ -4,6 +4,7 @@ import {
   signInWithPopup,
   updateProfile,
   sendEmailVerification,
+  signOut,
 } from 'firebase/auth';
 import { auth, googleProvider } from '@/firebase/config';
 import { doc, setDoc } from 'firebase/firestore';
@@ -31,12 +32,15 @@ const signup = async (email, password, displayName) => {
       url: `${window.location.origin}/login`, // Redirect to login page after verification
     });
 
-    // Optionally store user data in Firestore
+    // Store user data in Firestore
     await setDoc(doc(db, 'users', user.uid), {
       email: user.email,
       displayName: displayName,
       createdAt: new Date(),
     });
+
+    // Sign out the user to prevent automatic login
+    await signOut(auth);
 
     // Update userName ref for immediate use
     userName.value = displayName;
@@ -73,12 +77,15 @@ const signupWithGoogle = async () => {
     const user = userCredential.user;
     if (!user) throw new Error('Could not complete Google signup');
 
-    // Optionally store user data in Firestore
+    // Store user data in Firestore
     await setDoc(doc(db, 'users', user.uid), {
       email: user.email,
       displayName: user.displayName || 'Google User',
       createdAt: new Date(),
     });
+
+    // Sign out the user to enforce manual login
+    await signOut(auth);
 
     // Update userName ref
     userName.value = user.displayName || 'Google User';
@@ -86,7 +93,7 @@ const signupWithGoogle = async () => {
     Swal.fire({
       icon: 'success',
       title: 'Signed Up with Google!',
-      text: `Welcome, ${user.displayName || 'User'}!`,
+      text: `Please log in to continue, ${user.displayName || 'User'}!`,
       timer: 1500,
       showConfirmButton: false,
     });

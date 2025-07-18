@@ -15,8 +15,7 @@
 
         <h2 class="text-2xl font-semibold mb-4 lg:text-2xl xl:text-3xl">Log in</h2>
         <p class="text-gray-600 mb-6 lg:text-base xl:text-lg dark:text-gray-300">
-          If you don't have an account register<br />
-          You can
+          If you don't have an account, you can<br />
           <router-link to="/Signup" class="text-teal-600 font-semibold"
             >Register here!</router-link
           >
@@ -53,7 +52,7 @@
                 :type="passwordVisible ? 'text' : 'password'"
                 required
                 placeholder="Enter your password"
-                class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-teal-600 text-sm lg:text-sm xl:text-base bg-white dark:bg-gray-700 dark:border-gray-600 dark:text-gray-200"
+                class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-26 focus:ring-teal-600 text-sm lg:text-sm xl:text-base bg-white dark:bg-gray-700 dark:border-gray-600 dark:text-gray-200"
               />
               <button
                 type="button"
@@ -133,52 +132,52 @@
           loading="lazy"
         />
       </div>
-    </div>
 
-    <!-- Forgot Password Modal -->
-    <div
-      v-if="isModalOpen"
-      class="fixed inset-0 bg-gray-600 bg-opacity-50 flex items-center justify-center z-50"
-    >
-      <div class="bg-white rounded-lg p-6 w-full max-w-md dark:bg-gray-800">
-        <h3 class="text-lg font-semibold text-gray-900 mb-4 dark:text-gray-200">
-          Reset Your Password
-        </h3>
-        <p class="text-sm text-gray-600 mb-4 dark:text-gray-300">
-          Enter your email address to receive a password reset link.
-        </p>
-        <form @submit.prevent="handleForgotPassword">
-          <div class="mb-4">
-            <label
-              for="reset-email"
-              class="block text-sm text-gray-700 mb-1 dark:text-gray-200"
-              >Email</label
-            >
-            <input
-              id="reset-email"
-              v-model="resetEmail"
-              type="email"
-              required
-              placeholder="Enter your email address"
-              class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-teal-600 text-sm bg-white dark:bg-gray-700 dark:border-gray-600 dark:text-gray-200"
-            />
-          </div>
-          <div class="flex justify-end gap-2">
-            <button
-              type="button"
-              @click="isModalOpen = false"
-              class="px-4 py-2 text-sm text-gray-600 hover:text-gray-800 dark:text-gray-300 dark:hover:text-gray-100"
-            >
-              Cancel
-            </button>
-            <button
-              type="submit"
-              class="px-4 py-2 bg-teal-600 text-white rounded-md text-sm font-semibold hover:bg-teal-700"
-            >
-              Send Reset Link
-            </button>
-          </div>
-        </form>
+      <!-- Forgot Password Modal -->
+      <div
+        v-if="isModalOpen"
+        class="fixed inset-0 bg-gray-600 bg-opacity-50 flex items-center justify-center z-50"
+      >
+        <div class="bg-white rounded-lg p-6 w-full max-w-md dark:bg-gray-800">
+          <h3 class="text-lg font-semibold text-gray-900 mb-4 dark:text-gray-200">
+            Reset Your Password
+          </h3>
+          <p class="text-sm text-gray-600 mb-4 dark:text-gray-300">
+            Enter your email address to receive a password reset link.
+          </p>
+          <form @submit.prevent="handleForgotPassword">
+            <div class="mb-4">
+              <label
+                for="reset-email"
+                class="block text-sm text-gray-700 mb-1 dark:text-gray-200"
+                >Email</label
+              >
+              <input
+                id="reset-email"
+                v-model="resetEmail"
+                type="email"
+                required
+                placeholder="Enter your email address"
+                class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-teal-600 text-sm bg-white dark:bg-gray-700 dark:border-gray-600 dark:text-gray-200"
+              />
+            </div>
+            <div class="flex justify-end gap-2">
+              <button
+                type="button"
+                @click="isModalOpen = false"
+                class="px-4 py-2 text-sm text-gray-600 hover:text-gray-800 dark:text-gray-300 dark:hover:text-gray-100"
+              >
+                Cancel
+              </button>
+              <button
+                type="submit"
+                class="px-4 py-2 bg-teal-600 text-white rounded-md text-sm font-semibold hover:bg-teal-700"
+              >
+                Send Reset Link
+              </button>
+            </div>
+          </form>
+        </div>
       </div>
     </div>
   </div>
@@ -187,7 +186,12 @@
 <script>
 import { ref, onMounted } from "vue";
 import { useRouter } from "vue-router";
-import { getAuth, sendPasswordResetEmail, onAuthStateChanged } from "firebase/auth";
+import {
+  getAuth,
+  sendPasswordResetEmail,
+  onAuthStateChanged,
+  signOut,
+} from "firebase/auth";
 import useLogin from "../composables/useLogin";
 import Swal from "sweetalert2";
 
@@ -212,9 +216,9 @@ export default {
         password.value = savedPassword;
         rememberMe.value = true;
       }
-      // Check if user is already authenticated and redirect to homepage
+      // Check if user is already authenticated and email-verified, then redirect
       onAuthStateChanged(auth, (user) => {
-        if (user) {
+        if (user && user.emailVerified) {
           Swal.fire({
             position: "top-end",
             icon: "info",
@@ -236,14 +240,26 @@ export default {
         localStorage.removeItem("rememberedPassword");
       }
 
-      await login(email.value, password.value);
-      if (!error.value) {
-        Swal.fire({
-          title: "Login successful! Welcome to our community!",
-          icon: "success",
-          draggable: true,
-        });
-        router.push({ name: "HomePage" });
+      const user = await login(email.value, password.value);
+      if (!error.value && user) {
+        if (user.emailVerified) {
+          Swal.fire({
+            title: "Login successful! Welcome to our community!",
+            icon: "success",
+            draggable: true,
+          });
+          router.push({ name: "HomePage" });
+        } else {
+          // Sign out unverified user and prompt for verification
+          await signOut(auth);
+          Swal.fire({
+            icon: "warning",
+            title: "Email Verification Required",
+            text:
+              "Please verify your email address to log in. Check your inbox for the verification email.",
+            showConfirmButton: true,
+          });
+        }
       } else {
         Swal.fire({
           position: "top-end",
@@ -256,14 +272,25 @@ export default {
     };
 
     const handleGoogleLogin = async () => {
-      await loginWithGoogle();
-      if (!error.value) {
-        Swal.fire({
-          title: "Login using Google successful! Welcome to our community!",
-          icon: "success",
-          draggable: true,
-        });
-        router.push({ name: "HomePage" });
+      const user = await loginWithGoogle();
+      if (!error.value && user) {
+        if (user.emailVerified) {
+          Swal.fire({
+            title: "Login using Google successful! Welcome to our community!",
+            icon: "success",
+            draggable: true,
+          });
+          router.push({ name: "HomePage" });
+        } else {
+          await signOut(auth);
+          Swal.fire({
+            icon: "warning",
+            title: "Email Verification Required",
+            text:
+              "Please verify your email address to log in. Check your inbox for the verification email.",
+            showConfirmButton: true,
+          });
+        }
       } else {
         Swal.fire({
           position: "top-end",

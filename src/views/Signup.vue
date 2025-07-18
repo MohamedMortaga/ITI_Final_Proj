@@ -15,7 +15,7 @@
 
         <h2 class="text-2xl font-semibold mb-4 lg:text-2xl xl:text-3xl">Sign Up</h2>
         <p class="text-gray-600 mb-6 lg:text-base xl:text-lg dark:text-gray-300">
-          If you already have an account register You can<br />
+          If you already have an account, you can<br />
           <router-link to="/Login" class="text-teal-600 font-semibold"
             >Login here!</router-link
           >
@@ -173,26 +173,14 @@ export default {
       }
       await signup(email.value, password.value, username.value);
       if (!error.value) {
-        Swal.fire({
-          icon: "success",
-          title: "Signed up successfully!",
-          timer: 1500,
-          showConfirmButton: false,
-        });
-        router.push({ name: "HomePage" });
+        router.push({ name: "Login" }); // Redirect to Login instead of HomePage
       }
     };
 
     const handleGoogleSignup = async () => {
       await signupWithGoogle();
       if (!error.value) {
-        Swal.fire({
-          icon: "success",
-          title: "Signed up with Google successfully!",
-          timer: 1500,
-          showConfirmButton: false,
-        });
-        router.push({ name: "HomePage" });
+        router.push({ name: "Login" }); // Redirect to Login instead of HomePage
       }
     };
 
