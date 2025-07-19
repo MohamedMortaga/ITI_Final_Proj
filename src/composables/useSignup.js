@@ -36,6 +36,7 @@ const signup = async (email, password, displayName) => {
     await setDoc(doc(db, 'users', user.uid), {
       email: user.email.toLowerCase(),
       displayName: displayName,
+       role: 'user',
       createdAt: new Date(),
     });
 
@@ -81,6 +82,7 @@ const signupWithGoogle = async () => {
     await setDoc(doc(db, 'users', user.uid), {
       email: user.email.toLowerCase(),
       displayName: user.displayName || 'Google User',
+       role: 'user',
       createdAt: new Date(),
     });
 

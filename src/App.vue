@@ -1,25 +1,19 @@
 <template>
-  <!-- <Navbar v-if="!$route.meta.hideNavbar"/> -->
-  <Navbar v-show="!$route.meta.hideNavbar" />
-  <router-view></router-view>
+  <component :is="layout">
+    <router-view />
+  </component>
 </template>
 
-<script>
-import Navbar from "./components/pages/Navbar.vue";
+<script setup>
+import { computed } from 'vue'
+import { useRoute } from 'vue-router'
 
-export default {
-  name: "App",
-  components: {
-    Navbar,
-  },
-  provide() {
-    return {};
-  },
-  data() {
-    return {};
-  },
-  methods: {},
-};
+import AdminLayout from '@/layouts/AdminLayout.vue'
+import DefaultLayout from '@/layouts/DefaultLayout.vue'
+
+const route = useRoute()
+
+const layout = computed(() => {
+  return route.meta.layout === 'admin' ? AdminLayout : DefaultLayout
+})
 </script>
-
-<style></style>

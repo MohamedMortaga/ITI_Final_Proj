@@ -10,6 +10,13 @@ import Signup from '@/views/Signup.vue';
 import AddProduct from '@/views/AddProduct.vue';
 import ProductDetails from '@/views/ProductDetails.vue';
 import AllProducts from "../views/AllProducts.vue";
+import AdminUsers from '@/views/admin/Users.vue'
+import ProductsDashboard from '@/views/admin/AdminProducts.vue'; 
+import CategoriesManager from '@/views/admin/CategoriesManager.vue';
+
+
+
+
 
 const routes = [
   { path: '/', redirect: '/home' }, // Redirect to /home for unauthenticated access
@@ -56,6 +63,25 @@ const routes = [
     meta: { hideNavbar: true },
   },
   { path: "/all-products", name: "AllProducts", component: AllProducts },
+  //admin
+{
+  path: '/admin/users',
+  name: 'AdminUsers',
+  component: AdminUsers,
+  meta: { layout: 'admin' }
+},
+{
+  path: '/admin/products',
+  name: 'ProductsDashboard',
+  component: ProductsDashboard,
+  meta: { layout: 'admin' }
+},
+{
+    path: '/admin/categories',
+    name: 'Categories',
+    component: CategoriesManager,
+    meta: { layout: 'admin' }
+  },
 ];
 
 const router = createRouter({
