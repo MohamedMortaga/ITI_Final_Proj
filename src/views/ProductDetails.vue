@@ -19,15 +19,23 @@
           <h3
             class="text-lg font-semibold text-[var(--color-gray-800)] dark:text-[var(--color-gray-200)]"
           >
-            July 2025
+            {{ currentMonthYear }}
           </h3>
           <div class="grid grid-cols-7 gap-1 mt-2">
             <span
-              v-for="day in 31"
+              v-for="day in daysInMonth"
               :key="day"
-              class="text-center p-1 text-[var(--color-gray-700)] dark:text-[var(--color-gray-300)]"
-              >{{ day }}</span
+              class="text-center p-1 text-[var(--color-gray-700)] dark:text-[var(--color-gray-300)] cursor-pointer flex items-center justify-center"
+              :class="{
+                'bg-[var(--color-success-200)] rounded-full': isSelected(day),
+                'cursor-not-allowed opacity-50': isPastDate(day),
+              }"
+              @click="selectDate(day)"
             >
+              <span>{{ day }}</span>
+              <span v-if="isStart(day)" class="ml-1 text-xs">s</span>
+              <span v-if="isEnd(day)" class="ml-1 text-xs">e</span>
+            </span>
           </div>
         </div>
       </div>
@@ -74,6 +82,7 @@
               {{ product.price || "15" }} EGP
             </p>
             <button
+              @click="showBookingForm = true"
               class="w-full bg-[var(--color-success-500)] text-[var(--color-gray-25)] py-2 rounded-lg mt-2 hover:bg-[var(--color-success-600)] dark:bg-[var(--color-success-300)] dark:hover:bg-[var(--color-success-400)]"
             >
               Rent this tool
@@ -98,7 +107,7 @@
             />
             <div>
               <p class="text-[var(--color-gray-800)] dark:text-[var(--color-gray-200)]">
-                Lendo T. Caputo
+                {{ booking.sellerName || "Loading..." }}
               </p>
               <p
                 class="text-sm text-[var(--color-gray-500)] dark:text-[var(--color-gray-400)]"
@@ -118,6 +127,114 @@
             </div>
           </div>
         </div>
+      </div>
+    </div>
+
+    <!-- Booking Form Modal -->
+    <div
+      v-if="showBookingForm"
+      class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50"
+    >
+      <div
+        class="bg-[var(--color-gray-25)] dark:bg-[var(--color-gray-800)] p-6 rounded-lg shadow-xl w-full max-w-md h-[80vh] overflow-y-auto relative"
+      >
+        <button
+          @click="showBookingForm = false"
+          class="absolute top-2 right-2 text-[var(--color-gray-700)] dark:text-[var(--color-gray-300)] hover:text-[var(--color-gray-800)] dark:hover:text-[var(--color-gray-200)] text-2xl font-bold"
+        >
+          ×
+        </button>
+        <h2
+          class="text-xl font-bold text-[var(--color-success-500)] dark:text-[var(--color-success-300)] mb-4"
+        >
+          Book This Product
+        </h2>
+        <form @submit.prevent="submitBooking" class="space-y-4">
+          <div>
+            <label
+              class="block text-[var(--color-gray-700)] dark:text-[var(--color-gray-300)]"
+              >Select Location on Map</label
+            >
+            <iframe
+              src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d13804.134426744992!2d31.23572595!3d30.04598185!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x1458157f7a7b9fb3%3A0x9c6c8a6e7e0c2e2e!2sCairo%2C%20Cairo%20Governorate%2C%20Egypt!5e0!3m2!1sen!2seg!4v1690367890123!5m2!1sen!2seg"
+              width="100%"
+              height="200"
+              style="border: 0"
+              allowfullscreen=""
+              loading="lazy"
+              referrerpolicy="no-referrer-when-downgrade"
+            ></iframe>
+            <p
+              class="text-sm text-[var(--color-gray-600)] dark:text-[var(--color-gray-400)] mt-2"
+            >
+              Edit the address or coordinates below.
+            </p>
+            <input
+              v-model="booking.deliveryAddress"
+              type="text"
+              class="w-full p-2 rounded-lg bg-[var(--color-gray-100)] dark:bg-[var(--color-gray-700)] border border-[var(--color-success-200)] mt-2"
+              placeholder="Enter address or coordinates (e.g., 30.0459°N, 31.2357°E)"
+            />
+            <p
+              v-if="booking.deliveryMethod === 'delivery'"
+              class="mt-2 text-[var(--color-success-500)] font-bold dark:text-[var(--color-success-300)]"
+            >
+              Delivery Fee: {{ booking.deliveryFee.toFixed(2) }} EGP (2% of total)
+            </p>
+          </div>
+          <div>
+            <label
+              class="block text-[var(--color-gray-700)] dark:text-[var(--color-gray-300)]"
+              >Delivery Method</label
+            >
+            <select
+              v-model="booking.deliveryMethod"
+              class="w-full p-2 rounded-lg bg-[var(--color-gray-100)] dark:bg-[var(--color-gray-700)] border border-[var(--color-success-200)]"
+              required
+              @change="updateDeliveryFee"
+            >
+              <option value="delivery">Delivery</option>
+              <option value="pickup">Pickup</option>
+            </select>
+          </div>
+          <div>
+            <label
+              class="block text-[var(--color-gray-700)] dark:text-[var(--color-gray-300)]"
+              >Start Date</label
+            >
+            <p
+              class="w-full p-2 rounded-lg bg-[var(--color-gray-100)] dark:bg-[var(--color-gray-700)] border border-[var(--color-success-200)]"
+            >
+              {{ booking.startDate ? formatDate(booking.startDate) : "Not selected" }}
+            </p>
+          </div>
+          <div>
+            <label
+              class="block text-[var(--color-gray-700)] dark:text-[var(--color-gray-300)]"
+              >End Date</label
+            >
+            <p
+              class="w-full p-2 rounded-lg bg-[var(--color-gray-100)] dark:bg-[var(--color-gray-700)] border border-[var(--color-success-200)]"
+            >
+              {{ booking.endDate ? formatDate(booking.endDate) : "Not selected" }}
+            </p>
+          </div>
+          <div class="flex justify-end gap-4">
+            <button
+              type="button"
+              @click="showBookingForm = false"
+              class="bg-[var(--color-gray-400)] text-[var(--color-gray-25)] py-2 px-4 rounded-lg hover:bg-[var(--color-gray-500)]"
+            >
+              Cancel
+            </button>
+            <button
+              type="submit"
+              class="bg-[var(--color-success-500)] text-[var(--color-gray-25)] py-2 px-4 rounded-lg hover:bg-[var(--color-success-600)] dark:bg-[var(--color-success-300)] dark:hover:bg-[var(--color-success-400)]"
+            >
+              Submit Booking
+            </button>
+          </div>
+        </form>
       </div>
     </div>
 
@@ -172,7 +289,7 @@
       <h3
         class="text-lg font-semibold text-[var(--color-gray-800)] mb-4 dark:text-[var(--color-gray-200)]"
       >
-        More from Lendo
+        More from {{ booking.sellerName || "Loading..." }}
       </h3>
       <div class="grid grid-cols-2 gap-4">
         <div
@@ -256,22 +373,245 @@
 </template>
 
 <script setup>
-import { onMounted, ref } from "vue";
+import { onMounted, ref, watch, computed } from "vue";
 import { useRoute } from "vue-router";
-import { doc, getDoc } from "firebase/firestore";
-import { db } from "@/firebase/config";
+import { doc, getDoc, setDoc, collection, serverTimestamp } from "firebase/firestore";
+import { db, auth } from "@/firebase/config";
 
 const route = useRoute();
 const product = ref(null);
+const showBookingForm = ref(false);
+const booking = ref({
+  deliveryAddress: "30.0459°N, 31.2357°E",
+  deliveryFee: 0,
+  deliveryMethod: "delivery",
+  startDate: "",
+  endDate: "",
+  productId: "",
+  status: "pending",
+  timestamp: serverTimestamp(),
+  totalPrice: 0,
+  userId: "",
+  sellerId: "",
+  sellerName: "",
+  productTitle: "",
+  productPrice: 0,
+});
+
+// Current date handling
+const today = ref(new Date());
+const currentDate = ref(new Date());
+const selectedDates = ref({ start: null, end: null });
+
+// Computed properties for dynamic calendar
+const currentMonthYear = computed(() => {
+  return currentDate.value.toLocaleString("en-US", { month: "long", year: "numeric" });
+});
+
+const daysInMonth = computed(() => {
+  const year = currentDate.value.getFullYear();
+  const month = currentDate.value.getMonth();
+  return new Date(year, month + 1, 0).getDate(); // Get the last day of the month
+});
 
 const loadProduct = async () => {
-  const id = route.params.id;
-  const docRef = doc(db, "products", id);
-  const docSnap = await getDoc(docRef);
-  if (docSnap.exists()) {
-    product.value = docSnap.data();
+  try {
+    const id = route.params.id;
+    const docRef = doc(db, "products", id);
+    const docSnap = await getDoc(docRef);
+
+    if (docSnap.exists()) {
+      product.value = docSnap.data();
+      booking.value.productId = id;
+      booking.value.sellerId = product.value.userId;
+      booking.value.productTitle = product.value.title;
+      booking.value.productPrice = parseFloat(product.value.price) || 0;
+      await loadSellerDetails(booking.value.sellerId);
+    } else {
+      console.error("No such product!");
+    }
+  } catch (error) {
+    console.error("Error loading product:", error);
   }
 };
 
-onMounted(loadProduct);
+const loadSellerDetails = async (sellerId) => {
+  try {
+    const userDocRef = doc(db, "users", sellerId);
+    const userDocSnap = await getDoc(userDocRef);
+
+    if (userDocSnap.exists()) {
+      const sellerData = userDocSnap.data();
+      booking.value.sellerName = sellerData.displayName || "Unknown Seller";
+    } else {
+      console.error("No such user!");
+      booking.value.sellerName = "Unknown Seller";
+    }
+  } catch (error) {
+    console.error("Error loading seller details:", error);
+    booking.value.sellerName = "Unknown Seller";
+  }
+};
+
+const isSelected = (day) => {
+  const date = `${currentDate.value.getFullYear()}-${String(
+    currentDate.value.getMonth() + 1
+  ).padStart(2, "0")}-${String(day).padStart(2, "0")}`;
+  return date === selectedDates.value.start || date === selectedDates.value.end;
+};
+
+const isStart = (day) => {
+  const date = `${currentDate.value.getFullYear()}-${String(
+    currentDate.value.getMonth() + 1
+  ).padStart(2, "0")}-${String(day).padStart(2, "0")}`;
+  return date === selectedDates.value.start;
+};
+
+const isEnd = (day) => {
+  const date = `${currentDate.value.getFullYear()}-${String(
+    currentDate.value.getMonth() + 1
+  ).padStart(2, "0")}-${String(day).padStart(2, "0")}`;
+  return date === selectedDates.value.end;
+};
+
+const isPastDate = (day) => {
+  const selectedDate = new Date(
+    currentDate.value.getFullYear(),
+    currentDate.value.getMonth(),
+    day
+  );
+  const todayDate = new Date(today.value);
+  todayDate.setHours(0, 0, 0, 0);
+  return selectedDate < todayDate;
+};
+
+const formatDate = (dateStr) => {
+  if (!dateStr) return "";
+  const [year, month, day] = dateStr.split("-").map(Number);
+  const date = new Date(year, month - 1, day);
+  return date.toLocaleString("en-US", {
+    year: "numeric",
+    month: "long",
+    day: "numeric",
+  });
+};
+
+const selectDate = (day) => {
+  if (isPastDate(day)) return;
+
+  // Create a new Date object for the selected day, ensuring no timezone offset issues
+  const selectedDate = new Date(
+    currentDate.value.getFullYear(),
+    currentDate.value.getMonth(),
+    day
+  );
+  // Format as YYYY-MM-DD
+  const selectedIso = `${selectedDate.getFullYear()}-${String(
+    selectedDate.getMonth() + 1
+  ).padStart(2, "0")}-${String(day).padStart(2, "0")}`;
+
+  if (!selectedDates.value.start) {
+    // Set start date
+    selectedDates.value.start = selectedIso;
+    booking.value.startDate = selectedIso;
+  } else if (!selectedDates.value.end) {
+    // Ensure end date is on or after start date
+    if (new Date(selectedIso) >= new Date(selectedDates.value.start)) {
+      selectedDates.value.end = selectedIso;
+      booking.value.endDate = selectedIso;
+    } else {
+      alert("End date must be after start date.");
+    }
+  } else {
+    // Reset to select a new start date
+    selectedDates.value.start = selectedIso;
+    selectedDates.value.end = null;
+    booking.value.startDate = selectedIso;
+    booking.value.endDate = "";
+  }
+};
+
+const updateDeliveryFee = () => {
+  if (!booking.value.startDate || !booking.value.endDate) {
+    booking.value.deliveryFee = 0;
+    return;
+  }
+  if (booking.value.deliveryMethod === "pickup") {
+    booking.value.deliveryFee = 0;
+  } else {
+    const diffTime = Math.ceil(
+      (new Date(booking.value.endDate) - new Date(booking.value.startDate)) /
+        (1000 * 60 * 60 * 24)
+    );
+    const basePrice = diffTime * booking.value.productPrice;
+    booking.value.deliveryFee = basePrice * 0.02;
+  }
+};
+
+// Watchers to update delivery fee and total price when relevant fields change
+watch(
+  [
+    () => booking.value.deliveryMethod,
+    () => booking.value.startDate,
+    () => booking.value.endDate,
+  ],
+  () => {
+    updateDeliveryFee();
+    if (booking.value.startDate && booking.value.endDate) {
+      const diffTime =
+        Math.ceil(
+          (new Date(booking.value.endDate) - new Date(booking.value.startDate)) /
+            (1000 * 60 * 60 * 24)
+        ) + 1;
+      const basePrice = diffTime * booking.value.productPrice;
+      booking.value.totalPrice = basePrice + booking.value.deliveryFee;
+    } else {
+      booking.value.totalPrice = 0;
+    }
+  }
+);
+
+const submitBooking = async () => {
+  if (!auth.currentUser) {
+    alert("Please log in to make a booking.");
+    return;
+  }
+
+  try {
+    if (!booking.value.startDate || !booking.value.endDate) {
+      alert("Please select both start and end dates");
+      return;
+    }
+
+    const start = new Date(booking.value.startDate);
+    const end = new Date(booking.value.endDate);
+    const diffTime = Math.ceil((end - start) / (1000 * 60 * 60 * 24));
+    const basePrice = diffTime * booking.value.productPrice;
+    booking.value.deliveryFee =
+      booking.value.deliveryMethod === "delivery" ? basePrice * 0.02 : 0;
+    booking.value.totalPrice = basePrice + booking.value.deliveryFee;
+    booking.value.userId = auth.currentUser.uid;
+    booking.value.timestamp = serverTimestamp();
+
+    const bookingsRef = collection(db, "bookings");
+    await setDoc(doc(bookingsRef), {
+      ...booking.value,
+      productTitle: product.value.title,
+      productImage: product.value.img,
+      sellerName: booking.value.sellerName,
+    });
+
+    showBookingForm.value = false;
+    alert("Booking submitted successfully!");
+  } catch (error) {
+    console.error("Full error details:", error);
+    alert(`Failed to submit booking: ${error.message}`);
+  }
+};
+
+onMounted(() => {
+  loadProduct();
+  today.value = new Date();
+  today.value.setHours(0, 0, 0, 0);
+});
 </script>
