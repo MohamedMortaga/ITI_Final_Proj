@@ -14,7 +14,8 @@
           v-for="user in users"
           :key="user.id"
           class="bg-white rounded-2xl shadow-md hover:shadow-lg transition p-6 border border-gray-100"
-        >
+        @click="goToUserRentals(user.id)"
+          >
           <div class="space-y-2">
             <h2 class="text-xl font-semibold text-gray-800">{{ user.displayName || 'Unknown User' }}</h2>
             <p class="text-sm text-gray-600"><span class="font-medium">Email:</span> {{ user.email }}</p>
@@ -96,6 +97,13 @@ import { ref, onMounted } from 'vue'
 import { collection, getDocs, doc, deleteDoc, updateDoc } from 'firebase/firestore'
 import { db } from '@/firebase/config'
 import Swal from 'sweetalert2'
+import { useRouter } from 'vue-router'
+
+const router = useRouter()
+
+const goToUserRentals = (userId) => {
+  router.push({ name: 'UserRentals', params: { userId } })
+}
 
 const users = ref([])
 const selectedUser  = ref(null)

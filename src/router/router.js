@@ -13,10 +13,8 @@ import AllProducts from "../views/AllProducts.vue";
 import AdminUsers from '@/views/admin/Users.vue'
 import ProductsDashboard from '@/views/admin/AdminProducts.vue'; 
 import CategoriesManager from '@/views/admin/CategoriesManager.vue';
-
-
-
-
+import RentalDashboard from '@/views/admin/RentalDashboard.vue';
+import UserRentals from '@/views/admin/UserRentals.vue';
 
 const routes = [
   { path: '/', redirect: '/home' }, // Redirect to /home for unauthenticated access
@@ -82,6 +80,19 @@ const routes = [
     component: CategoriesManager,
     meta: { layout: 'admin' }
   },
+  {
+    path: '/rentals',
+    name: 'Rentals',
+    component: RentalDashboard,
+  meta: { layout: 'admin' }
+  },
+{
+  path: '/admin/user/:userId/rentals',
+  name: 'UserRentals',   // بدون فراغ
+  component: UserRentals,
+  meta: { layout: 'admin' }
+},
+
 ];
 
 const router = createRouter({

@@ -34,6 +34,9 @@
       📂 Categories
     </router-link>
   </li>
+  <li>
+    <router-link to="/rentals" class="block px-3 py-2 rounded hover:bg-gray-700">📅 View Your Rentals</router-link>
+  </li>
       </ul>
     </aside>
 
