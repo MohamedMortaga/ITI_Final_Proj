@@ -10,4 +10,12 @@ import './styles/variables.css';
 import './assets/main.css';
 
 
-createApp(App).use(router).mount('#app');
+
+
+// createApp(App).use(router).mount('#app');
+const app = createApp(App);
+
+app.config.devtools = true; 
+
+app.use(router).mount('#app');
+
