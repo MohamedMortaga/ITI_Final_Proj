@@ -5,6 +5,7 @@ import {
   updateProfile,
   sendEmailVerification,
   signOut,
+  onAuthStateChanged,
 } from 'firebase/auth';
 import { auth, googleProvider } from '@/firebase/config';
 import { doc, setDoc } from 'firebase/firestore';
@@ -32,24 +33,46 @@ const signup = async (email, password, displayName) => {
       url: `${window.location.origin}/login`, // Redirect to login page after verification
     });
 
-    // Store user data in Firestore with lowercase email
-    await setDoc(doc(db, 'users', user.uid), {
-      email: user.email.toLowerCase(),
-      displayName: displayName,
-       role: 'user',
-      createdAt: new Date(),
+    // Listen for email verification
+    onAuthStateChanged(auth, (verifiedUser) => {
+      if (verifiedUser && verifiedUser.emailVerified) {
+        // Store user data in Firestore with lowercase email only after verification
+        setDoc(doc(db, 'users', verifiedUser.uid), {
+          email: verifiedUser.email.toLowerCase(),
+          displayName: displayName,
+          role: 'user',
+          createdAt: new Date(),
+        }).then(() => {
+          Swal.fire({
+            icon: 'success',
+            title: 'Email Verified!',
+            text: 'Your account has been created and added to the users table. Please log in.',
+            timer: 3000,
+            showConfirmButton: true,
+          });
+          signOut(auth); // Sign out after verification and storage
+        }).catch((err) => {
+          error.value = err.message;
+          Swal.fire({
+            icon: 'error',
+            title: 'Firestore Update Failed',
+            text: `Error adding user to database: ${err.message}`,
+            showConfirmButton: true,
+          });
+        });
+      }
     });
 
-    // Sign out the user to prevent automatic login
+    // Sign out the user to prevent automatic login before verification
     await signOut(auth);
 
     // Update userName ref for immediate use
     userName.value = displayName;
 
     Swal.fire({
-      icon: 'success',
-      title: 'Account Created!',
-      text: 'A verification email has been sent to your inbox. Please verify your email before logging in.',
+      icon: 'info',
+      title: 'Verification Required',
+      text: 'A verification email has been sent. Please verify your email to complete registration.',
       timer: 3000,
       showConfirmButton: true,
     });
@@ -78,11 +101,11 @@ const signupWithGoogle = async () => {
     const user = userCredential.user;
     if (!user) throw new Error('Could not complete Google signup');
 
-    // Store user data in Firestore with lowercase email
+    // Store user data in Firestore with lowercase email immediately for Google signup
     await setDoc(doc(db, 'users', user.uid), {
       email: user.email.toLowerCase(),
       displayName: user.displayName || 'Google User',
-       role: 'user',
+      role: 'user',
       createdAt: new Date(),
     });
 
