@@ -1,6 +1,6 @@
 <template>
   <div
-    class="min-h-screen flex flex-col"
+    class="min-h-screen flex flex-col mx-[88px]"
     :style="{
       backgroundColor: 'var(--Color-Surface-Surface-Primary)',
       color: 'var(--Color-Text-Text-Primary)',
@@ -10,24 +10,14 @@
     <SearchBar v-model:searchQuery="searchQuery" />
 
     <!-- Category Filter -->
-    <CategoryButtons
+    <CategoryButtons 
       :categories="categories"
       :selectedCategory="selectedCategory"
       @update:selectedCategory="selectedCategory = $event"
     />
 
     <!-- Hero Banner -->
-    <div class="container mx-auto px-4 mt-6">
-      <div class="relative rounded-xl overflow-hidden w-full">
-        <img
-          src="@/assets/Rectangle 10.png"
-          alt="Featured Products"
-          class="w-full h-auto object-cover"
-          style="max-height: 220px"
-        />
-      </div>
-    </div>
-
+    <HeroBanner/>
     <!-- Recommended Products -->
     <div class="container mx-auto px-4 mt-8">
       <div class="flex items-center justify-between mb-4">
@@ -66,9 +56,10 @@
     <!-- Mission, Vision, Values Section -->
     <MissionVisionValues />
 
-    <!-- Footer -->
-    <AppFooter />
+  
   </div>
+    <!-- Footer -->
+    <AppFooter  />
 </template>
 
 <script>
@@ -84,6 +75,7 @@ import Swal from "sweetalert2";
 import SearchBar from "@/components/pages/SearchBar.vue";
 import CategoryButtons from "@/components/pages/CategoryButtons.vue";
 import ProductCard from "@/components/pages/ProductCard.vue";
+import HeroBanner from "@/components/pages/HeroBanner.vue";
 import CustomerReviews from "@/components/pages/CustomerReviews.vue";
 import WhyRento from "@/components/pages/WhyRento.vue";
 import MissionVisionValues from "@/components/pages/MissionVisionValues.vue";
@@ -99,6 +91,7 @@ export default {
     WhyRento,
     MissionVisionValues,
     AppFooter,
+    HeroBanner,
   },
   setup() {
     const { documents: products } = getCollection("products");

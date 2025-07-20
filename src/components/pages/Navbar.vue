@@ -2,7 +2,7 @@
   <div :class="[isDarkMode ? 'dark' : 'light']">
     <Disclosure
       as="nav"
-      class="bg-[var(--Color-Surface-Surface-Primary)] text-[var(--Color-Text-Text-Primary)] mb-0"
+      class="bg-[var(--Color-Surface-Surface-Primary)] text-[var(--Color-Text-Text-Primary)] mb-0 mx-[88px]"
     >
       <div class="mx-auto container px-2 sm:px-6 lg:px-8">
         <div class="relative flex h-16 items-center justify-between gap-5">
