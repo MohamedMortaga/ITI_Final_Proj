@@ -1,5 +1,5 @@
 <template>
-  <div class="bg-[var(--Color-Surface-Surface-Tertiary)] border border-[var(--Color-Boarder-Border-Primary)] rounded-xl shadow-sm flex flex-col transition hover:shadow-lg">
+  <div class="bg-[var(--Color-Surface-Surface-Tertiary)] border border-[var(--Color-Boarder-Border-Primary)] rounded-xl shadow-sm flex flex-col transition hover:shadow-lg ">
     <img :src="product.img || require('@/assets/test.png')" alt="product image"
       class="w-full h-40 object-cover rounded-t-xl" />
     <div class="p-4 flex flex-col flex-1">

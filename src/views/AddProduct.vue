@@ -134,6 +134,12 @@
         <p v-else class="text-sm text-red-500 mt-2 dark:text-red-400">
           No image available.
         </p>
+<p v-if="product.createdAt && product.createdAt.toDate">
+  🕒 Uploaded: {{ product.createdAt.toDate().toLocaleString() }}
+</p>
+<p class="text-sm text-gray-600">Uploaded by: {{ product.ownerName }}</p>
+
+
 
         <div class="flex gap-2 mt-3">
           <button @click="editProduct(product)" class="text-blue-600 dark:text-blue-400">
@@ -175,6 +181,8 @@ import {
 import { db, storage, auth } from "@/firebase/config";
 import { onAuthStateChanged } from "firebase/auth";
 import Swal from "sweetalert2";
+import { serverTimestamp } from "firebase/firestore";
+
 
 const products = ref([]);
 const categories = ref([]);
@@ -310,6 +318,7 @@ const handleImageUpload = async (event) => {
   }
 };
 
+
 const submitForm = async () => {
   try {
     if (!currentUser.value) {
@@ -356,6 +365,10 @@ const submitForm = async () => {
         img: form.value.image || "",
         imagePath: form.value.imagePath || "",
         userId: currentUser.value.uid,
+        // userName: currentUser.value.displayName || currentUser.value.email,
+       ownerName: currentUser.value.displayName || currentUser.value.email,
+
+        createdAt: serverTimestamp(), 
       });
       Swal.fire({
         position: "center",

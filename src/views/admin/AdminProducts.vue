@@ -22,13 +22,11 @@
         <p class="text-sm text-gray-700">🏷️ Category: {{ product.category || 'Not specified' }}</p>
 
         <!-- Owner -->
-        <p class="text-sm text-gray-500">
-          👤 Owner: 
-          <span v-if="users[product.userId]">
-            {{ users[product.userId].name || 'Unknown Owner' }} ({{ users[product.userId].email || 'Email not available' }})
-          </span>
-          <span v-else>Loading owner information...</span>
-        </p>
+     
+<!-- Uploaded By -->
+<p class="text-sm text-gray-600">👤 Uploaded by: {{ product.ownerName || 'Unknown' }}</p>
+
+
 
         <!-- Uploaded time -->
         <p class="text-sm text-gray-500">
@@ -60,20 +58,52 @@
 <script setup>
 import { ref, onMounted } from 'vue';
 import { collection, getDocs, doc, deleteDoc } from 'firebase/firestore';
+import { addDoc, serverTimestamp } from 'firebase/firestore'
 import { db } from '@/firebase/config';
 import Swal from 'sweetalert2';
 
 const products = ref([]);
 const users = ref({});
 
+// const fetchProducts = async () => {
+//   try {
+//     const snapshot = await getDocs(collection(db, 'products'));
+//     products.value = snapshot.docs.map(doc => ({
+      
+//       id: doc.id,
+//       ...doc.data()
+//     }));
+//     await fetchUsers();
+//   } catch (err) {
+//     console.error('Failed to load products:', err);
+//   }
+// };
 const fetchProducts = async () => {
   try {
     const snapshot = await getDocs(collection(db, 'products'));
-    products.value = snapshot.docs.map(doc => ({
-      id: doc.id,
-      ...doc.data()
-    }));
+    const allProducts = snapshot.docs.map(doc => {
+      const data = doc.data();
+
+
+      console.log('🕒 Time (createdAt):', data.createdAt?.toDate?.() || 'Unknown');
+      console.log('👤 Owner ID:', data.userId || 'No owner ID');
+
+      return {
+        id: doc.id,
+        ...data
+      };
+    });
+
+    products.value = allProducts;
     await fetchUsers();
+
+   
+    allProducts.forEach(product => {
+      const owner = users.value[product.userId];
+      console.log('🧑‍💻 Owner Name:', owner?.name || 'Unknown');
+      console.log('📧 Owner Email:', owner?.email || 'Unknown');
+    });
+
   } catch (err) {
     console.error('Failed to load products:', err);
   }

@@ -10,9 +10,9 @@
                 <div v-for="review in webReviews.slice().reverse()" :key="review.id"
                     class="bg-white dark:bg-gray-800 border rounded-lg p-4 shadow flex justify-between items-start">
                     <div class="flex gap-4">
-                     <div v-if="review.userImage">
-  <img :src="review.userImage" alt="User Image" class="w-24 h-24 rounded-full object-cover" />
-</div>
+                        <div v-if="review.userImage">
+                            <img :src="review.userImage" alt="User Image" class="w-24 h-24 rounded-full object-cover" />
+                        </div>
 
                         <div>
                             <!-- <p class="font-semibold text-gray-800 dark:text-gray-200">
@@ -203,14 +203,14 @@ function formatDate(ts) {
 //     fetchWebReviews()
 // })
 onMounted(async () => {
-  const reviewId = 'P0H7uLmYXtNzPEEOKHTO' // Replace with your document ID
-  const docRef = doc(db, 'web-reviews', reviewId)
-  const docSnap = await getDoc(docRef)
+    const reviewId = 'P0H7uLmYXtNzPEEOKHTO' // Replace with your document ID
+    const docRef = doc(db, 'web-reviews', reviewId)
+    const docSnap = await getDoc(docRef)
 
-  if (docSnap.exists()) {
-    userImage.value = docSnap.data().userImage
-  }
-      await fetchProducts()
+    if (docSnap.exists()) {
+        userImage.value = docSnap.data().userImage
+    }
+    await fetchProducts()
     fetchUserReviews()
     fetchWebReviews()
 })
