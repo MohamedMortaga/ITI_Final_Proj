@@ -15,6 +15,7 @@ import ProductsDashboard from '@/views/admin/AdminProducts.vue';
 import CategoriesManager from '@/views/admin/CategoriesManager.vue';
 import RentalDashboard from '@/views/admin/RentalDashboard.vue';
 import UserRentals from '@/views/admin/UserRentals.vue';
+// import EditBanner from '@/views/admin/EditBanner.vue';
 
 const routes = [
   { path: '/', redirect: '/home' }, // Redirect to /home for unauthenticated access
@@ -88,11 +89,22 @@ const routes = [
   },
 {
   path: '/admin/user/:userId/rentals',
-  name: 'UserRentals',   // بدون فراغ
+  name: 'UserRentals',   
   component: UserRentals,
   meta: { layout: 'admin' }
 },
+// {
+//   path: '/admin/edit-banner',
+//   name: 'EditBanner',
+//   component: () => import('@/views/EditBanner.vue')
+// }
 
+// {
+//   path: '/admin/edit-banner',
+//   name: 'EditBanner',
+//   component: EditBanner,
+//   meta: { requiresAuth: true }
+// }
 ];
 
 const router = createRouter({
