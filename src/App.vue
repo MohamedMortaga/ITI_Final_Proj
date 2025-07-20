@@ -5,15 +5,15 @@
 </template>
 
 <script setup>
-import { computed } from 'vue'
-import { useRoute } from 'vue-router'
+import { computed } from "vue";
+import { useRoute } from "vue-router";
 
-import AdminLayout from '@/layouts/AdminLayout.vue'
-import DefaultLayout from '@/layouts/DefaultLayout.vue'
+import AdminLayout from "@/layouts/AdminLayout.vue";
+import DefaultLayout from "@/layouts/DefaultLayout.vue";
 
-const route = useRoute()
+const route = useRoute();
 
 const layout = computed(() => {
-  return route.meta.layout === 'admin' ? AdminLayout : DefaultLayout
-})
+  return route.meta.layout === "admin" ? AdminLayout : DefaultLayout;
+});
 </script>
