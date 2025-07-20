@@ -1,7 +1,11 @@
 <template>
-  <div class="min-h-screen flex flex-col"
-    :style="{ backgroundColor: 'var(--Color-Surface-Surface-Primary)', color: 'var(--Color-Text-Text-Primary)' }">
-
+  <div
+    class="min-h-screen flex flex-col"
+    :style="{
+      backgroundColor: 'var(--Color-Surface-Surface-Primary)',
+      color: 'var(--Color-Text-Text-Primary)',
+    }"
+  >
     <!-- Search Bar -->
     <SearchBar v-model:searchQuery="searchQuery" />
 
@@ -15,17 +19,31 @@
     <!-- Hero Banner -->
     <div class="container mx-auto px-4 mt-6">
       <div class="relative rounded-xl overflow-hidden w-full">
-        <img src="@/assets/Rectangle 10.png" alt="Featured Products" class="w-full h-auto object-cover" style="max-height: 220px;" />
+        <img
+          src="@/assets/Rectangle 10.png"
+          alt="Featured Products"
+          class="w-full h-auto object-cover"
+          style="max-height: 220px"
+        />
       </div>
     </div>
 
     <!-- Recommended Products -->
     <div class="container mx-auto px-4 mt-8">
       <div class="flex items-center justify-between mb-4">
-        <h2 class="text-xl font-bold text-[var(--Color-Text-Text-Brand)]">Recommended for you</h2>
-        <router-link to="/all-products" class="text-[var(--Color-Text-Text-Brand)] font-medium hover:underline">View All</router-link>
+        <h2 class="text-xl font-bold text-[var(--Color-Text-Text-Brand)]">
+          Recommended for you
+        </h2>
+        <router-link
+          to="/all-products"
+          class="text-[var(--Color-Text-Text-Brand)] font-medium hover:underline"
+          >View All</router-link
+        >
       </div>
-      <div v-if="filteredProducts.length === 0" class="text-center text-gray-400 text-xl py-12">
+      <div
+        v-if="filteredProducts.length === 0"
+        class="text-center text-gray-400 text-xl py-12"
+      >
         No products found.
       </div>
       <div v-else class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
@@ -40,7 +58,7 @@
     </div>
 
     <!-- Customer Reviews -->
-    <CustomerReviews :reviews="customerReviews" />
+    <CustomerReviews :reviews="formattedReviews" v-if="formattedReviews.length > 0" />
 
     <!-- Why Rento Section -->
     <WhyRento />
@@ -63,13 +81,13 @@ import { db } from "@/firebase/config";
 import Swal from "sweetalert2";
 
 // Components
-import SearchBar from '@/components/pages/SearchBar.vue';
-import CategoryButtons from '@/components/pages/CategoryButtons.vue';
-import ProductCard from '@/components/pages/ProductCard.vue';
-import CustomerReviews from '@/components/pages/CustomerReviews.vue';
-import WhyRento from '@/components/pages/WhyRento.vue';
-import MissionVisionValues from '@/components/pages/MissionVisionValues.vue';
-import AppFooter from '@/components/pages/AppFooter.vue';
+import SearchBar from "@/components/pages/SearchBar.vue";
+import CategoryButtons from "@/components/pages/CategoryButtons.vue";
+import ProductCard from "@/components/pages/ProductCard.vue";
+import CustomerReviews from "@/components/pages/CustomerReviews.vue";
+import WhyRento from "@/components/pages/WhyRento.vue";
+import MissionVisionValues from "@/components/pages/MissionVisionValues.vue";
+import AppFooter from "@/components/pages/AppFooter.vue";
 
 export default {
   name: "HomePage",
@@ -84,39 +102,36 @@ export default {
   },
   setup() {
     const { documents: products } = getCollection("products");
+    const { documents: reviews } = getCollection("web-reviews");
     const searchQuery = ref("");
     const selectedCategory = ref("");
     const displayName = ref("");
     const isAuthenticated = ref(false);
     const categories = ref([]);
-    const customerReviews = ref([
-      {
-        id: 1,
-        rating: 4.5,
-        comment: "The drill was clean and fully charged. I used it to install shelves at home and it worked flawlessly. Highly recommended!",
-        userImage: "/avatar1.png",
-        userName: "Karim H.",
-        date: "Jul 10, 2025"
-      },
-      {
-        id: 2,
-        rating: 4.5,
-        comment: "Honestly, I didn't expect it to be this powerful! I used it to drill into concrete walls for curtain rods, and it handled it like a pro.",
-        userImage: "/avatar2.png",
-        userName: "Youssef R.",
-        date: "Jul 10, 2025"
-      },
-      {
-        id: 3,
-        rating: 4.5,
-        comment: "Great tool, easy to use even for someone with no experience. I used it to assemble my IKEA wardrobe and it saved me hours!",
-        userImage: "/avatar3.png",
-        userName: "Mariam M.",
-        date: "Jul 10, 2025"
-      }
-    ]);
     const auth = getAuth();
     const router = useRouter();
+
+    const formattedReviews = computed(() => {
+      if (!reviews.value) return [];
+
+      return reviews.value
+        .filter((review) => review.rate && review.review) // Filter out incomplete reviews
+        .map((review) => ({
+          id: review.id,
+          rating: Number(review.rate) || 5,
+          comment: review.review,
+          userImage: review.userImage || require("@/assets/default.png"), // Use stored userImage or fallback
+          userName: review.userName || "Anonymous",
+          date: review.timestamp
+            ? new Date(review.timestamp.seconds * 1000).toLocaleDateString("en-US", {
+                year: "numeric",
+                month: "short",
+                day: "numeric",
+              })
+            : "Recently",
+        }))
+        .sort((a, b) => new Date(b.date) - new Date(a.date)); // Sort by date, newest first
+    });
 
     const loadCategories = async () => {
       const snapshot = await getDocs(collection(db, "categories"));
@@ -144,7 +159,7 @@ export default {
       onAuthStateChanged(auth, (user) => {
         if (user) {
           isAuthenticated.value = true;
-          displayName.value = user.displayName || "User ";
+          displayName.value = user.displayName || "User";
         } else {
           isAuthenticated.value = false;
           displayName.value = "Guest";
@@ -178,7 +193,7 @@ export default {
       categories,
       isAuthenticated,
       promptLogin,
-      customerReviews
+      formattedReviews,
     };
   },
 };

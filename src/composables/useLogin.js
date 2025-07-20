@@ -2,6 +2,8 @@ import { ref } from 'vue';
 import { getAuth, signInWithEmailAndPassword, signInWithPopup, signOut } from 'firebase/auth';
 import { auth, googleProvider } from '@/firebase/config';
 import { FacebookAuthProvider } from 'firebase/auth';
+import { doc, setDoc } from 'firebase/firestore';
+import { db } from '@/firebase/config';
 import Swal from 'sweetalert2';
 
 const error = ref(null);
@@ -70,6 +72,14 @@ const loginWithGoogle = async () => {
       });
       return null;
     }
+
+    // Store user data in Firestore with lowercase email
+    await setDoc(doc(db, 'users', user.uid), {
+      email: user.email.toLowerCase(),
+      displayName: user.displayName || 'Google User',
+      role: 'user',
+      createdAt: new Date(),
+    }, { merge: true }); // Use merge to avoid overwriting existing user data
 
     userName.value = user.displayName || 'Google User';
     console.log('Signed in as:', user.displayName);

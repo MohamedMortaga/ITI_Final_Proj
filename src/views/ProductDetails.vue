@@ -238,6 +238,73 @@
       </div>
     </div>
 
+    <!-- Website Review Form Modal -->
+    <div
+      v-if="showWebsiteReviewForm"
+      class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50"
+    >
+      <div
+        class="bg-[var(--color-gray-25)] dark:bg-[var(--color-gray-800)] p-6 rounded-lg shadow-xl w-full max-w-md"
+      >
+        <button
+          @click="showWebsiteReviewForm = false"
+          class="absolute top-2 right-2 text-[var(--color-gray-700)] dark:text-[var(--color-gray-300)] hover:text-[var(--color-gray-800)] dark:hover:text-[var(--color-gray-200)] text-2xl font-bold"
+        >
+          ×
+        </button>
+        <h2
+          class="text-xl font-bold text-[var(--color-success-500)] dark:text-[var(--color-success-300)] mb-4"
+        >
+          Rate Our Website
+        </h2>
+        <form @submit.prevent="submitWebsiteReview" class="space-y-4">
+          <div>
+            <label
+              class="block text-[var(--color-gray-700)] dark:text-[var(--color-gray-300)]"
+              >Review</label
+            >
+            <textarea
+              v-model="newWebsiteReview.review"
+              class="w-full p-2 rounded-lg bg-[var(--color-gray-100)] dark:bg-[var(--color-gray-700)] border border-[var(--color-success-200)]"
+              placeholder="Write your review about our website"
+              required
+            ></textarea>
+          </div>
+          <div>
+            <label
+              class="block text-[var(--color-gray-700)] dark:text-[var(--color-gray-300)]"
+              >Rate (1 - 5)</label
+            >
+            <input
+              v-model.number="newWebsiteReview.rate"
+              type="range"
+              min="1"
+              max="5"
+              step="1"
+              class="w-full p-2 rounded-lg bg-[var(--color-gray-100)] dark:bg-[var(--color-gray-700)] border border-[var(--color-success-200)]"
+              required
+            />
+            <span class="ml-2">{{ newWebsiteReview.rate }} ★★★★★</span>
+          </div>
+          <div class="flex justify-end gap-4">
+            <button
+              type="button"
+              @click="showWebsiteReviewForm = false"
+              class="bg-[var(--color-gray-400)] text-[var(--color-gray-25)] py-2 px-4 rounded-lg hover:bg-[var(--color-gray-500)]"
+            >
+              Cancel
+            </button>
+            <button
+              type="submit"
+              class="bg-[var(--color-success-500)] text-[var(--color-gray-25)] py-2 px-4 rounded-lg hover:bg-[var(--color-success-600)] dark:bg-[var(--color-success-300)] dark:hover:bg-[var(--color-success-400)]"
+            >
+              Submit Review
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+
     <!-- Tool Reviews -->
     <div
       v-if="product"
@@ -249,36 +316,111 @@
         Tool reviews
       </h3>
       <div class="space-y-4">
-        <div>
+        <div
+          v-for="review in reviews"
+          :key="review.id"
+          class="p-4 bg-white rounded-lg shadow"
+        >
           <p class="text-[var(--color-gray-700)] dark:text-[var(--color-gray-300)]">
-            "Great tool, highly recommend!" - Ahmed R.
+            "{{ review.review }}" - {{ review.userName || review.rentUserId }}
           </p>
-          <div class="flex items-center gap-1 text-[var(--color-warning-500)]">
-            <span>★★★★★</span>
+          <div class="flex items-center gap-1">
+            <!-- Full stars -->
             <span
-              class="text-[var(--color-gray-600)] dark:text-[var(--color-gray-400)] ml-2"
-              >4.5 ★★★★☆</span
+              v-for="i in Math.floor(review.rate)"
+              :key="'full-' + review.id + '-' + i"
+              class="inline-block w-4 h-4 text-[var(--color-warning-500)]"
             >
-          </div>
-        </div>
-        <div>
-          <p class="text-[var(--color-gray-700)] dark:text-[var(--color-gray-300)]">
-            "Works well for small projects." - Sara K.
-          </p>
-          <div class="flex items-center gap-1 text-[var(--color-warning-500)]">
-            <span>★★★★☆</span>
+              ★
+            </span>
+            <!-- Empty stars -->
+            <span
+              v-for="i in 5 - Math.floor(review.rate)"
+              :key="'empty-' + review.id + '-' + i"
+              class="inline-block w-4 h-4 text-[var(--color-gray-400)]"
+            >
+              ★
+            </span>
             <span
               class="text-[var(--color-gray-600)] dark:text-[var(--color-gray-400)] ml-2"
-              >4.5 ★★★★☆</span
+              >{{ review.rate }}</span
             >
           </div>
         </div>
       </div>
       <button
+        @click="showReviewForm = true"
         class="mt-4 text-[var(--color-success-500)] text-sm dark:text-[var(--color-success-300)]"
       >
-        view all reviews
+        Add a review
       </button>
+    </div>
+
+    <!-- Add Review Form Modal -->
+    <div
+      v-if="showReviewForm"
+      class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50"
+    >
+      <div
+        class="bg-[var(--color-gray-25)] dark:bg-[var(--color-gray-800)] p-6 rounded-lg shadow-xl w-full max-w-md"
+      >
+        <button
+          @click="showReviewForm = false"
+          class="absolute top-2 right-2 text-[var(--color-gray-700)] dark:text-[var(--color-gray-300)] hover:text-[var(--color-gray-800)] dark:hover:text-[var(--color-gray-200)] text-2xl font-bold"
+        >
+          ×
+        </button>
+        <h2
+          class="text-xl font-bold text-[var(--color-success-500)] dark:text-[var(--color-success-300)] mb-4"
+        >
+          Add a Review
+        </h2>
+        <form @submit.prevent="submitReview" class="space-y-4">
+          <div>
+            <label
+              class="block text-[var(--color-gray-700)] dark:text-[var(--color-gray-300)]"
+              >Review</label
+            >
+            <textarea
+              v-model="newReview.review"
+              class="w-full p-2 rounded-lg bg-[var(--color-gray-100)] dark:bg-[var(--color-gray-700)] border border-[var(--color-success-200)]"
+              placeholder="Write your review"
+              required
+            ></textarea>
+          </div>
+          <div>
+            <label
+              class="block text-[var(--color-gray-700)] dark:text-[var(--color-gray-300)]"
+              >Rate (1 - 5)</label
+            >
+            <input
+              v-model.number="newReview.rate"
+              type="range"
+              min="1"
+              max="5"
+              step="1"
+              class="w-full p-2 rounded-lg bg-[var(--color-gray-100)] dark:bg-[var(--color-gray-700)] border border-[var(--color-success-200)]"
+              required
+            />
+            <span class="ml-2">{{ newReview.rate }} ★★★★★</span>
+          </div>
+          <div class="flex justify-end gap-4">
+            <button
+              type="button"
+              @click="showReviewForm = false"
+              class="bg-[var(--color-gray-400)] text-[var(--color-gray-25)] py-2 px-4 rounded-lg hover:bg-[var(--color-gray-500)]"
+            >
+              Cancel
+            </button>
+            <button
+              type="submit"
+              class="bg-[var(--color-success-500)] text-[var(--color-gray-25)] py-2 px-4 rounded-lg hover:bg-[var(--color-success-600)] dark:bg-[var(--color-success-300)] dark:hover:bg-[var(--color-success-400)]"
+            >
+              Submit Review
+            </button>
+          </div>
+        </form>
+      </div>
     </div>
 
     <!-- More from Owner -->
@@ -312,7 +454,7 @@
             <span>★★★★☆</span>
             <span
               class="text-sm text-[var(--color-gray-600)] dark:text-[var(--color-gray-400)]"
-              >4.5</span
+              >4</span
             >
           </div>
           <button
@@ -341,11 +483,11 @@
             <span>★★★★☆</span>
             <span
               class="text-sm text-[var(--color-gray-600)] dark:text-[var(--color-gray-400)]"
-              >4.5</span
+              >4</span
             >
           </div>
           <button
-            class="w-full bg-[var(--color-success-500)] text-[var(--color-gray-25)] py-2 rounded-lg mt-2 hover:bg-[var(--color-success-600)] dark:bg-[var(--color-success-300)] dark:hover:bg-[var(--color-success-400)]"
+            class="w-full bg-[var(--color-success-500)] text-[var(--color-gray-25)] py-2 px-4 rounded-lg mt-2 hover:bg-[var(--color-success-600)] dark:bg-[var(--color-success-300)] dark:hover:bg-[var(--color-success-400)]"
           >
             Rent now
           </button>
@@ -373,14 +515,28 @@
 </template>
 
 <script setup>
-import { onMounted, ref, watch, computed } from "vue";
+import { onMounted, ref, watch, computed, nextTick } from "vue";
 import { useRoute } from "vue-router";
-import { doc, getDoc, setDoc, collection, serverTimestamp } from "firebase/firestore";
+import {
+  doc,
+  getDoc,
+  setDoc,
+  collection,
+  serverTimestamp,
+  onSnapshot,
+  query,
+  where,
+  getDocs,
+} from "firebase/firestore";
 import { db, auth } from "@/firebase/config";
+import Swal from "sweetalert2";
 
 const route = useRoute();
 const product = ref(null);
 const showBookingForm = ref(false);
+const showReviewForm = ref(false);
+const showWebsiteReviewForm = ref(false);
+const reviews = ref([]);
 const booking = ref({
   deliveryAddress: "30.0459°N, 31.2357°E",
   deliveryFee: 0,
@@ -397,10 +553,24 @@ const booking = ref({
   productTitle: "",
   productPrice: 0,
 });
+const newReview = ref({
+  review: "",
+  rate: 1,
+  sellerUserId: "",
+  rentUserId: "",
+  userName: "",
+});
+const newWebsiteReview = ref({
+  review: "",
+  rate: 1,
+  userId: "",
+  userName: "",
+  userImage: "", // Added to store the user image
+});
 
 // Current date handling
-const today = ref(new Date());
-const currentDate = ref(new Date());
+const today = ref(new Date("2025-07-20T04:07:00Z")); // Updated to 07:07 AM EEST (UTC+3)
+const currentDate = ref(new Date("2025-07-20T04:07:00Z"));
 const selectedDates = ref({ start: null, end: null });
 
 // Computed properties for dynamic calendar
@@ -423,7 +593,7 @@ const loadProduct = async () => {
     if (docSnap.exists()) {
       product.value = docSnap.data();
       booking.value.productId = id;
-      booking.value.sellerId = product.value.userId;
+      booking.value.sellerId = product.value.sellerId || product.value.userId;
       booking.value.productTitle = product.value.title;
       booking.value.productPrice = parseFloat(product.value.price) || 0;
       await loadSellerDetails(booking.value.sellerId);
@@ -443,6 +613,7 @@ const loadSellerDetails = async (sellerId) => {
     if (userDocSnap.exists()) {
       const sellerData = userDocSnap.data();
       booking.value.sellerName = sellerData.displayName || "Unknown Seller";
+      newReview.value.sellerUserId = sellerId;
     } else {
       console.error("No such user!");
       booking.value.sellerName = "Unknown Seller";
@@ -451,6 +622,34 @@ const loadSellerDetails = async (sellerId) => {
     console.error("Error loading seller details:", error);
     booking.value.sellerName = "Unknown Seller";
   }
+};
+
+const loadReviews = () => {
+  const reviewsRef = collection(db, "user-reviews");
+  const unsubscribe = onSnapshot(
+    reviewsRef,
+    async (snapshot) => {
+      const reviewPromises = snapshot.docs.map(async (docSnap) => {
+        const reviewData = { id: docSnap.id, ...docSnap.data() };
+        if (reviewData.productId === route.params.id) {
+          const userRef = doc(db, "users", reviewData.rentUserId);
+          const userSnap = await getDoc(userRef);
+          if (userSnap.exists()) {
+            reviewData.userName = userSnap.data().displayName || reviewData.rentUserId;
+          } else {
+            reviewData.userName = reviewData.rentUserId;
+          }
+        }
+        return reviewData;
+      });
+      const allReviews = await Promise.all(reviewPromises);
+      reviews.value = allReviews.filter((review) => review.productId === route.params.id);
+    },
+    (error) => {
+      console.error("Error loading reviews:", error);
+    }
+  );
+  return unsubscribe;
 };
 
 const isSelected = (day) => {
@@ -499,31 +698,31 @@ const formatDate = (dateStr) => {
 const selectDate = (day) => {
   if (isPastDate(day)) return;
 
-  // Create a new Date object for the selected day, ensuring no timezone offset issues
   const selectedDate = new Date(
     currentDate.value.getFullYear(),
     currentDate.value.getMonth(),
     day
   );
-  // Format as YYYY-MM-DD
   const selectedIso = `${selectedDate.getFullYear()}-${String(
     selectedDate.getMonth() + 1
   ).padStart(2, "0")}-${String(day).padStart(2, "0")}`;
 
   if (!selectedDates.value.start) {
-    // Set start date
     selectedDates.value.start = selectedIso;
     booking.value.startDate = selectedIso;
   } else if (!selectedDates.value.end) {
-    // Ensure end date is on or after start date
     if (new Date(selectedIso) >= new Date(selectedDates.value.start)) {
       selectedDates.value.end = selectedIso;
       booking.value.endDate = selectedIso;
     } else {
-      alert("End date must be after start date.");
+      Swal.fire({
+        icon: "warning",
+        title: "Invalid Date",
+        text: "End date must be after start date.",
+        confirmButtonText: "OK",
+      });
     }
   } else {
-    // Reset to select a new start date
     selectedDates.value.start = selectedIso;
     selectedDates.value.end = null;
     booking.value.startDate = selectedIso;
@@ -548,7 +747,6 @@ const updateDeliveryFee = () => {
   }
 };
 
-// Watchers to update delivery fee and total price when relevant fields change
 watch(
   [
     () => booking.value.deliveryMethod,
@@ -571,15 +769,37 @@ watch(
   }
 );
 
+const checkFirstBooking = async (userId) => {
+  try {
+    const bookingsRef = collection(db, "bookings");
+    const q = query(bookingsRef, where("userId", "==", userId));
+    const querySnapshot = await getDocs(q);
+    return querySnapshot.size === 1; // Returns true if this is the user's first booking
+  } catch (error) {
+    console.error("Error checking bookings:", error);
+    return false;
+  }
+};
+
 const submitBooking = async () => {
   if (!auth.currentUser) {
-    alert("Please log in to make a booking.");
+    Swal.fire({
+      icon: "warning",
+      title: "Login Required",
+      text: "Please log in to make a booking.",
+      confirmButtonText: "OK",
+    });
     return;
   }
 
   try {
     if (!booking.value.startDate || !booking.value.endDate) {
-      alert("Please select both start and end dates");
+      Swal.fire({
+        icon: "warning",
+        title: "Missing Dates",
+        text: "Please select both start and end dates",
+        confirmButtonText: "OK",
+      });
       return;
     }
 
@@ -602,16 +822,163 @@ const submitBooking = async () => {
     });
 
     showBookingForm.value = false;
-    alert("Booking submitted successfully!");
+
+    // Check if this is the user's first booking
+    const isFirstBooking = await checkFirstBooking(auth.currentUser.uid);
+    if (isFirstBooking) {
+      showWebsiteReviewForm.value = true;
+    }
+
+    Swal.fire({
+      icon: "success",
+      title: "Success",
+      text: "Booking submitted successfully!",
+      confirmButtonText: "OK",
+    });
   } catch (error) {
     console.error("Full error details:", error);
-    alert(`Failed to submit booking: ${error.message}`);
+    Swal.fire({
+      icon: "error",
+      title: "Error",
+      text: `Failed to submit booking: ${error.message}`,
+      confirmButtonText: "OK",
+    });
+  }
+};
+
+const submitReview = async () => {
+  if (!auth.currentUser) {
+    Swal.fire({
+      icon: "warning",
+      title: "Login Required",
+      text: "Please log in to add a review.",
+      confirmButtonText: "OK",
+    });
+    return;
+  }
+
+  try {
+    newReview.value.rentUserId = auth.currentUser.uid;
+    newReview.value.productId = route.params.id;
+    newReview.value.userName =
+      auth.currentUser.displayName || auth.currentUser.email.split("@")[0] || "Anonymous";
+    const productRef = doc(db, "products", newReview.value.productId);
+    const productSnap = await getDoc(productRef);
+    if (productSnap.exists()) {
+      newReview.value.sellerUserId =
+        productSnap.data().sellerId || productSnap.data().userId || "-";
+    } else {
+      console.error("Product not found for review!");
+      newReview.value.sellerUserId = "-";
+    }
+    if (
+      !Number.isInteger(newReview.value.rate) ||
+      newReview.value.rate < 1 ||
+      newReview.value.rate > 5
+    ) {
+      Swal.fire({
+        icon: "warning",
+        title: "Invalid Rating",
+        text: "Rate must be a whole number between 1 and 5.",
+        confirmButtonText: "OK",
+      });
+      return;
+    }
+    const reviewsRef = collection(db, "user-reviews");
+    await setDoc(doc(reviewsRef), {
+      ...newReview.value,
+      timestamp: serverTimestamp(),
+    });
+
+    await loadReviews();
+    await nextTick();
+    newReview.value.review = "";
+    newReview.value.rate = 1;
+    showReviewForm.value = false;
+    Swal.fire({
+      icon: "success",
+      title: "Success",
+      text: "Review submitted successfully!",
+      confirmButtonText: "OK",
+    });
+  } catch (error) {
+    console.error("Error submitting review:", error);
+    Swal.fire({
+      icon: "error",
+      title: "Error",
+      text: `Failed to submit review: ${error.message}`,
+      confirmButtonText: "OK",
+    });
+  }
+};
+
+const submitWebsiteReview = async () => {
+  if (!auth.currentUser) {
+    Swal.fire({
+      icon: "warning",
+      title: "Login Required",
+      text: "Please log in to add a website review.",
+      confirmButtonText: "OK",
+    });
+    return;
+  }
+
+  try {
+    newWebsiteReview.value.userId = auth.currentUser.uid;
+    newWebsiteReview.value.userName =
+      auth.currentUser.displayName || auth.currentUser.email.split("@")[0] || "Anonymous";
+    // Add user image, fallback to default.png if no photoURL
+    newWebsiteReview.value.userImage =
+      auth.currentUser.photoURL || require("@/assets/default.png");
+
+    if (
+      !Number.isInteger(newWebsiteReview.value.rate) ||
+      newWebsiteReview.value.rate < 1 ||
+      newWebsiteReview.value.rate > 5
+    ) {
+      Swal.fire({
+        icon: "warning",
+        title: "Invalid Rating",
+        text: "Rate must be a whole number between 1 and 5.",
+        confirmButtonText: "OK",
+      });
+      return;
+    }
+    const webReviewsRef = collection(db, "web-reviews");
+    await setDoc(doc(webReviewsRef), {
+      ...newWebsiteReview.value,
+      timestamp: serverTimestamp(),
+    });
+
+    newWebsiteReview.value.review = "";
+    newWebsiteReview.value.rate = 1;
+    newWebsiteReview.value.userImage = ""; // Reset image
+    showWebsiteReviewForm.value = false;
+    Swal.fire({
+      icon: "success",
+      title: "Success",
+      text: "Website review submitted successfully! Thank you for your feedback.",
+      confirmButtonText: "OK",
+    });
+  } catch (error) {
+    console.error("Error submitting website review:", error);
+    Swal.fire({
+      icon: "error",
+      title: "Error",
+      text: `Failed to submit website review: ${error.message}`,
+      confirmButtonText: "OK",
+    });
   }
 };
 
 onMounted(() => {
   loadProduct();
-  today.value = new Date();
+  loadReviews();
+  today.value = new Date("2025-07-20T04:07:00Z"); // Updated to 07:07 AM EEST
   today.value.setHours(0, 0, 0, 0);
 });
 </script>
+
+<style scoped>
+/* No half-star styling needed */
+</style>
