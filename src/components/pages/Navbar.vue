@@ -8,7 +8,7 @@
         <div class="relative flex h-16 items-center justify-between gap-5">
           <router-link
             to="/"
-            class="text-2xl font-medium hover:text-[var(--Color-Text-Text-Brand)]"
+            class="text-2xl font-medium text-[var(--Color-Text-Text-Brand)] hover:text-[var(--Color-Text-Text-Brand)]"
           >
             Rento
           </router-link>
@@ -64,7 +64,7 @@
                 <!-- Login button shown when not authenticated -->
                 <router-link
                   to="/login"
-                  class="px-3 py-1 rounded-md text-sm font-medium bg-[var(--Color-Surface-Surface-Brand)] hover:bg-[var(--Colors-Primary-700)] text-[var(--Color-Text-Text-Invert)]"
+                  class="px-3 py-1 rounded-md text-sm font-Medium bg-[var(--Color-Surface-Surface-Brand)] hover:bg-[var(--Colors-Primary-700)] text-[var(--Color-Text-Text-Invert)]"
                 >
                   Login
                 </router-link>
@@ -91,26 +91,42 @@
                 <router-link
                   to="/home"
                   class="lg:text-xl md:text-md text-sm font-medium hover:text-[var(--Color-Text-Text-Brand)]"
+                  :class="{
+                    'text-[var(--Color-Text-Text-Brand)]': $route.path === '/home',
+                  }"
                   >Home</router-link
                 >
                 <router-link
                   to="/all-products"
                   class="lg:text-xl md:text-md text-sm font-medium hover:text-[var(--Color-Text-Text-Brand)]"
+                  :class="{
+                    'text-[var(--Color-Text-Text-Brand)]':
+                      $route.path === '/all-products',
+                  }"
                   >Browse Tools</router-link
                 >
                 <router-link
                   to="/addProduct"
                   class="lg:text-xl md:text-md text-sm font-medium hover:text-[var(--Color-Text-Text-Brand)]"
+                  :class="{
+                    'text-[var(--Color-Text-Text-Brand)]': $route.path === '/addProduct',
+                  }"
                   >Add Your Tool</router-link
                 >
                 <router-link
                   to="/about"
                   class="lg:text-xl md:text-md text-sm font-medium hover:text-[var(--Color-Text-Text-Brand)]"
+                  :class="{
+                    'text-[var(--Color-Text-Text-Brand)]': $route.path === '/about',
+                  }"
                   >About</router-link
                 >
                 <router-link
                   to="/contact"
                   class="lg:text-xl md:text-md text-sm font-medium hover:text-[var(--Color-Text-Text-Brand)]"
+                  :class="{
+                    'text-[var(--Color-Text-Text-Brand)]': $route.path === '/contact',
+                  }"
                   >Contact</router-link
                 >
               </div>
@@ -183,50 +199,75 @@
         <div class="space-y-1 px-2 pt-2 pb-3 flex flex-col bg-white dark:bg-gray-900">
           <router-link
             to="/home"
-            class="text-gray-700 hover:bg-gray-200 hover:text-gray-900 rounded-md px-3 py-2 text-xl font-medium"
+            class="rounded-md px-3 py-2 text-xl font-medium"
             :class="{
-              'text-gray-900': $route.path === '/home',
-              'dark:text-gray-300 dark:hover:bg-gray-700 dark:hover:text-white': isDarkMode,
+              'text-[var(--Color-Text-Text-Brand)]': $route.path === '/home',
+              'text-gray-700 hover:bg-gray-200 hover:text-[var(--Color-Text-Text-Brand)]':
+                $route.path !== '/home',
+              'dark:text-gray-300 dark:hover:bg-gray-700 dark:hover:text-[var(--Color-Text-Text-Brand)]':
+                isDarkMode && $route.path !== '/home',
+              'dark:text-[var(--Color-Text-Text-Brand)]':
+                isDarkMode && $route.path === '/home',
             }"
           >
             Home
           </router-link>
           <router-link
             to="/all-products"
-            class="text-gray-700 hover:bg-gray-200 hover:text-gray-900 rounded-md px-3 py-2 text-xl font-medium"
+            class="rounded-md px-3 py-2 text-xl font-medium"
             :class="{
-              'text-gray-900': $route.path === '/all-products',
-              'dark:text-gray-300 dark:hover:bg-gray-700 dark:hover:text-white': isDarkMode,
+              'text-[var(--Color-Text-Text-Brand)]': $route.path === '/all-products',
+              'text-gray-700 hover:bg-gray-200 hover:text-[var(--Color-Text-Text-Brand)]':
+                $route.path !== '/all-products',
+              'dark:text-gray-300 dark:hover:bg-gray-700 dark:hover:text-[var(--Color-Text-Text-Brand)]':
+                isDarkMode && $route.path !== '/all-products',
+              'dark:text-[var(--Color-Text-Text-Brand)]':
+                isDarkMode && $route.path === '/all-products',
             }"
           >
             Browse Tools
           </router-link>
           <router-link
             to="/addProduct"
-            class="text-gray-700 hover:bg-gray-200 hover:text-gray-900 rounded-md px-3 py-2 text-xl font-medium"
+            class="rounded-md px-3 py-2 text-xl font-medium"
             :class="{
-              'text-gray-900': $route.path === '/addProduct',
-              'dark:text-gray-300 dark:hover:bg-gray-700 dark:hover:text-white': isDarkMode,
+              'text-[var(--Color-Text-Text-Brand)]': $route.path === '/addProduct',
+              'text-gray-700 hover:bg-gray-200 hover:text-[var(--Color-Text-Text-Brand)]':
+                $route.path !== '/addProduct',
+              'dark:text-gray-300 dark:hover:bg-gray-700 dark:hover:text-[var(--Color-Text-Text-Brand)]':
+                isDarkMode && $route.path !== '/addProduct',
+              'dark:text-[var(--Color-Text-Text-Brand)]':
+                isDarkMode && $route.path === '/addProduct',
             }"
           >
             Add Your Tool
           </router-link>
           <router-link
             to="/about"
-            class="text-gray-700 hover:bg-gray-200 hover:text-gray-900 rounded-md px-3 py-2 text-xl font-medium"
+            class="rounded-md px-3 py-2 text-xl font-medium"
             :class="{
-              'text-gray-900': $route.path === '/about',
-              'dark:text-gray-300 dark:hover:bg-gray-700 dark:hover:text-white': isDarkMode,
+              'text-[var(--Color-Text-Text-Brand)]': $route.path === '/about',
+              'text-gray-700 hover:bg-gray-200 hover:text-[var(--Color-Text-Text-Brand)]':
+                $route.path !== '/about',
+              'dark:text-gray-300 dark:hover:bg-gray-700 dark:hover:text-[var(--Color-Text-Text-Brand)]':
+                isDarkMode && $route.path !== '/about',
+              'dark:text-[var(--Color-Text-Text-Brand)]':
+                isDarkMode && $route.path === '/about',
             }"
           >
             About
           </router-link>
           <router-link
             to="/contact"
-            class="text-gray-700 hover:bg-gray-200 hover:text-gray-900 rounded-md px-3 py-2 text-xl font-medium"
+            class="rounded-md px-3 py-2 text-xl font-medium"
             :class="{
-              'text-gray-900': $route.path === '/contact',
-              'dark:text-gray-300 dark:hover:bg-gray-700 dark:hover:text-white': isDarkMode,
+              'text-[var(--Color-Text-Text-Brand)]': $route.path === '/contact',
+              'text-gray-700 hover:bg-gray-200 hover:text-[var(--Color-Text-Text-Brand)]':
+                $route.path !== '/contact',
+              'dark:text-gray-300 dark:hover:bg-gray-700 dark:hover:text-[var(--Color-Text-Text-Brand)]':
+                isDarkMode && $route.path !== '/contact',
+              'dark:text-[var(--Color-Text-Text-Brand)]':
+                isDarkMode && $route.path === '/contact',
             }"
           >
             Contact
