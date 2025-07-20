@@ -16,6 +16,7 @@ import CategoriesManager from '@/views/admin/CategoriesManager.vue';
 import RentalDashboard from '@/views/admin/RentalDashboard.vue';
 import UserRentals from '@/views/admin/UserRentals.vue';
 // import EditBanner from '@/views/admin/EditBanner.vue';
+import AdminReviews from '@/views/admin/AdminReviews.vue';
 
 const routes = [
   { path: '/', redirect: '/home' }, // Redirect to /home for unauthenticated access
@@ -93,6 +94,10 @@ const routes = [
   component: UserRentals,
   meta: { layout: 'admin' }
 },
+{ path: '/admin/reviews',
+   component: AdminReviews,
+    meta: { layout: 'admin' } },
+
 // {
 //   path: '/admin/edit-banner',
 //   name: 'EditBanner',

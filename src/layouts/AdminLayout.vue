@@ -37,6 +37,12 @@
   <li>
     <router-link to="/rentals" class="block px-3 py-2 rounded hover:bg-gray-700">📅 View Your Rentals</router-link>
   </li>
+  <li>
+  <router-link to="/admin/reviews" class="block px-3 py-2 rounded hover:bg-gray-700">
+    📝 Manage Reviews
+  </router-link>
+</li>
+
       </ul>
     </aside>
 
