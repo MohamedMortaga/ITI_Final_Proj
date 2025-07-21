@@ -4,7 +4,7 @@
     <div class="border-t border-[var(--Color-Boarder-Border-Primary)] w-full"></div>
     
     <!-- Content container (with same margins as home) -->
-    <div class="mx-[88px]">
+    <div class="px-6 lg:px-[88px]">
       <div class="container mx-auto px-4 py-10 flex flex-col md:flex-row md:justify-between gap-8">
         <div>
           <div class="text-2xl font-bold text-[var(--Color-Text-Text-Brand)] mb-4">{{$t('rento')}}</div>

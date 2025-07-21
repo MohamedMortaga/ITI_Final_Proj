@@ -1,6 +1,6 @@
 <template>
-  <div class="w-full border-b border-[var(--Color-Surface-Surface-Tertiary)] bg-transparent">
-    <div class="container mx-auto px-4 py-6 flex flex-col gap-4">
+  <div class="w-full border-b border-[var(--Color-Surface-Surface-Tertiary)] bg-transparent ">
+    <div class="container mx-auto px-4 py-4 flex flex-col gap-4">
       <div class="flex flex-col sm:flex-row items-center gap-4 w-full">
         <div class="relative flex items-center w-full sm:w-auto">
           <i class="fa-solid fa-location-dot absolute left-4 top-1/2 -translate-y-1/2 text-[var(--Color-Text-Text-Brand)] w-5 h-5 pointer-events-none"></i>
