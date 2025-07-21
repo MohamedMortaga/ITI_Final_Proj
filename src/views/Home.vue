@@ -1,6 +1,6 @@
 <template>
   <div
-    class="min-h-screen flex flex-col mx-[88px]"
+    class="min-h-screen flex flex-col "
     :style="{
       backgroundColor: 'var(--Color-Surface-Surface-Primary)',
       color: 'var(--Color-Text-Text-Primary)',
@@ -19,7 +19,7 @@
     <!-- Hero Banner -->
     <HeroBanner/>
     <!-- Recommended Products -->
-    <div class="container mx-auto px-4 mt-8">
+    <div class="container mx-auto px-6 md:px-6 lg:px-[88px] mt-8">
       <div class="flex items-center justify-between mb-4">
         <h2 class="text-xl font-bold text-[var(--Color-Text-Text-Brand)]">
           Recommended for you

@@ -13,7 +13,7 @@
     />
 
     <!-- All Products Section -->
-    <div class="container mx-auto px-4 mt-8">
+<div class="container mx-auto px-6 md:px-6 lg:px-[88px] mt-8">
       <h2 class="text-xl font-bold text-[var(--Color-Text-Text-Brand)] mb-4">All Products updates</h2>
       <div v-if="filteredProducts.length === 0" class="text-center text-gray-400 text-xl py-12">
         No products found.

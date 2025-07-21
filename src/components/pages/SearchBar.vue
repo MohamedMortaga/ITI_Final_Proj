@@ -1,5 +1,5 @@
 <template>
-  <div class="w-full border-b border-[var(--Color-Surface-Surface-Tertiary)] bg-transparent">
+  <div class="w-full border-b border-[var(--Color-Surface-Surface-Tertiary)] bg-transparent  px-6 md:px-6 lg:px-[88px]">
     <div class="container mx-auto px-4 py-6 flex flex-col gap-4">
       <div class="flex flex-col sm:flex-row items-center gap-4 w-full">
         <div class="relative flex items-center w-full sm:w-auto">

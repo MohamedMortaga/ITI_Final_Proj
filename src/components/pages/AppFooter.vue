@@ -1,5 +1,5 @@
 <template>
-  <footer class="mt-16">
+  <footer class=" bg-[var(--Color-Surface-Surface-Primary)]">
     <!-- Full-width border line (outside container) -->
     <div class="border-t border-[var(--Color-Boarder-Border-Primary)] w-full"></div>
     
@@ -13,7 +13,7 @@
           </div>
         </div>
         <div class="flex-1 max-w-xs">
-          <div class="mb-2 font-semibold">Stay up to date</div>
+          <div class="mb-2 font-semibold text-[var(--Color-Text-Text-Primary)]">Stay up to date</div>
           <div class="flex gap-2">
             <input type="email" placeholder="Enter your email"
               class="flex-1 px-3 py-2 rounded border border-[var(--Color-Boarder-Border-Primary)] bg-[var(--Color-Surface-Surface-Primary)] text-[var(--Color-Text-Text-Primary)] focus:outline-none" />

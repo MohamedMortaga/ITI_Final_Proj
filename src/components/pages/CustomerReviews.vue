@@ -1,5 +1,5 @@
 <template>
-  <div class="container mx-auto px-4 mt-12 mb-16">
+  <div class="container mx-auto  mt-12 mb-16 px-[88px]">
     <h3 class="text-center text-xl font-bold mb-6">
       What Our <span class="text-[var(--Color-Text-Text-Brand)]">Customers Say</span>
     </h3>

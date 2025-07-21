@@ -1,5 +1,5 @@
 <template>
-  <div class="w-ful mt-6">
+  <div class="w-ful mt-6 px-6 md:px-6 lg:px-[88px]">
     <div class="px-6 lg:px-8 relative rounded-[16px] overflow-hidden w-full">
       <div class="relative h-[220px]">
         <!-- Slides Container -->
