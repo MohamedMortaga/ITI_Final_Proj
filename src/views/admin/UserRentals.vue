@@ -1,7 +1,7 @@
 <template>
   <div class="p-6 bg-gray-50 min-h-screen">
-    <h1 class="text-3xl font-extrabold text-gray-800">Rentals for {{ userName }}</h1>
-    <p class="text-gray-500 mt-1">List of all rentals for this user.</p>
+    <h1 class="text-3xl font-extrabold text-gray-800">{{$t('rentalsFor', { user: userName })}}</h1>
+    <p class="text-gray-500 mt-1">{{$t('listOfAllRentalsForUser')}}</p>
 
     <div v-if="rentals.length" class="grid gap-6 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3">
       <div
@@ -15,10 +15,10 @@
           class="h-48 w-full object-cover rounded-lg mb-4"
         />
         <h2 class="text-xl font-semibold text-gray-800">{{ rental.productTitle }}</h2>
-        <p class="text-sm text-gray-600"><span class="font-medium">Total Price:</span> {{ rental.totalPrice }} EGP</p>
-        <p class="text-sm text-gray-600"><span class="font-medium">Start Date:</span> {{ formatDate(rental.startDate) }}</p>
-        <p class="text-sm text-gray-600"><span class="font-medium">End Date:</span> {{ formatDate(rental.endDate) }}</p>
-        <p class="text-sm text-gray-600"><span class="font-medium">Status:</span> {{ rental.status }}</p>
+        <p class="text-sm text-gray-600"><span class="font-medium">{{$t('totalPrice')}}:</span> {{ rental.totalPrice }} {{$t('egp')}}</p>
+        <p class="text-sm text-gray-600"><span class="font-medium">{{$t('startDate')}}:</span> {{ formatDate(rental.startDate) }}</p>
+        <p class="text-sm text-gray-600"><span class="font-medium">{{$t('endDate')}}:</span> {{ formatDate(rental.endDate) }}</p>
+        <p class="text-sm text-gray-600"><span class="font-medium">{{$t('status')}}:</span> {{$t(rental.status)}}</p>
       </div>
     </div>
 

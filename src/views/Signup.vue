@@ -13,57 +13,57 @@
           <h1 class="text-3xl font-bold text-teal-600 lg:text-3xl xl:text-4xl">Rento</h1>
         </div>
 
-        <h2 class="text-2xl font-semibold mb-4 lg:text-2xl xl:text-3xl">Sign Up</h2>
+        <h2 class="text-2xl font-semibold mb-4 lg:text-2xl xl:text-3xl">{{$t('signUp')}}</h2>
         <p class="text-gray-600 mb-6 lg:text-base xl:text-lg dark:text-gray-300">
-          If you already have an account, you can<br />
-          <router-link to="/Login" class="text-teal-600 font-semibold"
-            >Login here!</router-link
-          >
+          {{$t('loginHere')}}
+          <router-link to="/Login" class="text-teal-600 font-semibold">
+            {{$t('logIn')}}
+          </router-link>
         </p>
 
         <form @submit.prevent="handleSubmit" class="space-y-4 xl:space-y-6">
           <!-- Username -->
           <div>
-            <label for="username" class="block text-sm text-black mb-1 dark:text-gray-200"
-              >Username</label
-            >
+            <label for="username" class="block text-sm text-black mb-1 dark:text-gray-200">
+              {{$t('usernamePlaceholder')}}
+            </label>
             <input
               id="username"
               v-model="username"
               type="text"
               required
-              placeholder="Enter your username"
+              :placeholder="$t('usernamePlaceholder')"
               class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-teal-600 text-sm lg:text-sm xl:text-base bg-white dark:bg-gray-700 dark:border-gray-600 dark:text-gray-200"
             />
           </div>
 
           <!-- Email -->
           <div>
-            <label for="email" class="block text-sm text-black mb-1 dark:text-gray-200"
-              >Email</label
-            >
+            <label for="email" class="block text-sm text-black mb-1 dark:text-gray-200">
+              {{$t('emailPlaceholder')}}
+            </label>
             <input
               id="email"
               v-model="email"
               type="email"
               required
-              placeholder="Enter your email address"
+              :placeholder="$t('emailPlaceholder')"
               class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-teal-600 text-sm lg:text-sm xl:text-base bg-white dark:bg-gray-700 dark:border-gray-600 dark:text-gray-200"
             />
           </div>
 
           <!-- Password -->
           <div>
-            <label for="password" class="block text-sm text-black mb-1 dark:text-gray-200"
-              >Password</label
-            >
+            <label for="password" class="block text-sm text-black mb-1 dark:text-gray-200">
+              {{$t('passwordPlaceholder')}}
+            </label>
             <div class="relative">
               <input
                 id="password"
                 v-model="password"
                 :type="passwordVisible ? 'text' : 'password'"
                 required
-                placeholder="Enter your password"
+                :placeholder="$t('passwordPlaceholder')"
                 class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-teal-600 text-sm lg:text-sm xl:text-base bg-white dark:bg-gray-700 dark:border-gray-600 dark:text-gray-200"
               />
               <button
@@ -79,18 +79,16 @@
 
           <!-- Confirm Password -->
           <div>
-            <label
-              for="confirmPassword"
-              class="block text-sm text-black mb-1 dark:text-gray-200"
-              >Confirm Password</label
-            >
+            <label for="confirmPassword" class="block text-sm text-black mb-1 dark:text-gray-200">
+              {{$t('confirmPasswordPlaceholder')}}
+            </label>
             <div class="relative">
               <input
                 id="confirmPassword"
                 v-model="confirmPassword"
                 :type="confirmPasswordVisible ? 'text' : 'password'"
                 required
-                placeholder="Confirm your password"
+                :placeholder="$t('confirmPasswordPlaceholder')"
                 class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-teal-600 text-sm lg:text-sm xl:text-base bg-white dark:bg-gray-700 dark:border-gray-600 dark:text-gray-200"
               />
               <button
@@ -99,9 +97,7 @@
                 @click="toggleConfirmPasswordVisibility"
                 aria-label="Toggle confirm password visibility"
               >
-                <i
-                  :class="confirmPasswordVisible ? 'fas fa-eye-slash' : 'fas fa-eye'"
-                ></i>
+                <i :class="confirmPasswordVisible ? 'fas fa-eye-slash' : 'fas fa-eye'"></i>
               </button>
             </div>
           </div>
@@ -110,11 +106,11 @@
             type="submit"
             class="w-full bg-teal-600 text-white rounded-md py-3 font-semibold hover:bg-teal-700 lg:py-3 xl:py-4 xl:text-lg"
           >
-            Sign Up
+            {{$t('signUp')}}
           </button>
 
           <div class="text-center text-gray-500 text-lg font-semibold dark:text-gray-400">
-            or continue with
+            {{$t('orContinueWith')}}
           </div>
 
           <div class="flex gap-3 items-center justify-center">
@@ -166,7 +162,7 @@ export default {
       if (password.value !== confirmPassword.value) {
         Swal.fire({
           icon: "warning",
-          title: "Passwords do not match",
+          title: $t('passwordsDoNotMatch'),
           showConfirmButton: true,
         });
         return;

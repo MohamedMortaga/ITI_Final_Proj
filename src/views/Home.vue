@@ -22,19 +22,19 @@
     <div class="container mx-auto px-6 md:px-6 lg:px-[88px] mt-8">
       <div class="flex items-center justify-between mb-4">
         <h2 class="text-xl font-bold text-[var(--Color-Text-Text-Brand)]">
-          Recommended for you
+          {{$t('recommendedForYou')}}
         </h2>
         <router-link
           to="/all-products"
           class="text-[var(--Color-Text-Text-Brand)] font-medium hover:underline"
-          >View All</router-link
+          >{{$t('viewAll')}}</router-link
         >
       </div>
       <div
         v-if="filteredProducts.length === 0"
         class="text-center text-gray-400 text-xl py-12"
       >
-        No products found.
+        {{$t('noProductsFound')}}
       </div>
       <div v-else class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
         <ProductCard
@@ -137,9 +137,9 @@ export default {
       Swal.fire({
         position: "top-end",
         icon: "warning",
-        title: "Please log in to rent products",
+        title: $t('pleaseLoginToRent'),
         showConfirmButton: true,
-        confirmButtonText: "Go to Login",
+        confirmButtonText: $t('goToLogin'),
       }).then((result) => {
         if (result.isConfirmed) {
           router.push({ name: "Login" });

@@ -4,8 +4,8 @@
     <div class="flex-1 p-6">
       <!-- Header -->
       <div class="mb-6">
-        <h1 class="text-3xl font-extrabold text-gray-800">👥 User Management</h1>
-        <p class="text-gray-500 mt-1">List of all registered users</p>
+        <h1 class="text-3xl font-extrabold text-gray-800">👥 {{$t('userManagement')}}</h1>
+        <p class="text-gray-500 mt-1">{{$t('listRegisteredUsers')}}</p>
       </div>
 
       <!-- User Cards -->
@@ -17,20 +17,20 @@
         @click="goToUserRentals(user.id)"
           >
           <div class="space-y-2">
-            <h2 class="text-xl font-semibold text-gray-800">{{ user.displayName || 'Unknown User' }}</h2>
-            <p class="text-sm text-gray-600"><span class="font-medium">Email:</span> {{ user.email }}</p>
-            <p class="text-sm text-gray-600"><span class="font-medium">Role:</span> {{ user.role || 'Not set' }}</p>
+            <h2 class="text-xl font-semibold text-gray-800">{{ user.displayName || $t('unknownUser') }}</h2>
+            <p class="text-sm text-gray-600"><span class="font-medium">{{$t('email')}}</span> {{ user.email }}</p>
+            <p class="text-sm text-gray-600"><span class="font-medium">{{$t('role')}}</span> {{ user.role || $t('notSet') }}</p>
             <p class="text-sm text-gray-600">
-              <span class="font-medium">Created At:</span>
+              <span class="font-medium">{{$t('createdAt')}}</span>
               <span v-if="user.createdAt && user.createdAt.toDate">
                 {{ user.createdAt.toDate().toLocaleDateString() }}
               </span>
-              <span v-else>Not available</span>
+              <span v-else>{{$t('notAvailable')}}</span>
             </p>
             <p class="text-sm text-gray-600">
-              <span class="font-medium">Status:</span>
+              <span class="font-medium">{{$t('status')}}</span>
               <span :class="user.blocked ? 'text-red-500' : 'text-green-500'">
-                {{ user.blocked ? 'Blocked' : 'Active' }}
+                {{ user.blocked ? $t('blocked') : $t('active') }}
               </span>
             </p>
           </div>
@@ -41,19 +41,19 @@
               @click="editUser (user)"
               class="bg-yellow-400 text-white px-3 py-1 rounded-md text-sm hover:bg-yellow-500"
             >
-              Edit Role
+              {{$t('editRole')}}
             </button>
             <button
               @click="deleteUser (user.id)"
               class="bg-red-500 text-white px-3 py-1 rounded-md text-sm hover:bg-red-600"
             >
-              Delete
+              {{$t('delete')}}
             </button>
             <button
               @click="toggleBlockUser (user)"
               class="bg-blue-500 text-white px-3 py-1 rounded-md text-sm hover:bg-blue-600"
             >
-              {{ user.blocked ? 'Unblock' : 'Block' }}
+              {{ user.blocked ? $t('unblock') : $t('block') }}
             </button>
           </div>
         </div>
@@ -61,7 +61,7 @@
 
       <!-- No Users Fallback -->
       <div v-else class="text-gray-600 mt-8 text-center">
-        <p>No users found.</p>
+        <p>{{$t('noUsersFound')}}</p>
       </div>
     </div>
 
@@ -71,20 +71,20 @@
       class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50"
     >
       <div class="bg-white rounded-xl p-6 w-full max-w-sm space-y-4">
-        <h2 class="text-lg font-semibold text-gray-800">Edit Role for {{ selectedUser .displayName }}</h2>
+        <h2 class="text-lg font-semibold text-gray-800">{{$t('editRole')}} {{$t('for')}} {{ selectedUser.displayName }}</h2>
         <input
           v-model="updatedRole"
           type="text"
-          placeholder="Enter new role"
+          :placeholder="$t('enterNewRole')"
           class="w-full border rounded-md px-3 py-2"
         />
         <div class="flex justify-end gap-2">
-          <button @click="selectedUser  = null" class="text-gray-500">Cancel</button>
+          <button @click="selectedUser  = null" class="text-gray-500">{{$t('cancel')}}</button>
           <button
             @click="updateRole"
             class="bg-blue-600 text-white px-4 py-2 rounded-md hover:bg-blue-700"
           >
-            Save
+            {{$t('save')}}
           </button>
         </div>
       </div>
