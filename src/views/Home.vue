@@ -1,6 +1,6 @@
 <template>
   <div
-    class="min-h-screen flex flex-col px-[88px]"
+    class="min-h-screen flex flex-col px-6 lg:px-[88px]"
     :style="{
       backgroundColor: 'var(--Color-Surface-Surface-Primary)',
       color: 'var(--Color-Text-Text-Primary)',
@@ -8,6 +8,9 @@
   >
     <!-- Search Bar -->
     <SearchBar v-model:searchQuery="searchQuery" />
+    
+    <!-- Full-width divider that ignores parent padding -->
+    <div class="border-t border-[var(--Color-Boarder-Border-Primary)] w-screen -ml-6 lg:-ml-[88px]"></div>
 
     <!-- Category Filter -->
     <CategoryButtons 
@@ -18,6 +21,7 @@
 
     <!-- Hero Banner -->
     <HeroBanner/>
+    
     <!-- Recommended Products -->
     <div class="container mx-auto px-4 mt-8">
       <div class="flex items-center justify-between mb-4">
@@ -55,11 +59,10 @@
 
     <!-- Mission, Vision, Values Section -->
     <MissionVisionValues />
-
-  
   </div>
-    <!-- Footer -->
-    <AppFooter  />
+  
+  <!-- Footer -->
+  <AppFooter />
 </template>
 
 <script>
@@ -193,5 +196,5 @@ export default {
 </script>
 
 <style scoped>
-/* Add any component-specific styles here */
+/* No additional styles needed - all styling is handled by Tailwind */
 </style>

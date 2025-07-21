@@ -1,5 +1,5 @@
 <template>
-  <div class="container mx-auto  px-4 my-12 flex flex-col lg:flex-row gap-8 items-start">
+  <div class="container mx-auto   my-12 flex flex-col lg:flex-row gap-8 items-start ">
     <div 
       class="flex-1 flex flex-col items-center text-center" 
       v-for="(item, index) in missionVisionValues" 
