@@ -1,9 +1,9 @@
 <template>
   <div class="container mx-auto px-4 mt-12 mb-16">
     <h3 class="text-center text-xl font-bold mb-6">
-      {{$t('whatCustomersSay')}}
+      What Customers Say
     </h3>
-    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 justify-center">
+    <div class="flex flex-col lg:flex-row gap-6 justify-center">
       <div
         v-for="review in displayedReviews"
         :key="review.id"
