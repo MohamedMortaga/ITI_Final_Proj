@@ -81,7 +81,7 @@
                   class="block w-full text-left px-4 py-2 text-sm hover:bg-[var(--Color-Surface-Surface-Brand)] transition-colors"
                   style="color: var(--Color-Text-Text-Primary)"
                 >
-                  {{ lang.toUpperCase() }}
+                  {{ languageLabels[lang] }}
                 </button>
               </div>
             </div>
@@ -96,7 +96,7 @@
               />
               <div
                 v-if="showDropdown"
-                class="absolute top-full mt-2 right-0 w-48 shadow-lg rounded-md z-10"
+                :class="['absolute top-full mt-2 w-48 shadow-lg rounded-md z-10', currentLang === 'ar' ? 'left-0 right-auto text-right' : 'right-0']"
                 style="background-color: var(--Color-Surface-Surface-Primary)"
               >
                 <router-link
@@ -105,7 +105,7 @@
                   style="color: var(--Color-Text-Text-Primary)"
                   @click="closeDropdown"
                 >
-                  {{ $t("profile") }}
+                  {{ $t('profile') }}
                 </router-link>
                 <router-link
                   to="/settings"
@@ -113,14 +113,14 @@
                   style="color: var(--Color-Text-Text-Primary)"
                   @click="closeDropdown"
                 >
-                  {{ $t("settings") }}
+                  {{ $t('settings') }}
                 </router-link>
                 <button
                   @click="handleLogout"
-                  class="block w-full text-left px-4 py-2 text-sm hover:bg-[var(--Color-Surface-Surface-Brand)] transition-colors"
+                  :class="['block w-full px-4 py-2 text-sm hover:bg-[var(--Color-Surface-Surface-Brand)] transition-colors', currentLang === 'ar' ? 'text-right' : 'text-left']"
                   style="color: var(--Color-Text-Text-Primary)"
                 >
-                  {{ $t("logout") }}
+                  {{ $t('logout') }}
                 </button>
               </div>
             </div>
@@ -266,7 +266,7 @@
                 class="block w-full text-left px-4 py-2 text-sm hover:bg-[var(--Color-Surface-Surface-Brand)] transition-colors"
                 style="color: var(--Color-Text-Text-Primary)"
               >
-                {{ lang.toUpperCase() }}
+                {{ languageLabels[lang] }}
               </button>
             </div>
           </div>
@@ -303,6 +303,11 @@ const navLinks = [
   { to: "/about", text: "about" },
   { to: "/contact", text: "contact" },
 ];
+
+const languageLabels = {
+  en: "English",
+  ar: "العربية"
+};
 
 const setDir = (lang) => {
   if (lang === "ar") {

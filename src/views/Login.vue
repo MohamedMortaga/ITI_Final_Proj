@@ -1,5 +1,6 @@
 <template>
   <div
+    dir="ltr"
     class="min-h-screen flex items-center justify-center bg-white px-4 sm:px-6 lg:px-8 overflow-y-hidden dark:bg-gray-900"
   >
     <div

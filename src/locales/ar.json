@@ -196,5 +196,8 @@
   "reviewsAfterBooking": "تقييمات بعد الحجز",
   "webReviewsWithoutBooking": "تقييمات الويب (بدون حجز)",
   "yourRentals": "إيجاراتك",
-  "viewAllYourRentalBookings": "عرض جميع حجوزات الإيجار الخاصة بك."
+  "viewAllYourRentalBookings": "عرض جميع حجوزات الإيجار الخاصة بك.",
+  "profile": "الملف الشخصي",
+  "settings": "الإعدادات",
+  "logout": "تسجيل الخروج"
 } 
