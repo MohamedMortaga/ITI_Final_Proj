@@ -14,9 +14,11 @@
 
     <!-- All Products Section -->
     <div class="container mx-auto px-4 mt-8">
-      <h2 class="text-xl font-bold text-[var(--Color-Text-Text-Brand)] mb-4">All Products updates</h2>
+      <h2 class="text-xl font-bold text-[var(--Color-Text-Text-Brand)] mb-4">
+        {{$t('allProducts')}}
+      </h2>
       <div v-if="filteredProducts.length === 0" class="text-center text-gray-400 text-xl py-12">
-        No products found.
+        {{$t('noProductsFound')}}
       </div>
       <div v-else class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
         <ProductCard
@@ -78,9 +80,9 @@ export default {
       Swal.fire({
         position: "top-end",
         icon: "warning",
-        title: "Please log in to rent products",
+        title: $t('pleaseLoginToRent'),
         showConfirmButton: true,
-        confirmButtonText: "Go to Login",
+        confirmButtonText: $t('goToLogin'),
       }).then((result) => {
         if (result.isConfirmed) {
           router.push({ name: "Login" });

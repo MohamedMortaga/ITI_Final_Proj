@@ -20,7 +20,7 @@
       <input
         v-model="searchQuery"
         type="text"
-        placeholder="Search products by title..."
+        :placeholder="$t('searchByTitle')"
         class="w-full max-w-md p-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-pink-500 text-blue-600 dark:text-blue-400 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-500"
       />
     </div>

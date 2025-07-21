@@ -1,7 +1,7 @@
 <template>
   <div class="container mx-auto px-4 mt-12 mb-16">
     <h3 class="text-center text-xl font-bold mb-6">
-      What Our <span class="text-[var(--Color-Text-Text-Brand)]">Customers Say</span>
+      {{$t('whatCustomersSay')}}
     </h3>
     <div class="flex flex-col lg:flex-row gap-6 justify-center">
       <div

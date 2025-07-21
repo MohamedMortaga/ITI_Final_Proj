@@ -1,7 +1,7 @@
 <template>
     <div>
-        <h1 class="alert alert-danger">Error</h1>
-        <button class="btn btn-warning" @click="back">Go to Home</button>
+        <h1 class="alert alert-danger">{{$t('error')}}</h1>
+        <button class="btn btn-warning" @click="back">{{$t('goToHome')}}</button>
     </div>
 </template>
 

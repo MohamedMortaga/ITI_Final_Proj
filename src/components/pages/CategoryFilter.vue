@@ -20,7 +20,7 @@
       }"
       class="px-4 py-2 rounded"
     >
-      All
+      {{$t('all')}}
     </button>
   </div>
 </template>

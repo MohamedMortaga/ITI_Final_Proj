@@ -1,6 +1,6 @@
 <template>
   <div class="min-h-screen bg-gray-100 p-6">
-    <h1 class="text-4xl font-extrabold mb-10 text-gray-800 tracking-wide text-center">Category Management</h1>
+    <h1 class="text-4xl font-extrabold mb-10 text-gray-800 tracking-wide text-center">{{$t('categoryManagement')}}</h1>
 
     <!-- Add Category Form -->
     <form
@@ -10,14 +10,14 @@
       <input
         v-model="newCategory.name"
         type="text"
-        placeholder="Enter new category name"
+        :placeholder="$t('enterCategoryName')"
         class="flex-grow border border-gray-300 rounded-md px-4 py-3 text-lg placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 transition duration-200"
       />
       <button
         type="submit"
         class="bg-gradient-to-r from-green-400 to-blue-500 text-white font-semibold px-6 py-3 rounded-lg shadow-md hover:from-green-500 hover:to-blue-600 transition duration-200"
       >
-        Add Category
+        {{$t('addCategory')}}
       </button>
     </form>
 

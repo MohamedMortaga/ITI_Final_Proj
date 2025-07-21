@@ -8,14 +8,14 @@
         'lg:translate-x-0'
       ]"
     >
-      <h2 class="text-2xl font-bold mb-6">Admin Panel</h2>
+      <h2 class="text-2xl font-bold mb-6">{{$t('adminPanel')}}</h2>
       <ul class="space-y-4">
         <li>
           <router-link
             to="/admin/users"
             class="block px-3 py-2 rounded hover:bg-gray-700"
           >
-            👥 Users
+            👥 {{$t('users')}}
           </router-link>
         </li>
         <li>
@@ -23,7 +23,7 @@
             to="/admin/products"
             class="block px-3 py-2 rounded hover:bg-gray-700"
           >
-            📦 Products
+            📦 {{$t('products')}}
           </router-link>
         </li>
          <li>
@@ -31,15 +31,15 @@
       to="/admin/categories"
       class="block px-3 py-2 rounded hover:bg-gray-700"
     >
-      📂 Categories
+      📂 {{$t('categories')}}
     </router-link>
   </li>
   <li>
-    <router-link to="/rentals" class="block px-3 py-2 rounded hover:bg-gray-700">📅 View Your Rentals</router-link>
+    <router-link to="/rentals" class="block px-3 py-2 rounded hover:bg-gray-700">📅 {{$t('viewYourRentals')}}</router-link>
   </li>
   <li>
   <router-link to="/admin/reviews" class="block px-3 py-2 rounded hover:bg-gray-700">
-    📝 Manage Reviews
+    📝 {{$t('manageReviews')}}
   </router-link>
 </li>
 
@@ -64,7 +64,7 @@
                   d="M4 6h16M4 12h16M4 18h16"/>
           </svg>
         </button>
-        <h1 class="text-xl font-semibold">Admin Dashboard</h1>
+        <h1 class="text-xl font-semibold">{{$t('adminDashboard')}}</h1>
       </header>
 
       <!-- Page Content Slot -->

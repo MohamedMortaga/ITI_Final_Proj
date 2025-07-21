@@ -16,7 +16,7 @@
             :value="searchQuery" 
             @input="$emit('update:searchQuery', $event.target.value)" 
             type="text" 
-            placeholder="Search for product to rent?"
+            :placeholder="$t('searchPlaceholder')"
             class="pl-12 pr-4 py-3 w-full border rounded-lg focus:outline-none focus:ring-2 focus:ring-[var(--Color-Text-Text-Brand)] text-base text-[var(--Color-Text-Text-Primary)] placeholder-[var(--Color-Text-Text-Secondary)] bg-[var(--Color-Surface-Surface-Primary)] border-[var(--Color-Boarder-Border-Primary)] dark:border-[var(--Color-Boarder-Border-Primary)]" 
           />
         </div>

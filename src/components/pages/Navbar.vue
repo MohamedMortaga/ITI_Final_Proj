@@ -5,96 +5,35 @@
       class="bg-[var(--Color-Surface-Surface-Primary)] text-[var(--Color-Text-Text-Primary)] mb-0 mx-[88px]"
     >
       <div class="mx-auto container px-2 sm:px-6 lg:px-8">
-        <div class="relative flex h-16 items-center justify-between gap-5">
+        <div
+          class="relative flex h-16 items-center justify-between gap-5"
+          :class="currentLang === 'ar' ? 'flex-row-reverse' : ''"
+        >
+          <!-- Logo -->
           <router-link
             to="/"
             class="text-2xl font-medium text-[var(--Color-Text-Text-Brand)] hover:text-[var(--Color-Text-Text-Brand)]"
           >
-            Rento
+            {{$t('rento')}}
           </router-link>
-
-          <!-- Mobile view -->
-          <div class="flex items-center sm:hidden w-full">
-            <!-- Left side - Profile image with user name OR Login button -->
-            <div class="flex items-center space-x-1">
-              <template v-if="isAuthenticated">
-                <div class="relative flex items-center gap-1">
-                  <img
-                    :src="userProfileImage || defaultImage"
-                    alt="User Profile"
-                    class="h-10 w-10 rounded-full cursor-pointer"
-                    @click="toggleDropdown"
-                  />
-                  <!-- User name displayed to the right of the image -->
-                  <span class="ml-2 text-lg font-medium" v-if="auth.currentUser">
-                    {{ auth.currentUser.displayName || "User" }}
-                  </span>
-
-                  <!-- Dropdown menu -->
-                  <div
-                    v-if="showDropdown"
-                    class="absolute left-0 top-full mt-2 w-48 shadow-lg rounded-md z-10"
-                    style="background-color: var(--Color-Surface-Surface-Primary)"
-                  >
-                    <router-link
-                      to="/profile"
-                      class="block px-4 py-2 text-sm hover:bg-[var(--Color-Surface-Surface-Brand)]"
-                      style="color: var(--Color-Text-Text-Primary)"
-                      @click="closeDropdown"
-                      >Profile</router-link
-                    >
-                    <router-link
-                      to="/settings"
-                      class="block px-4 py-2 text-sm hover:bg-[var(--Color-Surface-Surface-Brand)]"
-                      style="color: var(--Color-Text-Text-Primary)"
-                      @click="closeDropdown"
-                      >Settings</router-link
-                    >
-                    <button
-                      @click="handleLogout"
-                      class="block w-full text-left px-4 py-2 text-sm hover:bg-[var(--Color-Surface-Surface-Brand)]"
-                      style="color: var(--Color-Text-Text-Primary)"
-                    >
-                      Logout
-                    </button>
-                  </div>
-                </div>
-              </template>
-              <template v-else>
-                <!-- Login button shown when not authenticated -->
-                <router-link
-                  to="/login"
-                  class="px-3 py-1 rounded-md text-sm font-Medium bg-[var(--Color-Surface-Surface-Brand)] hover:bg-[var(--Colors-Primary-700)] text-[var(--Color-Text-Text-Invert)]"
-                >
-                  Login
-                </router-link>
-              </template>
-            </div>
-
-            <!-- Spacer -->
-            <div class="flex-grow"></div>
-
-            <!-- Mobile menu button (right side) -->
-            <DisclosureButton
-              class="inline-flex items-center justify-center rounded-md p-2 text-[var(--Color-Text-Text-Primary)] hover:bg-[var(--Color-Surface-Surface-Secondary)] focus:outline-none focus:ring-2 focus:ring-inset focus:ring-[var(--Color-Boarder-Border-Primary)]"
+          <!-- Main content (nav links + profile/toggles) -->
+          <div class="flex items-center w-full"
+            :class="currentLang === 'ar' ? 'flex-row-reverse' : ''"
+          >
+            <!-- Navigation links -->
+            <div class="hidden sm:flex flex-1 items-center justify-center"
+              :class="currentLang === 'ar' ? 'justify-end' : 'justify-center'"
             >
-              <span class="sr-only">Open main menu</span>
-              <Bars3Icon v-if="!open" class="block h-6 w-6" aria-hidden="true" />
-              <XMarkIcon v-else class="block h-6 w-6" aria-hidden="true" />
-            </DisclosureButton>
-          </div>
-
-          <!-- Desktop/Tablet view -->
-          <div class="hidden sm:flex items-center justify-between w-full">
-            <div class="flex-1 flex items-center justify-center">
-              <div class="flex lg:space-x-[64px] md:space-x-[32px] space-x-[16px]">
+              <div class="flex lg:space-x-[64px] md:space-x-[32px] space-x-[16px]"
+                :class="currentLang === 'ar' ? 'flex-row-reverse space-x-reverse' : ''"
+              >
                 <router-link
                   to="/home"
                   class="lg:text-xl md:text-md text-sm font-medium hover:text-[var(--Color-Text-Text-Brand)]"
                   :class="{
                     'text-[var(--Color-Text-Text-Brand)]': $route.path === '/home',
                   }"
-                  >Home</router-link
+                  >{{ $t('home') }}</router-link
                 >
                 <router-link
                   to="/all-products"
@@ -103,7 +42,7 @@
                     'text-[var(--Color-Text-Text-Brand)]':
                       $route.path === '/all-products',
                   }"
-                  >Browse Tools</router-link
+                  >{{ $t('browseTools') }}</router-link
                 >
                 <router-link
                   to="/addProduct"
@@ -111,7 +50,7 @@
                   :class="{
                     'text-[var(--Color-Text-Text-Brand)]': $route.path === '/addProduct',
                   }"
-                  >Add Your Tool</router-link
+                  >{{ $t('addTool') }}</router-link
                 >
                 <router-link
                   to="/about"
@@ -119,7 +58,7 @@
                   :class="{
                     'text-[var(--Color-Text-Text-Brand)]': $route.path === '/about',
                   }"
-                  >About</router-link
+                  >{{ $t('about') }}</router-link
                 >
                 <router-link
                   to="/contact"
@@ -127,12 +66,27 @@
                   :class="{
                     'text-[var(--Color-Text-Text-Brand)]': $route.path === '/contact',
                   }"
-                  >Contact</router-link
+                  >{{ $t('contact') }}</router-link
                 >
               </div>
             </div>
+            <!-- Profile/toggles (RTL: left, LTR: right) -->
+            <div class="flex items-center space-x-4"
+              :class="currentLang === 'ar' ? 'flex-row-reverse space-x-reverse' : ''"
+            >
+              <!-- Language Toggle Switch -->
+              <div class="flex items-center ml-2">
+                <label class="relative inline-flex items-center cursor-pointer">
+                  <input type="checkbox" class="sr-only peer" :checked="currentLang === 'ar'" @change="toggleLanguage" />
+                  <div class="w-14 h-7 bg-gray-200 peer-focus:outline-none peer-focus:ring-2 peer-focus:ring-teal-500 rounded-full peer dark:bg-gray-700 peer-checked:bg-teal-600 transition-all"></div>
+                  <span class="absolute left-1 top-1 w-5 h-5 bg-white rounded-full shadow peer-checked:translate-x-7 transition-transform flex items-center justify-center text-xs font-bold">
+                    <span v-if="currentLang === 'ar'">ع</span>
+                    <span v-else>EN</span>
+                  </span>
+                </label>
+               
+              </div>
 
-            <div class="flex items-center space-x-4">
               <div>
                 <input
                   type="checkbox"
@@ -163,21 +117,21 @@
                     class="block px-4 py-2 text-sm hover:bg-[var(--Color-Surface-Surface-Brand)]"
                     style="color: var(--Color-Text-Text-Primary)"
                     @click="closeDropdown"
-                    >Profile</router-link
+                    >{{$t('profile')}}</router-link
                   >
                   <router-link
                     to="/settings"
                     class="block px-4 py-2 text-sm hover:bg-[var(--Color-Surface-Surface-Brand)]"
                     style="color: var(--Color-Text-Text-Primary)"
                     @click="closeDropdown"
-                    >Settings</router-link
+                    >{{$t('settings')}}</router-link
                   >
                   <button
                     @click="handleLogout"
                     class="block w-full text-left px-4 py-2 text-sm hover:bg-[var(--Color-Surface-Surface-Brand)]"
                     style="color: var(--Color-Text-Text-Primary)"
                   >
-                    Logout
+                    {{$t('logout')}}
                   </button>
                 </div>
               </div>
@@ -187,7 +141,7 @@
                 to="/login"
                 class="px-4 py-2 rounded-md text-xl font-medium bg-[var(--Color-Surface-Surface-Brand)] hover:bg-[var(--Colors-Primary-700)] active:bg-[var(--Colors-Primary-700)] focus:bg-[var(--Colors-Primary-700)] text-[var(--Color-Text-Text-Invert)]"
               >
-                Login
+                {{$t('login')}}
               </router-link>
             </div>
           </div>
@@ -210,7 +164,7 @@
                 isDarkMode && $route.path === '/home',
             }"
           >
-            Home
+            {{ $t('home') }}
           </router-link>
           <router-link
             to="/all-products"
@@ -225,7 +179,7 @@
                 isDarkMode && $route.path === '/all-products',
             }"
           >
-            Browse Tools
+            {{ $t('browseTools') }}
           </router-link>
           <router-link
             to="/addProduct"
@@ -240,7 +194,7 @@
                 isDarkMode && $route.path === '/addProduct',
             }"
           >
-            Add Your Tool
+            {{ $t('addTool') }}
           </router-link>
           <router-link
             to="/about"
@@ -255,7 +209,7 @@
                 isDarkMode && $route.path === '/about',
             }"
           >
-            About
+            {{ $t('about') }}
           </router-link>
           <router-link
             to="/contact"
@@ -270,7 +224,7 @@
                 isDarkMode && $route.path === '/contact',
             }"
           >
-            Contact
+            {{ $t('contact') }}
           </router-link>
           <div class="mt-2 flex justify-center">
             <input
@@ -297,7 +251,9 @@ import { getAuth, signOut } from "firebase/auth";
 import { useRouter } from "vue-router";
 import Swal from "sweetalert2";
 import defaultImage from "@/assets/default.png";
+import { useI18n } from 'vue-i18n';
 
+const { locale } = useI18n();
 const open = ref(false);
 const isDarkMode = ref(false);
 const isAuthenticated = ref(false);
@@ -305,6 +261,25 @@ const userProfileImage = ref("");
 const showDropdown = ref(false);
 const auth = getAuth();
 const router = useRouter();
+const currentLang = ref(locale.value);
+
+const setDir = (lang) => {
+  if (lang === 'ar') {
+    document.documentElement.setAttribute('dir', 'rtl');
+    document.body.style.textAlign = 'right';
+  } else {
+    document.documentElement.setAttribute('dir', 'ltr');
+    document.body.style.textAlign = 'left';
+  }
+};
+
+const toggleLanguage = () => {
+  const newLang = currentLang.value === 'en' ? 'ar' : 'en';
+  locale.value = newLang;
+  currentLang.value = newLang;
+  localStorage.setItem('lang', newLang);
+  setDir(newLang);
+};
 
 // Initialize dark mode based on system preference or saved state
 const initializeDarkMode = () => {
@@ -365,6 +340,7 @@ const closeDropdown = () => {
 onMounted(() => {
   initializeDarkMode();
   initializeAuth();
+  setDir(currentLang.value);
 });
 
 // Watch for changes in isDarkMode and update body class and localStorage

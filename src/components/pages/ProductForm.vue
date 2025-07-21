@@ -1,16 +1,16 @@
 <template>
   <form @submit.prevent="$emit('submitForm')" class="bg-white p-6 rounded-2xl shadow-lg mb-8 dark:bg-gray-800">
     <h2 class="text-2xl font-bold mb-6 text-gray-800 dark:text-gray-100 text-center">
-      {{ isEdit ? 'Edit Product' : 'Add New Product' }}
+      {{ isEdit ? $t('edit') : $t('addTool') }}
     </h2>
 
     <!-- Title -->
     <div class="mb-4">
-      <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Title</label>
+      <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">{{$t('productTitlePlaceholder')}}</label>
       <input
         v-model="form.title"
         type="text"
-        placeholder="Enter product title"
+        :placeholder="$t('productTitlePlaceholder')"
         class="w-full px-4 py-2 rounded-lg border border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-200 focus:ring-2 focus:ring-pink-500"
         required
       />
@@ -18,7 +18,7 @@
 
     <!-- Image Upload -->
     <div class="mb-4">
-      <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Product Image</label>
+      <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">{{$t('productImage')}}</label>
       <input
         type="file"
         @change="$emit('imageUpload', $event)"
@@ -26,21 +26,21 @@
         class="w-full px-4 py-2 rounded-lg border border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-200"
       />
       <div v-if="form.image" class="mt-3">
-        <img :key="form.image" :src="form.image" alt="Product Image" class="h-36 w-full object-cover rounded-lg border border-gray-300 dark:border-gray-600" />
+        <img :key="form.image" :src="form.image" :alt="$t('productImage')" class="h-36 w-full object-cover rounded-lg border border-gray-300 dark:border-gray-600" />
       </div>
-      <p v-else class="text-sm text-red-500 mt-2 dark:text-red-400">No image uploaded yet.</p>
-      <p v-if="uploading" class="text-sm text-pink-500 mt-2">Uploading image...</p>
+      <p v-else class="text-sm text-red-500 mt-2 dark:text-red-400">{{$t('noImageUploaded')}}</p>
+      <p v-if="uploading" class="text-sm text-pink-500 mt-2">{{$t('uploadingImage')}}</p>
     </div>
 
     <!-- Category -->
     <div class="mb-4">
-      <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Category</label>
+      <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">{{$t('selectCategory')}}</label>
       <select
         v-model="form.category"
         class="w-full px-4 py-2 rounded-lg border border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-200 focus:ring-2 focus:ring-pink-500"
         required
       >
-        <option disabled value="">Select Category</option>
+        <option disabled value="">{{$t('selectCategory')}}</option>
         <option v-for="cat in categories" :key="cat.id" :value="cat.name">
           {{ cat.name }}
         </option>
@@ -49,11 +49,11 @@
 
     <!-- Price -->
     <div class="mb-4">
-      <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Price</label>
+      <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">{{$t('price')}}</label>
       <input
         v-model.number="form.price"
         type="number"
-        placeholder="Enter product price"
+        :placeholder="$t('productPricePlaceholder')"
         class="w-full px-4 py-2 rounded-lg border border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-200 focus:ring-2 focus:ring-pink-500"
         required
       />
@@ -61,10 +61,10 @@
 
     <!-- Details -->
     <div class="mb-6">
-      <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Details</label>
+      <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">{{$t('details')}}</label>
       <textarea
         v-model="form.details"
-        placeholder="Enter product details"
+        :placeholder="$t('productDetailsPlaceholder')"
         rows="4"
         class="w-full px-4 py-2 rounded-lg border border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-200 focus:ring-2 focus:ring-pink-500"
       ></textarea>
@@ -75,7 +75,7 @@
       type="submit"
       class="w-full bg-pink-600 hover:bg-pink-700 transition-colors text-white font-semibold py-3 px-6 rounded-lg"
     >
-      {{ isEdit ? 'Update Product' : 'Add Product' }}
+      {{ isEdit ? $t('edit') : $t('addTool') }}
     </button>
   </form>
 </template>

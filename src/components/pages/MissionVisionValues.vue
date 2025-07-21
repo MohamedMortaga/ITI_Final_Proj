@@ -10,8 +10,8 @@
         :alt="item.title" 
         class="w-40 h-40 mb-4" 
       />
-      <h4 class="text-lg font-bold mb-2 text-[var(--Color-Text-Text-Brand)]">{{ item.title }}</h4>
-      <p class="text-sm text-[var(--Color-Text-Text-Primary)]">{{ item.description }}</p>
+      <h4 class="text-lg font-bold mb-2 text-[var(--Color-Text-Text-Brand)]">{{$t(item.title)}}</h4>
+      <p class="text-sm text-[var(--Color-Text-Text-Primary)]">{{$t(item.description)}}</p>
     </div>
   </div>
 </template>
@@ -22,18 +22,18 @@ export default {
     return {
       missionVisionValues: [
         { 
-          title: "Our Mission", 
-          description: "To make everyday tools and equipment accessible and affordable for everyone, empowering smarter living through simple and secure rentals.",
+          title: 'ourMission', 
+          description: 'missionDescription',
           image: require("@/assets/Mission.svg")
         },
         { 
-          title: "Our Vision", 
-          description: "To become the leading rental platform in the region, transforming how people access items they need — without the need to own them.",
+          title: 'ourVision', 
+          description: 'visionDescription',
           image: require("@/assets/vision.svg")
         },
         { 
-          title: "Our Core Values", 
-          description: "We value trust, simplicity, and affordability — making rentals easy, safe, and sustainable through a connected community.",
+          title: 'ourCoreValues', 
+          description: 'coreValuesDescription',
           image: require("@/assets/values.svg")
         }
       ]

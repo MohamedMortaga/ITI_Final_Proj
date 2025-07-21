@@ -19,17 +19,17 @@
           <div class="text-sm font-semibold text-[var(--Color-Text-Text-Primary)]">
             EGP {{ product.price }}
           </div>
-          <div class="text-xs text-[var(--Color-Text-Text-Secondary)]">Per Day</div>
+          <div class="text-xs text-[var(--Color-Text-Text-Secondary)]">{{$t('perDay')}}</div>
         </div>
         <button v-if="!isAuthenticated" @click="promptLogin"
           class="bg-[var(--Color-Surface-Surface-Brand)] text-[var(--Color-Text-Text-Invert)] px-4 py-2 rounded font-semibold text-sm transition hover:bg-[var(--Color-Text-Text-Brand)] hover:text-white"
           aria-label="Log in to rent this product">
-          Rent Item
+          {{$t('rentItem')}}
         </button>
         <router-link v-else :to="{ name: 'ProductDetails', params: { id: product.id } }"
           class="bg-[var(--Color-Surface-Surface-Brand)] text-[var(--Color-Text-Text-Invert)] px-4 py-2 rounded font-semibold text-sm transition hover:bg-[var(--Color-Text-Text-Brand)] hover:text-white"
           :aria-label="`View details for ${product.title}`">
-          Rent Item
+          {{$t('rentItem')}}
         </router-link>
       </div>
     </div>

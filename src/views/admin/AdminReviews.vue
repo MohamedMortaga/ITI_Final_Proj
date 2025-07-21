@@ -1,10 +1,10 @@
 <template>
     <div class="p-6 max-w-6xl mx-auto">
-        <h1 class="text-2xl font-bold mb-6">Manage Customer Reviews</h1>
+        <h1 class="text-2xl font-bold mb-6">{{ $t('manageCustomerReviews') }}</h1>
 
         <!-- WEB REVIEWS (After Booking) - NOW FIRST -->
         <section class="mb-12">
-            <h2 class="text-xl font-semibold text-blue-700 mb-4">✅ Reviews After Booking</h2>
+            <h2 class="text-xl font-semibold text-blue-700 mb-4">{{ $t('reviewsAfterBooking') }}</h2>
             <div v-if="loadingWeb">Loading web reviews...</div>
             <div v-else class="grid gap-4">
                 <div v-for="review in webReviews.slice().reverse()" :key="review.id"
@@ -19,16 +19,16 @@
                                 {{ review.productName }} (ID: {{ review.productId }})
                             </p> -->
                             <p class="text-sm text-gray-700 dark:text-gray-300">{{ review.review }}</p>
-                            <p class="text-yellow-500 mt-1">Rating: {{ review.rate }} ★</p>
-                            <p class="text-xs text-gray-500 mt-1">By: {{ review.userName }}</p>
-                            <p class="text-xs text-gray-400">At: {{ formatDate(review.timestamp) }}</p>
+                            <p class="text-yellow-500 mt-1">{{ $t('rating') }}: {{ review.rate }} ★</p>
+                            <p class="text-xs text-gray-500 mt-1">{{ $t('by') }}: {{ review.userName }}</p>
+                            <p class="text-xs text-gray-400">{{ $t('at') }}: {{ formatDate(review.timestamp) }}</p>
                         </div>
                     </div>
                     <div class="flex flex-col gap-2 items-end">
                         <button @click="startEdit(review, 'web-reviews')"
-                            class="bg-blue-500 text-white px-3 py-1 rounded hover:bg-blue-600">Edit</button>
+                            class="bg-blue-500 text-white px-3 py-1 rounded hover:bg-blue-600">{{ $t('edit') }}</button>
                         <button @click="deleteReview(review.id, 'web-reviews')"
-                            class="bg-red-500 text-white px-3 py-1 rounded hover:bg-red-600">Delete</button>
+                            class="bg-red-500 text-white px-3 py-1 rounded hover:bg-red-600">{{ $t('delete') }}</button>
                     </div>
                 </div>
             </div>
@@ -36,7 +36,7 @@
 
         <!-- USER REVIEWS (Without Booking) - NOW SECOND -->
         <section class="mb-12">
-            <h2 class="text-xl font-semibold text-green-700 mb-4">📝 Web Reviews (Without Booking)</h2>
+            <h2 class="text-xl font-semibold text-green-700 mb-4">{{ $t('webReviewsWithoutBooking') }}</h2>
             <div v-if="loadingUser">Loading user reviews...</div>
             <div v-else class="grid gap-4">
                 <div v-for="review in userReviews.slice().reverse()" :key="review.id"
@@ -48,16 +48,16 @@
                                 {{ review.productName }} (ID: {{ review.productId }})
                             </p>
                             <p class="text-sm text-gray-700 dark:text-gray-300">{{ review.review }}</p>
-                            <p class="text-yellow-500 mt-1">Rating: {{ review.rate }} ★</p>
-                            <p class="text-xs text-gray-500 mt-1">By: {{ review.userName }}</p>
-                            <p class="text-xs text-gray-400">At: {{ formatDate(review.timestamp) }}</p>
+                            <p class="text-yellow-500 mt-1">{{ $t('rating') }}: {{ review.rate }} ★</p>
+                            <p class="text-xs text-gray-500 mt-1">{{ $t('by') }}: {{ review.userName }}</p>
+                            <p class="text-xs text-gray-400">{{ $t('at') }}: {{ formatDate(review.timestamp) }}</p>
                         </div>
                     </div>
                     <div class="flex flex-col gap-2 items-end">
                         <button @click="startEdit(review, 'user-reviews')"
-                            class="bg-blue-500 text-white px-3 py-1 rounded hover:bg-blue-600">Edit</button>
+                            class="bg-blue-500 text-white px-3 py-1 rounded hover:bg-blue-600">{{ $t('edit') }}</button>
                         <button @click="deleteReview(review.id, 'user-reviews')"
-                            class="bg-red-500 text-white px-3 py-1 rounded hover:bg-red-600">Delete</button>
+                            class="bg-red-500 text-white px-3 py-1 rounded hover:bg-red-600">{{ $t('delete') }}</button>
                     </div>
                 </div>
             </div>
@@ -65,11 +65,11 @@
 
         <!-- Form Add/Edit -->
         <div class="border-t pt-6">
-            <h2 class="text-lg font-semibold mb-4">{{ editing ? "Edit" : "Add" }} Review</h2>
+            <h2 class="text-lg font-semibold mb-4">{{ editing ? $t('edit') : $t('add') }} {{ $t('review') }}</h2>
             <form @submit.prevent="saveReview" class="grid gap-4 max-w-md">
                 <select v-model="form.collection" class="p-2 border rounded" required>
-                    <option value="user-reviews">✅ User Reviews (after booking)</option>
-                    <option value="web-reviews">📝 Web Reviews (no booking)</option>
+                    <option value="user-reviews">{{ $t('userReviewsAfterBooking') }}</option>
+                    <option value="web-reviews">{{ $t('webReviewsWithoutBooking') }}</option>
                 </select>
                 <input v-model="form.productId" placeholder="Product ID" class="p-2 border rounded" required />
                 <input v-model="form.userName" placeholder="User Name" class="p-2 border rounded" required />
@@ -77,9 +77,9 @@
                 <input v-model.number="form.rate" type="number" min="1" max="5" class="p-2 border rounded" required />
                 <div class="flex gap-4">
                     <button type="submit" class="bg-green-600 text-white px-4 py-2 rounded hover:bg-green-700">{{
-                        editing ? "Update" : "Add" }}</button>
+                        editing ? $t('update') : $t('add') }}</button>
                     <button type="button" @click="resetForm" v-if="editing"
-                        class="bg-gray-400 px-4 py-2 rounded text-white">Cancel</button>
+                        class="bg-gray-400 px-4 py-2 rounded text-white">{{ $t('cancel') }}</button>
                 </div>
             </form>
         </div>
