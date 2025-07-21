@@ -1,5 +1,5 @@
 <template>
-  <div class="flex justify-center space-x-4 mb-6">
+  <div class="flex justify-center gap-5 mb-6">
     <button
       v-for="cat in categories"
       :key="cat.id"
