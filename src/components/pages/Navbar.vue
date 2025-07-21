@@ -17,7 +17,7 @@
           <!-- Main content (centered nav links) -->
           <div class="flex-1 flex justify-center">
             <!-- Navigation links -->
-            <div class="flex items-center gap-4 hidden lg:flex">
+            <div class="flex items-center gap-3 hidden lg:flex">
               <router-link
                 v-for="link in navLinks"
                 :key="link.to"
