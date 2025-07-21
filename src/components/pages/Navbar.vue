@@ -14,17 +14,20 @@
             to="/"
             class="text-2xl font-medium text-[var(--Color-Text-Text-Brand)] hover:text-[var(--Color-Text-Text-Brand)]"
           >
-            {{$t('rento')}}
+            {{ $t('rento') }}
           </router-link>
           <!-- Main content (nav links + profile/toggles) -->
-          <div class="flex items-center w-full"
+          <div
+            class="flex items-center w-full"
             :class="currentLang === 'ar' ? 'flex-row-reverse' : ''"
           >
             <!-- Navigation links -->
-            <div class="hidden sm:flex flex-1 items-center justify-center"
+            <div
+              class="hidden sm:flex flex-1 items-center justify-center"
               :class="currentLang === 'ar' ? 'justify-end' : 'justify-center'"
             >
-              <div class="flex lg:space-x-[64px] md:space-x-[32px] space-x-[16px]"
+              <div
+                class="flex lg:space-x-[64px] md:space-x-[32px] space-x-[16px]"
                 :class="currentLang === 'ar' ? 'flex-row-reverse space-x-reverse' : ''"
               >
                 <router-link
@@ -33,60 +36,53 @@
                   :class="{
                     'text-[var(--Color-Text-Text-Brand)]': $route.path === '/home',
                   }"
-                  >{{ $t('home') }}</router-link
                 >
+                  {{ $t('home') }}
+                </router-link>
                 <router-link
                   to="/all-products"
                   class="lg:text-xl md:text-md text-sm font-medium hover:text-[var(--Color-Text-Text-Brand)]"
                   :class="{
-                    'text-[var(--Color-Text-Text-Brand)]':
-                      $route.path === '/all-products',
+                    'text-[var(--Color-Text-Text-Brand)]': $route.path === '/all-products',
                   }"
-                  >{{ $t('browseTools') }}</router-link
                 >
+                  {{ $t('browseTools') }}
+                </router-link>
                 <router-link
                   to="/addProduct"
                   class="lg:text-xl md:text-md text-sm font-medium hover:text-[var(--Color-Text-Text-Brand)]"
                   :class="{
                     'text-[var(--Color-Text-Text-Brand)]': $route.path === '/addProduct',
                   }"
-                  >{{ $t('addTool') }}</router-link
                 >
+                  {{ $t('addTool') }}
+                </router-link>
                 <router-link
                   to="/about"
                   class="lg:text-xl md:text-md text-sm font-medium hover:text-[var(--Color-Text-Text-Brand)]"
                   :class="{
                     'text-[var(--Color-Text-Text-Brand)]': $route.path === '/about',
                   }"
-                  >{{ $t('about') }}</router-link
                 >
+                  {{ $t('about') }}
+                </router-link>
                 <router-link
                   to="/contact"
                   class="lg:text-xl md:text-md text-sm font-medium hover:text-[var(--Color-Text-Text-Brand)]"
                   :class="{
                     'text-[var(--Color-Text-Text-Brand)]': $route.path === '/contact',
                   }"
-                  >{{ $t('contact') }}</router-link
                 >
+                  {{ $t('contact') }}
+                </router-link>
               </div>
             </div>
             <!-- Profile/toggles (RTL: left, LTR: right) -->
-            <div class="flex items-center space-x-4"
+            <div
+              class="flex items-center space-x-4"
               :class="currentLang === 'ar' ? 'flex-row-reverse space-x-reverse' : ''"
             >
-              <!-- Language Toggle Switch -->
-              <div class="flex items-center ml-2">
-                <label class="relative inline-flex items-center cursor-pointer">
-                  <input type="checkbox" class="sr-only peer" :checked="currentLang === 'ar'" @change="toggleLanguage" />
-                  <div class="w-14 h-7 bg-gray-200 peer-focus:outline-none peer-focus:ring-2 peer-focus:ring-teal-500 rounded-full peer dark:bg-gray-700 peer-checked:bg-teal-600 transition-all"></div>
-                  <span class="absolute left-1 top-1 w-5 h-5 bg-white rounded-full shadow peer-checked:translate-x-7 transition-transform flex items-center justify-center text-xs font-bold">
-                    <span v-if="currentLang === 'ar'">ع</span>
-                    <span v-else>EN</span>
-                  </span>
-                </label>
-               
-              </div>
-
+              <!-- Dark Mode Toggle -->
               <div>
                 <input
                   type="checkbox"
@@ -104,7 +100,7 @@
                 <img
                   :src="userProfileImage || defaultImage"
                   alt="User Profile"
-                  class="h-10 w-10 rounded-full cursor-pointer"
+                  class="h-10 w-10 rounded-full cursor-pointer m-3"
                   @click="toggleDropdown"
                 />
                 <div
@@ -117,21 +113,23 @@
                     class="block px-4 py-2 text-sm hover:bg-[var(--Color-Surface-Surface-Brand)]"
                     style="color: var(--Color-Text-Text-Primary)"
                     @click="closeDropdown"
-                    >{{$t('profile')}}</router-link
                   >
+                    {{ $t('profile') }}
+                  </router-link>
                   <router-link
                     to="/settings"
                     class="block px-4 py-2 text-sm hover:bg-[var(--Color-Surface-Surface-Brand)]"
                     style="color: var(--Color-Text-Text-Primary)"
                     @click="closeDropdown"
-                    >{{$t('settings')}}</router-link
                   >
+                    {{ $t('settings') }}
+                  </router-link>
                   <button
                     @click="handleLogout"
                     class="block w-full text-left px-4 py-2 text-sm hover:bg-[var(--Color-Surface-Surface-Brand)]"
                     style="color: var(--Color-Text-Text-Primary)"
                   >
-                    {{$t('logout')}}
+                    {{ $t('logout') }}
                   </button>
                 </div>
               </div>
@@ -141,8 +139,48 @@
                 to="/login"
                 class="px-4 py-2 rounded-md text-xl font-medium bg-[var(--Color-Surface-Surface-Brand)] hover:bg-[var(--Colors-Primary-700)] active:bg-[var(--Colors-Primary-700)] focus:bg-[var(--Colors-Primary-700)] text-[var(--Color-Text-Text-Invert)]"
               >
-                {{$t('login')}}
+                {{ $t('login') }}
               </router-link>
+
+              <!-- Language Selector -->
+              <div class="relative">
+                <button
+                  @click="toggleLanguageDropdown"
+                  class="flex items-center space-x-1 px-2 py-1 rounded hover:bg-[var(--Color-Surface-Surface-Secondary)]"
+                  :class="currentLang === 'ar' ? 'space-x-reverse' : ''"
+                >
+                  <span>{{ currentLang.toUpperCase() }}</span>
+                  <svg
+                    class="w-4 h-4"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                  >
+                    <path
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                      stroke-width="2"
+                      d="M19 9l-7 7-7-7"
+                    ></path>
+                  </svg>
+                </button>
+                <div
+                  v-if="showLanguageDropdown"
+                  class="absolute right-0 mt-2 w-20 shadow-lg rounded-md z-10"
+                  style="background-color: var(--Color-Surface-Surface-Primary)"
+                  :class="currentLang === 'ar' ? 'left-0 right-auto' : 'right-0'"
+                >
+                  <button
+                    v-for="lang in languages"
+                    :key="lang"
+                    @click="changeLanguage(lang)"
+                    class="block w-full text-left px-4 py-2 text-sm hover:bg-[var(--Color-Surface-Surface-Brand)]"
+                    style="color: var(--Color-Text-Text-Primary)"
+                  >
+                    {{ lang.toUpperCase() }}
+                  </button>
+                </div>
+              </div>
             </div>
           </div>
         </div>
@@ -237,6 +275,47 @@
               <span class="toggle-icon"></span>
             </label>
           </div>
+          <!-- Mobile Language Selector -->
+          <div class="mt-2 flex justify-center">
+            <div class="relative">
+              <button
+                @click="toggleLanguageDropdown"
+                class="flex items-center space-x-1 px-2 py-1 rounded hover:bg-[var(--Color-Surface-Surface-Secondary)]"
+                :class="currentLang === 'ar' ? 'space-x-reverse' : ''"
+              >
+                <span>{{ currentLang.toUpperCase() }}</span>
+                <svg
+                  class="w-4 h-4"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    stroke-width="2"
+                    d="M19 9l-7 7-7-7"
+                  ></path>
+                </svg>
+              </button>
+              <div
+                v-if="showLanguageDropdown"
+                class="absolute mt-2 w-20 shadow-lg rounded-md z-10"
+                style="background-color: var(--Color-Surface-Surface-Primary)"
+                :class="currentLang === 'ar' ? 'left-0 right-auto' : 'right-0'"
+              >
+                <button
+                  v-for="lang in languages"
+                  :key="lang"
+                  @click="changeLanguage(lang)"
+                  class="block w-full text-left px-4 py-2 text-sm hover:bg-[var(--Color-Surface-Surface-Brand)]"
+                  style="color: var(--Color-Text-Text-Primary)"
+                >
+                  {{ lang.toUpperCase() }}
+                </button>
+              </div>
+            </div>
+          </div>
         </div>
       </DisclosurePanel>
     </Disclosure>
@@ -244,41 +323,45 @@
 </template>
 
 <script setup>
-import { Disclosure, DisclosureButton, DisclosurePanel } from "@headlessui/vue";
-import { Bars3Icon, XMarkIcon } from "@heroicons/vue/24/outline";
+import { Disclosure, DisclosurePanel } from "@headlessui/vue";
 import { ref, watch, onMounted } from "vue";
 import { getAuth, signOut } from "firebase/auth";
 import { useRouter } from "vue-router";
 import Swal from "sweetalert2";
 import defaultImage from "@/assets/default.png";
-import { useI18n } from 'vue-i18n';
+import { useI18n } from "vue-i18n";
 
 const { locale } = useI18n();
-const open = ref(false);
 const isDarkMode = ref(false);
 const isAuthenticated = ref(false);
 const userProfileImage = ref("");
 const showDropdown = ref(false);
+const showLanguageDropdown = ref(false);
+const currentLang = ref(locale.value);
+const languages = ref(["en", "ar"]);
 const auth = getAuth();
 const router = useRouter();
-const currentLang = ref(locale.value);
 
 const setDir = (lang) => {
-  if (lang === 'ar') {
-    document.documentElement.setAttribute('dir', 'rtl');
-    document.body.style.textAlign = 'right';
+  if (lang === "ar") {
+    document.documentElement.setAttribute("dir", "rtl");
+    document.body.style.textAlign = "right";
   } else {
-    document.documentElement.setAttribute('dir', 'ltr');
-    document.body.style.textAlign = 'left';
+    document.documentElement.setAttribute("dir", "ltr");
+    document.body.style.textAlign = "left";
   }
 };
 
-const toggleLanguage = () => {
-  const newLang = currentLang.value === 'en' ? 'ar' : 'en';
-  locale.value = newLang;
-  currentLang.value = newLang;
-  localStorage.setItem('lang', newLang);
-  setDir(newLang);
+const toggleLanguageDropdown = () => {
+  showLanguageDropdown.value = !showLanguageDropdown.value;
+};
+
+const changeLanguage = (lang) => {
+  locale.value = lang;
+  currentLang.value = lang;
+  localStorage.setItem("lang", lang);
+  setDir(lang);
+  showLanguageDropdown.value = false;
 };
 
 // Initialize dark mode based on system preference or saved state
@@ -356,7 +439,7 @@ watch(isDarkMode, (newValue) => {
   font-weight: bold;
 }
 
-/* Custom toggle switch styles */
+/* Custom toggle switch styles (for dark mode) */
 .custom-toggle {
   opacity: 0;
   position: absolute;
@@ -397,12 +480,9 @@ watch(isDarkMode, (newValue) => {
     no-repeat center;
 }
 
-/* Dropdown styles */
-.dropdown {
-  position: absolute;
-  right: 0;
-  margin-top: 0.5rem;
-  background-color: white;
+/* Dropdown styles (for both profile and language dropdowns) */
+.relative .absolute {
+  background-color: var(--Color-Surface-Surface-Primary);
   border-radius: 0.375rem;
   box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
   z-index: 10;
