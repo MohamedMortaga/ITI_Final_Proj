@@ -13,41 +13,45 @@
           <h1 class="text-3xl font-bold text-teal-600 lg:text-3xl xl:text-4xl">Rento</h1>
         </div>
 
-        <h2 class="text-2xl font-semibold mb-4 lg:text-2xl xl:text-3xl">{{$t('logIn')}}</h2>
+        <h2 class="text-2xl font-semibold mb-4 lg:text-2xl xl:text-3xl">Log in</h2>
         <p class="text-gray-600 mb-6 lg:text-base xl:text-lg dark:text-gray-300">
-          {{$t('registerHere')}}
-          <router-link to="/Signup" class="text-teal-600 font-semibold">
-            {{$t('signUp')}}
-          </router-link>
+          If you don't have an account, you can<br />
+          <router-link to="/Signup" class="text-teal-600 font-semibold"
+            >Register here!</router-link
+          >
         </p>
 
         <form class="space-y-4 xl:space-y-6" @submit.prevent="handleSubmit">
           <!-- Email -->
           <div>
-            <label for="email" class="block text-sm text-black-900 mb-1 lg:text-sm xl:text-base dark:text-gray-200">
-              {{$t('emailPlaceholder')}}
-            </label>
+            <label
+              for="email"
+              class="block text-sm text-black-900 mb-1 lg:text-sm xl:text-base dark:text-gray-200"
+              >Email</label
+            >
             <input
               id="email"
               v-model="email"
               type="email"
               required
-              :placeholder="$t('emailPlaceholder')"
+              placeholder="Enter your email address"
               class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-teal-600 text-sm lg:text-sm xl:text-base bg-white dark:bg-gray-700 dark:border-gray-600 dark:text-gray-200"
             />
           </div>
           <!-- Password -->
           <div>
-            <label for="password" class="block text-sm text-black-900 mb-1 lg:text-sm xl:text-base dark:text-gray-200">
-              {{$t('passwordPlaceholder')}}
-            </label>
+            <label
+              for="password"
+              class="block text-sm text-black-900 mb-1 lg:text-sm xl:text-base dark:text-gray-200"
+              >Password</label
+            >
             <div class="relative">
               <input
                 id="password"
                 v-model="password"
                 :type="passwordVisible ? 'text' : 'password'"
                 required
-                :placeholder="$t('passwordPlaceholder')"
+                placeholder="Enter your password"
                 class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-26 focus:ring-teal-600 text-sm lg:text-sm xl:text-base bg-white dark:bg-gray-700 dark:border-gray-600 dark:text-gray-200"
               />
               <button
@@ -71,14 +75,14 @@
                 v-model="rememberMe"
                 class="mr-1 lg:mr-1 xl:mr-2 xl:h-5 xl:w-5 dark:bg-gray-700 dark:border-gray-600"
               />
-              {{$t('rememberMe')}}
+              Remember me
             </label>
             <button
               type="button"
               @click="showForgotPasswordModal"
               class="text-teal-600 hover:underline dark:text-teal-400"
             >
-              {{$t('forgotPassword')}}
+              Forgot Password?
             </button>
           </div>
 
@@ -87,12 +91,12 @@
             type="submit"
             class="w-full bg-teal-600 text-white rounded-md py-3 font-semibold hover:bg-teal-700 lg:py-3 xl:py-4 xl:text-lg"
           >
-            {{$t('logIn')}}
+            Log In
           </button>
 
           <!-- OR Social -->
           <div class="text-center text-gray-500 text-xl font-semibold dark:text-gray-400">
-            {{$t('orContinueWith')}}
+            or continue with
           </div>
 
           <div class="flex gap-3 items-center justify-center xl:gap-4">
@@ -136,10 +140,10 @@
       >
         <div class="bg-white rounded-lg p-6 w-full max-w-md dark:bg-gray-800">
           <h3 class="text-lg font-semibold text-gray-900 mb-4 dark:text-gray-200">
-            {{$t('resetYourPassword')}}
+            Reset Your Password
           </h3>
           <p class="text-sm text-gray-600 mb-4 dark:text-gray-300">
-            {{$t('enterEmailToReset')}}
+            Enter your email address to receive a password reset link.
           </p>
           <form @submit.prevent="handleForgotPassword">
             <div class="mb-4">
@@ -163,13 +167,13 @@
                 @click="isModalOpen = false"
                 class="px-4 py-2 text-sm text-gray-600 hover:text-gray-800 dark:text-gray-300 dark:hover:text-gray-100"
               >
-                {{$t('cancel')}}
+                Cancel
               </button>
               <button
                 type="submit"
                 class="px-4 py-2 bg-teal-600 text-white rounded-md text-sm font-semibold hover:bg-teal-700"
               >
-                {{$t('sendResetLink')}}
+                Send Reset Link
               </button>
             </div>
           </form>
@@ -218,7 +222,7 @@ export default {
           Swal.fire({
             position: "top-end",
             icon: "info",
-            title: $t('loginSuccessful'),
+            title: "You are already logged in",
             showConfirmButton: false,
             timer: 1500,
           });
@@ -260,7 +264,7 @@ export default {
         Swal.fire({
           position: "top-end",
           icon: "error",
-          title: $t('error'),
+          title: `Oops, login unsuccessful: ${error.value}`,
           showConfirmButton: false,
           timer: 1500,
         });
@@ -291,7 +295,7 @@ export default {
         Swal.fire({
           position: "top-end",
           icon: "error",
-          title: $t('error'),
+          title: `Oops, login unsuccessful: ${error.value}`,
           showConfirmButton: false,
           timer: 1500,
         });
@@ -308,7 +312,7 @@ export default {
         Swal.fire({
           position: "top-end",
           icon: "error",
-          title: $t('enterEmailToReset'),
+          title: "Please enter your email address",
           showConfirmButton: false,
           timer: 1500,
         });
@@ -322,7 +326,7 @@ export default {
         Swal.fire({
           position: "top-end",
           icon: "success",
-          title: $t('passwordResetSent'),
+          title: "Password reset email sent! Check your inbox.",
           showConfirmButton: false,
           timer: 1500,
         });
