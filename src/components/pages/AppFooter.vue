@@ -1,5 +1,5 @@
 <template>
-  <footer class="mt-16">
+  <footer class="bg-[var(--Color-Surface-Surface-Primary)] text-[var(--Color-Text-Text-Primary)]">
     <!-- Full-width border line (outside container) -->
     <div class="border-t border-[var(--Color-Boarder-Border-Primary)] w-full"></div>
     

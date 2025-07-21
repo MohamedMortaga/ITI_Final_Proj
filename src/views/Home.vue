@@ -1,6 +1,6 @@
 <template>
   <div
-    class="min-h-screen flex flex-col mx-[88px]"
+    class="min-h-screen flex flex-col px-[88px]"
     :style="{
       backgroundColor: 'var(--Color-Surface-Surface-Primary)',
       color: 'var(--Color-Text-Text-Primary)',

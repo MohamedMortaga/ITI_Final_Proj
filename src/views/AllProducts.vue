@@ -1,5 +1,5 @@
 <template>
-  <div class="min-h-screen flex flex-col"
+  <div class="min-h-screen flex flex-col px-[88px]"
     :style="{ backgroundColor: 'var(--Color-Surface-Surface-Primary)', color: 'var(--Color-Text-Text-Primary)' }">
     
     <!-- Search Bar Section -->
