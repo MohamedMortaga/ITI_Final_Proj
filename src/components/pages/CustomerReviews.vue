@@ -3,7 +3,7 @@
     <h3 class="text-center text-xl font-bold mb-6">
       {{$t('whatCustomersSay')}}
     </h3>
-    <div class="flex flex-col lg:flex-row gap-6 justify-center">
+    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 justify-center">
       <div
         v-for="review in displayedReviews"
         :key="review.id"
