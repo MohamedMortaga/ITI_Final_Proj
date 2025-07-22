@@ -1,6 +1,6 @@
 <template>
   <div
-    class="min-h-screen flex flex-col px-6 lg:px-[88px]"
+    class="min-h-screen flex flex-col px-6 lg:px-[88px] overflow-hidden"
     :style="{
       backgroundColor: 'var(--Color-Surface-Surface-Primary)',
       color: 'var(--Color-Text-Text-Primary)',
@@ -20,10 +20,10 @@
     />
 
     <!-- Hero Banner -->
-    <HeroBanner/>
+    <HeroBanner class="px-4"/>
     
     <!-- Recommended Products -->
-    <div class="container mx-auto px-4 mt-8">
+    <div class="container mx-auto px-4 mt-8 flex-grow overflow-auto">
       <div class="flex items-center justify-between mb-4">
         <h2 class="text-xl font-bold text-[var(--Color-Text-Text-Brand)]">
           {{$t('recommendedForYou')}}
@@ -55,7 +55,7 @@
     <CustomerReviews :reviews="formattedReviews" v-if="formattedReviews.length > 0" />
 
     <!-- Why Rento Section -->
-    <WhyRento />
+    <WhyRento class="px-4" />
 
     <!-- Mission, Vision, Values Section -->
     <MissionVisionValues />
@@ -64,6 +64,7 @@
   <!-- Footer -->
   <AppFooter />
 </template>
+
 
 <script>
 import { ref, computed, onMounted } from "vue";

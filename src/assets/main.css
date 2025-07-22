@@ -121,7 +121,10 @@ input[type="password"]::-webkit-clear-button {
   --Spacing-Spacing-md: var(--Spacing-1);
   --Spacing-Spacing-sm: var(--Spacing-half);
   --Spacing-Spacing-xl: var(--Spacing-3);
+  /* Add hover color */
+  --Color-Text-Hover-Primary: var(--Colors-Gray-25);
 }
+
 
 
 .dark {
@@ -149,6 +152,8 @@ input[type="password"]::-webkit-clear-button {
   --Spacing-Spacing-md: var(--Spacing-1);
   --Spacing-Spacing-sm: var(--Spacing-half);
   --Spacing-Spacing-xl: var(--Spacing-3);
+  /* add hover text */
+  --Color-Text-Hover-Primary: var(--Colors-Primary-500);
 }
 
 .text-default {

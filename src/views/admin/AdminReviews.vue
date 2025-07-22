@@ -8,7 +8,7 @@
             <div v-if="loadingWeb">Loading web reviews...</div>
             <div v-else class="grid gap-4">
                 <div v-for="review in webReviews.slice().reverse()" :key="review.id"
-                    class="bg-white dark:bg-gray-800 border rounded-lg p-4 shadow flex justify-between items-start">
+                    class="bg-white  border rounded-lg p-4 shadow flex justify-between items-start">
                     <div class="flex gap-4">
                         <div v-if="review.userImage">
                             <img :src="review.userImage" alt="User Image" class="w-24 h-24 rounded-full object-cover" />
@@ -40,7 +40,7 @@
             <div v-if="loadingUser">Loading user reviews...</div>
             <div v-else class="grid gap-4">
                 <div v-for="review in userReviews.slice().reverse()" :key="review.id"
-                    class="bg-white dark:bg-gray-800 border rounded-lg p-4 shadow flex justify-between items-start">
+                    class="bg-white  border rounded-lg p-4 shadow flex justify-between items-start">
                     <div class="flex gap-4">
                         <img v-if="review.img" :src="review.img" alt="Product" class="w-16 h-16 object-cover rounded" />
                         <div>
