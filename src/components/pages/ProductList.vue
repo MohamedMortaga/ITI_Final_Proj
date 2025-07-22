@@ -1,52 +1,74 @@
 <template>
-  <div v-if="products.length" class="overflow-x-auto">
-    <table class="min-w-full border border-gray-300 dark:border-gray-700">
-      <thead class="bg-gray-100 dark:bg-gray-800 text-left">
-        <tr>
-          <th class="p-3 border-b text-[var(--Color-Text-Text-Primary)]">{{$t('image') || 'Image'}}</th>
-          <th class="p-3 border-b text-[var(--Color-Text-Text-Primary)]">{{$t('productTitlePlaceholder')}}</th>
-          <th class="p-3 border-b dark:text-gray-200">{{$t('category') || 'Category'}}</th>
-          <th class="p-3 border-b dark:text-gray-200">{{$t('price')}}</th>
-          <th class="p-3 border-b dark:text-gray-200">{{$t('details')}}</th>
-          <th class="p-3 border-b dark:text-gray-200">{{$t('uploaded') || 'Uploaded'}}</th>
-          <th class="p-3 border-b dark:text-gray-200">{{$t('owner')}}</th>
-          <th class="p-3 border-b dark:text-gray-200">{{$t('actions')}}</th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr v-for="product in products" :key="product.id" class="hover:bg-gray-50 dark:hover:bg-gray-700">
-          <td class="p-3 border-b">
-            <img
-              v-if="product.img"
-              :src="product.img"
-              alt="Product Image"
-              class="w-16 h-16 object-cover rounded"
-            />
-            <span v-else class="text-red-500 text-sm dark:text-red-400">{{$t('noImage')}}</span>
-          </td>
-          <td class="p-3 border-b text-pink-600 font-semibold dark:text-pink-400" v-html="highlightText(product.title)"></td>
-          <td class="p-3 border-b">{{ product.category }}</td>
-          <td class="p-3 border-b">{{ product.price }} EGP</td>
-          <td class="p-3 border-b">{{ product.details }}</td>
-          <td class="p-3 border-b">
-            <span v-if="product.createdAt && product.createdAt.toDate">
-              {{ product.createdAt.toDate().toLocaleString() }}
-            </span>
-          </td>
-          <td class="p-3 border-b text-sm text-gray-600 dark:text-gray-300">
-            {{ product.ownerName }}
-          </td>
-          <td class="p-3 border-b flex gap-2">
-            <button @click="$emit('editProduct', product)" class="text-blue-600 dark:text-blue-400">{{$t('edit')}}</button>
-            <button @click="$emit('deleteProduct', product.id)" class="text-red-600 dark:text-red-400">{{$t('delete')}}</button>
-          </td>
-        </tr>
-      </tbody>
-    </table>
+  <div v-if="products.length" class="space-y-4">
+    <!-- Header Row -->
+    <div class="grid grid-cols-8 gap-4 px-6 py-3 bg-[var(--Color-Surface-Surface-Primary)] dark:bg-[var(--Color-Surface-Surface-Primary)] rounded-xl font-semibold text-[var(--Color-Text-Text-Primary)] text-base">
+      <div>{{$t('image') || 'Image'}}</div>
+      <div>{{$t('productTitlePlaceholder')}}</div>
+      <div>{{$t('category') || 'Category'}}</div>
+      <div>{{$t('price')}}</div>
+      <div>{{$t('details')}}</div>
+      <div>{{$t('uploaded') || 'Uploaded'}}</div>
+      <div>{{$t('owner')}}</div>
+      <div>{{$t('actions')}}</div>
+    </div>
+    <!-- Product Cards -->
+    <div
+      v-for="product in products"
+      :key="product.id"
+      class="grid grid-cols-8 gap-4 items-center bg-white dark:bg-[var(--Color-Surface-Surface-Primary)] border border-[var(--Color-Boarder-Border-Primary)] rounded-xl shadow-sm px-6 py-4"
+    >
+      <!-- Image -->
+      <div>
+        <img
+          v-if="product.img"
+          :src="product.img"
+          alt="Product Image"
+          class="w-16 h-16 object-cover rounded"
+        />
+        <span v-else class="text-red-500 text-sm dark:text-red-400">{{$t('noImage')}}</span>
+      </div>
+      <!-- Title -->
+      <div class="text-[var(--Color-Text-Text-Primary)] dark:text-[var(--Color-Text-Text-Primary)] font-semibold font-nunito" v-html="highlightText(product.title)"></div>
+      <!-- Category -->
+      <div class="text-[var(--Color-Text-Text-Primary)] dark:text-[var(--Color-Text-Text-Primary)]  font-nunito">{{ product.category }}</div>
+      <!-- Price -->
+      <div class="text-[var(--Color-Text-Text-Primary)] dark:text-[var(--Color-Text-Text-Primary)]  font-nunito">{{ product.price }} EGP <br><span class="text-xs text-[var(--Color-Text-Text-Secondary)] dark:text-[var(--Color-Text-Text-Secondary)] font-nunito">{{$t('perDay')}}</span></div>
+      <!-- Details -->
+      <div class="text-[var(--Color-Text-Text-Primary)] dark:text-[var(--Color-Text-Text-Primary)]  font-nunito">{{ product.details }}</div>
+      <!-- Uploaded -->
+      <div>
+        <span class="text-[var(--Color-Text-Text-Primary)] dark:text-[var(--Color-Text-Text-Primary)]  font-nunito" v-if="product.createdAt && product.createdAt.toDate">
+          {{ product.createdAt.toDate().toLocaleString() }}
+        </span>
+      </div>
+      <!-- Owner -->
+      <div class="text-sm text-[var(--Color-Text-Text-Secondary)] dark:text-[var(--Color-Text-Text-Secondary)] font-nunito">
+        {{ product.ownerName }}
+      </div>
+      <!-- Actions -->
+      <div class="flex flex-col gap-2 items-center">
+        <button
+          @click="$emit('editProduct', product)"
+          class="w-10 h-10 flex items-center justify-center rounded-full bg-[var(--Color-Surface-Surface-Brand)] text-white hover:bg-[var(--Colors-Primary-600)] transition"
+          title="Edit"
+        >
+          <i class="fa-solid fa-pen"></i>
+        </button>
+        <button
+          @click="$emit('deleteProduct', product.id)"
+          class="w-10 h-10 flex items-center justify-center rounded-full bg-[var(--Colors-Error-400)] text-white hover:bg-red-700 transition"
+          title="Delete"
+        >
+          <i class="fa-solid fa-trash"></i>
+        </button>
+      </div>
+    </div>
   </div>
-
   <div v-else class="text-center text-gray-500 py-10 text-lg dark:text-gray-400">
     {{$t('noProductsFound')}}
+  </div>
+  <div class="flex justify-center mt-16  ">
+    <button class="w-[400px] bg-[var(--Color-Surface-Surface-Brand)] text-[var(--Color-Text-Text-Invert)] hover:bg-[var(--Colors-Primary-600)] px-4 py-2 rounded-lg">Add Item</button>
   </div>
 </template>
 

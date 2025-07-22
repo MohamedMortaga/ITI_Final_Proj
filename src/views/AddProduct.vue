@@ -1,9 +1,44 @@
 <!-- AdminProducts.vue -->
 <template>
-  <div class="p-6 max-w-4xl mx-auto bg-white dark:bg-gray-900">
+  <div class=" mx-auto bg-[var(--Color-Surface-Surface-Primary)] dark:bg-[var(--Color-Surface-Surface-Primary)] px-[120px] py-6">
     <h1 class="text-2xl font-bold mb-6 text-center text-pink-600 dark:text-pink-400">
-      Admin Dashboard - Products
+      Products 
     </h1>
+
+     <!-- Search Bar -->
+     <div class="mb-6 flex justify-between  items-center ">
+      <p class="text-2xl text-[var(--Color-Text-Text-Primary)]  font-medium">Your Items</p>
+      <div class="relative">
+        <i class="fa-solid fa-magnifying-glass absolute left-4 top-1/2 -translate-y-1/2 text-[var(--Color-Text-Text-Brand)] w-5 h-5 pointer-events-none"></i>
+
+        <input
+        v-model="searchQuery"
+        type="text"
+        :placeholder="$t('searchByTitle')"
+        class="w-[500px] pl-12 pr-4 py-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-[var(--Color-Text-Text-Brand)] text-base text-[var(--Color-Text-Text-Primary)] placeholder-[var(--Color-Text-Text-Secondary)] bg-[var(--Color-Surface-Surface-Primary)] border-[var(--Color-Boarder-Border-Primary)] dark:border-[var(--Color-Boarder-Border-Primary)]"
+      />
+      </div>
+      
+    </div>
+
+    <!-- Category Filter Buttons -->
+    <CategoryButtons
+      :categories="categories"
+      :selectedCategory="selectedCategory"
+      @updateCategory="(val) => selectedCategory = val"
+    />
+    
+    <!-- Products List -->
+    <ProductList
+      :products="filteredProducts"
+      :highlightText="highlightText"
+      @editProduct="editProduct"
+      @deleteProduct="deleteProduct"
+    />
+    
+    
+
+   
 
     <!-- Add / Edit Form -->
     <ProductForm
@@ -15,30 +50,6 @@
       @imageUpload="handleImageUpload"
     />
 
-    <!-- Search Bar -->
-    <div class="mb-6">
-      <input
-        v-model="searchQuery"
-        type="text"
-        :placeholder="$t('searchByTitle')"
-        class="w-full max-w-md p-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-pink-500 text-blue-600 dark:text-blue-400 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-500"
-      />
-    </div>
-
-    <!-- Category Filter Buttons -->
-    <CategoryButtons
-      :categories="categories"
-      :selectedCategory="selectedCategory"
-      @updateCategory="(val) => selectedCategory = val"
-    />
-
-    <!-- Products List -->
-    <ProductList
-      :products="filteredProducts"
-      :highlightText="highlightText"
-      @editProduct="editProduct"
-      @deleteProduct="deleteProduct"
-    />
   </div>
 </template>
 
