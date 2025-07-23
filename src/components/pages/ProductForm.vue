@@ -87,6 +87,13 @@
     >
       {{ isEdit ? $t('edit') : $t('addTool') }}
     </button>
+    <button
+      type="button"
+      class="w-full bg-gray-400 hover:bg-gray-500 transition-colors text-white font-semibold py-3 px-6 rounded-lg mt-2"
+      @click="$emit('cancelForm')"
+    >
+      {{ $t('cancel') || 'Cancel' }}
+    </button>
   </form>
 </template>
 

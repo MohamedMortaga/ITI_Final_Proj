@@ -1,9 +1,9 @@
 <!-- AdminProducts.vue -->
 <template>
   <div class=" mx-auto bg-[var(--Color-Surface-Surface-Primary)] dark:bg-[var(--Color-Surface-Surface-Primary)] px-[120px] py-6">
-    <h1 class="text-2xl font-bold mb-6 text-center text-pink-600 dark:text-pink-400">
+    <!-- <h1 class="text-2xl font-bold mb-6 text-center text-pink-600 dark:text-pink-400">
       Products 
-    </h1>
+    </h1> -->
 
      <!-- Search Bar -->
      <div class="mb-6 flex justify-between  items-center ">
@@ -32,8 +32,9 @@
     <ProductList
       :products="filteredProducts"
       :highlightText="highlightText"
-      @editProduct="editProduct"
+      @editProduct="editProductHandler"
       @deleteProduct="deleteProduct"
+      @addItem="showForm = true"
     />
     
     
@@ -42,12 +43,14 @@
 
     <!-- Add / Edit Form -->
     <ProductForm
+      v-if="showForm"
       :form="form"
       :categories="categories"
       :isEdit="isEdit"
       :uploading="uploading"
-      @submitForm="submitForm"
+      @submitForm="handleSubmit"
       @imageUpload="handleImageUpload"
+      @cancelForm="showForm = false"
     />
 
   </div>
@@ -77,6 +80,18 @@ const {
   deleteProduct,
   highlightText
 } = useAdminProducts();
+
+const showForm = ref(false);
+
+function handleSubmit() {
+  submitForm();
+  showForm.value = false;
+}
+
+function editProductHandler(product) {
+  editProduct(product);
+  showForm.value = true;
+}
 
 onMounted(() => {
   loadProducts();
