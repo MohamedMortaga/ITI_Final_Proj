@@ -1,69 +1,59 @@
 <!-- AdminProducts.vue -->
 <template>
-  <div class=" mx-auto bg-[var(--Color-Surface-Surface-Primary)] dark:bg-[var(--Color-Surface-Surface-Primary)] px-[120px] py-6">
+  <div class="min-h-screen mx-auto bg-[var(--Color-Surface-Surface-Primary)] dark:bg-[var(--Color-Surface-Surface-Primary)] px-[16px] sm:px-6 md:px-12 lg:px-[120px] py-6">
     <!-- <h1 class="text-2xl font-bold mb-6 text-center text-pink-600 dark:text-pink-400">
       Products 
     </h1> -->
 
      <!-- Search Bar -->
-     <div class="mb-6 flex justify-between  items-center ">
-      <p class="text-2xl text-[var(--Color-Text-Text-Primary)]  font-medium">Your Items</p>
-      <div class="relative">
+     <div class="mb-6 flex flex-col md:flex-row md:justify-between md:items-center gap-4">
+      <p class="text-xl md:text-2xl text-[var(--Color-Text-Text-Primary)] font-medium mb-2 md:mb-0">Your Items</p>
+      <div class="relative w-full md:w-auto">
         <i class="fa-solid fa-magnifying-glass absolute left-4 top-1/2 -translate-y-1/2 text-[var(--Color-Text-Text-Brand)] w-5 h-5 pointer-events-none"></i>
 
         <input
         v-model="searchQuery"
         type="text"
         :placeholder="$t('searchByTitle')"
-        class="w-[500px] pl-12 pr-4 py-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-[var(--Color-Text-Text-Brand)] text-base text-[var(--Color-Text-Text-Primary)] placeholder-[var(--Color-Text-Text-Secondary)] bg-[var(--Color-Surface-Surface-Primary)] border-[var(--Color-Boarder-Border-Primary)] dark:border-[var(--Color-Boarder-Border-Primary)]"
+        class="w-full md:w-[500px] pl-12 pr-4 py-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-[var(--Color-Text-Text-Brand)] text-base text-[var(--Color-Text-Text-Primary)] placeholder-[var(--Color-Text-Text-Secondary)] bg-[var(--Color-Surface-Surface-Primary)] border-[var(--Color-Boarder-Border-Primary)] dark:border-[var(--Color-Boarder-Border-Primary)]"
       />
- <div v-if="product && product.isApproved">Approved</div>
-
-
       </div>
-      
     </div>
 
     <!-- Category Filter Buttons -->
-    <CategoryButtons
-      :categories="categories"
-      :selectedCategory="selectedCategory"
-      @updateCategory="(val) => selectedCategory = val"
-    />
+    <div class="mb-4">
+      <CategoryButtons
+        :categories="categories"
+        :selectedCategory="selectedCategory"
+        @updateCategory="(val) => selectedCategory = val"
+      />
+    </div>
     
     <!-- Products List -->
-    <!-- <ProductList
-      :products="filteredProducts"
-      :highlightText="highlightText"
-      @editProduct="editProductHandler"
-      @deleteProduct="deleteProduct"
-      @addItem="showForm = true"
-    /> -->
-    <ProductList
-  :products="filteredProducts"
-  :highlightText="highlightText"
-  @editProduct="editProductHandler"
-  @deleteProduct="deleteProduct"
-  @addItem="showForm = true"
-  @approveProduct="approveProduct"
-/>
-
-    
-    
-
-   
+    <div class="mb-8">
+      <ProductList
+        :products="filteredProducts"
+        :highlightText="highlightText"
+        @editProduct="editProductHandler"
+        @deleteProduct="deleteProduct"
+        @addItem="showForm = true"
+        @approveProduct="approveProduct"
+      />
+    </div>
 
     <!-- Add / Edit Form -->
-    <ProductForm
-      v-if="showForm"
-      :form="form"
-      :categories="categories"
-      :isEdit="isEdit"
-      :uploading="uploading"
-      @submitForm="handleSubmit"
-      @imageUpload="handleImageUpload"
-      @cancelForm="showForm = false"
-    />
+    <div class="mb-8">
+      <ProductForm
+        v-if="showForm"
+        :form="form"
+        :categories="categories"
+        :isEdit="isEdit"
+        :uploading="uploading"
+        @submitForm="handleSubmit"
+        @imageUpload="handleImageUpload"
+        @cancelForm="showForm = false"
+      />
+    </div>
 
   </div>
 </template>
