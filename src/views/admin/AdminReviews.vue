@@ -18,6 +18,13 @@
                             <!-- <p class="font-semibold text-gray-800 dark:text-gray-200">
                                 {{ review.productName }} (ID: {{ review.productId }})
                             </p> -->
+                            <p class="text-sm text-gray-500">
+                                Name: {{ productsMap[review.productId]?.title || 'Unknown Product' }}
+
+                            </p>
+
+
+
                             <p class="text-sm text-gray-700 dark:text-gray-300">{{ review.review }}</p>
                             <p class="text-yellow-500 mt-1">{{ $t('rating') }}: {{ review.rate }} ★</p>
                             <p class="text-xs text-gray-500 mt-1">{{ $t('by') }}: {{ review.userName }}</p>
@@ -45,7 +52,7 @@
                         <img v-if="review.img" :src="review.img" alt="Product" class="w-16 h-16 object-cover rounded" />
                         <div>
                             <p class="font-semibold text-gray-800 dark:text-gray-200">
-                                {{ review.productName }} (ID: {{ review.productId }})
+                                {{ review.productName }}
                             </p>
                             <p class="text-sm text-gray-700 dark:text-gray-300">{{ review.review }}</p>
                             <p class="text-yellow-500 mt-1">{{ $t('rating') }}: {{ review.rate }} ★</p>
@@ -71,7 +78,7 @@
                     <option value="user-reviews">{{ $t('userReviewsAfterBooking') }}</option>
                     <option value="web-reviews">{{ $t('webReviewsWithoutBooking') }}</option>
                 </select>
-                <input v-model="form.productId" placeholder="Product ID" class="p-2 border rounded" required />
+                <!-- <input v-model="form.productId" placeholder="Product ID" class="p-2 border rounded" required /> -->
                 <input v-model="form.userName" placeholder="User Name" class="p-2 border rounded" required />
                 <textarea v-model="form.review" placeholder="Review" class="p-2 border rounded" required></textarea>
                 <input v-model.number="form.rate" type="number" min="1" max="5" class="p-2 border rounded" required />
@@ -99,6 +106,8 @@ import {
     updateDoc,
 } from 'firebase/firestore'
 import { db } from '@/firebase/config'
+const products = ref([]);
+
 
 const userReviews = ref([])
 const webReviews = ref([])
@@ -118,21 +127,28 @@ const form = ref({
     collection: 'user-reviews',
 })
 
-async function fetchProducts() {
-    const snapshot = await getDocs(collection(db, 'products'))
-    snapshot.docs.forEach(d => {
-        productsMap.value[d.id] = d.data()
-    })
-}
+const fetchProducts = async () => {
+    const snapshot = await getDocs(collection(db, "products"));
+    snapshot.forEach((doc) => {
+        const map = {}
+        snapshot.forEach((doc) => {
+            map[doc.id] = doc.data()
+        })
+        productsMap.value = map
+    });
+};
 
 function enrich(review) {
-    const prod = productsMap.value[review.productId] || {}
-    return {
-        ...review,
-        productName: prod.name || ' product Id',
-        img: prod.img || '',
-    }
+  const prod = productsMap.value[review.productId] || {}
+  console.log('Product ID:', review.productId, '→ Title:', prod.title)
+  return {
+    ...review,
+    productName: prod.title,
+    img: prod.img || '',
+  }
 }
+
+
 
 async function fetchUserReviews() {
     loadingUser.value = true
@@ -211,8 +227,9 @@ onMounted(async () => {
         userImage.value = docSnap.data().userImage
     }
     await fetchProducts()
-    fetchUserReviews()
-    fetchWebReviews()
+    await fetchProducts()
+    await fetchUserReviews()
+    await fetchWebReviews()
 })
 </script>
 
