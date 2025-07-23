@@ -1,6 +1,6 @@
 <template>
   <div
-    dir="ltr"
+    :dir="i18n.locale.value === 'ar' ? 'rtl' : 'ltr'"
     class="min-h-screen flex items-center justify-center bg-white px-4 sm:px-6 lg:px-8 overflow-y-hidden dark:bg-gray-900"
   >
     <div
@@ -9,55 +9,65 @@
       <!-- Form Section -->
       <div
         class="w-full lg:w-1/2 p-6 lg:p-10 xl:p-12 dark:bg-gray-800 dark:text-gray-200"
+        :class="i18n.locale.value === 'ar' ? 'lg:order-2' : 'lg:order-1'"
       >
-        <div class="mb-6 text-left xl:mb-8">
-          <h1 class="text-3xl font-bold text-teal-600 lg:text-3xl xl:text-4xl">Rento</h1>
+        <div
+          class="mb-6"
+          :class="i18n.locale.value === 'ar' ? 'text-right' : 'text-left'"
+        >
+          <h1 class="text-3xl font-bold text-teal-600 lg:text-3xl xl:text-4xl">
+            {{ $t("rento") }}
+          </h1>
         </div>
 
-        <h2 class="text-2xl font-semibold mb-4 lg:text-2xl xl:text-3xl">Log in</h2>
+        <h2 class="text-2xl font-semibold mb-4 lg:text-2xl xl:text-3xl">
+          {{ $t("login") }}
+        </h2>
         <p class="text-gray-600 mb-6 lg:text-base xl:text-lg dark:text-gray-300">
-          If you don't have an account, you can<br />
-          <router-link to="/Signup" class="text-teal-600 font-semibold"
-            >Register here!</router-link
-          >
+          {{ $t("registerHere") }}<br />
+          <router-link to="/Signup" class="text-teal-600 font-semibold">
+            {{ $t("signUp") }}
+          </router-link>
         </p>
 
-        <form class="space-y-4 xl:space-y-6" @submit.prevent="handleSubmit">
+        <form class="space-y-3 xl:space-y-3" @submit.prevent="handleSubmit">
           <!-- Email -->
           <div>
             <label
-              for="email"
+              :for="i18n.locale.value === 'ar' ? 'البريد_الإلكتروني' : 'email'"
               class="block text-sm text-black-900 mb-1 lg:text-sm xl:text-base dark:text-gray-200"
-              >Email</label
             >
+              {{ $t("emailPlaceholder") }}
+            </label>
             <input
-              id="email"
+              :id="i18n.locale.value === 'ar' ? 'البريد_الإلكتروني' : 'email'"
               v-model="email"
               type="email"
               required
-              placeholder="Enter your email address"
+              :placeholder="$t('emailPlaceholder')"
               class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-teal-600 text-sm lg:text-sm xl:text-base bg-white dark:bg-gray-700 dark:border-gray-600 dark:text-gray-200"
             />
           </div>
           <!-- Password -->
           <div>
             <label
-              for="password"
+              :for="i18n.locale.value === 'ar' ? 'كلمة_المرور' : 'password'"
               class="block text-sm text-black-900 mb-1 lg:text-sm xl:text-base dark:text-gray-200"
-              >Password</label
             >
+              {{ $t("passwordPlaceholder") }}
+            </label>
             <div class="relative">
               <input
-                id="password"
+                :id="i18n.locale.value === 'ar' ? 'كلمة_المرور' : 'password'"
                 v-model="password"
                 :type="passwordVisible ? 'text' : 'password'"
                 required
-                placeholder="Enter your password"
-                class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-26 focus:ring-teal-600 text-sm lg:text-sm xl:text-base bg-white dark:bg-gray-700 dark:border-gray-600 dark:text-gray-200"
+                :placeholder="$t('passwordPlaceholder')"
+                class="w-full px-3 py-2 pr-10 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-teal-600 text-sm lg:text-sm xl:text-base bg-white dark:bg-gray-700 dark:border-gray-600 dark:text-gray-200"
               />
               <button
                 type="button"
-                class="absolute right-3 top-1/2 -translate-y-1/2 transform text-gray-500 hover:text-gray-700 text-lg dark:text-gray-300 dark:hover:text-gray-100"
+                class="absolute right-2 top-1/2 -translate-y-1/2 text-gray-500 hover:text-gray-700 text-lg dark:text-gray-300 dark:hover:text-gray-100"
                 @click="togglePasswordVisibility"
                 aria-label="Toggle password visibility"
               >
@@ -69,21 +79,22 @@
           <!-- Remember Me & Forgot -->
           <div
             class="flex justify-between items-center text-xs text-gray-600 lg:text-xs xl:text-sm dark:text-gray-300"
+            :class="i18n.locale.value === 'ar' ? 'flex-row-reverse' : ''"
           >
             <label class="flex items-center">
               <input
                 type="checkbox"
                 v-model="rememberMe"
-                class="mr-1 lg:mr-1 xl:mr-2 xl:h-5 xl:w-5 dark:bg-gray-700 dark:border-gray-600"
+                class="mr-1 lg:mr-1 xl:mr-2 xl:h-5 xl:w-5 dark:bg-gray-700 dark:border-gray-600 m-2"
               />
-              Remember me
+              {{ $t("rememberMe") }}
             </label>
             <button
               type="button"
               @click="showForgotPasswordModal"
               class="text-teal-600 hover:underline dark:text-teal-400"
             >
-              Forgot Password?
+              {{ $t("forgotPassword") }}
             </button>
           </div>
 
@@ -92,21 +103,22 @@
             type="submit"
             class="w-full bg-teal-600 text-white rounded-md py-3 font-semibold hover:bg-teal-700 lg:py-3 xl:py-4 xl:text-lg"
           >
-            Log In
+            {{ $t("logIn") }}
           </button>
 
           <!-- OR Social -->
           <div class="text-center text-gray-500 text-xl font-semibold dark:text-gray-400">
-            or continue with
+            {{ $t("or") }}
           </div>
 
           <div class="flex gap-3 items-center justify-center xl:gap-4">
             <button
               @click="handleGoogleLogin"
               type="button"
-              class="flex justify-center items-center rounded-md py-3 gap-2 xl:py-4 xl:gap-3 bg-white dark:bg-gray-700"
+              class="flex w-full justify-center items-center rounded-md py-3 gap-2 xl:py-4 xl:gap-3 border border-teal-600 text-teal-600 bg-transparent hover:bg-teal-50 dark:border-teal-500 dark:text-teal-500 dark:hover:bg-teal-900/20"
             >
-              <img
+              {{ $t("ContinueWith")
+              }}<img
                 src="../assets/google.png"
                 alt="google"
                 class="h-6 w-6 lg:h-6 lg:w-6 xl:h-8 xl:w-8"
@@ -118,6 +130,7 @@
           <div
             v-if="error"
             class="text-red-600 text-sm mt-2 lg:text-sm xl:text-base dark:text-red-400"
+            :class="i18n.locale.value === 'ar' ? 'text-right' : 'text-left'"
           >
             {{ error }}
           </div>
@@ -133,7 +146,6 @@
           loading="lazy"
         />
       </div>
-
       <!-- Forgot Password Modal -->
       <div
         v-if="isModalOpen"
@@ -141,40 +153,52 @@
       >
         <div class="bg-white rounded-lg p-6 w-full max-w-md dark:bg-gray-800">
           <h3 class="text-lg font-semibold text-gray-900 mb-4 dark:text-gray-200">
-            Reset Your Password
+            {{ $t("resetYourPassword") }}
           </h3>
           <p class="text-sm text-gray-600 mb-4 dark:text-gray-300">
-            Enter your email address to receive a password reset link.
+            {{ $t("enterEmailToReset") }}
           </p>
           <form @submit.prevent="handleForgotPassword">
             <div class="mb-4">
               <label
-                for="reset-email"
+                :for="
+                  i18n.locale.value === 'ar'
+                    ? 'البريد_الإلكتروني_إعادة_الضبط'
+                    : 'reset-email'
+                "
                 class="block text-sm text-gray-700 mb-1 dark:text-gray-200"
-                >Email</label
               >
+                {{ $t("emailPlaceholder") }}
+              </label>
               <input
-                id="reset-email"
+                :id="
+                  i18n.locale.value === 'ar'
+                    ? 'البريد_الإلكتروني_إعادة_الضبط'
+                    : 'reset-email'
+                "
                 v-model="resetEmail"
                 type="email"
                 required
-                placeholder="Enter your email address"
+                :placeholder="$t('emailPlaceholder')"
                 class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-teal-600 text-sm bg-white dark:bg-gray-700 dark:border-gray-600 dark:text-gray-200"
               />
             </div>
-            <div class="flex justify-end gap-2">
+            <div
+              class="flex justify-end gap-2"
+              :class="i18n.locale.value === 'ar' ? 'flex-row-reverse' : ''"
+            >
               <button
                 type="button"
                 @click="isModalOpen = false"
                 class="px-4 py-2 text-sm text-gray-600 hover:text-gray-800 dark:text-gray-300 dark:hover:text-gray-100"
               >
-                Cancel
+                {{ $t("cancel") }}
               </button>
               <button
                 type="submit"
                 class="px-4 py-2 bg-teal-600 text-white rounded-md text-sm font-semibold hover:bg-teal-700"
               >
-                Send Reset Link
+                {{ $t("sendResetLink") }}
               </button>
             </div>
           </form>
@@ -187,6 +211,7 @@
 <script>
 import { ref, onMounted } from "vue";
 import { useRouter } from "vue-router";
+import { useI18n } from "vue-i18n"; // Import useI18n
 import {
   getAuth,
   sendPasswordResetEmail,
@@ -208,6 +233,7 @@ export default {
     const { login, loginWithGoogle, error, userName } = useLogin();
     const router = useRouter();
     const auth = getAuth();
+    const i18n = useI18n(); // Use the i18n composable to get the i18n instance
 
     onMounted(() => {
       const savedEmail = localStorage.getItem("rememberedEmail");
@@ -217,13 +243,12 @@ export default {
         password.value = savedPassword;
         rememberMe.value = true;
       }
-      // Check if user is already authenticated and email-verified, then redirect
       onAuthStateChanged(auth, (user) => {
         if (user && user.emailVerified) {
           Swal.fire({
             position: "top-end",
             icon: "info",
-            title: "You are already logged in",
+            title: i18n.t("loginSuccessful"),
             showConfirmButton: false,
             timer: 1500,
           });
@@ -245,19 +270,17 @@ export default {
       if (!error.value && user) {
         if (user.emailVerified) {
           Swal.fire({
-            title: "Login successful! Welcome to our community!",
+            title: i18n.t("loginSuccessful"),
             icon: "success",
             draggable: true,
           });
           router.push({ name: "HomePage" });
         } else {
-          // Sign out unverified user and prompt for verification
           await signOut(auth);
           Swal.fire({
             icon: "warning",
-            title: "Email Verification Required",
-            text:
-              "Please verify your email address to log in. Check your inbox for the verification email.",
+            title: i18n.t("emailVerificationRequired"),
+            text: i18n.t("verifyEmailToLogin"),
             showConfirmButton: true,
           });
         }
@@ -265,7 +288,7 @@ export default {
         Swal.fire({
           position: "top-end",
           icon: "error",
-          title: `Oops, login unsuccessful: ${error.value}`,
+          title: `${i18n.t("error")}: ${error.value}`,
           showConfirmButton: false,
           timer: 1500,
         });
@@ -277,7 +300,7 @@ export default {
       if (!error.value && user) {
         if (user.emailVerified) {
           Swal.fire({
-            title: "Login using Google successful! Welcome to our community!",
+            title: i18n.t("loginGoogleSuccessful"),
             icon: "success",
             draggable: true,
           });
@@ -286,9 +309,8 @@ export default {
           await signOut(auth);
           Swal.fire({
             icon: "warning",
-            title: "Email Verification Required",
-            text:
-              "Please verify your email address to log in. Check your inbox for the verification email.",
+            title: i18n.t("emailVerificationRequired"),
+            text: i18n.t("verifyEmailToLogin"),
             showConfirmButton: true,
           });
         }
@@ -296,7 +318,7 @@ export default {
         Swal.fire({
           position: "top-end",
           icon: "error",
-          title: `Oops, login unsuccessful: ${error.value}`,
+          title: `${i18n.t("error")}: ${error.value}`,
           showConfirmButton: false,
           timer: 1500,
         });
@@ -313,7 +335,7 @@ export default {
         Swal.fire({
           position: "top-end",
           icon: "error",
-          title: "Please enter your email address",
+          title: i18n.t("enterEmail"),
           showConfirmButton: false,
           timer: 1500,
         });
@@ -327,7 +349,7 @@ export default {
         Swal.fire({
           position: "top-end",
           icon: "success",
-          title: "Password reset email sent! Check your inbox.",
+          title: i18n.t("passwordResetSent"),
           showConfirmButton: false,
           timer: 1500,
         });
@@ -337,7 +359,7 @@ export default {
         Swal.fire({
           position: "top-end",
           icon: "error",
-          title: `Error: ${err.message}`,
+          title: `${i18n.t("error")}: ${err.message}`,
           showConfirmButton: false,
           timer: 1500,
         });
@@ -363,6 +385,7 @@ export default {
       error,
       userName,
       router,
+      i18n, // Return i18n for template use
     };
   },
 };
