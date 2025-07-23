@@ -51,7 +51,7 @@
           <p class="text-[var(--color-gray-600)] mb-2 dark:text-[var(--color-gray-400)]">
             <span
               class="font-semibold text-[var(--color-gray-800)] dark:text-[var(--color-gray-200)]"
-              >{{$t('description')}}:</span
+              >{{ $t("description") }}:</span
             >
             {{ product.details }}
           </p>
@@ -61,14 +61,14 @@
             <p class="text-[var(--color-gray-700)] dark:text-[var(--color-gray-300)]">
               <span
                 class="font-semibold text-[var(--color-gray-800)] dark:text-[var(--color-gray-200)]"
-                >{{$t('category')}}:</span
+                >{{ $t("category") }}:</span
               >
               {{ product.category || product.type }}
             </p>
             <p class="text-[var(--color-gray-700)] dark:text-[var(--color-gray-300)]">
               <span
                 class="font-semibold text-[var(--color-gray-800)] dark:text-[var(--color-gray-200)]"
-                >{{$t('model')}}:</span
+                >{{ $t("model") }}:</span
               >
               {{ product.model || "GSR 18V-50 Professional" }}
             </p>
@@ -77,15 +77,15 @@
             >
               <span
                 class="font-semibold text-[var(--color-gray-800)] dark:text-[var(--color-gray-200)]"
-                >{{$t('pricePerDay')}}:</span
+                >{{ $t("pricePerDay") }}:</span
               >
-              {{ product.price || "15" }} {{$t('egp')}}
+              {{ product.price || "15" }} {{ $t("egp") }}
             </p>
             <button
               @click="showBookingForm = true"
               class="w-full bg-[var(--color-success-500)] text-[var(--color-gray-25)] py-2 rounded-lg mt-2 hover:bg-[var(--color-success-600)] dark:bg-[var(--color-success-300)] dark:hover:bg-[var(--color-success-400)]"
             >
-              {{$t('rentThisTool')}}
+              {{ $t("rentThisTool") }}
             </button>
           </div>
         </div>
@@ -96,7 +96,9 @@
         >
           <h3
             class="text-lg font-semibold text-[var(--color-gray-800)] dark:text-[var(--color-gray-200)]"
-          >{{$t('ownerDetails')}}</h3>
+          >
+            {{ $t("ownerDetails") }}
+          </h3>
           <div class="flex items-center gap-4 mt-2">
             <img
               :src="booking.sellerImage || 'https://via.placeholder.com/40'"
@@ -105,22 +107,22 @@
             />
             <div>
               <p class="text-[var(--color-gray-800)] dark:text-[var(--color-gray-200)]">
-                {{ booking.sellerName || $t('loading') }}
+                {{ booking.sellerName || $t("loading") }}
               </p>
               <p
                 class="text-sm text-[var(--color-gray-500)] dark:text-[var(--color-gray-400)]"
               >
-                {{$t('memberSince')}} {{$t('march2024')}}
+                {{ $t("memberSince") }} {{ $t("march2024") }}
               </p>
               <p
                 class="text-sm text-[var(--color-success-500)] dark:text-[var(--color-success-300)]"
               >
-                55 {{$t('successfulRentals')}}
+                55 {{ $t("successfulRentals") }}
               </p>
               <button
                 class="mt-1 text-[var(--color-success-500)] text-sm dark:text-[var(--color-success-300)]"
               >
-                {{$t('sendMessage')}}
+                {{ $t("sendMessage") }}
               </button>
             </div>
           </div>
@@ -145,13 +147,13 @@
         <h2
           class="text-xl font-bold text-[var(--color-success-500)] dark:text-[var(--color-success-300)] mb-4"
         >
-          {{$t('bookThisProduct')}}
+          {{ $t("bookThisProduct") }}
         </h2>
         <form @submit.prevent="submitBooking" class="space-y-4">
           <div>
             <label
               class="block text-[var(--color-gray-700)] dark:text-[var(--color-gray-300)]"
-              >{{$t('selectLocation')}}</label
+              >{{ $t("selectLocation") }}</label
             >
             <iframe
               src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d13804.134426744992!2d31.23572595!3d30.04598185!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x1458157f7a7b9fb3%3A0x9c6c8a6e7e0c2e2e!2sCairo%2C%20Cairo%20Governorate%2C%20Egypt!5e0!3m2!1sen!2seg!4v1690367890123!5m2!1sen!2seg"
@@ -165,7 +167,7 @@
             <p
               class="text-sm text-[var(--color-gray-600)] dark:text-[var(--color-gray-400)] mt-2"
             >
-              {{$t('editAddress')}}
+              {{ $t("editAddress") }}
             </p>
             <input
               v-model="booking.deliveryAddress"
@@ -177,13 +179,14 @@
               v-if="booking.deliveryMethod === 'delivery'"
               class="mt-2 text-[var(--color-success-500)] font-bold dark:text-[var(--color-success-300)]"
             >
-              {{$t('deliveryFee')}}: {{ booking.deliveryFee.toFixed(2) }} {{$t('egp')}} (2% of total)
+              {{ $t("deliveryFee") }}: {{ booking.deliveryFee.toFixed(2) }}
+              {{ $t("egp") }} (2% of total)
             </p>
           </div>
           <div>
             <label
               class="block text-[var(--color-gray-700)] dark:text-[var(--color-gray-300)]"
-              >{{$t('deliveryMethod')}}</label
+              >{{ $t("deliveryMethod") }}</label
             >
             <select
               v-model="booking.deliveryMethod"
@@ -191,30 +194,37 @@
               required
               @change="updateDeliveryFee"
             >
-              <option value="delivery">{{$t('delivery')}}</option>
-              <option value="pickup">{{$t('pickup')}}</option>
+              <option value="delivery">{{ $t("delivery") }}</option>
+              <option value="pickup">{{ $t("pickup") }}</option>
             </select>
           </div>
           <div>
             <label
               class="block text-[var(--color-gray-700)] dark:text-[var(--color-gray-300)]"
-              >{{$t('startDate')}}</label
+              >{{ $t("startDate") }}</label
             >
             <p
               class="w-full p-2 rounded-lg bg-[var(--color-gray-100)] dark:bg-[var(--color-gray-700)] border border-[var(--color-success-200)]"
             >
-              {{ booking.startDate ? formatDate(booking.startDate) : $t('notSelected') }}
+              {{ booking.startDate ? formatDate(booking.startDate) : $t("notSelected") }}
             </p>
           </div>
           <div>
             <label
               class="block text-[var(--color-gray-700)] dark:text-[var(--color-gray-300)]"
-              >{{$t('endDate')}}</label
+              >{{ $t("endDate") }}</label
             >
             <p
               class="w-full p-2 rounded-lg bg-[var(--color-gray-100)] dark:bg-[var(--color-gray-700)] border border-[var(--color-success-200)]"
             >
-              {{ booking.endDate ? formatDate(booking.endDate) : $t('notSelected') }}
+              {{ booking.endDate ? formatDate(booking.endDate) : $t("notSelected") }}
+            </p>
+          </div>
+          <div>
+            <p
+              class="mt-2 text-[var(--color-success-500)] font-bold dark:text-[var(--color-success-300)]"
+            >
+              {{ $t("totalPrice") }}: {{ booking.totalPrice.toFixed(2) }} {{ $t("egp") }}
             </p>
           </div>
           <div class="flex justify-end gap-4">
@@ -223,13 +233,13 @@
               @click="showBookingForm = false"
               class="bg-[var(--color-gray-400)] text-[var(--color-gray-25)] py-2 px-4 rounded-lg hover:bg-[var(--color-gray-500)]"
             >
-              {{$t('cancel')}}
+              {{ $t("cancel") }}
             </button>
             <button
               type="submit"
               class="bg-[var(--color-success-500)] text-[var(--color-gray-25)] py-2 px-4 rounded-lg hover:bg-[var(--color-success-600)] dark:bg-[var(--color-success-300)] dark:hover:bg-[var(--color-success-400)]"
             >
-              {{$t('submitBooking')}}
+              {{ $t("submitBooking") }}
             </button>
           </div>
         </form>
@@ -253,13 +263,13 @@
         <h2
           class="text-xl font-bold text-[var(--color-success-500)] dark:text-[var(--color-success-300)] mb-4"
         >
-          {{$t('rateOurWebsite')}}
+          {{ $t("rateOurWebsite") }}
         </h2>
         <form @submit.prevent="submitWebsiteReview" class="space-y-4">
           <div>
             <label
               class="block text-[var(--color-gray-700)] dark:text-[var(--color-gray-300)]"
-              >{{$t('review')}}</label
+              >{{ $t("review") }}</label
             >
             <textarea
               v-model="newWebsiteReview.review"
@@ -271,7 +281,7 @@
           <div>
             <label
               class="block text-[var(--color-gray-700)] dark:text-[var(--color-gray-300)]"
-              >{{$t('rate')}} (1 - 5)</label
+              >{{ $t("rate") }} (1 - 5)</label
             >
             <input
               v-model.number="newWebsiteReview.rate"
@@ -290,13 +300,13 @@
               @click="showWebsiteReviewForm = false"
               class="bg-[var(--color-gray-400)] text-[var(--color-gray-25)] py-2 px-4 rounded-lg hover:bg-[var(--color-gray-500)]"
             >
-              {{$t('cancel')}}
+              {{ $t("cancel") }}
             </button>
             <button
               type="submit"
               class="bg-[var(--color-success-500)] text-[var(--color-gray-25)] py-2 px-4 rounded-lg hover:bg-[var(--color-success-600)] dark:bg-[var(--color-success-300)] dark:hover:bg-[var(--color-success-400)]"
             >
-              {{$t('submitReview')}}
+              {{ $t("submitReview") }}
             </button>
           </div>
         </form>
@@ -311,7 +321,7 @@
       <h3
         class="text-lg font-semibold text-[var(--color-gray-800)] mb-4 dark:text-[var(--color-gray-200)]"
       >
-        {{$t('toolReviews')}}
+        {{ $t("toolReviews") }}
       </h3>
       <div class="space-y-4">
         <div
@@ -350,7 +360,7 @@
         @click="showReviewForm = true"
         class="mt-4 text-[var(--color-success-500)] text-sm dark:text-[var(--color-success-300)]"
       >
-        {{$t('addAReview')}}
+        {{ $t("addAReview") }}
       </button>
     </div>
 
@@ -371,13 +381,13 @@
         <h2
           class="text-xl font-bold text-[var(--color-success-500)] dark:text-[var(--color-success-300)] mb-4"
         >
-          {{$t('addAReview')}}
+          {{ $t("addAReview") }}
         </h2>
         <form @submit.prevent="submitReview" class="space-y-4">
           <div>
             <label
               class="block text-[var(--color-gray-700)] dark:text-[var(--color-gray-300)]"
-              >{{$t('review')}}</label
+              >{{ $t("review") }}</label
             >
             <textarea
               v-model="newReview.review"
@@ -389,7 +399,7 @@
           <div>
             <label
               class="block text-[var(--color-gray-700)] dark:text-[var(--color-gray-300)]"
-              >{{$t('rate')}} (1 - 5)</label
+              >{{ $t("rate") }} (1 - 5)</label
             >
             <input
               v-model.number="newReview.rate"
@@ -408,13 +418,13 @@
               @click="showReviewForm = false"
               class="bg-[var(--color-gray-400)] text-[var(--color-gray-25)] py-2 px-4 rounded-lg hover:bg-[var(--color-gray-500)]"
             >
-              {{$t('cancel')}}
+              {{ $t("cancel") }}
             </button>
             <button
               type="submit"
               class="bg-[var(--color-success-500)] text-[var(--color-gray-25)] py-2 px-4 rounded-lg hover:bg-[var(--color-success-600)] dark:bg-[var(--color-success-300)] dark:hover:bg-[var(--color-success-400)]"
             >
-              {{$t('submitReview')}}
+              {{ $t("submitReview") }}
             </button>
           </div>
         </form>
@@ -429,7 +439,7 @@
       <h3
         class="text-lg font-semibold text-[var(--color-gray-800)] mb-4 dark:text-[var(--color-gray-200)]"
       >
-        {{$t('moreFrom')}} {{ booking.sellerName || $t('loading') }}
+        {{ $t("moreFrom") }} {{ booking.sellerName || $t("loading") }}
       </h3>
       <div class="grid grid-cols-2 gap-4">
         <div
@@ -441,21 +451,24 @@
             class="w-full h-24 object-cover rounded-lg"
           />
           <p class="text-[var(--color-gray-800)] dark:text-[var(--color-gray-200)] mt-2">
-            {{$t('canonEosR5')}}
+            {{ $t("canonEosR5") }}
           </p>
           <p
             class="text-[var(--color-success-500)] font-bold dark:text-[var(--color-success-300)]"
           >
-            500 {{$t('egp')}}
+            500 {{ $t("egp") }}
           </p>
           <div class="flex items-center gap-2 text-[var(--color-warning-500)]">
-            <span>{{$t('stars')}}</span>
-            <span class="text-sm text-[var(--color-gray-600)] dark:text-[var(--color-gray-400)]">4</span>
+            <span>{{ $t("stars") }}</span>
+            <span
+              class="text-sm text-[var(--color-gray-600)] dark:text-[var(--color-gray-400)]"
+              >4</span
+            >
           </div>
           <button
             class="w-full bg-[var(--color-success-500)] text-[var(--color-gray-25)] py-2 rounded-lg mt-2 hover:bg-[var(--color-success-600)] dark:bg-[var(--color-success-300)] dark:hover:bg-[var(--color-success-400)]"
           >
-            {{$t('rentNow')}}
+            {{ $t("rentNow") }}
           </button>
         </div>
         <div
@@ -467,28 +480,31 @@
             class="w-full h-24 object-cover rounded-lg"
           />
           <p class="text-[var(--color-gray-800)] dark:text-[var(--color-gray-200)] mt-2">
-            {{$t('canonEosR6')}}
+            {{ $t("canonEosR6") }}
           </p>
           <p
             class="text-[var(--color-success-500)] font-bold dark:text-[var(--color-success-300)]"
           >
-            600 {{$t('egp')}}
+            600 {{ $t("egp") }}
           </p>
           <div class="flex items-center gap-2 text-[var(--color-warning-500)]">
-            <span>{{$t('stars')}}</span>
-            <span class="text-sm text-[var(--color-gray-600)] dark:text-[var(--color-gray-400)]">4</span>
+            <span>{{ $t("stars") }}</span>
+            <span
+              class="text-sm text-[var(--color-gray-600)] dark:text-[var(--color-gray-400)]"
+              >4</span
+            >
           </div>
           <button
             class="w-full bg-[var(--color-success-500)] text-[var(--color-gray-25)] py-2 px-4 rounded-lg mt-2 hover:bg-[var(--color-success-600)] dark:bg-[var(--color-success-300)] dark:hover:bg-[var(--color-success-400)]"
           >
-            {{$t('rentNow')}}
+            {{ $t("rentNow") }}
           </button>
         </div>
       </div>
       <button
         class="mt-4 text-[var(--color-success-500)] text-sm dark:text-[var(--color-success-300)]"
       >
-        {{$t('viewAllItems')}}
+        {{ $t("viewAllItems") }}
       </button>
     </div>
 
@@ -496,12 +512,12 @@
       v-else
       class="text-center text-[var(--color-gray-500)] py-10 text-lg dark:text-[var(--color-gray-400)]"
     >
-      {{$t('loadingProduct')}}
+      {{ $t("loadingProduct") }}
     </div>
     <router-link
       to="/home"
       class="mt-6 inline-block text-[var(--color-success-500)] hover:underline text-sm dark:text-[var(--color-success-300)]"
-      >{{$t('backToProducts')}}</router-link
+      >{{ $t("backToProducts") }}</router-link
     >
   </div>
 </template>
@@ -542,7 +558,7 @@ const booking = ref({
   userId: "",
   sellerId: "",
   sellerName: "",
-  sellerImage: "", // Added to store the seller's image
+  sellerImage: "",
   productTitle: "",
   productPrice: 0,
 });
@@ -558,12 +574,12 @@ const newWebsiteReview = ref({
   rate: 1,
   userId: "",
   userName: "",
-  userImage: "", // Added to store the user image
+  userImage: "",
 });
 
 // Current date handling
-const today = ref(new Date("2025-07-21T07:10:00Z")); // Updated to 10:10 AM EEST (UTC+3)
-const currentDate = ref(new Date("2025-07-21T07:10:00Z"));
+const today = ref(new Date("2025-07-23T12:28:00Z")); // Updated to 03:28 PM EEST (UTC+3)
+const currentDate = ref(new Date("2025-07-23T12:28:00Z"));
 const selectedDates = ref({ start: null, end: null });
 
 // Computed properties for dynamic calendar
@@ -574,7 +590,7 @@ const currentMonthYear = computed(() => {
 const daysInMonth = computed(() => {
   const year = currentDate.value.getFullYear();
   const month = currentDate.value.getMonth();
-  return new Date(year, month + 1, 0).getDate(); // Get the last day of the month
+  return new Date(year, month + 1, 0).getDate();
 });
 
 const loadProduct = async () => {
@@ -606,17 +622,17 @@ const loadSellerDetails = async (sellerId) => {
     if (userDocSnap.exists()) {
       const sellerData = userDocSnap.data();
       booking.value.sellerName = sellerData.displayName || "Unknown Seller";
-      booking.value.sellerImage = sellerData.photoURL || 'https://via.placeholder.com/40'; // Use photoURL or fallback to placeholder
+      booking.value.sellerImage = sellerData.photoURL || "https://via.placeholder.com/40";
       newReview.value.sellerUserId = sellerId;
     } else {
       console.error("No such user!");
       booking.value.sellerName = "Unknown Seller";
-      booking.value.sellerImage = 'https://via.placeholder.com/40'; // Fallback if user not found
+      booking.value.sellerImage = "https://via.placeholder.com/40";
     }
   } catch (error) {
     console.error("Error loading seller details:", error);
     booking.value.sellerName = "Unknown Seller";
-    booking.value.sellerImage = 'https://via.placeholder.com/40'; // Fallback on error
+    booking.value.sellerImage = "https://via.placeholder.com/40";
   }
 };
 
@@ -731,14 +747,14 @@ const updateDeliveryFee = () => {
     booking.value.deliveryFee = 0;
     return;
   }
+  const diffTime = Math.ceil(
+    (new Date(booking.value.endDate) - new Date(booking.value.startDate)) /
+      (1000 * 60 * 60 * 24)
+  );
+  const basePrice = diffTime * booking.value.productPrice;
   if (booking.value.deliveryMethod === "pickup") {
     booking.value.deliveryFee = 0;
   } else {
-    const diffTime = Math.ceil(
-      (new Date(booking.value.endDate) - new Date(booking.value.startDate)) /
-        (1000 * 60 * 60 * 24)
-    );
-    const basePrice = diffTime * booking.value.productPrice;
     booking.value.deliveryFee = basePrice * 0.02;
   }
 };
@@ -756,8 +772,10 @@ watch(
         Math.ceil(
           (new Date(booking.value.endDate) - new Date(booking.value.startDate)) /
             (1000 * 60 * 60 * 24)
-        ) + 1;
+        ) + 1; // Add 1 day to include both start and end dates
       const basePrice = diffTime * booking.value.productPrice;
+      booking.value.deliveryFee =
+        booking.value.deliveryMethod === "delivery" ? basePrice * 0.02 : 0;
       booking.value.totalPrice = basePrice + booking.value.deliveryFee;
     } else {
       booking.value.totalPrice = 0;
@@ -770,7 +788,7 @@ const checkFirstBooking = async (userId) => {
     const bookingsRef = collection(db, "bookings");
     const q = query(bookingsRef, where("userId", "==", userId));
     const querySnapshot = await getDocs(q);
-    return querySnapshot.size === 1; // Returns true if this is the user's first booking
+    return querySnapshot.size === 1;
   } catch (error) {
     console.error("Error checking bookings:", error);
     return false;
@@ -819,7 +837,6 @@ const submitBooking = async () => {
 
     showBookingForm.value = false;
 
-    // Check if this is the user's first booking
     const isFirstBooking = await checkFirstBooking(auth.currentUser.uid);
     if (isFirstBooking) {
       showWebsiteReviewForm.value = true;
@@ -923,7 +940,6 @@ const submitWebsiteReview = async () => {
     newWebsiteReview.value.userId = auth.currentUser.uid;
     newWebsiteReview.value.userName =
       auth.currentUser.displayName || auth.currentUser.email.split("@")[0] || "Anonymous";
-    // Add user image, fallback to default.png if no photoURL
     newWebsiteReview.value.userImage =
       auth.currentUser.photoURL || require("@/assets/default.png");
 
@@ -948,7 +964,7 @@ const submitWebsiteReview = async () => {
 
     newWebsiteReview.value.review = "";
     newWebsiteReview.value.rate = 1;
-    newWebsiteReview.value.userImage = ""; // Reset image
+    newWebsiteReview.value.userImage = "";
     showWebsiteReviewForm.value = false;
     Swal.fire({
       icon: "success",
@@ -970,8 +986,8 @@ const submitWebsiteReview = async () => {
 onMounted(() => {
   loadProduct();
   loadReviews();
-  today.value = new Date(); // Dynamically set to current date and time
-  today.value.setHours(0, 0, 0, 0); // Reset to midnight for day-only comparison
+  today.value = new Date();
+  today.value.setHours(0, 0, 0, 0);
 });
 </script>
 
