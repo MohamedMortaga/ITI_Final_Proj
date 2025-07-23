@@ -139,12 +139,12 @@
 
           <div class="flex gap-3 items-center justify-center xl:gap-4">
             <button
-              @click="handleGoogleLogin"
+              @click="handleGoogleSignup"
               type="button"
               class="flex w-full justify-center items-center rounded-md py-3 gap-2 xl:py-4 xl:gap-3 border border-teal-600 text-teal-600 bg-transparent hover:bg-teal-50 dark:border-teal-500 dark:text-teal-500 dark:hover:bg-teal-900/20"
             >
-              {{ $t("ContinueWith")
-              }}<img
+              {{ $t("ContinueWith") }}
+              <img
                 src="../assets/google.png"
                 alt="google"
                 class="h-6 w-6 lg:h-6 lg:w-6 xl:h-8 xl:w-8"
@@ -163,7 +163,10 @@
       </div>
 
       <!-- Illustration -->
-      <div class="hidden lg:block w-full lg:w-1/2 mt-8 lg:mt-0">
+      <div
+        class="hidden lg:block w-full lg:w-1/2 mt-8 lg:mt-0"
+        :class="i18n.locale.value === 'ar' ? 'lg:order-1' : 'lg:order-2'"
+      >
         <img
           src="../assets/login.png"
           alt="Login Illustration"
@@ -180,7 +183,7 @@ import { ref } from "vue";
 import { useRouter } from "vue-router";
 import Swal from "sweetalert2";
 import useSignup from "../composables/useSignup";
-import { useI18n } from "vue-i18n"; // Import useI18n
+import { useI18n } from "vue-i18n";
 
 export default {
   name: "Signup",
@@ -193,7 +196,7 @@ export default {
     const confirmPasswordVisible = ref(false);
     const { signup, signupWithGoogle, error } = useSignup();
     const router = useRouter();
-    const i18n = useI18n(); // Use the i18n composable to get the i18n instance
+    const i18n = useI18n();
 
     const handleSubmit = async () => {
       if (password.value !== confirmPassword.value) {
@@ -206,14 +209,14 @@ export default {
       }
       await signup(email.value, password.value, username.value);
       if (!error.value) {
-        router.push({ name: "Login" }); // Redirect to Login instead of HomePage
+        router.push({ name: "Login" });
       }
     };
 
     const handleGoogleSignup = async () => {
       await signupWithGoogle();
       if (!error.value) {
-        router.push({ name: "Login" }); // Redirect to Login instead of HomePage
+        router.push({ name: "Login" });
       }
     };
 
@@ -237,7 +240,7 @@ export default {
       handleSubmit,
       handleGoogleSignup,
       error,
-      i18n, // Return i18n for template use
+      i18n,
     };
   },
 };

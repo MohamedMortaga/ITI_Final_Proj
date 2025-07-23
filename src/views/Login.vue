@@ -117,8 +117,8 @@
               type="button"
               class="flex w-full justify-center items-center rounded-md py-3 gap-2 xl:py-4 xl:gap-3 border border-teal-600 text-teal-600 bg-transparent hover:bg-teal-50 dark:border-teal-500 dark:text-teal-500 dark:hover:bg-teal-900/20"
             >
-              {{ $t("ContinueWith")
-              }}<img
+              {{ $t("ContinueWith") }}
+              <img
                 src="../assets/google.png"
                 alt="google"
                 class="h-6 w-6 lg:h-6 lg:w-6 xl:h-8 xl:w-8"
@@ -138,7 +138,10 @@
       </div>
 
       <!-- Illustration -->
-      <div class="hidden lg:block w-full lg:w-1/2 mt-8 lg:mt-0">
+      <div
+        class="hidden lg:block w-full lg:w-1/2 mt-8 lg:mt-0"
+        :class="i18n.locale.value === 'ar' ? 'lg:order-1' : 'lg:order-2'"
+      >
         <img
           src="../assets/login.png"
           alt="Login Illustration"
@@ -211,7 +214,7 @@
 <script>
 import { ref, onMounted } from "vue";
 import { useRouter } from "vue-router";
-import { useI18n } from "vue-i18n"; // Import useI18n
+import { useI18n } from "vue-i18n";
 import {
   getAuth,
   sendPasswordResetEmail,
@@ -233,7 +236,7 @@ export default {
     const { login, loginWithGoogle, error, userName } = useLogin();
     const router = useRouter();
     const auth = getAuth();
-    const i18n = useI18n(); // Use the i18n composable to get the i18n instance
+    const i18n = useI18n();
 
     onMounted(() => {
       const savedEmail = localStorage.getItem("rememberedEmail");
@@ -385,7 +388,7 @@ export default {
       error,
       userName,
       router,
-      i18n, // Return i18n for template use
+      i18n,
     };
   },
 };
