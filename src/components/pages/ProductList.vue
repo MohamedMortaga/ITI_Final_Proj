@@ -67,12 +67,12 @@
   <div v-else class="text-center text-gray-500 py-10 text-lg dark:text-gray-400">
     {{$t('noProductsFound')}}
   </div>
-  <div class="flex justify-center mt-16  ">
-    <button class="w-[400px] bg-[var(--Color-Surface-Surface-Brand)] text-[var(--Color-Text-Text-Invert)] hover:bg-[var(--Colors-Primary-600)] px-4 py-2 rounded-lg">Add Item</button>
+  <div class="flex justify-center mt-10 ">
+    <button class="w-[400px] bg-[var(--Color-Surface-Surface-Brand)] text-[var(--Color-Text-Text-Invert)] hover:bg-[var(--Colors-Primary-600)] px-4 py-2 rounded-lg" @click="$emit('addItem')">Add Item</button>
   </div>
 </template>
 
 <script setup>
 defineProps(['products', 'highlightText']);
-defineEmits(['editProduct', 'deleteProduct']);
+defineEmits(['editProduct', 'deleteProduct', 'addItem']);
 </script>
