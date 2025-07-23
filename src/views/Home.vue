@@ -99,7 +99,8 @@ export default {
     HeroBanner,
   },
   setup() {
-    const { documents: products } = getCollection("products");
+    // const { documents: products } = getCollection("products");
+    const { documents: products } = getCollection("products", [["isApproved", "==", true]]);
     const { documents: reviews } = getCollection("web-reviews");
     const searchQuery = ref("");
     const selectedCategory = ref("");

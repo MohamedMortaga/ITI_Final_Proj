@@ -21,12 +21,19 @@
         {{$t('noProductsFound')}}
       </div>
       <div v-else class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-        <ProductCard
+        <!-- <ProductCard
           v-for="product in filteredProducts" 
           :key="product.id" 
           :product="product" 
           :isAuthenticated="isAuthenticated" 
           :promptLogin="promptLogin" 
+        /> -->
+             <ProductCard
+          v-for="product in filteredProducts.slice(0, 8)"
+          :key="product.id"
+          :product="product"
+          :isAuthenticated="isAuthenticated"
+          :promptLogin="promptLogin"
         />
       </div>
     </div>
@@ -99,22 +106,29 @@ export default {
     });
 
     // Filter products based on category and search query
-    const filteredProducts = computed(() => {
-      if (!products.value) return [];
-      let filtered = products.value;
-      if (selectedCategory.value) {
-        filtered = filtered.filter(
-          (product) => product.category === selectedCategory.value
-        );
-      }
-      if (searchQuery.value) {
-        const query = searchQuery.value.toLowerCase();
-        filtered = filtered.filter((product) =>
-          product.title?.toLowerCase().includes(query)
-        );
-      }
-      return filtered;
-    });
+  const filteredProducts = computed(() => {
+  if (!products.value) return [];
+  let filtered = products.value;
+
+filtered = filtered.filter((product) => product.isApproved === true);
+
+
+  if (selectedCategory.value) {
+    filtered = filtered.filter(
+      (product) => product.category === selectedCategory.value
+    );
+  }
+
+  if (searchQuery.value) {
+    const query = searchQuery.value.toLowerCase();
+    filtered = filtered.filter((product) =>
+      product.title?.toLowerCase().includes(query)
+    );
+  }
+
+  return filtered;
+});
+
 
     return {
       products,

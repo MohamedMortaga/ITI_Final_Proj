@@ -149,6 +149,7 @@ const submitForm = async () => {
         ownerName: currentUser .value.displayName || currentUser .value.email,
         createdAt: serverTimestamp(),
         netProfit: netProfit, // Include net profit in the new product
+          isApproved: false
       });
       Swal.fire({ icon: "success", title: "Added successfully", timer: 1500, showConfirmButton: false });
     }

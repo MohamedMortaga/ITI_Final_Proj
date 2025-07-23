@@ -94,9 +94,13 @@ const routes = [
   component: UserRentals,
   meta: { layout: 'admin' }
 },
-{ path: '/admin/reviews',
-   component: AdminReviews,
-    meta: { layout: 'admin' } },
+{
+  path: '/admin/reviews',
+  name: 'AdminReviews',
+  component: AdminReviews,
+  meta: { layout: 'admin' }
+}
+
 
 // {
 //   path: '/admin/edit-banner',

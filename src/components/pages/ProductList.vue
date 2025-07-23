@@ -1,12 +1,13 @@
 <template>
   <div v-if="products.length" class="space-y-4">
     <!-- Header Row -->
-    <div class="grid grid-cols-8 gap-4 px-6 py-3 bg-[var(--Color-Surface-Surface-Primary)] dark:bg-[var(--Color-Surface-Surface-Primary)] rounded-xl font-semibold text-[var(--Color-Text-Text-Primary)] text-base">
+    <div class="grid grid-cols-9 gap-4 px-6 py-3 bg-[var(--Color-Surface-Surface-Primary)] dark:bg-[var(--Color-Surface-Surface-Primary)] rounded-xl font-semibold text-[var(--Color-Text-Text-Primary)] text-base">
       <div>{{$t('image') || 'Image'}}</div>
       <div>{{$t('productTitlePlaceholder')}}</div>
       <div>{{$t('category') || 'Category'}}</div>
       <div>{{$t('price')}}</div>
       <div>{{$t('details')}}</div>
+      <div>{{$t('status') || 'Status'}}</div>
       <div>{{$t('uploaded') || 'Uploaded'}}</div>
       <div>{{$t('owner')}}</div>
       <div>{{$t('actions')}}</div>
@@ -15,7 +16,7 @@
     <div
       v-for="product in products"
       :key="product.id"
-      class="grid grid-cols-8 gap-4 items-center bg-white dark:bg-[var(--Color-Surface-Surface-Primary)] border border-[var(--Color-Boarder-Border-Primary)] rounded-xl shadow-sm px-6 py-4"
+      class="grid grid-cols-9 gap-4 items-center bg-white dark:bg-[var(--Color-Surface-Surface-Primary)] border border-[var(--Color-Boarder-Border-Primary)] rounded-xl shadow-sm px-6 py-4"
     >
       <!-- Image -->
       <div>
@@ -46,6 +47,22 @@
 
       <!-- Details -->
       <div class="text-[var(--Color-Text-Text-Primary)] dark:text-[var(--Color-Text-Text-Primary)]  font-nunito">{{ product.details }}</div>
+     <!-- Status -->
+<div>
+  <span
+    v-if="product.isApproved === true"
+    class="text-green-600 dark:text-green-400 font-semibold"
+  >
+    {{$t('approved') || 'Approved'}}
+  </span>
+  <span
+    v-else
+    class="text-yellow-600 dark:text-yellow-400 font-semibold"
+  >
+    {{$t('pending') || 'Pending'}}
+  </span>
+</div>
+
       <!-- Uploaded -->
       <div>
         <span class="text-[var(--Color-Text-Text-Primary)] dark:text-[var(--Color-Text-Text-Primary)]  font-nunito" v-if="product.createdAt && product.createdAt.toDate">
