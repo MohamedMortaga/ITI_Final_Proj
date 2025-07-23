@@ -4,6 +4,7 @@ import Swal from 'sweetalert2';
 
 import Logout from '@/views/Logout.vue';
 import Home from '@/views/Home.vue';
+import Contact from '@/views/Contact.vue';
 import Errorr from '@/components/pages/Errorr.vue';
 import Login from '@/views/Login.vue';
 import Signup from '@/views/Signup.vue';
@@ -15,11 +16,20 @@ import ProductsDashboard from '@/views/admin/AdminProducts.vue';
 import CategoriesManager from '@/views/admin/CategoriesManager.vue';
 import RentalDashboard from '@/views/admin/RentalDashboard.vue';
 import UserRentals from '@/views/admin/UserRentals.vue';
-// import EditBanner from '@/views/admin/EditBanner.vue';
 import AdminReviews from '@/views/admin/AdminReviews.vue';
 
 const routes = [
-  { path: '/', redirect: '/home' }, // Redirect to /home for unauthenticated access
+  // Fixed: Remove the circular redirect and add proper Contact route
+  {
+    path: '/contact',
+    name: 'Contact',
+    component: Contact,
+    meta: { requiresAuth: false } // Adjust auth requirements as needed
+  },
+  { 
+    path: '/', 
+    redirect: '/home' 
+  },
   {
     path: '/signup',
     name: 'Signup',
@@ -36,7 +46,7 @@ const routes = [
     path: '/home',
     name: 'HomePage',
     component: Home,
-    meta: { requiresAuth: false, requiresVerifiedEmail: false }, // Allow access without auth
+    meta: { requiresAuth: false, requiresVerifiedEmail: false },
   },
   {
     path: '/logout',
@@ -56,27 +66,25 @@ const routes = [
     component: ProductDetails,
     meta: { requiresAuth: true, requiresVerifiedEmail: true },
   },
-  {
-    path: '/:pathMatch(.*)*',
-    name: 'Error',
-    component: Errorr,
-    meta: { hideNavbar: true },
+  { 
+    path: '/all-products', 
+    name: 'AllProducts', 
+    component: AllProducts 
   },
-  { path: "/all-products", name: "AllProducts", component: AllProducts },
-  //admin
-{
-  path: '/admin/users',
-  name: 'AdminUsers',
-  component: AdminUsers,
-  meta: { layout: 'admin' }
-},
-{
-  path: '/admin/products',
-  name: 'ProductsDashboard',
-  component: ProductsDashboard,
-  meta: { layout: 'admin' }
-},
-{
+  // Admin routes
+  {
+    path: '/admin/users',
+    name: 'AdminUsers',
+    component: AdminUsers,
+    meta: { layout: 'admin' }
+  },
+  {
+    path: '/admin/products',
+    name: 'ProductsDashboard',
+    component: ProductsDashboard,
+    meta: { layout: 'admin' }
+  },
+  {
     path: '/admin/categories',
     name: 'Categories',
     component: CategoriesManager,
@@ -86,34 +94,27 @@ const routes = [
     path: '/rentals',
     name: 'Rentals',
     component: RentalDashboard,
-  meta: { layout: 'admin' }
+    meta: { layout: 'admin' }
   },
-{
-  path: '/admin/user/:userId/rentals',
-  name: 'UserRentals',   
-  component: UserRentals,
-  meta: { layout: 'admin' }
-},
-{
-  path: '/admin/reviews',
-  name: 'AdminReviews',
-  component: AdminReviews,
-  meta: { layout: 'admin' }
-}
-
-
-// {
-//   path: '/admin/edit-banner',
-//   name: 'EditBanner',
-//   component: () => import('@/views/EditBanner.vue')
-// }
-
-// {
-//   path: '/admin/edit-banner',
-//   name: 'EditBanner',
-//   component: EditBanner,
-//   meta: { requiresAuth: true }
-// }
+  {
+    path: '/admin/user/:userId/rentals',
+    name: 'UserRentals',   
+    component: UserRentals,
+    meta: { layout: 'admin' }
+  },
+  {
+    path: '/admin/reviews',
+    name: 'AdminReviews',
+    component: AdminReviews,
+    meta: { layout: 'admin' }
+  },
+  // Error route should be last
+  {
+    path: '/:pathMatch(.*)*',
+    name: 'Error',
+    component: Errorr,
+    meta: { hideNavbar: true },
+  }
 ];
 
 const router = createRouter({
@@ -124,12 +125,11 @@ const router = createRouter({
 router.beforeEach((to, from, next) => {
   const auth = getAuth();
 
-  // Create a promise to handle the auth state
   const checkAuth = () => {
     return new Promise((resolve, reject) => {
       const unsubscribe = auth.onAuthStateChanged(
         (user) => {
-          unsubscribe(); // Unsubscribe to prevent memory leaks
+          unsubscribe();
           resolve(user);
         },
         (error) => {
@@ -142,7 +142,7 @@ router.beforeEach((to, from, next) => {
 
   checkAuth()
     .then((user) => {
-      // Redirect authenticated and email-verified users from login/signup to homepage
+      // Redirect authenticated users from auth pages
       if ((to.name === 'Login' || to.name === 'Signup') && user && user.emailVerified) {
         Swal.fire({
           position: 'top-end',
@@ -154,7 +154,7 @@ router.beforeEach((to, from, next) => {
         return next('/home');
       }
 
-      // If route requires auth and user is not logged in
+      // Handle auth requirements
       if (to.meta.requiresAuth && !user) {
         Swal.fire({
           icon: 'warning',
@@ -166,7 +166,7 @@ router.beforeEach((to, from, next) => {
         return next('/login');
       }
 
-      // If route requires email verification and user is not verified
+      // Handle email verification requirements
       if (to.meta.requiresVerifiedEmail && user && !user.emailVerified) {
         Swal.fire({
           icon: 'warning',
@@ -178,11 +178,9 @@ router.beforeEach((to, from, next) => {
         return next('/login');
       }
 
-      // Proceed to the requested route
       next();
     })
     .catch((error) => {
-      // Handle Firebase auth errors (e.g., network issues)
       console.error('Auth state error:', error);
       Swal.fire({
         icon: 'error',
