@@ -1,15 +1,21 @@
 <template>
   <div class="w-full px-4 lg:px-[88px] mt-4">
-    <div class="flex flex-wrap gap-2 lg:gap-12 justify-start lg:justify-center">
+    <div class="flex flex-wrap gap-2 lg:gap-24 justify-start lg:justify-center">
       <button @click="selectCategory('')"
-        class="flex items-center gap-2 px-4 py-2 rounded-lg text-base font-medium bg-white dark:bg-[var(--Color-Surface-Surface-Primary)] text-[var(--Color-Text-Text-Primary)] border border-[var(--Color-Boarder-Border-Primary)] lg:border-0 hover:bg-[var(--Color-Surface-Surface-Brand)] hover:text-[var(--Color-Text-Hover-Primary)] transition"
-        :class="selectedCategory === '' ? 'bg-[var(--Color-Surface-Surface-Brand)] text-[var(--Color-Text-Text-Primary)]' : ''">
+        class="flex items-center gap-2 px-4 py-2 rounded-lg text-base font-medium border border-[var(--Color-Boarder-Border-Primary)] lg:border-0 transition group
+            hover:text-[var(--Color-Text-Text-Brand)] lg:hover:bg-white lg:hover:text-[var(--Color-Text-Text-Brand)]"
+        :class="selectedCategory === ''
+          ? 'bg-[var(--Color-Surface-Surface-Brand)] text-[var(--Color-Text-Text-Invert)] lg:bg-white lg:text-[var(--Color-Text-Text-Brand)]'
+          : 'bg-white text-[var(--Color-Text-Text-Primary)] dark:bg-[var(--Color-Surface-Surface-Primary)]'">
         <i class="fa-solid fa-layer-group"></i>
         {{$t('all')}}
       </button>
       <button v-for="cat in categories" :key="cat" @click="selectCategory(cat)"
-        class="flex items-center gap-2 px-4 py-2 rounded-lg text-base font-medium bg-white dark:bg-[var(--Color-Surface-Surface-Primary)] text-[var(--Color-Text-Text-Primary)] border border-[var(--Color-Boarder-Border-Primary)] lg:border-0 hover:bg-[var(--Color-Surface-Surface-Brand)] hover:text-[var(--Color-Text-Hover-Primary)] transition"
-        :class="selectedCategory === cat ? 'bg-[var(--Color-Surface-Surface-Brand)] text-[var(--Color-Text-Text-Invert)]' : ''">
+        class="flex items-center gap-2 px-4 py-2 rounded-lg text-base font-medium border border-[var(--Color-Boarder-Border-Primary)] lg:border-0 transition group
+            hover:text-[var(--Color-Text-Text-Brand)] lg:hover:bg-white lg:hover:text-[var(--Color-Text-Text-Brand)]"
+        :class="selectedCategory === cat
+          ? 'bg-[var(--Color-Surface-Surface-Brand)] text-[var(--Color-Text-Text-Invert)] lg:bg-white lg:text-[var(--Color-Text-Text-Brand)]'
+          : 'bg-white text-[var(--Color-Text-Text-Primary)] dark:bg-[var(--Color-Surface-Surface-Primary)]'">
         <i v-if="cat === 'Home Tools'" class="fa-solid fa-screwdriver-wrench"></i>
         <i v-else-if="cat === 'Photography & Videography'" class="fa-solid fa-camera"></i>
         <i v-else-if="cat === 'Outdoor & Camping'" class="fa-solid fa-campground"></i>
