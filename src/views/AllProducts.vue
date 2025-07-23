@@ -1,36 +1,46 @@
 <template>
-  <div class="min-h-screen flex flex-col px-6 lg:px-[88px]"
-    :style="{ backgroundColor: 'var(--Color-Surface-Surface-Primary)', color: 'var(--Color-Text-Text-Primary)' }">
-    
-    <!-- Search Bar Section -->
+  <div
+    class="min-h-screen flex flex-col px-6 lg:px-[88px]"
+    :style="{
+      backgroundColor: 'var(--Color-Surface-Surface-Primary)',
+      color: 'var(--Color-Text-Text-Primary)',
+    }"
+  >
+    <!-- Search Bar -->
     <SearchBar v-model:searchQuery="searchQuery" />
 
-    <!-- Category Section -->
-    <CategoryButtons 
-      :categories="categories" 
-      :selectedCategory="selectedCategory" 
-      @update:selectedCategory="selectedCategory = $event" 
+    <!-- Category Buttons -->
+    <CategoryButtons
+      :categories="categories"
+      :selectedCategory="selectedCategory"
+      @update:selectedCategory="selectedCategory = $event"
     />
 
-    <!-- All Products Section -->
+    <!-- Products Section -->
     <div class="container mx-auto px-4 mt-8">
       <h2 class="text-xl font-bold text-[var(--Color-Text-Text-Brand)] mb-4">
-        {{$t('allProducts')}}
+        {{ $t("allProducts") }}
       </h2>
-      <div v-if="filteredProducts.length === 0" class="text-center text-gray-400 text-xl py-12">
-        {{$t('noProductsFound')}}
+
+      <div
+        v-if="filteredProducts.length === 0"
+        class="text-center text-gray-400 text-xl py-12"
+      >
+        {{ $t("noProductsFound") }}
       </div>
+
       <div v-else class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
         <ProductCard
-          v-for="product in filteredProducts" 
-          :key="product.id" 
-          :product="product" 
-          :isAuthenticated="isAuthenticated" 
-          :promptLogin="promptLogin" 
+          v-for="product in filteredProducts"
+          :key="product.id"
+          :product="product"
+          :isAuthenticated="isAuthenticated"
+          :promptLogin="promptLogin"
         />
       </div>
     </div>
-     <!-- Footer -->
+
+    <!-- Footer -->
     <AppFooter />
   </div>
 </template>
@@ -39,16 +49,18 @@
 import { ref, computed, onMounted } from "vue";
 import { getAuth, onAuthStateChanged } from "firebase/auth";
 import { useRouter } from "vue-router";
-import getCollection from "../composables/getCollection";
 import { collection, getDocs } from "firebase/firestore";
 import { db } from "@/firebase/config";
 import Swal from "sweetalert2";
 
-// Importing components
-import SearchBar from '@/components/pages/SearchBar.vue';
-import CategoryButtons from '@/components/pages/CategoryButtons.vue';
-import ProductCard from '@/components/pages/ProductCard.vue';
-import AppFooter from '@/components/pages/AppFooter.vue';
+// Components
+import SearchBar from "@/components/pages/SearchBar.vue";
+import CategoryButtons from "@/components/pages/CategoryButtons.vue";
+import ProductCard from "@/components/pages/ProductCard.vue";
+import AppFooter from "@/components/pages/AppFooter.vue";
+
+// Firebase composable
+import getCollection from "../composables/getCollection";
 
 export default {
   name: "AllProducts",
@@ -56,10 +68,12 @@ export default {
     SearchBar,
     CategoryButtons,
     ProductCard,
-    AppFooter
+    AppFooter,
   },
   setup() {
     const { documents: products } = getCollection("products");
+    const { documents: reviews } = getCollection("user-reviews");
+
     const searchQuery = ref("");
     const selectedCategory = ref("");
     const isAuthenticated = ref(false);
@@ -67,7 +81,7 @@ export default {
     const auth = getAuth();
     const router = useRouter();
 
-    // Load categories from Firebase
+    // Load categories
     const loadCategories = async () => {
       const snapshot = await getDocs(collection(db, "categories"));
       categories.value = snapshot.docs
@@ -75,14 +89,14 @@ export default {
         .sort((a, b) => a.localeCompare(b));
     };
 
-    // Prompt login if not authenticated
+    // Login alert
     const promptLogin = () => {
       Swal.fire({
         position: "top-end",
         icon: "warning",
-        title: $t('pleaseLoginToRent'),
+        title: "Please log in to rent a product",
         showConfirmButton: true,
-        confirmButtonText: $t('goToLogin'),
+        confirmButtonText: "Go to Login",
       }).then((result) => {
         if (result.isConfirmed) {
           router.push({ name: "Login" });
@@ -90,7 +104,50 @@ export default {
       });
     };
 
-    // Check authentication status
+    // Compute average ratings from user-reviews
+    const productRatings = computed(() => {
+      const map = {};
+      if (!reviews.value) return {};
+
+      reviews.value.forEach((review) => {
+        const pid = review.productId;
+        if (!map[pid]) {
+          map[pid] = { total: 0, count: 0 };
+        }
+        map[pid].total += review.rate;
+        map[pid].count += 1;
+      });
+
+      const averages = {};
+      for (const pid in map) {
+        const { total, count } = map[pid];
+        averages[pid] = (total / count).toFixed(1);
+      }
+      return averages;
+    });
+
+    // Filter products and add avg rating
+    const filteredProducts = computed(() => {
+      if (!products.value) return [];
+
+      let result = products.value;
+
+      if (selectedCategory.value) {
+        result = result.filter((p) => p.category === selectedCategory.value);
+      }
+
+      if (searchQuery.value) {
+        const q = searchQuery.value.toLowerCase();
+        result = result.filter((p) => p.title?.toLowerCase().includes(q));
+      }
+
+      return result.map((product) => ({
+        ...product,
+        rating: productRatings.value[product.id] || "0",
+      }));
+    });
+
+    // On mount
     onMounted(() => {
       loadCategories();
       onAuthStateChanged(auth, (user) => {
@@ -98,26 +155,9 @@ export default {
       });
     });
 
-    // Filter products based on category and search query
-    const filteredProducts = computed(() => {
-      if (!products.value) return [];
-      let filtered = products.value;
-      if (selectedCategory.value) {
-        filtered = filtered.filter(
-          (product) => product.category === selectedCategory.value
-        );
-      }
-      if (searchQuery.value) {
-        const query = searchQuery.value.toLowerCase();
-        filtered = filtered.filter((product) =>
-          product.title?.toLowerCase().includes(query)
-        );
-      }
-      return filtered;
-    });
-
     return {
       products,
+      reviews,
       searchQuery,
       selectedCategory,
       filteredProducts,
@@ -134,7 +174,6 @@ input {
   transition: all 0.3s ease;
 }
 
-/* Responsive tweaks for extra small screens */
 @media (max-width: 400px) {
   .container {
     padding-left: 0.5rem !important;

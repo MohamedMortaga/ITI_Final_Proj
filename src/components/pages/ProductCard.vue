@@ -18,18 +18,6 @@
         :class="{ 'flex-row-reverse': $i18n.locale === 'ar' }"
         :dir="$i18n.locale === 'ar' ? 'rtl' : 'ltr'"
       >
-        <div class="text-sm font-semibold text-[var(--Color-Text-Text-Primary)]">
-          {{ $i18n.locale === "ar" ? "ج.م" : "EGP" }} {{ product.price || "0" }}
-        </div>
-        <div class="text-sm font-semibold text-[var(--Color-Text-Text-Primary)]">
-          {{ $t("perDay") }}
-        </div>
-      </div>
-      <div
-        class="flex items-center justify-between h-full mb-2"
-        :class="{ 'flex-row-reverse': $i18n.locale === 'ar' }"
-        :dir="$i18n.locale === 'ar' ? 'rtl' : 'ltr'"
-      >
         <div class="flex items-center">
           <i class="fa-solid fa-location-dot mr-1"></i>
           {{ product.location || $t("defaultLocation") }}
@@ -39,6 +27,18 @@
         >
           <i class="fa-solid fa-star text-yellow-400 mr-1"></i>
           <span>{{ product.rating || "0" }}</span>
+        </div>
+      </div>
+      <div
+        class="flex items-center justify-between h-full mb-2"
+        :class="{ 'flex-row-reverse': $i18n.locale === 'ar' }"
+        :dir="$i18n.locale === 'ar' ? 'rtl' : 'ltr'"
+      >
+        <div class="text-sm font-semibold text-[var(--Color-Text-Text-Primary)]">
+          {{ $i18n.locale === "ar" ? "ج.م" : "EGP" }} {{ product.price || "0" }}
+        </div>
+        <div class="text-sm font-semibold text-[var(--Color-Text-Text-Primary)]">
+          {{ $t("perDay") }}
         </div>
       </div>
       <div class="mt-4">
