@@ -58,6 +58,16 @@
         required
       />
     </div>
+<!-- Net Profit -->
+<div class="mb-4">
+  <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">{{$t('netProfit')}}</label>
+  <input
+    :value="netProfit"
+    type="number"
+    readonly
+    class="w-full px-4 py-2 bg-gray-100 dark:bg-gray-600 rounded-lg border border-gray-300 dark:border-gray-600 dark:text-gray-200"
+  />
+</div>
 
     <!-- Details -->
     <div class="mb-6">
@@ -88,6 +98,33 @@
 </template>
 
 <script setup>
-defineProps(['form', 'categories', 'isEdit', 'uploading']);
-defineEmits(['submitForm', 'imageUpload', 'cancelForm']);
+import { computed } from 'vue';
+
+// استخراج props
+const { form, categories, isEdit, uploading } = defineProps([
+  'form',
+  'categories',
+  'isEdit',
+  'uploading'
+]);
+
+// ✅ عرفي العمولة قبل استخدامها
+const commissionRate = 0.15;
+
+// ✅ بعدها احسبي صافي الربح
+const netProfit = computed(() => {
+  try {
+    if (!form.price) return 0;
+    return form.price - form.price * commissionRate;
+  } catch (e) {
+    console.error('Error in netProfit computed:', e);
+    return 0;
+  }
+});
+
+// تعريف الإيفنتات
+defineEmits(['submitForm', 'imageUpload']);
 </script>
+
+
+

@@ -170,7 +170,7 @@
   "invalidRating": "Invalid Rating",
   "rateWholeNumber": "Rate must be a whole number between 1 and 5.",
   "unknownSeller": "Unknown Seller",
-  "productTitlePlaceholder": "Enter product title",
+  "productTitlePlaceholder": " Title",
   "productPricePlaceholder": "Enter product price",
   "productDetailsPlaceholder": "Enter product details",
   "selectCategory": "Select Category",
@@ -198,5 +198,7 @@
   "reviewsAfterBooking": "Reviews After Booking",
   "webReviewsWithoutBooking": "Web Reviews (Without Booking)",
   "yourRentals": "Your Rentals",
-  "viewAllYourRentalBookings": "View all your rental bookings."
+  "viewAllYourRentalBookings": "View all your rental bookings.",
+  "netProfit": "Net Profit"
+
 } 

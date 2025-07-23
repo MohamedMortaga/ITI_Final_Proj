@@ -23,10 +23,13 @@ const form = ref({
 });
 const isEdit = ref(false);
 const editId = ref(null);
-const currentUser = ref(null);
+const currentUser  = ref(null);
 const searchQuery = ref("");
 const selectedCategory = ref("");
 const uploading = ref(false);
+
+// Define the commission rate
+const commissionRate = 0.15;
 
 const loadCategories = async () => {
   try {
@@ -50,8 +53,8 @@ const loadCategories = async () => {
 
 const loadProducts = async () => {
   try {
-    if (!currentUser.value) throw new Error("No user is logged in.");
-    const q = query(collection(db, "products"), where("userId", "==", currentUser.value.uid));
+    if (!currentUser .value) throw new Error("No user is logged in.");
+    const q = query(collection(db, "products"), where("userId", "==", currentUser .value.uid));
     const snapshot = await getDocs(q);
     products.value = snapshot.docs.map((doc) => ({ ...doc.data(), id: doc.id }));
   } catch (err) {
@@ -64,7 +67,7 @@ const loadProducts = async () => {
 };
 
 onAuthStateChanged(auth, (user) => {
-  currentUser.value = user;
+  currentUser .value = user;
   if (user) {
     loadProducts();
     loadCategories();
@@ -108,7 +111,7 @@ const handleImageUpload = async (event) => {
 
 const submitForm = async () => {
   try {
-    if (!currentUser.value) {
+    if (!currentUser .value) {
       Swal.fire({ icon: "error", title: "Please log in first." });
       return;
     }
@@ -117,6 +120,9 @@ const submitForm = async () => {
       Swal.fire({ icon: "error", title: "Please fill all required fields." });
       return;
     }
+
+    // Calculate net profit
+    const netProfit = form.value.price - form.value.price * commissionRate;
 
     if (isEdit.value) {
       const docRef = doc(db, "products", editId.value);
@@ -127,7 +133,8 @@ const submitForm = async () => {
         details: form.value.details,
         img: form.value.image || "",
         imagePath: form.value.imagePath || "",
-        userId: currentUser.value.uid,
+        userId: currentUser .value.uid,
+        netProfit: netProfit, // Include net profit in the update
       });
       Swal.fire({ icon: "success", title: "Updated successfully", timer: 1500, showConfirmButton: false });
     } else {
@@ -138,9 +145,10 @@ const submitForm = async () => {
         details: form.value.details,
         img: form.value.image || "",
         imagePath: form.value.imagePath || "",
-        userId: currentUser.value.uid,
-        ownerName: currentUser.value.displayName || currentUser.value.email,
+        userId: currentUser .value.uid,
+        ownerName: currentUser .value.displayName || currentUser .value.email,
         createdAt: serverTimestamp(),
+        netProfit: netProfit, // Include net profit in the new product
       });
       Swal.fire({ icon: "success", title: "Added successfully", timer: 1500, showConfirmButton: false });
     }
@@ -207,7 +215,7 @@ export default function useAdminProducts() {
     categories,
     isEdit,
     uploading,
-    currentUser,
+    currentUser ,
     searchQuery,
     selectedCategory,
     loadProducts,
