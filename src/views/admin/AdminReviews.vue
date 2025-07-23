@@ -22,9 +22,6 @@
                                 Name: {{ productsMap[review.productId]?.title || 'Unknown Product' }}
 
                             </p>
-
-
-
                             <p class="text-sm text-gray-700 dark:text-gray-300">{{ review.review }}</p>
                             <p class="text-yellow-500 mt-1">{{ $t('rating') }}: {{ review.rate }} ★</p>
                             <p class="text-xs text-gray-500 mt-1">{{ $t('by') }}: {{ review.userName }}</p>
@@ -139,13 +136,13 @@ const fetchProducts = async () => {
 };
 
 function enrich(review) {
-  const prod = productsMap.value[review.productId] || {}
-  console.log('Product ID:', review.productId, '→ Title:', prod.title)
-  return {
-    ...review,
-    productName: prod.title,
-    img: prod.img || '',
-  }
+    const prod = productsMap.value[review.productId] || {}
+    console.log('Product ID:', review.productId, '→ Title:', prod.title)
+    return {
+        ...review,
+        productName: prod.title,
+        img: prod.img || '',
+    }
 }
 
 

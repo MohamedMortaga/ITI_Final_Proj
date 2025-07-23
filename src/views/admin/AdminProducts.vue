@@ -45,6 +45,15 @@
           >
             {{$t('deleteProduct')}}
           </button>
+          <button
+  v-if="product.isApproved !== true"
+
+  @click="approveProduct(product.id)"
+  class="bg-green-500 text-white px-3 py-1 rounded-md text-sm hover:bg-green-600"
+>
+  Approve
+</button>
+
         </div>
       </div>
     </div>
@@ -57,9 +66,19 @@
 
 <script setup>
 import { ref, onMounted } from 'vue';
-import { collection, getDocs, doc, deleteDoc } from 'firebase/firestore';
-import { addDoc, serverTimestamp } from 'firebase/firestore'
+import { 
+  collection, 
+  getDocs, 
+  doc, 
+  deleteDoc, 
+  addDoc, 
+  updateDoc,
+  serverTimestamp 
+} from 'firebase/firestore';
 import { db } from '@/firebase/config';
+
+
+
 import Swal from 'sweetalert2';
 
 const products = ref([]);
@@ -78,6 +97,19 @@ const users = ref({});
 //     console.error('Failed to load products:', err);
 //   }
 // };
+
+const approveProduct = async (productId) => {
+  try {
+    await updateDoc(doc(db, 'products', productId), {
+      isApproved: true
+    });
+    await fetchProducts(); 
+  } catch (err) {
+    console.error('Failed to approve product:', err);
+  }
+};
+
+
 const fetchProducts = async () => {
   try {
     const snapshot = await getDocs(collection(db, 'products'));

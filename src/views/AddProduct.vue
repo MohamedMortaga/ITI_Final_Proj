@@ -17,6 +17,9 @@
         :placeholder="$t('searchByTitle')"
         class="w-[500px] pl-12 pr-4 py-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-[var(--Color-Text-Text-Brand)] text-base text-[var(--Color-Text-Text-Primary)] placeholder-[var(--Color-Text-Text-Secondary)] bg-[var(--Color-Surface-Surface-Primary)] border-[var(--Color-Boarder-Border-Primary)] dark:border-[var(--Color-Boarder-Border-Primary)]"
       />
+ <div v-if="product && product.isApproved">Approved</div>
+
+
       </div>
       
     </div>
@@ -29,13 +32,22 @@
     />
     
     <!-- Products List -->
-    <ProductList
+    <!-- <ProductList
       :products="filteredProducts"
       :highlightText="highlightText"
       @editProduct="editProductHandler"
       @deleteProduct="deleteProduct"
       @addItem="showForm = true"
-    />
+    /> -->
+    <ProductList
+  :products="filteredProducts"
+  :highlightText="highlightText"
+  @editProduct="editProductHandler"
+  @deleteProduct="deleteProduct"
+  @addItem="showForm = true"
+  @approveProduct="approveProduct"
+/>
+
     
     
 
