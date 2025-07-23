@@ -32,7 +32,18 @@
       <!-- Category -->
       <div class="text-[var(--Color-Text-Text-Primary)] dark:text-[var(--Color-Text-Text-Primary)]  font-nunito">{{ product.category }}</div>
       <!-- Price -->
-      <div class="text-[var(--Color-Text-Text-Primary)] dark:text-[var(--Color-Text-Text-Primary)]  font-nunito">{{ product.price }} EGP <br><span class="text-xs text-[var(--Color-Text-Text-Secondary)] dark:text-[var(--Color-Text-Text-Secondary)] font-nunito">{{$t('perDay')}}</span></div>
+     <!-- Price -->
+<div class="text-[var(--Color-Text-Text-Primary)] dark:text-[var(--Color-Text-Text-Primary)] font-nunito">
+  {{ product.price }} EGP <br>
+  <span class="text-xs text-[var(--Color-Text-Text-Secondary)] dark:text-[var(--Color-Text-Text-Secondary)] font-nunito">
+    {{$t('perDay')}}
+  </span>
+  <br>
+  <span class="text-sm text-green-600 dark:text-green-400 font-medium">
+    {{$t('afterCommission')}}: {{ (product.price - product.price * 0.15).toFixed(2) }} EGP
+  </span>
+</div>
+
       <!-- Details -->
       <div class="text-[var(--Color-Text-Text-Primary)] dark:text-[var(--Color-Text-Text-Primary)]  font-nunito">{{ product.details }}</div>
       <!-- Uploaded -->
