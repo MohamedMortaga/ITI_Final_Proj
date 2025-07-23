@@ -163,16 +163,23 @@ export default {
       return (sum / productReviews.length).toFixed(1);
     };
 
-    const loadProductsWithRatings = async () => {
-      if (!products.value) return;
-      const productsWithRatings = await Promise.all(
-        products.value.map(async (product) => {
-          const avgRating = await calculateAverageRating(product.id);
-          return { ...product, rating: avgRating };
-        })
-      );
-      allProducts.value = productsWithRatings;
-    };
+const loadProductsWithRatings = async () => {
+  if (!products.value) return;
+
+  const productsWithRatings = await Promise.all(
+    products.value.map(async (product) => {
+      const avgRating = await calculateAverageRating(product.id);
+      return { ...product, rating: parseFloat(avgRating) || 0 };
+    })
+  );
+
+  // ترتيب المنتجات حسب التقييم من الأعلى للأقل، وخد أول 8 فقط
+  allProducts.value = productsWithRatings
+    .sort((a, b) => b.rating - a.rating)
+    .slice(0, 8);
+};
+
+
 
     onMounted(() => {
       loadCategories();
