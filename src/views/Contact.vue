@@ -1,42 +1,42 @@
 <template>
-  <div class="min-h-screen flex items-center justify-center bg-white px-[88px] overflow-y-hidden dark:bg-gray-900">
-    <div class="max-w-6xl w-full flex flex-col lg:flex-row items-center justify-between xl:max-w-7xl 2xl:max-w-[1500px]">
+  <div class="min-h-screen flex items-center justify-center bg-[var(--Color-Surface-Surface-Primary)] text-[var(--Color-Text-Text-Primary)] px-[88px] overflow-y-hidden">
+    <div class="max-w-6xl w-full flex flex-col lg:flex-row items-center justify-between xl:max-w-7xl 2xl:max-w-[1500px] bg-[var(--Color-Surface-Surface-Primary)]">
       <!-- Form Section -->
-      <div class="w-full lg:w-1/2 p-6 lg:p-10 xl:p-12 dark:bg-gray-800 dark:text-gray-200">
-        <form class="space-y-4 xl:space-y-4 border border-gray-200 rounded-lg p-6">
-          <h2 class="text-2xl font-semibold mb-4 lg:text-2xl xl:text-3xl">Send Us a Message</h2>
-          <p class="font-semibold mb-1 lg:text-base xl:text-lg dark:text-gray-300">Got a question or feedback? We're listening.</p>
-          <p class="text-gray-600 mb-6 lg:text-base xl:text-lg dark:text-gray-300">
+      <div class="w-full lg:w-1/2 p-6 lg:p-10 xl:p-12 bg-[var(--Color-Surface-Surface-Primary)] text-[var(--Color-Text-Text-Primary)]">
+        <form class="space-y-4 xl:space-y-4 border border-[var(--Color-Boarder-Border-Primary)] rounded-lg p-6 bg-[var(--Color-Surface-Surface-Primary)]">
+          <h2 class="text-2xl font-semibold mb-4 lg:text-2xl xl:text-3xl text-[var(--Color-Text-Text-Primary)]">Send Us a Message</h2>
+          <p class="font-semibold mb-1 lg:text-base xl:text-lg text-[var(--Color-Text-Text-Secondary)]">Got a question or feedback? We're listening.</p>
+          <p class="text-[var(--Color-Text-Text-Secondary)] mb-6 lg:text-base xl:text-lg">
             Fill out the form and we'll get back to you as soon as possible.
           </p>
 
           <!-- Name -->
           <div>
-            <label for="name" class="block text-sm font-bold text-gray-900 mb-1 lg:text-sm xl:text-base dark:text-gray-200">Name</label>
+            <label for="name" class="block text-sm font-bold text-[var(--Color-Text-Text-Primary)] mb-1 lg:text-sm xl:text-base">Name</label>
             <input
               id="name"
               type="text"
               placeholder="Enter your Name"
-              class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-teal-600 text-sm lg:text-sm xl:text-base bg-white dark:bg-gray-700 dark:border-gray-600 dark:text-gray-200"
+              class="w-full px-3 py-2 border border-[var(--Color-Boarder-Border-Primary)] rounded-md focus:outline-none focus:ring-2 focus:ring-[var(--Color-Text-Text-Brand)] text-sm lg:text-sm xl:text-base bg-[var(--Color-Surface-Surface-Primary)] text-[var(--Color-Text-Text-Primary)]"
             />
           </div>
           <!-- Email -->
           <div>
-            <label for="email" class="block text-sm font-bold text-gray-900 mb-1 lg:text-sm xl:text-base dark:text-gray-200">Email</label>
+            <label for="email" class="block text-sm font-bold text-[var(--Color-Text-Text-Primary)] mb-1 lg:text-sm xl:text-base">Email</label>
             <input
               id="email"
               type="email"
               placeholder="Enter your email address"
-              class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-teal-600 text-sm lg:text-sm xl:text-base bg-white dark:bg-gray-700 dark:border-gray-600 dark:text-gray-200"
+              class="w-full px-3 py-2 border border-[var(--Color-Boarder-Border-Primary)] rounded-md focus:outline-none focus:ring-2 focus:ring-[var(--Color-Text-Text-Brand)] text-sm lg:text-sm xl:text-base bg-[var(--Color-Surface-Surface-Primary)] text-[var(--Color-Text-Text-Primary)]"
             />
           </div>
           <!-- Message -->
           <div>
-            <label for="message" class="block text-sm font-bold text-gray-900 mb-1 lg:text-sm xl:text-base dark:text-gray-200">Your Message</label>
+            <label for="message" class="block text-sm font-bold text-[var(--Color-Text-Text-Primary)] mb-1 lg:text-sm xl:text-base">Your Message</label>
             <textarea
               id="message"
               placeholder="Enter your message Details"
-              class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-teal-600 text-sm lg:text-sm xl:text-base bg-white dark:bg-gray-700 dark:border-gray-600 dark:text-gray-200"
+              class="w-full px-3 py-2 border border-[var(--Color-Boarder-Border-Primary)] rounded-md focus:outline-none focus:ring-2 focus:ring-[var(--Color-Text-Text-Brand)] text-sm lg:text-sm xl:text-base bg-[var(--Color-Surface-Surface-Primary)] text-[var(--Color-Text-Text-Primary)]"
               rows="4"
             ></textarea>
           </div>
@@ -44,7 +44,7 @@
           <!-- Submit -->
           <button
             type="submit"
-            class="w-full bg-teal-600 text-white rounded-md py-3 font-semibold hover:bg-teal-700 lg:py-3 xl:py-4 xl:text-lg"
+            class="w-full bg-[var(--Color-Surface-Surface-Brand)] text-[var(--Color-Text-Text-Invert)] rounded-md py-3 font-semibold hover:bg-[var(--Color-Text-Text-Brand)] hover:text-[var(--Color-Text-Text-Invert)] lg:py-3 xl:py-4 xl:text-lg"
           >
             Send Message
           </button>
@@ -56,7 +56,7 @@
         <img
           src="../assets/map.jpg"
           alt="Map Illustration"
-          class="w-full h-full object-cover rounded-lg"
+          class="w-full h-full object-cover rounded-lg border border-[var(--Color-Boarder-Border-Primary)]"
           style="min-height: 100%; min-width: 100%;"
           loading="lazy"
         />
@@ -66,37 +66,37 @@
     </div>
     <!-- Get in Touch Section -->
   </div>
-  <div class="w-full mt-10 text-center flex flex-col items-center justify-center">
-    <h2 class="text-2xl font-semibold mb-4 lg:text-2xl xl:text-3xl">Get in Touch</h2>
-    <p class="text-gray-600 mb-6 lg:text-base xl:text-lg dark:text-gray-300 max-w-2xl mx-auto">
+  <div class="w-full text-center flex flex-col items-center justify-center dark:bg-[var(--Color-Surface-Surface-Primary)]  p-6">
+    <h2 class="text-2xl font-semibold b-4 lg:text-2xl xl:text-3xl text-[var(--Color-Text-Text-Brand)]">Get in Touch</h2>
+    <p class="text-[var(--Color-Text-Text-Secondary)] mb-6 lg:text-base xl:text-lg max-w-2xl mx-auto">
       Here are other ways to contact us — whether by phone, email, or visiting us in person. We're always happy to connect.
     </p>
     <div class="flex flex-col md:flex-row justify-center items-center md:space-x-10 space-y-6 md:space-y-0">
       <div class="flex flex-col items-center">
-        <span class="inline-flex items-center justify-center w-12 h-12 mb-2 rounded-full bg-white border border-gray-300">
-          <svg class="w-6 h-6 text-teal-600" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M16 12v1a4 4 0 01-8 0v-1m8 0V8a4 4 0 00-8 0v4m8 0H8"></path></svg>
+        <span class="inline-flex items-center justify-center w-12 h-12 mb-2 rounded-full bg-[var(--Color-Surface-Surface-Primary)] dark:bg-[var(--Color-Surface-Surface-Invert)] border border-[var(--Color-Boarder-Border-Primary)]">
+          <svg class="w-6 h-6 text-[var(--Color-Text-Text-Brand)]" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M16 12v1a4 4 0 01-8 0v-1m8 0V8a4 4 0 00-8 0v4m8 0H8"></path></svg>
         </span>
-        <p class="text-gray-600">Email</p>
-        <p class="font-bold text-teal-600">support@example.com</p>
+        <p class="text-[var(--Color-Text-Text-Secondary)]">Email</p>
+        <p class="font-bold text-[var(--Color-Text-Text-Brand)]">support@example.com</p>
       </div>
       <div class="flex flex-col items-center">
-        <span class="inline-flex items-center justify-center w-12 h-12 mb-2 rounded-full bg-white border border-gray-300">
-          <svg class="w-6 h-6 text-teal-600" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M3 5a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H5a2 2 0 01-2-2V5zm0 8a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H5a2 2 0 01-2-2v-2zm8-8a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V5zm0 8a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z"></path></svg>
+        <span class="inline-flex items-center justify-center w-12 h-12 mb-2 rounded-full bg-[var(--Color-Surface-Surface-Primary)] dark:bg-[var(--Color-Surface-Surface-Invert)] border border-[var(--Color-Boarder-Border-Primary)]">
+          <svg class="w-6 h-6 text-[var(--Color-Text-Text-Brand)]" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M3 5a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H5a2 2 0 01-2-2V5zm0 8a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H5a2 2 0 01-2-2v-2zm8-8a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V5zm0 8a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z"></path></svg>
         </span>
-        <p class="text-gray-600">Phone</p>
-        <p class="font-bold text-teal-600">+1 234 567 890</p>
+        <p class="text-[var(--Color-Text-Text-Secondary)]">Phone</p>
+        <p class="font-bold text-[var(--Color-Text-Text-Brand)]">+1 234 567 890</p>
       </div>
       <div class="flex flex-col items-center">
-        <span class="inline-flex items-center justify-center w-12 h-12 mb-2 rounded-full bg-white border border-gray-300">
-          <svg class="w-6 h-6 text-teal-600" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M17.657 16.657L13.414 12.414a2 2 0 00-2.828 0l-4.243 4.243a8 8 0 1111.314 0z"></path><circle cx="12" cy="8" r="4"></circle></svg>
+        <span class="inline-flex items-center justify-center w-12 h-12 mb-2 rounded-full bg-[var(--Color-Surface-Surface-Primary)] dark:bg-[var(--Color-Surface-Surface-Invert)] border border-[var(--Color-Boarder-Border-Primary)]">
+          <svg class="w-6 h-6 text-[var(--Color-Text-Text-Brand)]" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M17.657 16.657L13.414 12.414a2 2 0 00-2.828 0l-4.243 4.243a8 8 0 1111.314 0z"></path><circle cx="12" cy="8" r="4"></circle></svg>
         </span>
-        <p class="text-gray-600">Location</p>
-        <p class="font-bold text-teal-600">123 Main Street, Cairo, Egypt</p>
+        <p class="text-[var(--Color-Text-Text-Secondary)]">Location</p>
+        <p class="font-bold text-[var(--Color-Text-Text-Brand)]">123 Main Street, Cairo, Egypt</p>
       </div>
     </div>
   </div>
    <!-- Footer -->
-  <AppFooter class="mt-16" />
+  <AppFooter />
 </template>
 
 <script>
