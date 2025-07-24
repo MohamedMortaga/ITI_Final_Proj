@@ -57,31 +57,7 @@
 
     <!-- Why Rento Section -->
     <WhyRento class="px-4" />
-
- 
   </div>
-
- 
-
-  <!-- FAQ Preview -->
-  <section class="w-full max-w-5xl mx-auto my-12 rounded-2xl bg-[var(--Color-Surface-Surface-Primary)] text-[var(--Color-Text-Text-Primary)] border border-[var(--Color-Boarder-Border-Primary)] px-8 py-8">
-    <h2 class="text-2xl md:text-3xl font-bold mb-6 text-[var(--Color-Text-Text-Brand)]">Frequently Asked Questions</h2>
-    <div class="space-y-6">
-      <div>
-        <h3 class="font-semibold text-lg mb-1">How do I rent a tool?</h3>
-        <p class="text-[var(--Color-Text-Text-Secondary)]">Browse or search for the tool you need, click on it, and follow the booking steps. You’ll get confirmation and pickup details instantly.</p>
-      </div>
-      <div>
-        <h3 class="font-semibold text-lg mb-1">How do I list my own tools?</h3>
-        <p class="text-[var(--Color-Text-Text-Secondary)]">Sign up, go to your dashboard, and click “Add Tool.” Fill in the details, upload photos, and set your price. Your tool will be live after approval.</p>
-      </div>
-      <div>
-        <h3 class="font-semibold text-lg mb-1">Is payment secure?</h3>
-        <p class="text-[var(--Color-Text-Text-Secondary)]">Yes! All payments are processed securely and your information is protected. We use trusted payment gateways for your peace of mind.</p>
-      </div>
-    </div>
-    <router-link to="/faq" class="inline-block mt-8 text-[var(--Color-Text-Text-Brand)] font-semibold hover:underline">See all FAQs</router-link>
-  </section>
 
   <AppFooter class="pt-16" />
 </template>
@@ -119,7 +95,9 @@ export default {
   },
   setup() {
     // const { documents: products } = getCollection("products");
-    const { documents: products } = getCollection("products", [["isApproved", "==", true]]);
+    const { documents: products } = getCollection("products", [
+      ["isApproved", "==", true],
+    ]);
     const { documents: reviews } = getCollection("web-reviews");
     const searchQuery = ref("");
     const selectedCategory = ref("");
@@ -129,10 +107,10 @@ export default {
     const auth = getAuth();
     const router = useRouter();
     const allProducts = ref([]);
-const approvedProducts = computed(() => {
-  if (!products.value) return [];
-  return products.value.filter(p => p.isApproved === true);
-});
+    const approvedProducts = computed(() => {
+      if (!products.value) return [];
+      return products.value.filter((p) => p.isApproved === true);
+    });
 
     const formattedReviews = computed(() => {
       if (!reviews.value) return [];
@@ -186,23 +164,20 @@ const approvedProducts = computed(() => {
       return (sum / productReviews.length).toFixed(1);
     };
 
-const loadProductsWithRatings = async () => {
-  if (!products.value) return;
+    const loadProductsWithRatings = async () => {
+      if (!products.value) return;
 
-  const productsWithRatings = await Promise.all(
-    products.value.map(async (product) => {
-      const avgRating = await calculateAverageRating(product.id);
-      return { ...product, rating: parseFloat(avgRating) || 0 };
-    })
-  );
+      const productsWithRatings = await Promise.all(
+        products.value.map(async (product) => {
+          const avgRating = await calculateAverageRating(product.id);
+          return { ...product, rating: parseFloat(avgRating) || 0 };
+        })
+      );
 
-
-  allProducts.value = productsWithRatings
-    .sort((a, b) => b.rating - a.rating)
-    .slice(0, 8);
-};
-
-
+      allProducts.value = productsWithRatings
+        .sort((a, b) => b.rating - a.rating)
+        .slice(0, 8);
+    };
 
     onMounted(() => {
       loadCategories();
