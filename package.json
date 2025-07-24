@@ -13,10 +13,12 @@
     "@heroicons/vue": "^2.2.0",
     "core-js": "^3.37.1",
     "firebase": "^11.10.0",
+    "mitt": "^3.0.1",
     "sweetalert2": "^11.22.2",
     "vue": "^3.5.12",
     "vue-i18n": "^9.14.5",
-    "vue-router": "^4.4.5"
+    "vue-router": "^4.4.5",
+    "xlsx": "^0.18.5"
   },
   "devDependencies": {
     "@babel/eslint-parser": "^7.25.8",

@@ -61,7 +61,6 @@
           loading="lazy"
         />
       </div>
-
       
     </div>
     <!-- Get in Touch Section -->
@@ -94,6 +93,7 @@
         <p class="font-bold text-[var(--Color-Text-Text-Brand)]">123 Main Street, Cairo, Egypt</p>
       </div>
     </div>
+    
   </div>
    <!-- Footer -->
   <AppFooter />
