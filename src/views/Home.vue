@@ -110,6 +110,10 @@ export default {
     const auth = getAuth();
     const router = useRouter();
     const allProducts = ref([]);
+const approvedProducts = computed(() => {
+  if (!products.value) return [];
+  return products.value.filter(p => p.isApproved === true);
+});
 
     const formattedReviews = computed(() => {
       if (!reviews.value) return [];
@@ -173,7 +177,7 @@ const loadProductsWithRatings = async () => {
     })
   );
 
-  // ترتيب المنتجات حسب التقييم من الأعلى للأقل، وخد أول 8 فقط
+
   allProducts.value = productsWithRatings
     .sort((a, b) => b.rating - a.rating)
     .slice(0, 8);

@@ -27,7 +27,7 @@ const currentUser  = ref(null);
 const searchQuery = ref("");
 const selectedCategory = ref("");
 const uploading = ref(false);
-
+const allProducts = ref([])
 // Define the commission rate
 const commissionRate = 0.15;
 
@@ -50,13 +50,28 @@ const loadCategories = async () => {
     });
   }
 };
+const disapproveProduct = async (productId) => {
+  try {
+    const productRef = doc(db, "products", productId);
+    await updateDoc(productRef, { isApproved: false }); 
+    alert("disapproved successfully");
 
+ 
+    await fetchProducts();
+  } catch (error) {
+    console.error("error ", error);
+  }
+};
 const loadProducts = async () => {
   try {
     if (!currentUser .value) throw new Error("No user is logged in.");
     const q = query(collection(db, "products"), where("userId", "==", currentUser .value.uid));
     const snapshot = await getDocs(q);
     products.value = snapshot.docs.map((doc) => ({ ...doc.data(), id: doc.id }));
+    products.value = snapshot.docs
+  .map(doc => ({ id: doc.id, ...doc.data() }))
+  .filter(product => product.isApproved === true); 
+
   } catch (err) {
     Swal.fire({
       position: "center",
@@ -225,6 +240,7 @@ export default function useAdminProducts() {
     handleImageUpload,
     editProduct,
     deleteProduct,
-    highlightText
+    highlightText,
+    disapproveProduct
   };
 }

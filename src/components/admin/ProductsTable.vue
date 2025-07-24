@@ -78,13 +78,15 @@
               >
                 <i class="fas fa-check"></i>
               </button>
-              <button
-                class="text-gray-500 hover:text-gray-700"
-                title="Edit"
-                disabled
-              >
-                <i class="fas fa-times"></i>
-              </button>
+         <button
+  v-if="product.isApproved === true"
+  @click="disapproveProduct(product.id)"
+  class="text-yellow-500 hover:text-yellow-700"
+  title="Unapprove"
+>
+  <i class="fas fa-times"></i>
+</button>
+
             </td>
           </tr>
         </tbody>
@@ -144,6 +146,32 @@ const currentPage = ref(1);
 const itemsPerPage = 10;
 const selectedProducts = ref([]);
 const selectAll = ref(false);
+const allProducts = ref([])
+const disapproveProduct = async (id) => {
+  try {
+    const productRef = doc(db, "products", id);
+    await updateDoc(productRef, { isApproved: false });
+    await fetchProducts(); 
+    Swal.fire("Product has been successfully removed from the website ✅");
+  } catch (error) {
+    console.error("Failed to disapprove product:", error);
+    Swal.fire("An error occurred while removing the product ❌");
+  }
+};
+
+
+const unapproveProduct = async (productId) => {
+  try {
+    await updateDoc(doc(db, 'products', productId), {
+      isApproved: false,
+    });
+    await fetchProducts();
+    Swal.fire('Updated!', 'Product has been marked as not approved.', 'info');
+  } catch (err) {
+    console.error('Failed to unapprove product:', err);
+    Swal.fire('Error!', 'There was an error updating the product.', 'error');
+  }
+};
 
 const filteredProducts = computed(() => {
   let filtered = products.value;
@@ -180,6 +208,7 @@ const totalPages = computed(() => {
   return Math.ceil(products.value.length / itemsPerPage);
 });
 
+
 const fetchProducts = async () => {
   try {
     const snapshot = await getDocs(collection(db, 'products'));
@@ -196,6 +225,7 @@ const fetchProducts = async () => {
     console.error('Failed to load products:', err);
   }
 };
+
 
 const fetchUsers = async () => {
   try {

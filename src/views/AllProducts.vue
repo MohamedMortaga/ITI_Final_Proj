@@ -73,6 +73,7 @@ export default {
   setup() {
     const { documents: products } = getCollection("products");
     const { documents: reviews } = getCollection("user-reviews");
+ 
 
     const searchQuery = ref("");
     const selectedCategory = ref("");
@@ -127,25 +128,27 @@ export default {
     });
 
     // Filter products and add avg rating
-    const filteredProducts = computed(() => {
-      if (!products.value) return [];
+ const filteredProducts = computed(() => {
+  if (!products.value) return [];
 
-      let result = products.value;
+  
+  let result = products.value.filter((p) => p.isApproved === true);
 
-      if (selectedCategory.value) {
-        result = result.filter((p) => p.category === selectedCategory.value);
-      }
+  if (selectedCategory.value) {
+    result = result.filter((p) => p.category === selectedCategory.value);
+  }
 
-      if (searchQuery.value) {
-        const q = searchQuery.value.toLowerCase();
-        result = result.filter((p) => p.title?.toLowerCase().includes(q));
-      }
+  if (searchQuery.value) {
+    const q = searchQuery.value.toLowerCase();
+    result = result.filter((p) => p.title?.toLowerCase().includes(q));
+  }
 
-      return result.map((product) => ({
-        ...product,
-        rating: productRatings.value[product.id] || "0",
-      }));
-    });
+  return result.map((product) => ({
+    ...product,
+    rating: productRatings.value[product.id] || "0",
+  }));
+});
+
 
     // On mount
     onMounted(() => {
