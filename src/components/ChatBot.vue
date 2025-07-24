@@ -123,12 +123,12 @@
               @change="handleImageUpload"
               style="display: none"
             />
+            <button type="submit">Send</button>
             <button type="button" @click="$refs.imageUpload.click()">Upload Image</button>
             <button type="button" @click="captureImage" v-if="isCameraSupported">
               Camera
             </button>
             <button type="button" @click="clearChat">Clear Chat</button>
-            <button type="submit">Send</button>
             <button type="button" id="generate-image" @click="handleGenerateImage">
               Generate Image
             </button>

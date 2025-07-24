@@ -1,18 +1,38 @@
 <template>
-  <div class="min-h-screen flex items-center justify-center bg-[var(--Color-Surface-Surface-Primary)] text-[var(--Color-Text-Text-Primary)] px-[88px] overflow-y-hidden">
-    <div class="max-w-6xl w-full flex flex-col lg:flex-row items-center justify-between xl:max-w-7xl 2xl:max-w-[1500px] bg-[var(--Color-Surface-Surface-Primary)]">
+  <div
+    class="min-h-screen flex items-center justify-center bg-[var(--Color-Surface-Surface-Primary)] text-[var(--Color-Text-Text-Primary)] px-[88px] overflow-y-hidden"
+  >
+    <div
+      class="max-w-6xl w-full flex flex-col lg:flex-row items-center justify-between xl:max-w-7xl 2xl:max-w-[1500px] bg-[var(--Color-Surface-Surface-Primary)]"
+    >
       <!-- Form Section -->
-      <div class="w-full lg:w-1/2 p-6 lg:p-10 xl:p-12 bg-[var(--Color-Surface-Surface-Primary)] text-[var(--Color-Text-Text-Primary)]">
-        <form class="space-y-4 xl:space-y-4 border border-[var(--Color-Boarder-Border-Primary)] rounded-lg p-6 bg-[var(--Color-Surface-Surface-Primary)]">
-          <h2 class="text-2xl font-semibold mb-4 lg:text-2xl xl:text-3xl text-[var(--Color-Text-Text-Primary)]">Send Us a Message</h2>
-          <p class="font-semibold mb-1 lg:text-base xl:text-lg text-[var(--Color-Text-Text-Secondary)]">Got a question or feedback? We're listening.</p>
+      <div
+        class="w-full p-0 md:p-6 lg:w-1/2 lg:p-10 xl:p-12 bg-[var(--Color-Surface-Surface-Primary)] text-[var(--Color-Text-Text-Primary)]"
+      >
+        <form
+          class="space-y-4 xl:space-y-4 border border-[var(--Color-Boarder-Border-Primary)] rounded-lg p-6 bg-[var(--Color-Surface-Surface-Primary)]"
+        >
+          <h2
+            class="text-2xl font-semibold mb-4 lg:text-2xl xl:text-3xl text-[var(--Color-Text-Text-Primary)]"
+          >
+            Send Us a Message
+          </h2>
+          <p
+            class="font-semibold mb-1 lg:text-base xl:text-lg text-[var(--Color-Text-Text-Secondary)]"
+          >
+            Got a question or feedback? We're listening.
+          </p>
           <p class="text-[var(--Color-Text-Text-Secondary)] mb-6 lg:text-base xl:text-lg">
             Fill out the form and we'll get back to you as soon as possible.
           </p>
 
           <!-- Name -->
           <div>
-            <label for="name" class="block text-sm font-bold text-[var(--Color-Text-Text-Primary)] mb-1 lg:text-sm xl:text-base">Name</label>
+            <label
+              for="name"
+              class="block text-sm font-bold text-[var(--Color-Text-Text-Primary)] mb-1 lg:text-sm xl:text-base"
+              >Name</label
+            >
             <input
               id="name"
               type="text"
@@ -22,7 +42,11 @@
           </div>
           <!-- Email -->
           <div>
-            <label for="email" class="block text-sm font-bold text-[var(--Color-Text-Text-Primary)] mb-1 lg:text-sm xl:text-base">Email</label>
+            <label
+              for="email"
+              class="block text-sm font-bold text-[var(--Color-Text-Text-Primary)] mb-1 lg:text-sm xl:text-base"
+              >Email</label
+            >
             <input
               id="email"
               type="email"
@@ -32,7 +56,11 @@
           </div>
           <!-- Message -->
           <div>
-            <label for="message" class="block text-sm font-bold text-[var(--Color-Text-Text-Primary)] mb-1 lg:text-sm xl:text-base">Your Message</label>
+            <label
+              for="message"
+              class="block text-sm font-bold text-[var(--Color-Text-Text-Primary)] mb-1 lg:text-sm xl:text-base"
+              >Your Message</label
+            >
             <textarea
               id="message"
               placeholder="Enter your message Details"
@@ -53,59 +81,120 @@
 
       <!-- Map Image -->
       <div class="hidden lg:flex w-full lg:w-1/2 mt-8 lg:mt-0 items-stretch">
-        <img
-          src="../assets/map.jpg"
-          alt="Map Illustration"
-          class="w-full h-full object-cover rounded-lg border border-[var(--Color-Boarder-Border-Primary)]"
-          style="min-height: 100%; min-width: 100%;"
+        <iframe
+          src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3454.021964024052!2d31.23571131511663!3d30.04441998187909!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x145841f6e2b2e7e3%3A0x7e1e8b4a3e8e8e8e!2sCairo%2C%20Egypt!5e0!3m2!1sen!2seg!4v1681234567890!5m2!1sen!2seg"
+          style="
+            border: 0;
+            border-radius: 0.5rem;
+            width: 100%;
+            height: 100%;
+            aspect-ratio: 8/7;
+          "
+          allowfullscreen=""
           loading="lazy"
-        />
+          referrerpolicy="no-referrer-when-downgrade"
+          class="rounded-lg border border-[var(--Color-Boarder-Border-Primary)]"
+        ></iframe>
       </div>
-      
     </div>
     <!-- Get in Touch Section -->
   </div>
-  <div class="w-full text-center flex flex-col items-center justify-center dark:bg-[var(--Color-Surface-Surface-Primary)]  p-6">
-    <h2 class="text-2xl font-semibold b-4 lg:text-2xl xl:text-3xl text-[var(--Color-Text-Text-Brand)]">Get in Touch</h2>
-    <p class="text-[var(--Color-Text-Text-Secondary)] mb-6 lg:text-base xl:text-lg max-w-2xl mx-auto">
-      Here are other ways to contact us — whether by phone, email, or visiting us in person. We're always happy to connect.
+  <div
+    class="w-full text-center flex flex-col items-center justify-center dark:bg-[var(--Color-Surface-Surface-Primary)] p-6"
+  >
+    <h2
+      class="text-2xl font-semibold b-4 lg:text-2xl xl:text-3xl text-[var(--Color-Text-Text-Brand)]"
+    >
+      Get in Touch
+    </h2>
+    <p
+      class="text-[var(--Color-Text-Text-Secondary)] mb-6 lg:text-base xl:text-lg max-w-2xl mx-auto"
+    >
+      Here are other ways to contact us — whether by phone, email, or visiting us in
+      person. We're always happy to connect.
     </p>
-    <div class="flex flex-col md:flex-row justify-center items-center md:space-x-10 space-y-6 md:space-y-0">
+    <div
+      class="flex flex-col md:flex-row justify-center items-center md:space-x-10 space-y-6 md:space-y-0"
+    >
       <div class="flex flex-col items-center">
-        <span class="inline-flex items-center justify-center w-12 h-12 mb-2 rounded-full bg-[var(--Color-Surface-Surface-Primary)] dark:bg-[var(--Color-Surface-Surface-Invert)] border border-[var(--Color-Boarder-Border-Primary)]">
-          <svg class="w-6 h-6 text-[var(--Color-Text-Text-Brand)]" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M16 12v1a4 4 0 01-8 0v-1m8 0V8a4 4 0 00-8 0v4m8 0H8"></path></svg>
+        <span
+          class="inline-flex items-center justify-center w-12 h-12 mb-2 rounded-full bg-[var(--Color-Surface-Surface-Primary)] dark:bg-[var(--Color-Surface-Surface-Invert)] border border-[var(--Color-Boarder-Border-Primary)]"
+        >
+          <svg
+            class="w-6 h-6 text-[var(--Color-Text-Text-Brand)]"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+            viewBox="0 0 24 24"
+          >
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              d="M16 12v1a4 4 0 01-8 0v-1m8 0V8a4 4 0 00-8 0v4m8 0H8"
+            ></path>
+          </svg>
         </span>
         <p class="text-[var(--Color-Text-Text-Secondary)]">Email</p>
         <p class="font-bold text-[var(--Color-Text-Text-Brand)]">support@example.com</p>
       </div>
       <div class="flex flex-col items-center">
-        <span class="inline-flex items-center justify-center w-12 h-12 mb-2 rounded-full bg-[var(--Color-Surface-Surface-Primary)] dark:bg-[var(--Color-Surface-Surface-Invert)] border border-[var(--Color-Boarder-Border-Primary)]">
-          <svg class="w-6 h-6 text-[var(--Color-Text-Text-Brand)]" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M3 5a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H5a2 2 0 01-2-2V5zm0 8a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H5a2 2 0 01-2-2v-2zm8-8a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V5zm0 8a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z"></path></svg>
+        <span
+          class="inline-flex items-center justify-center w-12 h-12 mb-2 rounded-full bg-[var(--Color-Surface-Surface-Primary)] dark:bg-[var(--Color-Surface-Surface-Invert)] border border-[var(--Color-Boarder-Border-Primary)]"
+        >
+          <svg
+            class="w-6 h-6 text-[var(--Color-Text-Text-Brand)]"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+            viewBox="0 0 24 24"
+          >
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              d="M3 5a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H5a2 2 0 01-2-2V5zm0 8a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H5a2 2 0 01-2-2v-2zm8-8a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V5zm0 8a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z"
+            ></path>
+          </svg>
         </span>
         <p class="text-[var(--Color-Text-Text-Secondary)]">Phone</p>
         <p class="font-bold text-[var(--Color-Text-Text-Brand)]">+1 234 567 890</p>
       </div>
       <div class="flex flex-col items-center">
-        <span class="inline-flex items-center justify-center w-12 h-12 mb-2 rounded-full bg-[var(--Color-Surface-Surface-Primary)] dark:bg-[var(--Color-Surface-Surface-Invert)] border border-[var(--Color-Boarder-Border-Primary)]">
-          <svg class="w-6 h-6 text-[var(--Color-Text-Text-Brand)]" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M17.657 16.657L13.414 12.414a2 2 0 00-2.828 0l-4.243 4.243a8 8 0 1111.314 0z"></path><circle cx="12" cy="8" r="4"></circle></svg>
+        <span
+          class="inline-flex items-center justify-center w-12 h-12 mb-2 rounded-full bg-[var(--Color-Surface-Surface-Primary)] dark:bg-[var(--Color-Surface-Surface-Invert)] border border-[var(--Color-Boarder-Border-Primary)]"
+        >
+          <svg
+            class="w-6 h-6 text-[var(--Color-Text-Text-Brand)]"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+            viewBox="0 0 24 24"
+          >
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              d="M17.657 16.657L13.414 12.414a2 2 0 00-2.828 0l-4.243 4.243a8 8 0 1111.314 0z"
+            ></path>
+            <circle cx="12" cy="8" r="4"></circle>
+          </svg>
         </span>
         <p class="text-[var(--Color-Text-Text-Secondary)]">Location</p>
-        <p class="font-bold text-[var(--Color-Text-Text-Brand)]">123 Main Street, Cairo, Egypt</p>
+        <p class="font-bold text-[var(--Color-Text-Text-Brand)]">
+          123 Main Street, Cairo, Egypt
+        </p>
       </div>
     </div>
-    
   </div>
-   <!-- Footer -->
+  <!-- Footer -->
   <AppFooter />
 </template>
 
 <script>
-import AppFooter from '../components/pages/AppFooter.vue';
+import AppFooter from "../components/pages/AppFooter.vue";
 
 export default {
   components: {
-    AppFooter
-  }
+    AppFooter,
+  },
 };
 </script>
 
