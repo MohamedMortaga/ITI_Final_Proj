@@ -597,23 +597,25 @@ onMounted(() => {
   right: 20px;
   width: 700px;
   height: 570px;
-  background: #fff;
-  border-radius: 8px;
-  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+  background: var(--Color-Surface-Surface-Primary);
+  color: var(--Color-Text-Text-Primary);
+  border-radius: 16px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.10);
   z-index: 1000;
   display: flex;
   flex-direction: column;
   overflow: hidden;
+  border: 1px solid var(--Color-Boarder-Border-Primary);
 }
 
 .header {
-  background: #145a32;
-  color: #f7ca18;
+  background: var(--Color-Surface-Surface-Primary);
+  color: var(--Color-Text-Text-Brand);
   padding: 10px 20px;
   font-size: 1.5rem;
   font-weight: bold;
   letter-spacing: 1px;
-  border-bottom: 4px solid #0b3d1c;
+  border-bottom: 2px solid var(--Color-Boarder-Border-Primary);
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -622,9 +624,10 @@ onMounted(() => {
 .close-btn {
   background: none;
   border: none;
-  color: #f7ca18;
+  color: var(--Color-Text-Text-Secondary);
   cursor: pointer;
   padding: 0;
+  font-size: 1.5rem;
 }
 
 .chat-app-container {
@@ -635,8 +638,8 @@ onMounted(() => {
 
 .chat-sidebar {
   width: 200px;
-  background: #eafaf1;
-  border-right: 1px solid #b2babb;
+  background: var(--Color-Surface-Surface-Tertiary);
+  border-right: 1px solid var(--Color-Boarder-Border-Primary);
   display: flex;
   flex-direction: column;
 }
@@ -648,7 +651,7 @@ onMounted(() => {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  border-bottom: 1px solid #b2babb;
+  border-bottom: 1px solid var(--Color-Boarder-Border-Primary);
 }
 
 #chat-list {
@@ -662,23 +665,24 @@ onMounted(() => {
 #chat-list li {
   padding: 8px 12px;
   cursor: pointer;
-  border-bottom: 1px solid #d5f5e3;
+  border-bottom: 1px solid var(--Color-Boarder-Border-Primary);
   transition: background 0.2s;
   display: flex;
   justify-content: space-between;
   align-items: center;
+  color: var(--Color-Text-Text-Primary);
 }
 
 #chat-list li.active,
 #chat-list li:hover {
-  background: #f7ca18;
-  color: #222;
+  background: var(--Color-Surface-Surface-Brand);
+  color: var(--Color-Text-Text-Invert);
 }
 
 .close-chat-btn {
   background: none;
   border: none;
-  color: #ff4444;
+  color: var(--Color-Text-Text-Brand);
   font-size: 1rem;
   cursor: pointer;
   padding: 0 4px;
@@ -686,14 +690,14 @@ onMounted(() => {
 }
 
 .close-chat-btn:hover {
-  color: #cc0000;
+  color: var(--Color-Text-Text-Primary);
 }
 
 .chat-main {
   flex: 1;
   display: flex;
   flex-direction: column;
-  background: #fff;
+  background: var(--Color-Surface-Surface-Primary);
 }
 
 .chat-history {
@@ -719,6 +723,8 @@ onMounted(() => {
   justify-content: center;
   font-weight: bold;
   font-size: 1rem;
+  background: var(--Color-Surface-Surface-Brand);
+  color: var(--Color-Text-Text-Invert);
 }
 
 .chat-form {
@@ -726,8 +732,8 @@ onMounted(() => {
   flex-direction: column;
   gap: 6px;
   padding: 12px 16px;
-  border-top: 1px solid #b2babb;
-  background: #eafaf1;
+  border-top: 1px solid var(--Color-Boarder-Border-Primary);
+  background: var(--Color-Surface-Surface-Primary);
 }
 
 .input-container {
@@ -740,9 +746,11 @@ onMounted(() => {
   flex: 1;
   padding: 8px 12px;
   font-size: 0.9rem;
-  border: 1px solid #b2babb;
-  border-radius: 4px;
+  border: 1px solid var(--Color-Boarder-Border-Primary);
+  border-radius: 8px;
   outline: none;
+  background: var(--Color-Surface-Surface-Primary);
+  color: var(--Color-Text-Text-Primary);
 }
 
 .image-preview {
@@ -750,22 +758,22 @@ onMounted(() => {
   align-items: center;
   gap: 8px;
   padding: 8px;
-  background: #f0f0f0;
-  border-radius: 4px;
+  background: var(--Color-Surface-Surface-Tertiary);
+  border-radius: 8px;
   max-width: 100%;
 }
 
 .preview-image {
   max-width: 100px;
   max-height: 100px;
-  border-radius: 4px;
-  border: 1px solid #b2babb;
+  border-radius: 8px;
+  border: 1px solid var(--Color-Boarder-Border-Primary);
 }
 
 .delete-button {
   background: none;
   border: none;
-  color: #ff4444;
+  color: var(--Color-Text-Text-Brand);
   font-size: 1.5rem;
   cursor: pointer;
   padding: 0;
@@ -774,7 +782,7 @@ onMounted(() => {
 
 .preview-text {
   font-size: 0.8rem;
-  color: #555;
+  color: var(--Color-Text-Text-Secondary);
   margin: 0;
 }
 
@@ -788,18 +796,18 @@ onMounted(() => {
 .chat-form button {
   padding: 6px 10px;
   font-size: 0.9rem;
-  border: 1px solid #145a32;
-  background: #d5f5e3;
-  color: #145a32;
-  border-radius: 3px;
+  border: 1px solid var(--Color-Boarder-Border-Primary);
+  background: var(--Color-Surface-Surface-Brand);
+  color: var(--Color-Text-Text-Invert);
+  border-radius: 8px;
   cursor: pointer;
-  transition: background 0.2s;
+  transition: background 0.2s, color 0.2s;
   white-space: nowrap;
 }
 
 .chat-form button:hover {
-  background: #f7ca18;
-  color: #222;
+  background: var(--Color-Text-Text-Brand);
+  color: var(--Color-Text-Text-Invert);
 }
 
 .history-modal {
@@ -816,14 +824,15 @@ onMounted(() => {
 }
 
 .modal-content {
-  background: #fff;
+  background: var(--Color-Surface-Surface-Primary);
   padding: 20px;
-  border-radius: 8px;
-  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+  border-radius: 16px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.10);
   width: 400px;
   max-width: 90vw;
   max-height: 70vh;
   overflow-y: auto;
+  color: var(--Color-Text-Text-Primary);
 }
 
 .history-list {
@@ -834,7 +843,7 @@ onMounted(() => {
 
 .history-item {
   padding: 10px;
-  border-bottom: 1px solid #eee;
+  border-bottom: 1px solid var(--Color-Boarder-Border-Primary);
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -843,33 +852,33 @@ onMounted(() => {
 }
 
 .history-item:hover {
-  background: #f0f0f0;
+  background: var(--Color-Surface-Surface-Tertiary);
 }
 
 .history-title {
   font-size: 1rem;
-  color: #333;
+  color: var(--Color-Text-Text-Primary);
 }
 
 .no-chats {
   padding: 10px;
-  color: #888;
+  color: var(--Color-Text-Text-Secondary);
   text-align: center;
 }
 
 .delete-btn {
   background: none;
   border: none;
-  color: #ff4444;
+  color: var(--Color-Text-Text-Brand);
   font-size: 0.9rem;
   cursor: pointer;
   padding: 4px 8px;
-  border-radius: 3px;
+  border-radius: 8px;
   transition: background 0.2s;
 }
 
 .delete-btn:hover {
-  background: #ffebee;
+  background: var(--Color-Surface-Surface-Tertiary);
 }
 
 .close-btn-modal {
@@ -877,17 +886,17 @@ onMounted(() => {
   width: 100%;
   padding: 8px;
   font-size: 1rem;
-  border: 1px solid #145a32;
-  background: #d5f5e3;
-  color: #145a32;
-  border-radius: 3px;
+  border: 1px solid var(--Color-Boarder-Border-Primary);
+  background: var(--Color-Surface-Surface-Brand);
+  color: var(--Color-Text-Text-Invert);
+  border-radius: 8px;
   cursor: pointer;
   transition: background 0.2s;
 }
 
 .close-btn-modal:hover {
-  background: #f7ca18;
-  color: #222;
+  background: var(--Color-Text-Text-Brand);
+  color: var(--Color-Text-Text-Invert);
 }
 
 @media screen and (max-width: 768px) {
@@ -906,7 +915,7 @@ onMounted(() => {
   .chat-sidebar {
     width: 100%;
     border-right: none;
-    border-bottom: 1px solid #b2babb;
+    border-bottom: 1px solid var(--Color-Boarder-Border-Primary);
   }
 
   #chat-list li {

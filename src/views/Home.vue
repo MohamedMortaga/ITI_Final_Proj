@@ -53,18 +53,37 @@
       </div>
     </div>
 
-    <!-- Customer Reviews -->
     <CustomerReviews :reviews="formattedReviews" v-if="formattedReviews.length > 0" />
 
     <!-- Why Rento Section -->
     <WhyRento class="px-4" />
 
-    <!-- Mission, Vision, Values Section -->
-    <MissionVisionValues />
+ 
   </div>
 
-  <!-- Footer -->
-  <AppFooter />
+ 
+
+  <!-- FAQ Preview -->
+  <section class="w-full max-w-5xl mx-auto my-12 rounded-2xl bg-[var(--Color-Surface-Surface-Primary)] text-[var(--Color-Text-Text-Primary)] border border-[var(--Color-Boarder-Border-Primary)] px-8 py-8">
+    <h2 class="text-2xl md:text-3xl font-bold mb-6 text-[var(--Color-Text-Text-Brand)]">Frequently Asked Questions</h2>
+    <div class="space-y-6">
+      <div>
+        <h3 class="font-semibold text-lg mb-1">How do I rent a tool?</h3>
+        <p class="text-[var(--Color-Text-Text-Secondary)]">Browse or search for the tool you need, click on it, and follow the booking steps. You’ll get confirmation and pickup details instantly.</p>
+      </div>
+      <div>
+        <h3 class="font-semibold text-lg mb-1">How do I list my own tools?</h3>
+        <p class="text-[var(--Color-Text-Text-Secondary)]">Sign up, go to your dashboard, and click “Add Tool.” Fill in the details, upload photos, and set your price. Your tool will be live after approval.</p>
+      </div>
+      <div>
+        <h3 class="font-semibold text-lg mb-1">Is payment secure?</h3>
+        <p class="text-[var(--Color-Text-Text-Secondary)]">Yes! All payments are processed securely and your information is protected. We use trusted payment gateways for your peace of mind.</p>
+      </div>
+    </div>
+    <router-link to="/faq" class="inline-block mt-8 text-[var(--Color-Text-Text-Brand)] font-semibold hover:underline">See all FAQs</router-link>
+  </section>
+
+  <AppFooter class="pt-16" />
 </template>
 
 <script>
