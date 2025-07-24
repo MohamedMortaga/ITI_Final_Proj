@@ -205,5 +205,6 @@
   "password": "Password",
   "enterPassword": "Enter your password",
   "confirmPassword": "Confirm Password",
-  "ContinueWith": "Continue With"
+  "ContinueWith": "Continue With",
+  "Your Items": "Your Items"
 }

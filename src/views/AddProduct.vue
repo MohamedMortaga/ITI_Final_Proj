@@ -7,7 +7,7 @@
 
      <!-- Search Bar -->
      <div class="mb-6 flex flex-col md:flex-row md:justify-between md:items-center gap-4">
-      <p class="text-xl md:text-2xl text-[var(--Color-Text-Text-Primary)] font-medium mb-2 md:mb-0">Your Items</p>
+      <p class="text-xl md:text-2xl text-[var(--Color-Text-Text-Primary)] font-medium mb-2 md:mb-0">{{$t('Your Items')}}</p>
       <div class="relative w-full md:w-auto">
         <i class="fa-solid fa-magnifying-glass absolute left-4 top-1/2 -translate-y-1/2 text-[var(--Color-Text-Text-Brand)] w-5 h-5 pointer-events-none"></i>
 
@@ -21,13 +21,13 @@
     </div>
 
     <!-- Category Filter Buttons -->
-    <div class="mb-4">
+    <!-- <div class="mb-4">
       <CategoryButtons
         :categories="categories"
         :selectedCategory="selectedCategory"
         @updateCategory="(val) => selectedCategory = val"
       />
-    </div>
+    </div> -->
     
     <!-- Products List -->
     <div class="mb-8">

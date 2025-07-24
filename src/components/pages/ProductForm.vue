@@ -62,7 +62,7 @@
         :value="netProfit"
         type="number"
         readonly
-        class="w-full px-4 py-2 bg-gray-100 dark:bg-gray-600 rounded-lg border border-[var(--Color-Boarder-Border-Primary)] dark:border-[var(--Color-Boarder-Border-Primary)] dark:text-gray-200 focus:outline-none font-nunito"
+        class="w-full px-4 py-2 bg-gray-25 dark:bg-gray-600 rounded-lg border border-[var(--Color-Boarder-Border-Primary)] dark:border-[var(--Color-Boarder-Border-Primary)] dark:text-gray-200 focus:outline-none font-nunito"
       />
     </div>
     <!-- Details -->
@@ -84,7 +84,7 @@
     </button>
     <button
       type="button"
-      class="w-full bg-[var(--Color-Surface-Surface-Secondary)] dark:bg-[var(--Color-Surface-Surface-Secondary)] hover:bg-[var(--Colors-Gray-500)] transition text-white font-semibold py-3 px-6 rounded-lg mt-2 font-nunito"
+      class="w-full bg-[var(--Color-Surface-Surface-Primary)] border border-[var(--Color-Boarder-Surface-Brand)] dark:bg-[var(--Color-Surface-Surface-Primary)]  transition text-[var(--Color-Text-Text-Brand)] font-semibold py-3 px-6 rounded-lg mt-2 font-nunito"
       @click="$emit('cancelForm')"
     >
       {{ $t('cancel') || 'Cancel' }}
