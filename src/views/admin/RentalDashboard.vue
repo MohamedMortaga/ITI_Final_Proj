@@ -1,81 +1,122 @@
 <template>
-  <div class="p-6 bg-gray-50 min-h-screen">
-    <h1 class="text-3xl font-bold mb-4">Your Rentals</h1>
-    <p class="text-gray-500 mb-8">View all your rental bookings</p>
-
-    <div v-if="rentals.length" class="grid gap-6 grid-cols-1 md:grid-cols-2 lg:grid-cols-3">
-      <div
-        v-for="rental in rentals"
-        :key="rental.id"
-        class="bg-white rounded-xl shadow-md hover:shadow-lg transition-all duration-200 p-5 border border-gray-200"
-      >
-        <!-- Image -->
-        <img
-          :src="rental.productImage || require('@/assets/logo.png')"
-          alt="Product Image"
-          class="h-48 w-full object-cover rounded-lg mb-4"
-        />
-
-        <!-- Info -->
-        <h2 class="text-xl font-semibold mb-1">{{ rental.productTitle }}</h2>
-        <p class="text-gray-700 mb-2">Rented by: {{ rental.sellerName }}</p>
-        <p class="text-gray-800 font-medium mb-1">Total Price: {{ rental.totalPrice }} EGP</p>
-        <p class="text-gray-600 mb-1">Delivery: {{ rental.deliveryMethod }}</p>
-        <p class="text-gray-600 mb-1">Start Date: {{ formatDate(rental.startDate) }}</p>
-        <p class="text-gray-600 mb-1">End Date: {{ formatDate(rental.endDate) }}</p>
-        <p class="text-gray-600 mb-2">
-          Status:
-          <span
-            :class="[
-              'font-semibold px-2 py-1 rounded text-xs',
-              rental.status === 'active' ? 'bg-green-100 text-green-700' :
-              rental.status === 'pending' ? 'bg-yellow-100 text-yellow-700' :
-              'bg-red-100 text-red-700'
-            ]"
-          >
-            {{ rental.status }}
-          </span>
-        </p>
-
-        <!-- Actions -->
-        <div class="flex justify-between items-center mt-4 gap-2">
-          <!-- Change Status -->
-          <select
-            v-model="rental.status"
-            @change="updateStatus(rental.id, rental.status)"
-            class="text-sm border rounded px-2 py-1"
-          >
-            <option value="pending">Pending</option>
-            <option value="active">Active</option>
-            <option value="cancelled">Cancelled</option>
-          </select>
-
-
-
-          <!-- Delete -->
+  <div class="min-h-screen p-8">
+    <!-- Top Bar with Filter Button -->
+    <TopBar
+      title="Rental Dashboard"
+      searchPlaceholder="Search Rentals?"
+      @update:search="handleSearch"
+      @update:sort="handleSort"
+      @filter="handleFilter"
+    />
+    <!-- Rentals Table -->
+    <div class="bg-white rounded-xl shadow border">
+      <table class="min-w-full divide-y">
+        <thead>
+          <tr>
+            <th class="px-4 py-3">Product</th>
+            <th class="px-4 py-3">Rented By</th>
+            <th class="px-4 py-3">Total Price</th>
+            <th class="px-4 py-3">Delivery</th>
+            <th class="px-4 py-3">Start Date</th>
+            <th class="px-4 py-3">End Date</th>
+            <th class="px-4 py-3">Status</th>
+            <th class="px-4 py-3 text-center"><i class="fas fa-ellipsis-v"></i></th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr v-for="rental in paginatedRentals" :key="rental.id" class="hover:bg-gray-50">
+            <td class="px-4 py-3 flex items-center gap-2">
+              <img :src="rental.productImage || require('@/assets/logo.png')" alt="Product Image" class="h-10 w-10 object-cover rounded-full" />
+              <span class="font-medium">{{ rental.productTitle }}</span>
+            </td>
+            <td class="px-4 py-3">{{ rental.sellerName }}</td>
+            <td class="px-4 py-3">{{ rental.totalPrice }} EGP</td>
+            <td class="px-4 py-3">{{ rental.deliveryMethod }}</td>
+            <td class="px-4 py-3">{{ formatDate(rental.startDate) }}</td>
+            <td class="px-4 py-3">{{ formatDate(rental.endDate) }}</td>
+            <td class="px-4 py-3 relative">
+              <span
+                :class="[
+                  'font-semibold px-2 py-1 rounded text-xs cursor-pointer select-none',
+                  rental.status === 'active' ? 'bg-green-100 text-green-700' :
+                  rental.status === 'pending' ? 'bg-yellow-100 text-yellow-700' :
+                  rental.status === 'cancelled' ? 'bg-red-100 text-red-700' : ''
+                ]"
+                @click="openStatusDropdown(rental.id)"
+              >
+                {{ rental.status }}
+              </span>
+              <div v-if="statusDropdownId === rental.id" class="absolute z-10 mt-2 bg-white border rounded shadow w-32">
+                <ul>
+                  <li v-for="option in statusOptions" :key="option" @click="changeStatus(rental, option)" class="px-4 py-2 hover:bg-gray-100 cursor-pointer">
+                    {{ option.charAt(0).toUpperCase() + option.slice(1) }}
+                  </li>
+                </ul>
+              </div>
+            </td>
+            <td class="px-4 py-3 flex items-center space-x-2 justify-center">
+              <button
+                @click="deleteRental(rental.id)"
+                class="text-red-500 hover:text-red-700"
+                title="Delete"
+              >
+                <i class="fas fa-trash"></i>
+              </button>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+      <!-- No Rentals Fallback -->
+      <div v-if="!paginatedRentals.length" class="text-gray-600 mt-8 text-center">
+        <p>No rentals found.</p>
+      </div>
+      <!-- Pagination -->
+      <div v-if="totalPages > 1" class="flex items-center justify-between px-4 py-3 border-t">
+        <button
+          class="text-gray-500 flex items-center"
+          :disabled="currentPage === 1"
+          @click="currentPage--"
+        >
+          <i class="fas fa-chevron-left mr-1"></i> Previous
+        </button>
+        <div class="flex items-center space-x-2">
           <button
-            @click="deleteRental(rental.id)"
-            class="text-red-500 hover:text-red-700 text-sm font-medium"
+            v-for="page in totalPages"
+            :key="page"
+            class="w-8 h-8 rounded"
+            :class="{ 'bg-teal-500 text-white': currentPage === page, 'hover:bg-gray-200 text-gray-700': currentPage !== page }"
+            @click="currentPage = page"
           >
-            Delete
+            {{ page }}
           </button>
         </div>
+        <button
+          class="text-gray-500 flex items-center"
+          :disabled="currentPage === totalPages"
+          @click="currentPage++"
+        >
+          Next <i class="fas fa-chevron-right ml-1"></i>
+        </button>
       </div>
-    </div>
-
-    <div v-else class="text-center text-gray-600 mt-8">
-      <p>No rentals found.</p>
     </div>
   </div>
 </template>
 
 <script setup>
-import { ref, onMounted } from 'vue';
+import TopBar from '@/components/admin/TopBar.vue';
+import { ref, computed, onMounted, onBeforeUnmount } from 'vue';
 import { collection, getDocs, updateDoc, deleteDoc, doc } from 'firebase/firestore';
 import { db } from '@/firebase/config';
 import Swal from 'sweetalert2';
 
 const rentals = ref([]);
+const searchQuery = ref('');
+const sortOption = ref('Start Date Newest');
+const filterStatus = ref('');
+const currentPage = ref(1);
+const itemsPerPage = 10;
+const statusDropdownId = ref(null);
+const statusOptions = ['pending', 'active', 'cancelled'];
 
 const fetchRentals = async () => {
   try {
@@ -97,16 +138,96 @@ const formatDate = (dateStr) => {
   });
 };
 
-// Update status
-const updateStatus = async (rentalId, newStatus) => {
+const filteredRentals = computed(() => {
+  let filtered = rentals.value;
+  // Search by product title or rented by
+  if (searchQuery.value) {
+    filtered = filtered.filter(rental =>
+      (rental.productTitle || '').toLowerCase().includes(searchQuery.value.toLowerCase()) ||
+      (rental.sellerName || '').toLowerCase().includes(searchQuery.value.toLowerCase())
+    );
+  }
+  // Filter by status
+  if (filterStatus.value) {
+    filtered = filtered.filter(rental =>
+      (rental.status || '').toLowerCase() === filterStatus.value.toLowerCase()
+    );
+  }
+  // Sort
+  filtered = [...filtered].sort((a, b) => {
+    if (sortOption.value === 'Start Date Newest') {
+      return new Date(b.startDate) - new Date(a.startDate);
+    } else {
+      return new Date(a.startDate) - new Date(b.startDate);
+    }
+  });
+  return filtered;
+});
+
+const totalPages = computed(() => {
+  return Math.ceil(filteredRentals.value.length / itemsPerPage);
+});
+
+const paginatedRentals = computed(() => {
+  const start = (currentPage.value - 1) * itemsPerPage;
+  return filteredRentals.value.slice(start, start + itemsPerPage);
+});
+
+const handleSearch = (query) => {
+  searchQuery.value = query;
+  currentPage.value = 1;
+};
+const handleSort = (option) => {
+  sortOption.value = option;
+};
+const handleFilter = () => {
+  Swal.fire({
+    title: 'Filter by Status',
+    input: 'select',
+    inputOptions: {
+      pending: 'Pending',
+      active: 'Active',
+      cancelled: 'Cancelled',
+    },
+    inputPlaceholder: 'Select status',
+    showCancelButton: true,
+    confirmButtonText: 'Apply',
+  }).then(result => {
+    if (result.isConfirmed) {
+      filterStatus.value = result.value || '';
+      currentPage.value = 1;
+    }
+  });
+};
+
+function setStatusFilter(status) {
+  filterStatus.value = status;
+  currentPage.value = 1;
+}
+function clearStatusFilter() {
+  filterStatus.value = '';
+  currentPage.value = 1;
+}
+
+function openStatusDropdown(id) {
+  statusDropdownId.value = statusDropdownId.value === id ? null : id;
+}
+
+async function changeStatus(rental, newStatus) {
+  if (rental.status === newStatus) {
+    statusDropdownId.value = null;
+    return;
+  }
   try {
-    await updateDoc(doc(db, 'bookings', rentalId), { status: newStatus });
+    await updateDoc(doc(db, 'bookings', rental.id), { status: newStatus });
+    rental.status = newStatus;
+    statusDropdownId.value = null;
     Swal.fire('Updated', 'Booking status updated successfully.', 'success');
   } catch (error) {
     console.error('Error updating status:', error);
     Swal.fire('Error', 'Failed to update status.', 'error');
   }
-};
+}
 
 // Delete rental
 const deleteRental = async (rentalId) => {
@@ -131,9 +252,21 @@ const deleteRental = async (rentalId) => {
   }
 };
 
-
-
 onMounted(fetchRentals);
+
+// Close dropdown on click outside
+function handleClickOutside(event) {
+  const dropdown = document.querySelector('.relative.ml-2');
+  if (dropdown && !dropdown.contains(event.target)) {
+    showFilterDropdown.value = false;
+  }
+}
+onMounted(() => {
+  document.addEventListener('mousedown', handleClickOutside);
+});
+onBeforeUnmount(() => {
+  document.removeEventListener('mousedown', handleClickOutside);
+});
 </script>
 
 <style scoped>

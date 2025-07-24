@@ -4,13 +4,17 @@
     <div class="flex items-center px-4 py-2 mb-6">
       <img :src="logo" alt="Logo" class="h-8" />
     </div>
+    <div class="mt-6 mb-4 px-4">
+      <span class="block text-lg font-bold tracking-wide" style="color: var(--Color-Text-Text-Primary)">Admin Panel</span>
+    </div>
     <nav class="flex-1 flex flex-col">
       <ul class="space-y-4 flex-1 flex flex-col justify-start">
         <li v-for="item in navItems" :key="item.path">
           <router-link
             :to="item.path"
-            class="flex items-center px-4 py-3 rounded-lg hover:bg-[var(--Colors-Gray-50)] text-[var(--Color-Text-Text-Primary)]"
-            active-class="bg-[var(--Color-Surface-Surface-Brand)] text-white"
+            class="flex items-center px-4 py-3 rounded-lg sidebar-link"
+            :style="'color: var(--Color-Text-Text-Secondary)'"
+            active-class="bg-[var(--Color-Surface-Surface-Brand)]"
           >
             <i :class="item.icon + ' mr-3'"></i>
             {{ item.label }}
@@ -34,4 +38,15 @@ const navItems = [
 </script>
 
 <style scoped>
+.router-link-exact-active {
+  color: var(--Color-Text-Text-Invert) !important;
+}
+.sidebar-link {
+  transition: background 0.2s, color 0.2s;
+}
+.sidebar-link:hover {
+  background: rgba(0, 128, 128, 0.12); /* fallback for brand color with opacity */
+  background: var(--Color-Surface-Surface-Brand, rgba(0, 128, 128, 0.12));
+  color: var(--Color-Text-Text-Invert) !important;
+}
 </style>

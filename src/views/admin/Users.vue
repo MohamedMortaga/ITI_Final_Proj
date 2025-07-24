@@ -1,73 +1,106 @@
 <template>
-  <div class="flex min-h-screen bg-gray-100">
-    <!-- Main Content -->
-    <div class="flex-1 p-6">
-      <!-- Header -->
-      <div class="mb-6">
-        <h1 class="text-3xl font-extrabold text-gray-800">👥 {{$t('userManagement')}}</h1>
-        <p class="text-gray-500 mt-1">{{$t('listRegisteredUsers')}}</p>
-      </div>
+  <div class="min-h-screen p-8">
+    <!-- Top Bar -->
+    <TopBar
+      :title="$t('userManagement')"
+      :searchPlaceholder="$t('searchUsers')"
+      @update:search="handleSearch"
+      @update:sort="handleSort"
+      @filter="handleFilter"
+    />
 
-      <!-- User Cards -->
-      <div v-if="users.length" class="grid gap-6 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3">
-        <div
-          v-for="user in users"
-          :key="user.id"
-          class="bg-white rounded-2xl shadow-md hover:shadow-lg transition p-6 border border-gray-100"
-        @click="goToUserRentals(user.id)"
-          >
-          <div class="space-y-2">
-            <h2 class="text-xl font-semibold text-gray-800">{{ user.displayName || $t('unknownUser') }}</h2>
-            <p class="text-sm text-gray-600"><span class="font-medium">{{$t('email')}}</span> {{ user.email }}</p>
-            <p class="text-sm text-gray-600"><span class="font-medium">{{$t('role')}}</span> {{ user.role || $t('notSet') }}</p>
-            <p class="text-sm text-gray-600">
-              <span class="font-medium">{{$t('createdAt')}}</span>
+    <!-- Users Table -->
+    <div class="bg-white rounded-xl shadow border">
+      <table class="min-w-full divide-y">
+        <thead>
+          <tr>
+            <th class="px-4 py-3">{{$t('name')}}</th>
+            <th class="px-4 py-3">{{$t('email')}}</th>
+            <th class="px-4 py-3">{{$t('role')}}</th>
+            <th class="px-4 py-3">{{$t('createdAt')}}</th>
+            <th class="px-4 py-3">{{$t('status')}}</th>
+            <th class="px-4 py-3 text-center"><i class="fas fa-ellipsis-v"></i></th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr v-for="user in paginatedUsers" :key="user.id" class="hover:bg-gray-50 cursor-pointer" @click="goToUserRentals(user.id)">
+            <td class="px-4 py-3 font-medium">{{ user.displayName || $t('unknownUser') }}</td>
+            <td class="px-4 py-3">{{ user.email }}</td>
+            <td class="px-4 py-3">{{ user.role || $t('notSet') }}</td>
+            <td class="px-4 py-3">
               <span v-if="user.createdAt && user.createdAt.toDate">
                 {{ user.createdAt.toDate().toLocaleDateString() }}
               </span>
               <span v-else>{{$t('notAvailable')}}</span>
-            </p>
-            <p class="text-sm text-gray-600">
-              <span class="font-medium">{{$t('status')}}</span>
+            </td>
+            <td class="px-4 py-3">
               <span :class="user.blocked ? 'text-red-500' : 'text-green-500'">
                 {{ user.blocked ? $t('blocked') : $t('active') }}
               </span>
-            </p>
-          </div>
-
-          <!-- Actions -->
-          <div class="mt-4 flex gap-2">
-            <button
-              @click="editUser (user)"
-              class="bg-yellow-400 text-white px-3 py-1 rounded-md text-sm hover:bg-yellow-500"
-            >
-              {{$t('editRole')}}
-            </button>
-            <button
-              @click="deleteUser (user.id)"
-              class="bg-red-500 text-white px-3 py-1 rounded-md text-sm hover:bg-red-600"
-            >
-              {{$t('delete')}}
-            </button>
-            <button
-              @click="toggleBlockUser (user)"
-              class="bg-blue-500 text-white px-3 py-1 rounded-md text-sm hover:bg-blue-600"
-            >
-              {{ user.blocked ? $t('unblock') : $t('block') }}
-            </button>
-          </div>
-        </div>
-      </div>
-
+            </td>
+            <td class="px-4 py-3 flex items-center space-x-2 justify-center" @click.stop>
+              <button
+                @click="editUser(user)"
+                class="text-yellow-500 hover:text-yellow-600"
+                title="{{$t('editRole')}}"
+              >
+                <i class="fas fa-user-edit"></i>
+              </button>
+              <button
+                @click="deleteUser(user.id)"
+                class="text-red-500 hover:text-red-700"
+                title="{{$t('delete')}}"
+              >
+                <i class="fas fa-trash"></i>
+              </button>
+              <button
+                @click="toggleBlockUser(user)"
+                :class="user.blocked ? 'text-green-500 hover:text-green-700' : 'text-blue-500 hover:text-blue-700'"
+                :title="user.blocked ? $t('unblock') : $t('block')"
+              >
+                <i :class="user.blocked ? 'fas fa-unlock' : 'fas fa-ban'"></i>
+              </button>
+            </td>
+          </tr>
+        </tbody>
+      </table>
       <!-- No Users Fallback -->
-      <div v-else class="text-gray-600 mt-8 text-center">
+      <div v-if="!paginatedUsers.length" class="text-gray-600 mt-8 text-center">
         <p>{{$t('noUsersFound')}}</p>
+      </div>
+      <!-- Pagination -->
+      <div v-if="totalPages > 1" class="flex items-center justify-between px-4 py-3 border-t">
+        <button
+          class="text-gray-500 flex items-center"
+          :disabled="currentPage === 1"
+          @click="currentPage--"
+        >
+          <i class="fas fa-chevron-left mr-1"></i> {{$t('previous') || 'Previous'}}
+        </button>
+        <div class="flex items-center space-x-2">
+          <button
+            v-for="page in totalPages"
+            :key="page"
+            class="w-8 h-8 rounded"
+            :class="{ 'bg-teal-500 text-white': currentPage === page, 'hover:bg-gray-200 text-gray-700': currentPage !== page }"
+            @click="currentPage = page"
+          >
+            {{ page }}
+          </button>
+        </div>
+        <button
+          class="text-gray-500 flex items-center"
+          :disabled="currentPage === totalPages"
+          @click="currentPage++"
+        >
+          {{$t('next') || 'Next'}} <i class="fas fa-chevron-right ml-1"></i>
+        </button>
       </div>
     </div>
 
     <!-- Edit Role Modal -->
     <div
-      v-if="selectedUser "
+      v-if="selectedUser"
       class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50"
     >
       <div class="bg-white rounded-xl p-6 w-full max-w-sm space-y-4">
@@ -79,13 +112,11 @@
           class="w-full border rounded-md px-3 py-2"
         />
         <div class="flex justify-end gap-2">
-          <button @click="selectedUser  = null" class="text-gray-500">{{$t('cancel')}}</button>
+          <button @click="selectedUser = null" class="text-gray-500">{{$t('cancel')}}</button>
           <button
             @click="updateRole"
             class="bg-blue-600 text-white px-4 py-2 rounded-md hover:bg-blue-700"
-          >
-            {{$t('save')}}
-          </button>
+          >{{$t('save')}}</button>
         </div>
       </div>
     </div>
@@ -93,7 +124,8 @@
 </template>
 
 <script setup>
-import { ref, onMounted } from 'vue'
+import TopBar from '@/components/admin/TopBar.vue'
+import { ref, computed, onMounted } from 'vue'
 import { collection, getDocs, doc, deleteDoc, updateDoc } from 'firebase/firestore'
 import { db } from '@/firebase/config'
 import Swal from 'sweetalert2'
@@ -108,6 +140,12 @@ const goToUserRentals = (userId) => {
 const users = ref([])
 const selectedUser  = ref(null)
 const updatedRole = ref('')
+
+const searchQuery = ref('')
+const sortOption = ref('Name A → Z')
+const filterRole = ref('')
+const currentPage = ref(1)
+const itemsPerPage = 10
 
 const fetchUsers = async () => {
   const snapshot = await getDocs(collection(db, 'users'))
@@ -155,6 +193,79 @@ const toggleBlockUser  = async (user) => {
   await updateDoc(userRef, { blocked: newBlockedStatus })
   user.blocked = newBlockedStatus
   Swal.fire('Updated!', `User  has been ${newBlockedStatus ? 'blocked' : 'unblocked'}.`, 'success')
+}
+
+const handleFilter = () => {
+  Swal.fire({
+    title: 'Filter by Status',
+    input: 'select',
+    inputOptions: {
+      active: 'Active',
+      inactive: 'Inactive',
+    },
+    inputPlaceholder: 'Select status',
+    showCancelButton: true,
+    confirmButtonText: 'Apply',
+  }).then(result => {
+    if (result.isConfirmed) {
+      filterRole.value = '';
+      filterStatus.value = result.value || '';
+      currentPage.value = 1;
+    }
+  });
+};
+
+const filterStatus = ref('');
+
+const filteredUsers = computed(() => {
+  let filtered = users.value;
+  // Search
+  if (searchQuery.value) {
+    filtered = filtered.filter(user =>
+      (user.displayName || '').toLowerCase().includes(searchQuery.value.toLowerCase()) ||
+      (user.email || '').toLowerCase().includes(searchQuery.value.toLowerCase())
+    );
+  }
+  // Filter by status
+  if (filterStatus.value) {
+    filtered = filtered.filter(user =>
+      filterStatus.value === 'active' ? !user.blocked : user.blocked
+    );
+  }
+  // Filter by role
+  if (filterRole.value) {
+    filtered = filtered.filter(user =>
+      (user.role || '').toLowerCase() === filterRole.value.toLowerCase()
+    );
+  }
+  // Sort
+  filtered = [...filtered].sort((a, b) => {
+    const nameA = (a.displayName || '').toLowerCase();
+    const nameB = (b.displayName || '').toLowerCase();
+    if (sortOption.value === 'Name A → Z') {
+      return nameA.localeCompare(nameB);
+    } else {
+      return nameB.localeCompare(nameA);
+    }
+  });
+  return filtered;
+});
+
+const totalPages = computed(() => {
+  return Math.ceil(filteredUsers.value.length / itemsPerPage)
+})
+
+const paginatedUsers = computed(() => {
+  const start = (currentPage.value - 1) * itemsPerPage
+  return filteredUsers.value.slice(start, start + itemsPerPage)
+})
+
+const handleSearch = (query) => {
+  searchQuery.value = query
+  currentPage.value = 1 // Reset to first page on search
+}
+const handleSort = (option) => {
+  sortOption.value = option
 }
 
 onMounted(fetchUsers)
