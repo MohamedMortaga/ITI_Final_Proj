@@ -3,7 +3,7 @@
     <div class="flex flex-wrap gap-2 lg:gap-24 justify-start lg:justify-center">
       <button @click="selectCategory('')"
         class="flex items-center gap-2 px-4 py-2 rounded-lg text-base font-medium border border-[var(--Color-Boarder-Border-Primary)] lg:border-0 transition group
-            hover:text-[var(--Color-Text-Text-Brand)] lg:hover:bg-white lg:hover:text-[var(--Color-Text-Text-Brand)]"
+            hover:text-[var(--Color-Text-Text-Brand)]"
         :class="selectedCategory === ''
           ? 'bg-transparent text-[var(--Color-Text-Text-Brand)]'
           : 'bg-[var(--Color-Surface-Surface-Primary)] text-[var(--Color-Text-Text-Primary)]'">
@@ -12,7 +12,7 @@
       </button>
       <button v-for="cat in categories" :key="cat" @click="selectCategory(cat)"
         class="flex items-center gap-2 px-4 py-2 rounded-lg text-base font-medium border border-[var(--Color-Boarder-Border-Primary)] lg:border-0 transition group
-            hover:text-[var(--Color-Text-Text-Brand)] lg:hover:bg-white lg:hover:text-[var(--Color-Text-Text-Brand)]"
+            hover:text-[var(--Color-Text-Text-Brand)]"
         :class="selectedCategory === cat
           ? 'bg-transparent text-[var(--Color-Text-Text-Brand)]'
           : 'bg-[var(--Color-Surface-Surface-Primary)] text-[var(--Color-Text-Text-Primary)]'">
