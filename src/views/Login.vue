@@ -1,21 +1,21 @@
 <template>
   <div
     :dir="i18n.locale.value === 'ar' ? 'rtl' : 'ltr'"
-    class="min-h-screen flex items-center justify-center bg-white px-4 sm:px-6 lg:px-8 overflow-y-hidden dark:bg-gray-900"
+    class="min-h-screen flex items-center justify-center bg-[var(--Color-Surface-Surface-Primary)] px-4 sm:px-6 lg:px-8 overflow-y-hidden dark:bg-[var(--Color-Surface-Surface-Primary)]"
   >
     <div
       class="max-w-6xl w-full flex flex-col lg:flex-row items-center justify-between xl:max-w-7xl 2xl:max-w-[1500px]"
     >
       <!-- Form Section -->
       <div
-        class="w-full lg:w-1/2 p-6 lg:p-10 xl:p-12 dark:bg-gray-800 dark:text-gray-200"
+        class="w-full lg:w-1/2 p-6 lg:p-10 xl:p-12 bg-[var(--Color-Surface-Surface-Primary)] dark:bg-[var(--Color-Surface-Surface-Primary)] text-[var(--Color-Text-Text-Primary)] dark:text-[var(--Color-Text-Text-Primary)]"
         :class="i18n.locale.value === 'ar' ? 'lg:order-2' : 'lg:order-1'"
       >
         <div
           class="mb-6"
           :class="i18n.locale.value === 'ar' ? 'text-right' : 'text-left'"
         >
-          <h1 class="text-3xl font-bold text-teal-600 lg:text-3xl xl:text-4xl">
+          <h1 class="text-3xl font-bold text-[var(--Color-Text-Text-Brand)] dark:text-[var(--Color-Text-Text-Brand)] lg:text-3xl xl:text-4xl">
             {{ $t("rento") }}
           </h1>
         </div>
@@ -25,7 +25,7 @@
         </h2>
         <p class="text-gray-600 mb-6 lg:text-base xl:text-lg dark:text-gray-300">
           {{ $t("registerHere") }}<br />
-          <router-link to="/Signup" class="text-teal-600 font-semibold">
+          <router-link to="/Signup" class="text-[var(--Color-Text-Text-Brand)] font-semibold">
             {{ $t("signUp") }}
           </router-link>
         </p>
@@ -92,7 +92,7 @@
             <button
               type="button"
               @click="showForgotPasswordModal"
-              class="text-teal-600 hover:underline dark:text-teal-400"
+              class="text-[var(--Color-Text-Text-Brand)] hover:underline dark:text-[var(--Color-Text-Text-Brand)]"
             >
               {{ $t("forgotPassword") }}
             </button>
@@ -101,7 +101,7 @@
           <!-- Submit -->
           <button
             type="submit"
-            class="w-full bg-teal-600 text-white rounded-md py-3 font-semibold hover:bg-teal-700 lg:py-3 xl:py-4 xl:text-lg"
+            class="w-full bg-[var(--Color-Surface-Surface-Brand)] dark:bg-[var(--Color-Surface-Surface-Brand)] text-white dark:text-[var(--Color-Text-Text-Primary)] rounded-md py-2 font-semibold hover:bg-[var(--Colors-Primary-600)] dark:hover:bg-[var(--Colors-Primary-600)] lg:py-2 xl:py-2 xl:text-lg"
           >
             {{ $t("logIn") }}
           </button>
@@ -115,13 +115,13 @@
             <button
               @click="handleGoogleLogin"
               type="button"
-              class="flex w-full justify-center items-center rounded-md py-3 gap-2 xl:py-4 xl:gap-3 border border-teal-600 text-teal-600 bg-transparent hover:bg-teal-50 dark:border-teal-500 dark:text-teal-500 dark:hover:bg-teal-900/20"
+              class="flex w-full justify-center items-center rounded-md py-2 gap-2 xl:py-2 xl:gap-3 border border-teal-600 text-teal-600 bg-transparent hover:bg-teal-50 dark:border-teal-500 dark:text-teal-500 dark:hover:bg-teal-900/20 text-base"
             >
               {{ $t("ContinueWith") }}
               <img
                 src="../assets/google.png"
                 alt="google"
-                class="h-6 w-6 lg:h-6 lg:w-6 xl:h-8 xl:w-8"
+                class="h-4 w-4 lg:h-6 lg:w-6 xl:h-6 xl:w-6"
               />
             </button>
           </div>

@@ -1,14 +1,14 @@
 <template>
   <div
     :dir="i18n.locale.value === 'ar' ? 'rtl' : 'ltr'"
-    class="min-h-screen flex items-center justify-center bg-white px-4 sm:px-6 lg:px-8 overflow-y-hidden dark:bg-gray-900"
+    class="min-h-screen flex items-center justify-center bg-[var(--Color-Surface-Surface-Primary)] px-4 sm:px-6 lg:px-8 overflow-y-hidden dark:bg-[var(--Color-Surface-Surface-Primary)]"
   >
     <div
       class="max-w-6xl w-full flex flex-col lg:flex-row items-center justify-between xl:max-w-7xl 2xl:max-w-[1500px]"
     >
       <!-- Form Section -->
       <div
-        class="w-full lg:w-1/2 p-6 lg:p-10 xl:p-12 dark:bg-gray-800 dark:text-gray-200"
+        class="w-full lg:w-1/2 p-6 lg:p-10 xl:p-12 bg-[var(--Color-Surface-Surface-Primary)] dark:bg-[var(var(--Color-Surface-Surface-Primary))] dark:text-gray-200"
         :class="i18n.locale.value === 'ar' ? 'lg:order-2' : 'lg:order-1'"
       >
         <div
@@ -21,12 +21,12 @@
           </h1>
         </div>
 
-        <h2 class="text-2xl font-semibold mb-4 lg:text-2xl xl:text-3xl">
+        <h2 class="text-2xl font-semibold mb-4 lg:text-2xl xl:text-3xl text-[var(--Color-Text-Text-Primary)] dark:text-[var(--Color-Text-Text-Primary)]">
           {{ $t("signUp") }}
         </h2>
         <p class="text-gray-600 mb-6 lg:text-base xl:text-lg dark:text-gray-300">
           {{ $t("alreadyHaveAccount") }}<br />
-          <router-link to="/Login" class="text-teal-600 font-semibold">
+          <router-link to="/Login" class="text-[var(--Color-Text-Text-Brand)] font-semibold">
             {{ $t("loginHere") }}
           </router-link>
         </p>
@@ -128,7 +128,7 @@
 
           <button
             type="submit"
-            class="w-full bg-teal-600 text-white rounded-md py-3 font-semibold hover:bg-teal-700 lg:py-3 xl:py-4 xl:text-lg"
+            class="w-full bg-[var(--Color-Surface-Surface-Brand)] dark:bg-[var(--Color-Surface-Surface-Brand)]   text-white dark:text-[var(--Color-Text-Text-Primary)] rounded-md py-2 font-semibold hover:bg-[var(--Colors-Primary-600)] dark:hover:bg-[var(--Colors-Primary-600)] lg:py-2 xl:py-2 xl:text-lg"
           >
             {{ $t("signUp") }}
           </button>
@@ -141,13 +141,13 @@
             <button
               @click="handleGoogleSignup"
               type="button"
-              class="flex w-full justify-center items-center rounded-md py-3 gap-2 xl:py-4 xl:gap-3 border border-teal-600 text-teal-600 bg-transparent hover:bg-teal-50 dark:border-teal-500 dark:text-teal-500 dark:hover:bg-teal-900/20"
+              class="flex w-full justify-center items-center rounded-md py-2 gap-2 border border-[var(--Color-Boarder-Surface-Brand)] text-[var(--Color-Text-Text-Brand)] bg-transparent hover:bg-teal-50 dark:border-[var(--Color-Boarder-Surface-Brand)] dark:text-[var(--Color-Text-Text-Brand)] dark:hover:bg-teal-900/20 text-base"
             >
               {{ $t("ContinueWith") }}
               <img
                 src="../assets/google.png"
                 alt="google"
-                class="h-6 w-6 lg:h-6 lg:w-6 xl:h-8 xl:w-8"
+                class="h-5 w-5"
               />
             </button>
           </div>
