@@ -22,7 +22,7 @@
               :disabled="!canGoToPrevMonth"
               class="text-[var(--color-success-500)] dark:text-[var(--color-success-300)] hover:text-[var(--color-success-600)] dark:hover:text-[var(--color-success-400)] disabled:opacity-50 disabled:cursor-not-allowed"
             >
-              &larr; Previous Month
+              ← Previous Month
             </button>
             <h3
               class="text-lg font-semibold text-[var(--color-gray-800)] dark:text-[var(--color-gray-200)]"
@@ -33,7 +33,7 @@
               @click="nextMonth"
               class="text-[var(--color-success-500)] dark:text-[var(--color-success-300)] hover:text-[var(--color-success-600)] dark:hover:text-[var(--color-success-400)]"
             >
-              Next Month &rarr;
+              Next Month →
             </button>
           </div>
           <div class="grid grid-cols-7 gap-1 mt-2">
@@ -244,12 +244,19 @@
               v-model="booking.paymentMethod"
               class="w-full p-2 rounded-lg bg-[var(--color-gray-100)] dark:bg-[var(--color-gray-700)] border border-[var(--color-success-200)]"
               required
+              @change="resetPaymentFields"
             >
               <option value="vodafone_cash">Vodafone Cash</option>
               <option value="etisalat_wallet">Etisalat Wallet</option>
+              <option value="credit_card">Credit Card</option>
             </select>
           </div>
-          <div>
+          <div
+            v-if="
+              booking.paymentMethod === 'vodafone_cash' ||
+              booking.paymentMethod === 'etisalat_wallet'
+            "
+          >
             <label
               class="block text-[var(--color-gray-700)] dark:text-[var(--color-gray-300)]"
               >{{ $t("phoneNumber") }}</label
@@ -258,10 +265,72 @@
               v-model="booking.phoneNumber"
               type="tel"
               class="w-full p-2 rounded-lg bg-[var(--color-gray-100)] dark:bg-[var(--color-gray-700)] border border-[var(--color-success-200)]"
-              placeholder="+201xxxxxxxxx"
-              pattern="\+201[0-2,5][0-9]{8}"
+              placeholder="+201XXXXXXXXX"
+              pattern="\+20(10|11|12|15)[0-9]{8}"
               required
             />
+          </div>
+          <div v-if="booking.paymentMethod === 'credit_card'" class="space-y-4">
+            <div>
+              <label
+                class="block text-[var(--color-gray-700)] dark:text-[var(--color-gray-300)]"
+                >{{ $t("cardNumber") }}</label
+              >
+              <input
+                v-model="booking.cardNumber"
+                type="text"
+                @input="formatCardNumber"
+                class="w-full p-2 rounded-lg bg-[var(--color-gray-100)] dark:bg-[var(--color-gray-700)] border border-[var(--color-success-200)]"
+                placeholder="1234 5678 9012 3456"
+                pattern="[0-9]{13,19}"
+                required
+              />
+            </div>
+            <div class="flex gap-4">
+              <div class="flex-1">
+                <label
+                  class="block text-[var(--color-gray-700)] dark:text-[var(--color-gray-300)]"
+                  >{{ $t("expiryDate") }}</label
+                >
+                <input
+                  v-model="booking.expiryDate"
+                  type="text"
+                  @input="formatExpiryDate"
+                  class="w-full p-2 rounded-lg bg-[var(--color-gray-100)] dark:bg-[var(--color-gray-700)] border border-[var(--color-success-200)]"
+                  placeholder="MM/YY"
+                  pattern="(0[1-9]|1[0-2])/[0-9]{2}"
+                  required
+                />
+              </div>
+              <div class="flex-1">
+                <label
+                  class="block text-[var(--color-gray-700)] dark:text-[var(--color-gray-300)]"
+                  >{{ $t("cvv") }}</label
+                >
+                <input
+                  v-model="booking.cvv"
+                  type="text"
+                  @input="formatCvv"
+                  class="w-full p-2 rounded-lg bg-[var(--color-gray-100)] dark:bg-[var(--color-gray-700)] border border-[var(--color-success-200)]"
+                  placeholder="123"
+                  pattern="[0-9]{3,4}"
+                  required
+                />
+              </div>
+            </div>
+            <div>
+              <label
+                class="block text-[var(--color-gray-700)] dark:text-[var(--color-gray-300)]"
+                >{{ $t("cardHolderName") }}</label
+              >
+              <input
+                v-model="booking.cardHolderName"
+                type="text"
+                class="w-full p-2 rounded-lg bg-[var(--color-gray-100)] dark:bg-[var(--color-gray-700)] border border-[var(--color-success-200)]"
+                placeholder="John Doe"
+                required
+              />
+            </div>
           </div>
           <div>
             <p
@@ -296,8 +365,9 @@
             <input
               v-model="booking.otp"
               type="text"
+              @input="formatOtp"
               class="w-full p-2 rounded-lg bg-[var(--color-gray-100)] dark:bg-[var(--color-gray-700)] border border-[var(--color-success-200)]"
-              placeholder="Enter 6-digit OTP"
+              placeholder="123456"
               pattern="[0-9]{6}"
               required
             />
@@ -434,8 +504,9 @@
             </span>
             <span
               class="text-[var(--color-gray-600)] dark:text-[var(--color-gray-400)] ml-2"
-              >{{ review.rate }}</span
             >
+              {{ review.rate }}
+            </span>
           </div>
         </div>
       </div>
@@ -524,71 +595,70 @@
       >
         {{ $t("moreFrom") }} {{ booking.sellerName || $t("loading") }}
       </h3>
-      <div class="grid grid-cols-2 gap-4">
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
         <div
-          class="bg-[var(--color-gray-100)] p-4 rounded-lg dark:bg-[var(--color-gray-700)]"
+          v-for="item in randomProducts"
+          :key="item.id"
+          class="bg-[var(--Color-Surface-Surface-Tertiary)] border border-[var(--Color-Boarder-Border-Primary)] rounded-xl shadow-sm flex flex-col transition hover:shadow-lg"
+          :class="{ 'dir-rtl': $i18n.locale === 'ar' }"
         >
           <img
-            src="https://via.placeholder.com/100"
-            :alt="$t('productImage')"
-            class="w-full h-24 object-cover rounded-lg"
+            :src="item.imagePath || require('@/assets/test.png')"
+            alt="product image"
+            class="w-full h-40 object-cover rounded-t-xl"
           />
-          <p class="text-[var(--color-gray-800)] dark:text-[var(--color-gray-200)] mt-2">
-            {{ $t("canonEosR5") }}
-          </p>
-          <p
-            class="text-[var(--color-success-500)] font-bold dark:text-[var(--color-success-300)]"
-          >
-            500 {{ $t("egp") }}
-          </p>
-          <div class="flex items-center gap-2 text-[var(--color-warning-500)]">
-            <span>{{ $t("stars") }}</span>
-            <span
-              class="text-sm text-[var(--color-gray-600)] dark:text-[var(--color-gray-400)]"
-              >4</span
+          <div class="p-4 flex flex-col flex-1">
+            <h2
+              class="pb-4 text-base font-bold text-[var(--Color-Text-Text-Brand)] truncate"
             >
-          </div>
-          <button
-            class="w-full bg-[var(--color-success-500)] text-[var(--color-gray-25)] py-2 rounded-lg mt-2 hover:bg-[var(--color-success-600)] dark:bg-[var(--color-success-300)] dark:hover:bg-[var(--color-success-400)]"
-          >
-            {{ $t("rentNow") }}
-          </button>
-        </div>
-        <div
-          class="bg-[var(--color-gray-100)] p-4 rounded-lg dark:bg-[var(--color-gray-700)]"
-        >
-          <img
-            src="https://via.placeholder.com/100"
-            :alt="$t('productImage')"
-            class="w-full h-24 object-cover rounded-lg"
-          />
-          <p class="text-[var(--color-gray-800)] dark:text-[var(--color-gray-200)] mt-2">
-            {{ $t("canonEosR6") }}
-          </p>
-          <p
-            class="text-[var(--color-success-500)] font-bold dark:text-[var(--color-success-300)]"
-          >
-            600 {{ $t("egp") }}
-          </p>
-          <div class="flex items-center gap-2 text-[var(--color-warning-500)]">
-            <span>{{ $t("stars") }}</span>
-            <span
-              class="text-sm text-[var(--color-gray-600)] dark:text-[var(--color-gray-400)]"
-              >4</span
+              {{ item.title || "Untitled" }}
+            </h2>
+            <div
+              class="mt-2 flex items-center justify-between text-xs text-[var(--Color-Text-Text-Secondary)] mb-1 pb-2"
+              :class="{ 'flex-row-reverse': $i18n.locale === 'ar' }"
+              :dir="$i18n.locale === 'ar' ? 'rtl' : 'ltr'"
             >
+              <div class="flex items-center">
+                <i class="fa-solid fa-location-dot mr-1"></i>
+                {{ item.location || $t("defaultLocation") }}
+              </div>
+              <div
+                class="flex items-center text-sm font-semibold text-[var(--Color-Text-Text-Primary)]"
+              >
+                <i class="fa-solid fa-star text-yellow-400 mr-1"></i>
+                <span>{{ item.rating || "0" }}</span>
+              </div>
+            </div>
+            <div
+              class="flex items-center justify-between h-full mb-2"
+              :class="{ 'flex-row-reverse': $i18n.locale === 'ar' }"
+              :dir="$i18n.locale === 'ar' ? 'rtl' : 'ltr'"
+            >
+              <div class="text-sm font-semibold text-[var(--Color-Text-Text-Primary)]">
+                {{ $i18n.locale === "ar" ? "ج.م" : "EGP" }} {{ item.price || "0" }}
+              </div>
+              <div class="text-sm font-semibold text-[var(--Color-Text-Text-Primary)]">
+                {{ $t("perDay") }}
+              </div>
+            </div>
+            <div class="mt-4">
+              <router-link
+                :to="{ name: 'ProductDetails', params: { id: item.id || '' } }"
+                class="rounded-xl block w-full text-center bg-[var(--Color-Surface-Surface-Brand)] text-[var(--Color-Text-Text-Invert)] px-4 py-2 rounded font-semibold text-sm transition hover:bg-[var(--Color-Text-Text-Brand)] hover:text-white"
+                :aria-label="`View details for ${item.title || 'Untitled'}`"
+              >
+                {{ $t("rentItem") }}
+              </router-link>
+            </div>
           </div>
-          <button
-            class="w-full bg-[var(--color-success-500)] text-[var(--color-gray-25)] py-2 px-4 rounded-lg mt-2 hover:bg-[var(--color-success-600)] dark:bg-[var(--color-success-300)] dark:hover:bg-[var(--color-success-400)]"
-          >
-            {{ $t("rentNow") }}
-          </button>
         </div>
       </div>
-      <button
-        class="mt-4 text-[var(--color-success-500)] text-sm dark:text-[var(--color-success-300)]"
+      <router-link
+        to="/all-products"
+        class="mt-4 text-[var(--color-success-500)] text-sm dark:text-[var(--color-success-300)] hover:underline"
       >
         {{ $t("viewAllItems") }}
-      </button>
+      </router-link>
     </div>
 
     <div
@@ -600,14 +670,15 @@
     <router-link
       to="/home"
       class="mt-6 inline-block text-[var(--color-success-500)] hover:underline text-sm dark:text-[var(--color-success-300)]"
-      >{{ $t("backToProducts") }}</router-link
     >
+      {{ $t("backToProducts") }}
+    </router-link>
   </div>
 </template>
 
 <script setup>
 import { onMounted, ref, watch, computed, nextTick } from "vue";
-import { useRoute } from "vue-router";
+import { useRoute, useRouter } from "vue-router";
 import {
   doc,
   getDoc,
@@ -623,6 +694,7 @@ import { db, auth } from "@/firebase/config";
 import Swal from "sweetalert2";
 
 const route = useRoute();
+const router = useRouter();
 const product = ref(null);
 const showBookingForm = ref(false);
 const showReviewForm = ref(false);
@@ -648,6 +720,10 @@ const booking = ref({
   paymentMethod: "vodafone_cash",
   phoneNumber: "",
   otp: "",
+  cardNumber: "",
+  expiryDate: "",
+  cvv: "",
+  cardHolderName: "",
 });
 const newReview = ref({
   review: "",
@@ -663,15 +739,18 @@ const newWebsiteReview = ref({
   userName: "",
   userImage: "",
 });
+const randomProducts = ref([]);
 
-// Current date handling
-const today = ref(new Date("2025-07-24T11:34:00Z")); // Updated to 02:34 PM EEST (UTC+3)
-const currentDate = ref(new Date("2025-07-24T11:34:00Z"));
-const selectedDates = ref({ start: null, end: null });
+// Current date handling (updated to 07:53 PM EEST, Thursday, July 24, 2025)
+const today = ref(new Date("2025-07-24T16:53:00Z")); // UTC time adjusted to EEST (UTC+3)
+const currentDate = ref(new Date("2025-07-24T16:53:00Z"));
 
 // Computed properties for dynamic calendar
 const currentMonthYear = computed(() => {
-  return currentDate.value.toLocaleString("en-US", { month: "long", year: "numeric" });
+  return currentDate.value.toLocaleString("en-US", {
+    month: "long",
+    year: "numeric",
+  });
 });
 
 const daysInMonth = computed(() => {
@@ -718,6 +797,7 @@ const loadProduct = async () => {
       booking.value.productTitle = product.value.title;
       booking.value.productPrice = parseFloat(product.value.price) || 0;
       await loadSellerDetails(booking.value.sellerId);
+      await loadRandomProducts();
     } else {
       console.error("No such product!");
     }
@@ -871,6 +951,38 @@ const updateDeliveryFee = () => {
   }
 };
 
+const resetPaymentFields = () => {
+  booking.value.phoneNumber = "";
+  booking.value.cardNumber = "";
+  booking.value.expiryDate = "";
+  booking.value.cvv = "";
+  booking.value.cardHolderName = "";
+  showOTPForm.value = false;
+};
+
+const formatCardNumber = (event) => {
+  let value = event.target.value.replace(/\D/g, ""); // Remove non-digits
+  booking.value.cardNumber = value;
+};
+
+const formatExpiryDate = (event) => {
+  let value = event.target.value.replace(/\D/g, ""); // Remove non-digits
+  if (value.length >= 2) {
+    value = value.slice(0, 2) + "/" + value.slice(2, 4); // Add slash for display
+  }
+  booking.value.expiryDate = value;
+};
+
+const formatCvv = (event) => {
+  let value = event.target.value.replace(/\D/g, ""); // Remove non-digits
+  booking.value.cvv = value;
+};
+
+const formatOtp = (event) => {
+  let value = event.target.value.replace(/\D/g, ""); // Remove non-digits
+  booking.value.otp = value;
+};
+
 watch(
   [
     () => booking.value.deliveryMethod,
@@ -929,18 +1041,101 @@ const submitBooking = async () => {
       return;
     }
 
-    if (!booking.value.phoneNumber.match(/\+201[0-2,5][0-9]{8}/)) {
+    if (
+      (booking.value.paymentMethod === "vodafone_cash" ||
+        booking.value.paymentMethod === "etisalat_wallet") &&
+      !booking.value.phoneNumber.match(/^\+20[0-2,5][0-9]{8}$/)
+    ) {
       Swal.fire({
         icon: "warning",
         title: "Invalid Phone Number",
         text:
-          "Please enter a valid Egyptian phone number starting with +2010, +2011, +2012, or +2015.",
+          "Please enter a valid Egyptian phone number starting with +20 10, +20 11, +20 12, or +20 15.",
         confirmButtonText: "OK",
       });
       return;
     }
 
-    // Simulate sending OTP
+    if (booking.value.paymentMethod === "credit_card") {
+      if (!booking.value.cardNumber.match(/[0-9]{13,19}/)) {
+        Swal.fire({
+          icon: "warning",
+          title: "Invalid Card Number",
+          text: "Please enter a valid card number (13-19 digits).",
+          confirmButtonText: "OK",
+        });
+        return;
+      }
+
+      const expiry = booking.value.expiryDate.split("/");
+      if (
+        !booking.value.expiryDate.match(/(0[1-9]|1[0-2])\/[0-9]{2}/) ||
+        expiry.length !== 2
+      ) {
+        Swal.fire({
+          icon: "warning",
+          title: "Invalid Expiry Date",
+          text: "Please enter a valid expiry date (MM/YY).",
+          confirmButtonText: "OK",
+        });
+        return;
+      }
+
+      if (!booking.value.cvv.match(/[0-9]{3,4}/)) {
+        Swal.fire({
+          icon: "warning",
+          title: "Invalid CVV",
+          text: "Please enter a valid CVV (3-4 digits).",
+          confirmButtonText: "OK",
+        });
+        return;
+      }
+
+      if (!booking.value.cardHolderName.trim()) {
+        Swal.fire({
+          icon: "warning",
+          title: "Invalid Cardholder Name",
+          text: "Please enter the cardholder's name.",
+          confirmButtonText: "OK",
+        });
+        return;
+      }
+
+      const start = new Date(booking.value.startDate);
+      const end = new Date(booking.value.endDate);
+      const diffTime = Math.ceil((end - start) / (1000 * 60 * 60 * 24));
+      const basePrice = diffTime * booking.value.productPrice;
+      booking.value.deliveryFee =
+        booking.value.deliveryMethod === "delivery" ? basePrice * 0.02 : 0;
+      booking.value.totalPrice = basePrice + booking.value.deliveryFee;
+      booking.value.userId = auth.currentUser.uid;
+      booking.value.timestamp = serverTimestamp();
+
+      const bookingsRef = collection(db, "bookings");
+      await setDoc(doc(bookingsRef), {
+        ...booking.value,
+        productTitle: product.value.title,
+        productImage: product.value.img,
+        sellerName: booking.value.sellerName,
+        cardNumber: booking.value.cardNumber,
+      });
+
+      showBookingForm.value = false;
+
+      const isFirstBooking = await checkFirstBooking(auth.currentUser.uid);
+      if (isFirstBooking) {
+        showWebsiteReviewForm.value = true;
+      }
+
+      Swal.fire({
+        icon: "success",
+        title: "Success",
+        text: "Booking and payment processed successfully!",
+        confirmButtonText: "OK",
+      });
+      return;
+    }
+
     Swal.fire({
       icon: "info",
       title: "OTP Sent",
@@ -948,10 +1143,8 @@ const submitBooking = async () => {
       confirmButtonText: "OK",
     });
 
-    // Show OTP form
     showOTPForm.value = true;
 
-    // Auto-fill OTP after 2 seconds
     setTimeout(() => {
       booking.value.otp = "123456";
     }, 2000);
@@ -968,7 +1161,6 @@ const submitBooking = async () => {
 
 const verifyOTP = async () => {
   try {
-    // Simulate OTP verification (in a real app, this would verify with the payment provider)
     if (booking.value.otp !== "123456") {
       Swal.fire({
         icon: "warning",
@@ -979,7 +1171,6 @@ const verifyOTP = async () => {
       return;
     }
 
-    // Proceed with booking after OTP verification
     const start = new Date(booking.value.startDate);
     const end = new Date(booking.value.endDate);
     const diffTime = Math.ceil((end - start) / (1000 * 60 * 60 * 24));
@@ -1147,14 +1338,76 @@ const submitWebsiteReview = async () => {
   }
 };
 
+const loadRandomProducts = async () => {
+  try {
+    const productsRef = collection(db, "products");
+    const q = query(productsRef, where("sellerId", "==", booking.value.sellerId));
+    const querySnapshot = await getDocs(q);
+    const sellerProducts = querySnapshot.docs
+      .map((doc) => ({ id: doc.id, ...doc.data() }))
+      .filter((p) => p.id !== route.params.id); // Exclude current product
+
+    // Shuffle array and select up to 2 random products
+    const shuffled = sellerProducts.sort(() => 0.5 - Math.random());
+    randomProducts.value = shuffled.slice(0, 2).map((item) => ({
+      id: item.id,
+      title: item.title || "Untitled",
+      price: item.price || "0",
+      rating: item.rating || "0",
+      location: item.location || "Unknown Location",
+      imagePath: item.img || "https://via.placeholder.com/100",
+    }));
+  } catch (error) {
+    console.error("Error loading random products:", error);
+    randomProducts.value = [
+      {
+        id: "placeholder1",
+        title: "Untitled",
+        price: "0",
+        rating: "0",
+        location: "Unknown Location",
+        imagePath: "https://via.placeholder.com/100",
+      },
+      {
+        id: "placeholder2",
+        title: "Untitled",
+        price: "0",
+        rating: "0",
+        location: "Unknown Location",
+        imagePath: "https://via.placeholder.com/100",
+      },
+    ];
+  }
+};
+
+const navigateToRentProcess = () => {
+  console.log("navigateToRentProcess triggered");
+  if (!auth.currentUser) {
+    Swal.fire({
+      icon: "warning",
+      title: "Login Required",
+      text: "Please log in to start the rent process.",
+      confirmButtonText: "OK",
+    });
+    return;
+  }
+  console.log("Navigating to RentProcess with id:", route.params.id);
+  router.push({ name: "RentProcess", params: { id: route.params.id } }).catch((err) => {
+    console.error("Navigation error:", err);
+  });
+};
+
+const navigateToProduct = (productId) => {
+  router.push(`/product/${productId}`);
+};
+
+const selectedDates = ref({ start: null, end: null });
+
 onMounted(() => {
   loadProduct();
   loadReviews();
-  today.value = new Date();
-  today.value.setHours(0, 0, 0, 0);
+  today.value = new Date("2025-07-24T16:53:00Z"); // Updated to 07:53 PM EEST (UTC+3)
+  today.value.setHours(0, 0, 0, 0); // Reset to start of day for past date check
+  console.log("Auth state on mount:", auth.currentUser); // Debug auth state
 });
 </script>
-
-<style scoped>
-/* No half-star styling needed */
-</style>
