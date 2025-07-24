@@ -149,7 +149,7 @@
         >
           {{ $t("bookThisProduct") }}
         </h2>
-        <form @submit.prevent="submitBooking" class="space-y-4">
+        <form v-if="!showOTPForm" @submit.prevent="submitBooking" class="space-y-4">
           <div>
             <label
               class="block text-[var(--color-gray-700)] dark:text-[var(--color-gray-300)]"
@@ -221,6 +221,34 @@
             </p>
           </div>
           <div>
+            <label
+              class="block text-[var(--color-gray-700)] dark:text-[var(--color-gray-300)]"
+              >{{ $t("paymentMethod") }}</label
+            >
+            <select
+              v-model="booking.paymentMethod"
+              class="w-full p-2 rounded-lg bg-[var(--color-gray-100)] dark:bg-[var(--color-gray-700)] border border-[var(--color-success-200)]"
+              required
+            >
+              <option value="vodafone_cash">Vodafone Cash</option>
+              <option value="etisalat_wallet">Etisalat Wallet</option>
+            </select>
+          </div>
+          <div>
+            <label
+              class="block text-[var(--color-gray-700)] dark:text-[var(--color-gray-300)]"
+              >{{ $t("phoneNumber") }}</label
+            >
+            <input
+              v-model="booking.phoneNumber"
+              type="tel"
+              class="w-full p-2 rounded-lg bg-[var(--color-gray-100)] dark:bg-[var(--color-gray-700)] border border-[var(--color-success-200)]"
+              placeholder="+201xxxxxxxxx"
+              pattern="\+201[0-2,5][0-9]{8}"
+              required
+            />
+          </div>
+          <div>
             <p
               class="mt-2 text-[var(--color-success-500)] font-bold dark:text-[var(--color-success-300)]"
             >
@@ -239,7 +267,49 @@
               type="submit"
               class="bg-[var(--color-success-500)] text-[var(--color-gray-25)] py-2 px-4 rounded-lg hover:bg-[var(--color-success-600)] dark:bg-[var(--color-success-300)] dark:hover:bg-[var(--color-success-400)]"
             >
-              {{ $t("submitBooking") }}
+              {{ $t("proceedToPayment") }}
+            </button>
+          </div>
+        </form>
+        <!-- OTP Form -->
+        <form v-else @submit.prevent="verifyOTP" class="space-y-4">
+          <div>
+            <label
+              class="block text-[var(--color-gray-700)] dark:text-[var(--color-gray-300)]"
+              >{{ $t("enterOTP") }}</label
+            >
+            <input
+              v-model="booking.otp"
+              type="text"
+              class="w-full p-2 rounded-lg bg-[var(--color-gray-100)] dark:bg-[var(--color-gray-700)] border border-[var(--color-success-200)]"
+              placeholder="Enter 6-digit OTP"
+              pattern="[0-9]{6}"
+              required
+            />
+            <p
+              class="text-sm text-[var(--color-gray-600)] dark:text-[var(--color-gray-400)] mt-2"
+            >
+              {{ $t("otpSentTo") }} {{ booking.phoneNumber }}
+            </p>
+            <p
+              class="mt-2 text-[var(--color-success-500)] font-bold dark:text-[var(--color-success-300)]"
+            >
+              {{ $t("totalPrice") }}: {{ booking.totalPrice.toFixed(2) }} {{ $t("egp") }}
+            </p>
+          </div>
+          <div class="flex justify-end gap-4">
+            <button
+              type="button"
+              @click="showOTPForm = false"
+              class="bg-[var(--color-gray-400)] text-[var(--color-gray-25)] py-2 px-4 rounded-lg hover:bg-[var(--color-gray-500)]"
+            >
+              {{ $t("back") }}
+            </button>
+            <button
+              type="submit"
+              class="bg-[var(--color-success-500)] text-[var(--color-gray-25)] py-2 px-4 rounded-lg hover:bg-[var(--color-success-600)] dark:bg-[var(--color-success-300)] dark:hover:bg-[var(--color-success-400)]"
+            >
+              {{ $t("verifyOTP") }}
             </button>
           </div>
         </form>
@@ -333,7 +403,6 @@
             "{{ review.review }}" - {{ review.userName || review.rentUserId }}
           </p>
           <div class="flex items-center gap-1">
-            <!-- Full stars -->
             <span
               v-for="i in Math.floor(review.rate)"
               :key="'full-' + review.id + '-' + i"
@@ -341,7 +410,6 @@
             >
               ★
             </span>
-            <!-- Empty stars -->
             <span
               v-for="i in 5 - Math.floor(review.rate)"
               :key="'empty-' + review.id + '-' + i"
@@ -544,6 +612,7 @@ const product = ref(null);
 const showBookingForm = ref(false);
 const showReviewForm = ref(false);
 const showWebsiteReviewForm = ref(false);
+const showOTPForm = ref(false);
 const reviews = ref([]);
 const booking = ref({
   deliveryAddress: "30.0459°N, 31.2357°E",
@@ -561,6 +630,9 @@ const booking = ref({
   sellerImage: "",
   productTitle: "",
   productPrice: 0,
+  paymentMethod: "vodafone_cash",
+  phoneNumber: "",
+  otp: "",
 });
 const newReview = ref({
   review: "",
@@ -578,8 +650,8 @@ const newWebsiteReview = ref({
 });
 
 // Current date handling
-const today = ref(new Date("2025-07-23T12:28:00Z")); // Updated to 03:28 PM EEST (UTC+3)
-const currentDate = ref(new Date("2025-07-23T12:28:00Z"));
+const today = ref(new Date("2025-07-24T11:22:00Z")); // Updated to 02:22 PM EEST (UTC+3)
+const currentDate = ref(new Date("2025-07-24T11:22:00Z"));
 const selectedDates = ref({ start: null, end: null });
 
 // Computed properties for dynamic calendar
@@ -811,12 +883,63 @@ const submitBooking = async () => {
       Swal.fire({
         icon: "warning",
         title: "Missing Dates",
-        text: "Please select both start and end dates",
+        text: "Please select both start and end dates.",
         confirmButtonText: "OK",
       });
       return;
     }
 
+    if (!booking.value.phoneNumber.match(/\+201[0-2,5][0-9]{8}/)) {
+      Swal.fire({
+        icon: "warning",
+        title: "Invalid Phone Number",
+        text:
+          "Please enter a valid Egyptian phone number starting with +2010, +2011, +2012, or +2015.",
+        confirmButtonText: "OK",
+      });
+      return;
+    }
+
+    // Simulate sending OTP
+    Swal.fire({
+      icon: "info",
+      title: "OTP Sent",
+      text: `An OTP has been sent to ${booking.value.phoneNumber}. Please check your phone.`,
+      confirmButtonText: "OK",
+    });
+
+    // Show OTP form
+    showOTPForm.value = true;
+
+    // Auto-fill OTP after 2 seconds
+    setTimeout(() => {
+      booking.value.otp = "123456";
+    }, 2000);
+  } catch (error) {
+    console.error("Error initiating booking:", error);
+    Swal.fire({
+      icon: "error",
+      title: "Error",
+      text: `Failed to initiate booking: ${error.message}`,
+      confirmButtonText: "OK",
+    });
+  }
+};
+
+const verifyOTP = async () => {
+  try {
+    // Simulate OTP verification (in a real app, this would verify with the payment provider)
+    if (booking.value.otp !== "123456") {
+      Swal.fire({
+        icon: "warning",
+        title: "Invalid OTP",
+        text: "Please enter a valid 6-digit OTP.",
+        confirmButtonText: "OK",
+      });
+      return;
+    }
+
+    // Proceed with booking after OTP verification
     const start = new Date(booking.value.startDate);
     const end = new Date(booking.value.endDate);
     const diffTime = Math.ceil((end - start) / (1000 * 60 * 60 * 24));
@@ -836,6 +959,7 @@ const submitBooking = async () => {
     });
 
     showBookingForm.value = false;
+    showOTPForm.value = false;
 
     const isFirstBooking = await checkFirstBooking(auth.currentUser.uid);
     if (isFirstBooking) {
@@ -845,7 +969,7 @@ const submitBooking = async () => {
     Swal.fire({
       icon: "success",
       title: "Success",
-      text: "Booking submitted successfully!",
+      text: "Booking and payment verified successfully!",
       confirmButtonText: "OK",
     });
   } catch (error) {
@@ -853,7 +977,7 @@ const submitBooking = async () => {
     Swal.fire({
       icon: "error",
       title: "Error",
-      text: `Failed to submit booking: ${error.message}`,
+      text: `Failed to verify OTP: ${error.message}`,
       confirmButtonText: "OK",
     });
   }
