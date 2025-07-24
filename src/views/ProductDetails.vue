@@ -16,11 +16,26 @@
         <div
           class="bg-[var(--color-gray-100)] p-4 rounded-lg dark:bg-[var(--color-gray-700)]"
         >
-          <h3
-            class="text-lg font-semibold text-[var(--color-gray-800)] dark:text-[var(--color-gray-200)]"
-          >
-            {{ currentMonthYear }}
-          </h3>
+          <div class="flex justify-between items-center mb-2">
+            <button
+              @click="prevMonth"
+              :disabled="!canGoToPrevMonth"
+              class="text-[var(--color-success-500)] dark:text-[var(--color-success-300)] hover:text-[var(--color-success-600)] dark:hover:text-[var(--color-success-400)] disabled:opacity-50 disabled:cursor-not-allowed"
+            >
+              &larr; Previous Month
+            </button>
+            <h3
+              class="text-lg font-semibold text-[var(--color-gray-800)] dark:text-[var(--color-gray-200)]"
+            >
+              {{ currentMonthYear }}
+            </h3>
+            <button
+              @click="nextMonth"
+              class="text-[var(--color-success-500)] dark:text-[var(--color-success-300)] hover:text-[var(--color-success-600)] dark:hover:text-[var(--color-success-400)]"
+            >
+              Next Month &rarr;
+            </button>
+          </div>
           <div class="grid grid-cols-7 gap-1 mt-2">
             <span
               v-for="day in daysInMonth"
@@ -650,8 +665,8 @@ const newWebsiteReview = ref({
 });
 
 // Current date handling
-const today = ref(new Date("2025-07-24T11:22:00Z")); // Updated to 02:22 PM EEST (UTC+3)
-const currentDate = ref(new Date("2025-07-24T11:22:00Z"));
+const today = ref(new Date("2025-07-24T11:34:00Z")); // Updated to 02:34 PM EEST (UTC+3)
+const currentDate = ref(new Date("2025-07-24T11:34:00Z"));
 const selectedDates = ref({ start: null, end: null });
 
 // Computed properties for dynamic calendar
@@ -664,6 +679,31 @@ const daysInMonth = computed(() => {
   const month = currentDate.value.getMonth();
   return new Date(year, month + 1, 0).getDate();
 });
+
+const canGoToPrevMonth = computed(() => {
+  const prevMonth = new Date(currentDate.value);
+  prevMonth.setMonth(currentDate.value.getMonth() - 1);
+  const currentMonth = new Date(today.value.getFullYear(), today.value.getMonth(), 1);
+  return prevMonth >= currentMonth;
+});
+
+const prevMonth = () => {
+  if (canGoToPrevMonth.value) {
+    currentDate.value = new Date(
+      currentDate.value.getFullYear(),
+      currentDate.value.getMonth() - 1,
+      1
+    );
+  }
+};
+
+const nextMonth = () => {
+  currentDate.value = new Date(
+    currentDate.value.getFullYear(),
+    currentDate.value.getMonth() + 1,
+    1
+  );
+};
 
 const loadProduct = async () => {
   try {
