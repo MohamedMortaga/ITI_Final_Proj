@@ -1,19 +1,87 @@
 <template>
-  <component :is="layout">
-    <router-view />
-  </component>
+  <div>
+    <component :is="layout">
+      <router-view />
+    </component>
+    <button
+      class="chat-toggle-btn"
+      @click="toggleChat"
+      :aria-label="isChatOpen ? 'Close chat' : 'Open chat'"
+    >
+      <svg
+        v-if="!isChatOpen"
+        xmlns="http://www.w3.org/2000/svg"
+        width="24"
+        height="24"
+        viewBox="0 0 24 24"
+        fill="none"
+        stroke="currentColor"
+        stroke-width="2"
+        stroke-linecap="round"
+        stroke-linejoin="round"
+      >
+        <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path>
+      </svg>
+      <svg
+        v-else
+        xmlns="http://www.w3.org/2000/svg"
+        width="24"
+        height="24"
+        viewBox="0 0 24 24"
+        fill="none"
+        stroke="currentColor"
+        stroke-width="2"
+        stroke-linecap="round"
+        stroke-linejoin="round"
+      >
+        <line x1="18" y1="6" x2="6" y2="18"></line>
+        <line x1="6" y1="6" x2="18" y2="18"></line>
+      </svg>
+    </button>
+    <!-- Chatbot component -->
+    <ChatBot v-if="isChatOpen" @close="toggleChat" @user-action="handleUserAction" />
+  </div>
 </template>
 
 <script setup>
-import { computed } from "vue";
+import { computed, ref } from "vue";
 import { useRoute } from "vue-router";
-
+import ChatBot from "@/components/ChatBot.vue";
 import AdminLayout from "@/layouts/AdminLayout.vue";
 import DefaultLayout from "@/layouts/DefaultLayout.vue";
 
 const route = useRoute();
-
+const isChatOpen = ref(false);
 const layout = computed(() => {
   return route.meta.layout === "admin" ? AdminLayout : DefaultLayout;
 });
+
+function toggleChat() {
+  isChatOpen.value = !isChatOpen.value;
+}
 </script>
+
+<style scoped>
+.chat-toggle-btn {
+  position: fixed;
+  bottom: 20px;
+  right: 20px;
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  background: #145a32;
+  color: #f7ca18;
+  border: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.3);
+  z-index: 1000;
+  transition: background 0.2s;
+}
+.chat-toggle-btn:hover {
+  background: #f7ca18;
+  color: #222;
+}
+</style>
