@@ -1,36 +1,43 @@
-import { initializeApp, getApps, getApp } from 'firebase/app';
-import { getFirestore } from 'firebase/firestore';
-import { getAuth, GoogleAuthProvider, FacebookAuthProvider } from 'firebase/auth';
-import { getStorage } from 'firebase/storage';
-import { doc, updateDoc } from "firebase/firestore";
+import { initializeApp } from "firebase/app";
+import { getAuth, RecaptchaVerifier } from "firebase/auth";
+import { getFirestore } from "firebase/firestore";
 
-
-
+// Your Firebase configuration
 const firebaseConfig = {
-  apiKey: 'AIzaSyDzUUKgvADh2XtOatPYcWt2umQbZSyiNF4',
-  authDomain: 'test-7b62c.firebaseapp.com',
-  projectId: 'test-7b62c',
-  storageBucket: 'test-7b62c.appspot.com',
-  messagingSenderId: '402993824560',
-  appId: '1:402993824560:web:78f65da4e841a4446b3ef5',
+  apiKey: "AIzaSyDzUUKgvADh2XtOatPYcWt2umQbZSyiNF4",
+  authDomain: "test-7b62c.firebaseapp.com",
+  projectId: "test-7b62c",
+  storageBucket: "test-7b62c.appspot.com",
+  messagingSenderId: "402993824560",
+  appId: "1:402993824560:web:78f65da4e841a4446b3ef5",
 };
 
-let app;
-try {
-  app = getApps().length ? getApp() : initializeApp(firebaseConfig);
-} catch (error) {
-  console.error('Firebase initialization error:', error);
-  throw error;
-}
-
-export const db = getFirestore(app);
+// Initialize Firebase
+const app = initializeApp(firebaseConfig);
 export const auth = getAuth(app);
-export const googleProvider = new GoogleAuthProvider();
-export const facebookProvider = new FacebookAuthProvider();
+export const db = getFirestore(app);
 
-// Add scopes for additional data access
-facebookProvider.addScope('email public_profile'); // Request email and public profile
-googleProvider.addScope('profile email'); // Ensure profile and email access
+// Updated RecaptchaVerifier initializer
+export const initializeRecaptchaVerifier = (containerId, authInstance = auth, options = {}) => {
+  try {
+    console.log('Initializing RecaptchaVerifier with container:', containerId, 'auth:', authInstance);
+    if (!containerId) throw new Error("Container ID is required");
+    if (!document.getElementById(containerId)) throw new Error(`Element #${containerId} not found`);
+    if (!authInstance) throw new Error("Auth instance is required");
 
-export default app;
-export const storage = getStorage(app);
+    return new RecaptchaVerifier(authInstance, containerId, {
+      size: options.size || 'invisible',
+      callback: (response) => {
+        console.log('reCAPTCHA solved:', response);
+        if (options.callback) options.callback(response);
+      },
+      'expired-callback': () => {
+        console.warn('reCAPTCHA expired, resetting');
+        if (options['expired-callback']) options['expired-callback']();
+      },
+    });
+  } catch (error) {
+    console.error('Error initializing RecaptchaVerifier:', error);
+    throw error;
+  }
+};

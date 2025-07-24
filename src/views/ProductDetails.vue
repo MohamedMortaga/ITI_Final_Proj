@@ -22,7 +22,7 @@
               :disabled="!canGoToPrevMonth"
               class="text-[var(--color-success-500)] dark:text-[var(--color-success-300)] hover:text-[var(--color-success-600)] dark:hover:text-[var(--color-success-400)] disabled:opacity-50 disabled:cursor-not-allowed"
             >
-              &larr; Previous Month
+              ← Previous Month
             </button>
             <h3
               class="text-lg font-semibold text-[var(--color-gray-800)] dark:text-[var(--color-gray-200)]"
@@ -33,7 +33,7 @@
               @click="nextMonth"
               class="text-[var(--color-success-500)] dark:text-[var(--color-success-300)] hover:text-[var(--color-success-600)] dark:hover:text-[var(--color-success-400)]"
             >
-              Next Month &rarr;
+              Next Month →
             </button>
           </div>
           <div class="grid grid-cols-7 gap-1 mt-2">
@@ -328,6 +328,8 @@
             </button>
           </div>
         </form>
+        <div id="recaptcha-container"></div>
+        <!-- reCAPTCHA container -->
       </div>
     </div>
 
@@ -604,7 +606,6 @@
     >
   </div>
 </template>
-
 <script setup>
 import { onMounted, ref, watch, computed, nextTick } from "vue";
 import { useRoute } from "vue-router";
@@ -619,7 +620,8 @@ import {
   where,
   getDocs,
 } from "firebase/firestore";
-import { db, auth } from "@/firebase/config";
+import { db, auth, initializeRecaptchaVerifier } from "@/firebase/config";
+import { signInWithPhoneNumber } from "firebase/auth";
 import Swal from "sweetalert2";
 
 const route = useRoute();
@@ -629,6 +631,7 @@ const showReviewForm = ref(false);
 const showWebsiteReviewForm = ref(false);
 const showOTPForm = ref(false);
 const reviews = ref([]);
+const confirmationResult = ref(null);
 const booking = ref({
   deliveryAddress: "30.0459°N, 31.2357°E",
   deliveryFee: 0,
@@ -665,8 +668,8 @@ const newWebsiteReview = ref({
 });
 
 // Current date handling
-const today = ref(new Date("2025-07-24T11:34:00Z")); // Updated to 02:34 PM EEST (UTC+3)
-const currentDate = ref(new Date("2025-07-24T11:34:00Z"));
+const today = ref(new Date("2025-07-24T14:39:00Z")); // Updated to 05:39 PM EEST (UTC+3)
+const currentDate = ref(new Date("2025-07-24T14:39:00Z"));
 const selectedDates = ref({ start: null, end: null });
 
 // Computed properties for dynamic calendar
@@ -919,28 +922,22 @@ const submitBooking = async () => {
   }
 
   try {
-    if (!booking.value.startDate || !booking.value.endDate) {
-      Swal.fire({
-        icon: "warning",
-        title: "Missing Dates",
-        text: "Please select both start and end dates.",
-        confirmButtonText: "OK",
-      });
-      return;
-    }
-
+    console.log("Auth instance:", auth);
+    console.log("Phone number being sent:", booking.value.phoneNumber);
     if (!booking.value.phoneNumber.match(/\+201[0-2,5][0-9]{8}/)) {
-      Swal.fire({
-        icon: "warning",
-        title: "Invalid Phone Number",
-        text:
-          "Please enter a valid Egyptian phone number starting with +2010, +2011, +2012, or +2015.",
-        confirmButtonText: "OK",
-      });
-      return;
+      throw new Error("Invalid phone number format");
     }
 
-    // Simulate sending OTP
+    const verifier = initializeRecaptchaVerifier("recaptcha-container");
+    console.log("RecaptchaVerifier initialized:", verifier);
+
+    // Attempt with the provided number
+    confirmationResult.value = await signInWithPhoneNumber(
+      auth,
+      booking.value.phoneNumber,
+      verifier
+    );
+
     Swal.fire({
       icon: "info",
       title: "OTP Sent",
@@ -948,19 +945,28 @@ const submitBooking = async () => {
       confirmButtonText: "OK",
     });
 
-    // Show OTP form
     showOTPForm.value = true;
 
-    // Auto-fill OTP after 2 seconds
+    // Optional: Auto-fill with a fake OTP for testing (remove in production)
     setTimeout(() => {
-      booking.value.otp = "123456";
+      booking.value.otp = "123456"; // Matches test code if added
     }, 2000);
   } catch (error) {
-    console.error("Error initiating booking:", error);
+    console.error("Error initiating booking:", {
+      code: error.code,
+      message: error.message,
+      stack: error.stack,
+      details: error.details,
+    });
+    if (error.code === "auth/invalid-app-credential") {
+      console.warn(
+        "Credential issue detected. Consider upgrading to Blaze plan or adding the number as a test number."
+      );
+    }
     Swal.fire({
       icon: "error",
       title: "Error",
-      text: `Failed to initiate booking: ${error.message}`,
+      text: `Failed to send OTP: ${error.message}. Check console for details.`,
       confirmButtonText: "OK",
     });
   }
@@ -968,18 +974,20 @@ const submitBooking = async () => {
 
 const verifyOTP = async () => {
   try {
-    // Simulate OTP verification (in a real app, this would verify with the payment provider)
-    if (booking.value.otp !== "123456") {
+    if (!confirmationResult.value) {
       Swal.fire({
         icon: "warning",
-        title: "Invalid OTP",
-        text: "Please enter a valid 6-digit OTP.",
+        title: "Invalid State",
+        text: "Please request an OTP first.",
         confirmButtonText: "OK",
       });
       return;
     }
 
-    // Proceed with booking after OTP verification
+    // Verify the OTP
+    const userCredential = await confirmationResult.value.confirm(booking.value.otp);
+
+    // Proceed with booking after successful OTP verification
     const start = new Date(booking.value.startDate);
     const end = new Date(booking.value.endDate);
     const diffTime = Math.ceil((end - start) / (1000 * 60 * 60 * 24));
