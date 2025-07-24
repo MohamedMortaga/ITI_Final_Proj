@@ -69,19 +69,27 @@ function toggleChat() {
   width: 50px;
   height: 50px;
   border-radius: 50%;
-  background: #145a32;
-  color: #f7ca18;
-  border: none;
+  background: var(--Color-Surface-Surface-Primary);
+  color: var(--Color-Text-Text-Brand);
+  border: 2px solid var(--Color-Text-Text-Brand);
   display: flex;
   align-items: center;
   justify-content: center;
   cursor: pointer;
-  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.3);
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.10);
   z-index: 1000;
-  transition: background 0.2s;
+  transition: background 0.2s, color 0.2s, border 0.2s;
+}
+.chat-toggle-btn svg {
+  stroke: var(--Color-Text-Text-Brand);
+  transition: stroke 0.2s;
 }
 .chat-toggle-btn:hover {
-  background: #f7ca18;
-  color: #222;
+  background: var(--Color-Text-Text-Brand);
+  color: var(--Color-Text-Text-Invert);
+  border-color: var(--Color-Text-Text-Brand);
+}
+.chat-toggle-btn:hover svg {
+  stroke: var(--Color-Text-Text-Invert);
 }
 </style>
