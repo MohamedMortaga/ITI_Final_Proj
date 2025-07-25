@@ -233,7 +233,7 @@ import {
   uploadBytes,
   getDownloadURL,
 } from "firebase/storage";
-import { getFirestore, doc, setDoc } from "firebase/firestore";
+import { getFirestore, doc, setDoc, getDoc } from "firebase/firestore";
 import useLogin from "../composables/useLogin";
 import Swal from "sweetalert2";
 
@@ -246,7 +246,7 @@ export default {
     const rememberMe = ref(false);
     const isModalOpen = ref(false);
     const resetEmail = ref("");
-    const userImage = ref(null); // For custom image upload
+    const userImage = ref(null);
     const { login, loginWithGoogle, loginWithFacebook, error, userName } = useLogin();
     const router = useRouter();
     const auth = getAuth();
@@ -280,6 +280,35 @@ export default {
       userImage.value = event.target.files[0];
     };
 
+    const updateUserDoc = async (userCredential, defaultDisplayName) => {
+      let imageUrl = userCredential.photoURL || "";
+      if (userImage.value) {
+        const storageReference = storageRef(
+          storage,
+          `users/${userCredential.uid}/profile.jpg`
+        );
+        await uploadBytes(storageReference, userImage.value);
+        imageUrl = await getDownloadURL(storageReference);
+      }
+
+      // Fetch existing user document to preserve role
+      const userDocRef = doc(db, "users", userCredential.uid);
+      const userDoc = await getDoc(userDocRef);
+      const existingRole = userDoc.exists() ? userDoc.data().role : "user";
+
+      await setDoc(
+        userDocRef,
+        {
+          email: userCredential.email.toLowerCase(),
+          displayName: userCredential.displayName || defaultDisplayName,
+          role: existingRole, // Preserve existing role or set to "user" for new users
+          createdAt: new Date().toISOString(),
+          imageUrl: imageUrl,
+        },
+        { merge: true }
+      );
+    };
+
     const handleSubmit = async () => {
       if (rememberMe.value) {
         localStorage.setItem("rememberedEmail", email.value);
@@ -292,28 +321,7 @@ export default {
       const userCredential = await login(email.value, password.value);
       if (!error.value && userCredential) {
         if (userCredential.emailVerified) {
-          let imageUrl = "";
-          if (userImage.value) {
-            const storageReference = storageRef(
-              storage,
-              `users/${userCredential.uid}/profile.jpg`
-            );
-            await uploadBytes(storageReference, userImage.value);
-            imageUrl = await getDownloadURL(storageReference);
-          }
-
-          await setDoc(
-            doc(db, "users", userCredential.uid),
-            {
-              email: userCredential.email,
-              displayName: userCredential.displayName || "sama ebrahim",
-              role: "user",
-              createdAt: new Date().toISOString(),
-              imageUrl: imageUrl,
-            },
-            { merge: true }
-          );
-
+          await updateUserDoc(userCredential, "sama ebrahim");
           Swal.fire({
             title: i18n.t("loginSuccessful"),
             icon: "success",
@@ -354,28 +362,7 @@ export default {
       }
       if (!error.value && userCredential) {
         if (userCredential.emailVerified) {
-          let imageUrl = userCredential.photoURL || "";
-          if (userImage.value) {
-            const storageReference = storageRef(
-              storage,
-              `users/${userCredential.uid}/profile.jpg`
-            );
-            await uploadBytes(storageReference, userImage.value);
-            imageUrl = await getDownloadURL(storageReference);
-          }
-
-          await setDoc(
-            doc(db, "users", userCredential.uid),
-            {
-              email: userCredential.email.toLowerCase(),
-              displayName: userCredential.displayName || "Google User",
-              role: "user",
-              createdAt: new Date().toISOString(),
-              imageUrl: imageUrl,
-            },
-            { merge: true }
-          );
-
+          await updateUserDoc(userCredential, "Google User");
           Swal.fire({
             title: i18n.t("loginGoogleSuccessful"),
             icon: "success",
@@ -406,28 +393,7 @@ export default {
       const userCredential = await loginWithFacebook();
       if (!error.value && userCredential) {
         if (userCredential.emailVerified) {
-          let imageUrl = "";
-          if (userImage.value) {
-            const storageReference = storageRef(
-              storage,
-              `users/${userCredential.uid}/profile.jpg`
-            );
-            await uploadBytes(storageReference, userImage.value);
-            imageUrl = await getDownloadURL(storageReference);
-          }
-
-          await setDoc(
-            doc(db, "users", userCredential.uid),
-            {
-              email: userCredential.email,
-              displayName: userCredential.displayName || "Facebook User",
-              role: "user",
-              createdAt: new Date().toISOString(),
-              imageUrl: imageUrl,
-            },
-            { merge: true }
-          );
-
+          await updateUserDoc(userCredential, "Facebook User");
           Swal.fire({
             title: i18n.t("loginFacebookSuccessful"),
             icon: "success",

@@ -1,5 +1,5 @@
 <template>
-   <!-- <TopBar
+  <!-- <TopBar
   title="All Products"
   searchPlaceholder="Search Products?"
   @update:search="handleSearch"
@@ -7,31 +7,29 @@
   @filter="handleFilter"
 /> -->
 
-     
-    <ProductsTable :products="filteredProducts" />
-  
+  <ProductsTable :products="filteredProducts" />
 </template>
 
 <script setup>
-import { ref, computed } from 'vue'
+import { ref, computed } from "vue";
 // import AdminLayout from '@/layouts/AdminLayout.vue'
 // import TopBar from '@/components/admin/TopBar.vue'
-import ProductsTable from '@/components/admin/ProductsTable.vue'
+import ProductsTable from "@/components/admin/ProductsTable.vue";
 
 // Example: Replace with your real fetch logic
 const products = ref([
-  { id: 1, name: 'Banana' },
-  { id: 2, name: 'Apple' },
-  { id: 3, name: 'Orange' }
-])
+  { id: 1, name: "Banana" },
+  { id: 2, name: "Apple" },
+  { id: 3, name: "Orange" },
+]);
 
-const sortOption = ref('Name A → Z');
+const sortOption = ref("Name A → Z");
 
 const filteredProducts = computed(() => {
   let filtered = products.value;
   // ...search/filter logic...
   filtered = [...filtered].sort((a, b) => {
-    if (sortOption.value === 'Name A → Z') {
+    if (sortOption.value === "Name A → Z") {
       return a.name.localeCompare(b.name);
     } else {
       return b.name.localeCompare(a.name);

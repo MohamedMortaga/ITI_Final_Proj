@@ -2,7 +2,7 @@ import { ref } from 'vue';
 import { getAuth, signInWithEmailAndPassword, signInWithPopup, signOut } from 'firebase/auth';
 import { auth, googleProvider, db } from '@/firebase/config';
 import { FacebookAuthProvider } from 'firebase/auth';
-import { doc, setDoc } from 'firebase/firestore';
+import { doc, setDoc, getDoc } from 'firebase/firestore';
 import Swal from 'sweetalert2';
 
 const error = ref(null);
@@ -10,6 +10,21 @@ const userName = ref(null);
 
 // Initialize Facebook provider
 const facebookProvider = new FacebookAuthProvider();
+
+const updateUserDoc = async (user, defaultDisplayName, defaultImageUrl = '') => {
+  // Fetch existing user document to preserve role
+  const userDocRef = doc(db, 'users', user.uid);
+  const userDoc = await getDoc(userDocRef);
+  const existingRole = userDoc.exists() ? userDoc.data().role : 'user';
+
+  await setDoc(userDocRef, {
+    email: user.email.toLowerCase(),
+    displayName: user.displayName || defaultDisplayName,
+    role: existingRole, // Preserve existing role or set to "user" for new users
+    createdAt: new Date().toISOString(),
+    imageUrl: user.photoURL || defaultImageUrl, // Use provided or default image URL
+  }, { merge: true });
+};
 
 const login = async (email, password) => {
   error.value = null;
@@ -32,17 +47,9 @@ const login = async (email, password) => {
       return null;
     }
 
+    await updateUserDoc(user, 'User', '');
     userName.value = user.displayName || 'User';
     console.log('Logged in:', user.displayName);
-
-    await setDoc(doc(db, 'users', user.uid), {
-      email: user.email.toLowerCase(),
-      displayName: user.displayName || 'User',
-      role: 'user',
-      createdAt: new Date(),
-      imageUrl: '' // No image for email/password login by default
-    }, { merge: true });
-
     return user;
   } catch (err) {
     error.value = err.message;
@@ -83,14 +90,7 @@ const loginWithGoogle = async () => {
       return null;
     }
 
-    await setDoc(doc(db, 'users', user.uid), {
-      email: user.email.toLowerCase(),
-      displayName: user.displayName || 'Google User',
-      role: 'user',
-      createdAt: new Date(),
-      imageUrl: user.photoURL || '' // Save Google profile image URL
-    }, { merge: true });
-
+    await updateUserDoc(user, 'Google User', user.photoURL || '');
     userName.value = user.displayName || 'Google User';
     console.log('Signed in as:', user.displayName);
     return user;
@@ -106,7 +106,7 @@ const loginWithGoogle = async () => {
     });
     console.error('Google sign-in error:', err.message);
     return null;
-  };
+  }
 };
 
 const loginWithFacebook = async () => {
@@ -133,14 +133,7 @@ const loginWithFacebook = async () => {
       return null;
     }
 
-    await setDoc(doc(db, 'users', user.uid), {
-      email: user.email.toLowerCase(),
-      displayName: user.displayName || 'Facebook User',
-      role: 'user',
-      createdAt: new Date(),
-      imageUrl: user.photoURL || '' // Save Facebook profile image URL if available
-    }, { merge: true });
-
+    await updateUserDoc(user, 'Facebook User', user.photoURL || '');
     userName.value = user.displayName || 'Facebook User';
     console.log('Logged in with Facebook:', user.displayName);
     return user;

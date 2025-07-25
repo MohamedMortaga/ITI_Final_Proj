@@ -12,9 +12,8 @@
 </template>
 
 <script setup>
-import AdminSidebar from '@/components/admin/AdminSidebar.vue';
-import AdminHeader from '@/components/admin/AdminHeader.vue';
+import AdminSidebar from "@/components/admin/AdminSidebar.vue";
+import AdminHeader from "@/components/admin/AdminHeader.vue";
 </script>
 
-<style scoped>
-</style>
+<style scoped></style>
