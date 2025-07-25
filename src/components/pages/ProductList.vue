@@ -2,12 +2,12 @@
   <div v-if="products.length" class="space-y-4">
     <!-- Header Row -->
     <div>
-      <div class="hidden lg:grid grid-cols-9 gap-8 px-6 py-3 bg-[var(--Color-Surface-Surface-Primary)] dark:bg-[var(--Color-Surface-Surface-Primary)] rounded-xl font-semibold text-[var(--Color-Text-Text-Primary)] text-base">
+      <div class="hidden lg:grid grid-cols-8 gap-8 px-6 py-3 bg-[var(--Color-Surface-Surface-Primary)] dark:bg-[var(--Color-Surface-Surface-Primary)] rounded-xl font-semibold text-[var(--Color-Text-Text-Primary)] text-base">
         <div>{{$t('image') || 'Image'}}</div>
         <div>{{$t('productTitlePlaceholder')}}</div>
         <div>{{$t('category') || 'Category'}}</div>
         <div>{{$t('price')}}</div>
-        <div>{{$t('details')}}</div>
+        <!-- <div>{{$t('details')}}</div> -->
         <div>{{$t('status') || 'Status'}}</div>
         <div>{{$t('uploaded') || 'Uploaded'}}</div>
         <div>{{$t('owner')}}</div>
@@ -83,7 +83,7 @@
     <div
       v-for="product in products"
       :key="product.id"
-      class="hidden lg:grid grid-cols-9 gap-4 items-center bg-[var(--Color-Surface-Surface-Primary)] dark:bg-[var(--Color-Surface-Surface-Primary)] border border-[var(--Color-Boarder-Border-Primary)] rounded-xl shadow-sm px-6 py-4"
+      class="hidden lg:grid grid-cols-8 gap-4 items-center bg-[var(--Color-Surface-Surface-Primary)] dark:bg-[var(--Color-Surface-Surface-Primary)] border border-[var(--Color-Boarder-Border-Primary)] rounded-xl shadow-sm px-6 py-4"
     >
       <!-- Image -->
       <div>
@@ -111,7 +111,7 @@
         </span>
       </div>
       <!-- Details -->
-      <div class="text-[var(--Color-Text-Text-Primary)] dark:text-[var(--Color-Text-Text-Primary)]  font-nunito">{{ product.details }}</div>
+      <!-- <div class="text-[var(--Color-Text-Text-Primary)] dark:text-[var(--Color-Text-Text-Primary)]  font-nunito">{{ product.details }}</div> -->
       <!-- Status -->
       <div>
         <span

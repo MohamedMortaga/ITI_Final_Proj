@@ -212,5 +212,20 @@
   "haveSomethingToShare": "هل لديك شيء لمشاركته؟",
   "startRentingItOut": "ابدأ بتأجيره الآن!",
   "shareBannerDescription": "هل لديك أدوات أو كاميرات أو معدات لا تستخدمها يوميًا؟ لا تدعها تتراكم وتجمع الغبار — حوّلها إلى دخل إضافي مع رينتو. منصتنا تسهّل عليك مشاركة ما تملكه مع من يحتاجه، سواء ليوم أو لعطلة نهاية الأسبوع أو لفترة أطول.",
-  "listYourItemNow": "أضف منتجك الآن"
+  "listYourItemNow": "أضف منتجك الآن",
+  "welcome": "مرحباً",
+  "personalInfo": "المعلومات الشخصية",
+  "firstName": "الاسم الأول",
+  "lastName": "اسم العائلة",
+  "emailAddress": "البريد الإلكتروني",
+  "phone": "الهاتف",
+  "address": "العنوان",
+  "city": "المدينة",
+  "district": "الحي",
+  "yourBalance": "رصيدك",
+  "yourIncome": "دخلك",
+  "serviceFee": "رسوم الخدمة",
+  "totalProfit": "إجمالي الربح",
+  "profitOfItems": "ربح العناصر",
+  "pricePerDay": "السعر لكل يوم"
 }
