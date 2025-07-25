@@ -15,7 +15,9 @@
           class="mb-6"
           :class="i18n.locale.value === 'ar' ? 'text-right' : 'text-left'"
         >
-          <h1 class="text-3xl font-bold text-[var(--Color-Text-Text-Brand)] dark:text-[var(--Color-Text-Text-Brand)] lg:text-3xl xl:text-4xl">
+          <h1
+            class="text-3xl font-bold text-[var(--Color-Text-Text-Brand)] dark:text-[var(--Color-Text-Text-Brand)] lg:text-3xl xl:text-4xl"
+          >
             {{ $t("rento") }}
           </h1>
         </div>
@@ -25,7 +27,10 @@
         </h2>
         <p class="text-gray-600 mb-6 lg:text-base xl:text-lg dark:text-gray-300">
           {{ $t("registerHere") }}<br />
-          <router-link to="/Signup" class="text-[var(--Color-Text-Text-Brand)] font-semibold">
+          <router-link
+            to="/Signup"
+            class="text-[var(--Color-Text-Text-Brand)] font-semibold"
+          >
             {{ $t("signUp") }}
           </router-link>
         </p>
@@ -149,6 +154,7 @@
           loading="lazy"
         />
       </div>
+
       <!-- Forgot Password Modal -->
       <div
         v-if="isModalOpen"
@@ -221,6 +227,13 @@ import {
   onAuthStateChanged,
   signOut,
 } from "firebase/auth";
+import {
+  getStorage,
+  ref as storageRef,
+  uploadBytes,
+  getDownloadURL,
+} from "firebase/storage";
+import { getFirestore, doc, setDoc } from "firebase/firestore";
 import useLogin from "../composables/useLogin";
 import Swal from "sweetalert2";
 
@@ -233,10 +246,13 @@ export default {
     const rememberMe = ref(false);
     const isModalOpen = ref(false);
     const resetEmail = ref("");
-    const { login, loginWithGoogle, error, userName } = useLogin();
+    const userImage = ref(null); // For custom image upload
+    const { login, loginWithGoogle, loginWithFacebook, error, userName } = useLogin();
     const router = useRouter();
     const auth = getAuth();
     const i18n = useI18n();
+    const storage = getStorage();
+    const db = getFirestore();
 
     onMounted(() => {
       const savedEmail = localStorage.getItem("rememberedEmail");
@@ -260,6 +276,10 @@ export default {
       });
     });
 
+    const handleImageUpload = (event) => {
+      userImage.value = event.target.files[0];
+    };
+
     const handleSubmit = async () => {
       if (rememberMe.value) {
         localStorage.setItem("rememberedEmail", email.value);
@@ -269,9 +289,31 @@ export default {
         localStorage.removeItem("rememberedPassword");
       }
 
-      const user = await login(email.value, password.value);
-      if (!error.value && user) {
-        if (user.emailVerified) {
+      const userCredential = await login(email.value, password.value);
+      if (!error.value && userCredential) {
+        if (userCredential.emailVerified) {
+          let imageUrl = "";
+          if (userImage.value) {
+            const storageReference = storageRef(
+              storage,
+              `users/${userCredential.uid}/profile.jpg`
+            );
+            await uploadBytes(storageReference, userImage.value);
+            imageUrl = await getDownloadURL(storageReference);
+          }
+
+          await setDoc(
+            doc(db, "users", userCredential.uid),
+            {
+              email: userCredential.email,
+              displayName: userCredential.displayName || "sama ebrahim",
+              role: "user",
+              createdAt: new Date().toISOString(),
+              imageUrl: imageUrl,
+            },
+            { merge: true }
+          );
+
           Swal.fire({
             title: i18n.t("loginSuccessful"),
             icon: "success",
@@ -299,11 +341,95 @@ export default {
     };
 
     const handleGoogleLogin = async () => {
-      const user = await loginWithGoogle();
-      if (!error.value && user) {
-        if (user.emailVerified) {
+      const userCredential = await loginWithGoogle();
+      if (!userCredential) {
+        Swal.fire({
+          position: "top-end",
+          icon: "error",
+          title: i18n.t("error") + ": Failed to authenticate with Google",
+          showConfirmButton: false,
+          timer: 1500,
+        });
+        return;
+      }
+      if (!error.value && userCredential) {
+        if (userCredential.emailVerified) {
+          let imageUrl = userCredential.photoURL || "";
+          if (userImage.value) {
+            const storageReference = storageRef(
+              storage,
+              `users/${userCredential.uid}/profile.jpg`
+            );
+            await uploadBytes(storageReference, userImage.value);
+            imageUrl = await getDownloadURL(storageReference);
+          }
+
+          await setDoc(
+            doc(db, "users", userCredential.uid),
+            {
+              email: userCredential.email.toLowerCase(),
+              displayName: userCredential.displayName || "Google User",
+              role: "user",
+              createdAt: new Date().toISOString(),
+              imageUrl: imageUrl,
+            },
+            { merge: true }
+          );
+
           Swal.fire({
             title: i18n.t("loginGoogleSuccessful"),
+            icon: "success",
+            draggable: true,
+          });
+          router.push({ name: "HomePage" });
+        } else {
+          await signOut(auth);
+          Swal.fire({
+            icon: "warning",
+            title: i18n.t("emailVerificationRequired"),
+            text: i18n.t("verifyEmailToLogin"),
+            showConfirmButton: true,
+          });
+        }
+      } else {
+        Swal.fire({
+          position: "top-end",
+          icon: "error",
+          title: `${i18n.t("error")}: ${error.value}`,
+          showConfirmButton: false,
+          timer: 1500,
+        });
+      }
+    };
+
+    const handleFacebookLogin = async () => {
+      const userCredential = await loginWithFacebook();
+      if (!error.value && userCredential) {
+        if (userCredential.emailVerified) {
+          let imageUrl = "";
+          if (userImage.value) {
+            const storageReference = storageRef(
+              storage,
+              `users/${userCredential.uid}/profile.jpg`
+            );
+            await uploadBytes(storageReference, userImage.value);
+            imageUrl = await getDownloadURL(storageReference);
+          }
+
+          await setDoc(
+            doc(db, "users", userCredential.uid),
+            {
+              email: userCredential.email,
+              displayName: userCredential.displayName || "Facebook User",
+              role: "user",
+              createdAt: new Date().toISOString(),
+              imageUrl: imageUrl,
+            },
+            { merge: true }
+          );
+
+          Swal.fire({
+            title: i18n.t("loginFacebookSuccessful"),
             icon: "success",
             draggable: true,
           });
@@ -380,8 +506,11 @@ export default {
       passwordVisible,
       isModalOpen,
       resetEmail,
+      userImage,
+      handleImageUpload,
       handleSubmit,
       handleGoogleLogin,
+      handleFacebookLogin,
       showForgotPasswordModal,
       handleForgotPassword,
       togglePasswordVisibility,

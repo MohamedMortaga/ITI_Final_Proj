@@ -116,9 +116,9 @@
           </h3>
           <div class="flex items-center gap-4 mt-2">
             <img
-              :src="booking.sellerImage || 'https://via.placeholder.com/40'"
+              :src="booking.sellerImage || require('@/assets/default.png')"
               alt="Owner"
-              class="w-10 h-10 rounded-full"
+              class="w-10 h-10 rounded-full object-cover"
             />
             <div>
               <p class="text-[var(--color-gray-800)] dark:text-[var(--color-gray-200)]">
@@ -265,8 +265,8 @@
               v-model="booking.phoneNumber"
               type="tel"
               class="w-full p-2 rounded-lg bg-[var(--color-gray-100)] dark:bg-[var(--color-gray-700)] border border-[var(--color-success-200)]"
-              placeholder="+201XXXXXXXXX"
-              pattern="\+20(10|11|12|15)[0-9]{8}"
+              placeholder="+2010XXXXXXXX"
+              pattern="^\+20[0-9]{10}$"
               required
             />
           </div>
@@ -586,6 +586,7 @@
     </div>
 
     <!-- More from Owner -->
+
     <div
       v-if="product"
       class="mt-6 max-w-4xl mx-auto p-6 bg-[var(--color-gray-25)] dark:bg-[var(--color-gray-800)] rounded-2xl shadow-xl border border-[var(--color-success-200)]"
@@ -597,13 +598,13 @@
       </h3>
       <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
         <div
-          v-for="item in randomProducts"
+          v-for="item in showAllProducts ? ownerProducts : ownerProducts.slice(0, 2)"
           :key="item.id"
           class="bg-[var(--Color-Surface-Surface-Tertiary)] border border-[var(--Color-Boarder-Border-Primary)] rounded-xl shadow-sm flex flex-col transition hover:shadow-lg"
           :class="{ 'dir-rtl': $i18n.locale === 'ar' }"
         >
           <img
-            :src="item.imagePath || require('@/assets/test.png')"
+            :src="item.img || require('@/assets/test.png')"
             alt="product image"
             class="w-full h-40 object-cover rounded-t-xl"
           />
@@ -642,23 +643,23 @@
               </div>
             </div>
             <div class="mt-4">
-              <router-link
-                :to="{ name: 'ProductDetails', params: { id: item.id || '' } }"
+              <button
+                @click="navigateToProduct(item.id)"
                 class="rounded-xl block w-full text-center bg-[var(--Color-Surface-Surface-Brand)] text-[var(--Color-Text-Text-Invert)] px-4 py-2 rounded font-semibold text-sm transition hover:bg-[var(--Color-Text-Text-Brand)] hover:text-white"
                 :aria-label="`View details for ${item.title || 'Untitled'}`"
               >
                 {{ $t("rentItem") }}
-              </router-link>
+              </button>
             </div>
           </div>
         </div>
       </div>
-      <router-link
-        to="/all-products"
+      <button
+        @click="showAllProducts = !showAllProducts"
         class="mt-4 text-[var(--color-success-500)] text-sm dark:text-[var(--color-success-300)] hover:underline"
       >
-        {{ $t("viewAllItems") }}
-      </router-link>
+        {{ showAllProducts ? $t("showLess") : $t("viewAllItems") }}
+      </button>
     </div>
 
     <div
@@ -675,10 +676,10 @@
     </router-link>
   </div>
 </template>
-
 <script setup>
 import { onMounted, ref, watch, computed, nextTick } from "vue";
 import { useRoute, useRouter } from "vue-router";
+import { useI18n } from "vue-i18n"; // Import useI18n
 import {
   doc,
   getDoc,
@@ -693,6 +694,9 @@ import {
 import { db, auth } from "@/firebase/config";
 import Swal from "sweetalert2";
 
+// Initialize i18n
+const { t } = useI18n(); // Use useI18n to get the t function
+const showAllProducts = ref(false);
 const route = useRoute();
 const router = useRouter();
 const product = ref(null);
@@ -701,6 +705,7 @@ const showReviewForm = ref(false);
 const showWebsiteReviewForm = ref(false);
 const showOTPForm = ref(false);
 const reviews = ref([]);
+const ownerProducts = ref([]);
 const booking = ref({
   deliveryAddress: "30.0459°N, 31.2357°E",
   deliveryFee: 0,
@@ -739,11 +744,10 @@ const newWebsiteReview = ref({
   userName: "",
   userImage: "",
 });
-const randomProducts = ref([]);
 
-// Current date handling (updated to 07:53 PM EEST, Thursday, July 24, 2025)
-const today = ref(new Date("2025-07-24T16:53:00Z")); // UTC time adjusted to EEST (UTC+3)
-const currentDate = ref(new Date("2025-07-24T16:53:00Z"));
+// Current date handling
+const today = ref(new Date());
+const currentDate = ref(new Date());
 
 // Computed properties for dynamic calendar
 const currentMonthYear = computed(() => {
@@ -797,7 +801,7 @@ const loadProduct = async () => {
       booking.value.productTitle = product.value.title;
       booking.value.productPrice = parseFloat(product.value.price) || 0;
       await loadSellerDetails(booking.value.sellerId);
-      await loadRandomProducts();
+      await loadOwnerProducts(booking.value.sellerId);
     } else {
       console.error("No such product!");
     }
@@ -814,7 +818,7 @@ const loadSellerDetails = async (sellerId) => {
     if (userDocSnap.exists()) {
       const sellerData = userDocSnap.data();
       booking.value.sellerName = sellerData.displayName || "Unknown Seller";
-      booking.value.sellerImage = sellerData.photoURL || "https://via.placeholder.com/40";
+      booking.value.sellerImage = sellerData.imageUrl || "https://via.placeholder.com/40";
       newReview.value.sellerUserId = sellerId;
     } else {
       console.error("No such user!");
@@ -825,6 +829,51 @@ const loadSellerDetails = async (sellerId) => {
     console.error("Error loading seller details:", error);
     booking.value.sellerName = "Unknown Seller";
     booking.value.sellerImage = "https://via.placeholder.com/40";
+  }
+};
+
+const loadOwnerProducts = async (sellerId) => {
+  try {
+    console.log("Loading owner products for sellerId:", sellerId);
+    const productsRef = collection(db, "products");
+    const q = query(productsRef, where("userId", "==", sellerId));
+    const querySnapshot = await getDocs(q);
+    console.log("Query returned", querySnapshot.docs.length, "documents");
+
+    if (querySnapshot.empty) {
+      const fallbackQ = query(
+        productsRef,
+        where("ownerName", "==", booking.value.sellerName)
+      );
+      const fallbackSnapshot = await getDocs(fallbackQ);
+      console.log("Fallback query returned", fallbackSnapshot.docs.length, "documents");
+      ownerProducts.value = fallbackSnapshot.docs
+        .map((doc) => ({
+          id: doc.id,
+          ...doc.data(),
+          title: doc.data().title || "Untitled",
+          img: doc.data().img || require("@/assets/test.png"),
+          location: doc.data().location || t("defaultLocation"), // Use t instead of $t
+          price: doc.data().price || "0",
+          rating: doc.data().rating || "0",
+        }))
+        .filter((product) => product.id !== route.params.id);
+    } else {
+      ownerProducts.value = querySnapshot.docs
+        .map((doc) => ({
+          id: doc.id,
+          ...doc.data(),
+          title: doc.data().title || "Untitled",
+          img: doc.data().img || require("@/assets/test.png"),
+          location: doc.data().location || t("defaultLocation"), // Use t instead of $t
+          price: doc.data().price || "0",
+          rating: doc.data().rating || "0",
+        }))
+        .filter((product) => product.id !== route.params.id);
+    }
+  } catch (error) {
+    console.error("Error loading owner products:", error);
+    ownerProducts.value = [];
   }
 };
 
@@ -961,25 +1010,25 @@ const resetPaymentFields = () => {
 };
 
 const formatCardNumber = (event) => {
-  let value = event.target.value.replace(/\D/g, ""); // Remove non-digits
+  let value = event.target.value.replace(/\D/g, "");
   booking.value.cardNumber = value;
 };
 
 const formatExpiryDate = (event) => {
-  let value = event.target.value.replace(/\D/g, ""); // Remove non-digits
+  let value = event.target.value.replace(/\D/g, "");
   if (value.length >= 2) {
-    value = value.slice(0, 2) + "/" + value.slice(2, 4); // Add slash for display
+    value = value.slice(0, 2) + "/" + value.slice(2, 4);
   }
   booking.value.expiryDate = value;
 };
 
 const formatCvv = (event) => {
-  let value = event.target.value.replace(/\D/g, ""); // Remove non-digits
+  let value = event.target.value.replace(/\D/g, "");
   booking.value.cvv = value;
 };
 
 const formatOtp = (event) => {
-  let value = event.target.value.replace(/\D/g, ""); // Remove non-digits
+  let value = event.target.value.replace(/\D/g, "");
   booking.value.otp = value;
 };
 
@@ -996,7 +1045,7 @@ watch(
         Math.ceil(
           (new Date(booking.value.endDate) - new Date(booking.value.startDate)) /
             (1000 * 60 * 60 * 24)
-        ) + 1; // Add 1 day to include both start and end dates
+        ) + 1;
       const basePrice = diffTime * booking.value.productPrice;
       booking.value.deliveryFee =
         booking.value.deliveryMethod === "delivery" ? basePrice * 0.02 : 0;
@@ -1044,13 +1093,13 @@ const submitBooking = async () => {
     if (
       (booking.value.paymentMethod === "vodafone_cash" ||
         booking.value.paymentMethod === "etisalat_wallet") &&
-      !booking.value.phoneNumber.match(/^\+20[0-2,5][0-9]{8}$/)
+      !booking.value.phoneNumber.match(/^\+20[0-9]{10}$/)
     ) {
       Swal.fire({
         icon: "warning",
         title: "Invalid Phone Number",
         text:
-          "Please enter a valid Egyptian phone number starting with +20 10, +20 11, +20 12, or +20 15.",
+          "Please enter a valid phone number starting with +20 followed by exactly 10 digits.",
         confirmButtonText: "OK",
       });
       return;
@@ -1338,48 +1387,6 @@ const submitWebsiteReview = async () => {
   }
 };
 
-const loadRandomProducts = async () => {
-  try {
-    const productsRef = collection(db, "products");
-    const q = query(productsRef, where("sellerId", "==", booking.value.sellerId));
-    const querySnapshot = await getDocs(q);
-    const sellerProducts = querySnapshot.docs
-      .map((doc) => ({ id: doc.id, ...doc.data() }))
-      .filter((p) => p.id !== route.params.id); // Exclude current product
-
-    // Shuffle array and select up to 2 random products
-    const shuffled = sellerProducts.sort(() => 0.5 - Math.random());
-    randomProducts.value = shuffled.slice(0, 2).map((item) => ({
-      id: item.id,
-      title: item.title || "Untitled",
-      price: item.price || "0",
-      rating: item.rating || "0",
-      location: item.location || "Unknown Location",
-      imagePath: item.img || "https://via.placeholder.com/100",
-    }));
-  } catch (error) {
-    console.error("Error loading random products:", error);
-    randomProducts.value = [
-      {
-        id: "placeholder1",
-        title: "Untitled",
-        price: "0",
-        rating: "0",
-        location: "Unknown Location",
-        imagePath: "https://via.placeholder.com/100",
-      },
-      {
-        id: "placeholder2",
-        title: "Untitled",
-        price: "0",
-        rating: "0",
-        location: "Unknown Location",
-        imagePath: "https://via.placeholder.com/100",
-      },
-    ];
-  }
-};
-
 const navigateToRentProcess = () => {
   console.log("navigateToRentProcess triggered");
   if (!auth.currentUser) {
@@ -1398,7 +1405,21 @@ const navigateToRentProcess = () => {
 };
 
 const navigateToProduct = (productId) => {
-  router.push(`/product/${productId}`);
+  if (route.params.id === productId) {
+    // If already on the same product, reload the page
+    window.location.href = `/product/${productId}`;
+  } else {
+    // Navigate to new product and ensure component reloads
+    router
+      .push(`/product/${productId}`)
+      .then(() => {
+        // Force reload to ensure component re-renders with new data
+        window.location.reload();
+      })
+      .catch((err) => {
+        console.error("Navigation error:", err);
+      });
+  }
 };
 
 const selectedDates = ref({ start: null, end: null });
@@ -1406,8 +1427,8 @@ const selectedDates = ref({ start: null, end: null });
 onMounted(() => {
   loadProduct();
   loadReviews();
-  today.value = new Date("2025-07-24T16:53:00Z"); // Updated to 07:53 PM EEST (UTC+3)
-  today.value.setHours(0, 0, 0, 0); // Reset to start of day for past date check
-  console.log("Auth state on mount:", auth.currentUser); // Debug auth state
+  today.value = new Date();
+  today.value.setHours(0, 0, 0, 0);
+  console.log("Auth state on mount:", auth.currentUser);
 });
 </script>

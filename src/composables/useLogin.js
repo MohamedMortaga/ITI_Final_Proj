@@ -1,14 +1,14 @@
 import { ref } from 'vue';
 import { getAuth, signInWithEmailAndPassword, signInWithPopup, signOut } from 'firebase/auth';
-import { auth, googleProvider } from '@/firebase/config';
+import { auth, googleProvider, db } from '@/firebase/config';
 import { FacebookAuthProvider } from 'firebase/auth';
 import { doc, setDoc } from 'firebase/firestore';
-import { db } from '@/firebase/config';
 import Swal from 'sweetalert2';
 
 const error = ref(null);
 const userName = ref(null);
 
+// Initialize Facebook provider
 const facebookProvider = new FacebookAuthProvider();
 
 const login = async (email, password) => {
@@ -19,7 +19,6 @@ const login = async (email, password) => {
     if (!user) throw new Error('Login failed');
 
     if (!user.emailVerified) {
-      // Sign out unverified user
       await signOut(auth);
       error.value = 'Email not verified. Please check your inbox for the verification email.';
       Swal.fire({
@@ -35,6 +34,15 @@ const login = async (email, password) => {
 
     userName.value = user.displayName || 'User';
     console.log('Logged in:', user.displayName);
+
+    await setDoc(doc(db, 'users', user.uid), {
+      email: user.email.toLowerCase(),
+      displayName: user.displayName || 'User',
+      role: 'user',
+      createdAt: new Date(),
+      imageUrl: '' // No image for email/password login by default
+    }, { merge: true });
+
     return user;
   } catch (err) {
     error.value = err.message;
@@ -54,11 +62,13 @@ const login = async (email, password) => {
 const loginWithGoogle = async () => {
   error.value = null;
   try {
+    if (!googleProvider) {
+      throw new Error('Google Provider is not initialized. Check firebase/config.js');
+    }
     const result = await signInWithPopup(auth, googleProvider);
     const user = result.user;
     if (!user) throw new Error('Google login failed');
 
-    // Google accounts are typically verified, but check for consistency
     if (!user.emailVerified) {
       await signOut(auth);
       error.value = 'Email not verified. Please check your inbox for the verification email.';
@@ -73,13 +83,13 @@ const loginWithGoogle = async () => {
       return null;
     }
 
-    // Store user data in Firestore with lowercase email
     await setDoc(doc(db, 'users', user.uid), {
       email: user.email.toLowerCase(),
       displayName: user.displayName || 'Google User',
       role: 'user',
       createdAt: new Date(),
-    }, { merge: true }); // Use merge to avoid overwriting existing user data
+      imageUrl: user.photoURL || '' // Save Google profile image URL
+    }, { merge: true });
 
     userName.value = user.displayName || 'Google User';
     console.log('Signed in as:', user.displayName);
@@ -96,17 +106,19 @@ const loginWithGoogle = async () => {
     });
     console.error('Google sign-in error:', err.message);
     return null;
-  }
+  };
 };
 
 const loginWithFacebook = async () => {
   error.value = null;
   try {
+    if (!facebookProvider) {
+      throw new Error('Facebook Provider is not initialized. Check firebase/config.js');
+    }
     const result = await signInWithPopup(auth, facebookProvider);
     const user = result.user;
     if (!user) throw new Error('Facebook login failed');
 
-    // Check email verification for consistency
     if (!user.emailVerified) {
       await signOut(auth);
       error.value = 'Email not verified. Please check your inbox for the verification email.';
@@ -120,6 +132,14 @@ const loginWithFacebook = async () => {
       });
       return null;
     }
+
+    await setDoc(doc(db, 'users', user.uid), {
+      email: user.email.toLowerCase(),
+      displayName: user.displayName || 'Facebook User',
+      role: 'user',
+      createdAt: new Date(),
+      imageUrl: user.photoURL || '' // Save Facebook profile image URL if available
+    }, { merge: true });
 
     userName.value = user.displayName || 'Facebook User';
     console.log('Logged in with Facebook:', user.displayName);

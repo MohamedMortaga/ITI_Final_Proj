@@ -206,5 +206,6 @@
   "enterPassword": "Enter your password",
   "confirmPassword": "Confirm Password",
   "ContinueWith": "Continue With",
-  "Your Items": "Your Items"
+  "Your Items": "Your Items",
+  "defaultLocation": "Unknown Location"
 }

@@ -206,5 +206,6 @@
   "enterPassword": "أدخل كلمة المرور الخاصة بك",
   "confirmPassword": "تأكيد كلمة المرور",
   "ContinueWith": "متابعة مع",
-  "Your Items": "منتجاتك"
+  "Your Items": "منتجاتك",
+  "defaultLocation": "موقع غير معروف"
 }
