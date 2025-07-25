@@ -118,64 +118,27 @@
     >
       <div class="flex flex-col items-center">
         <span
-          class="inline-flex items-center justify-center w-12 h-12 mb-2 rounded-full bg-[var(--Color-Surface-Surface-Primary)] dark:bg-[var(--Color-Surface-Surface-Invert)] border border-[var(--Color-Boarder-Border-Primary)]"
+          class="inline-flex items-center justify-center w-12 h-12 mb-2 rounded-full bg-[var(--Color-Surface-Surface-Primary)] border border-[var(--Color-Boarder-Border-Primary)]"
         >
-          <svg
-            class="w-6 h-6 text-[var(--Color-Text-Text-Brand)]"
-            fill="none"
-            stroke="currentColor"
-            stroke-width="2"
-            viewBox="0 0 24 24"
-          >
-            <path
-              stroke-linecap="round"
-              stroke-linejoin="round"
-              d="M16 12v1a4 4 0 01-8 0v-1m8 0V8a4 4 0 00-8 0v4m8 0H8"
-            ></path>
-          </svg>
+          <img src="@/assets/Message.svg" alt="Email" class="w-6 h-6" />
         </span>
         <p class="text-[var(--Color-Text-Text-Secondary)]">Email</p>
         <p class="font-bold text-[var(--Color-Text-Text-Brand)]">support@example.com</p>
       </div>
       <div class="flex flex-col items-center">
         <span
-          class="inline-flex items-center justify-center w-12 h-12 mb-2 rounded-full bg-[var(--Color-Surface-Surface-Primary)] dark:bg-[var(--Color-Surface-Surface-Invert)] border border-[var(--Color-Boarder-Border-Primary)]"
+          class="inline-flex items-center justify-center w-12 h-12 mb-2 rounded-full bg-[var(--Color-Surface-Surface-Primary)] border border-[var(--Color-Boarder-Border-Primary)]"
         >
-          <svg
-            class="w-6 h-6 text-[var(--Color-Text-Text-Brand)]"
-            fill="none"
-            stroke="currentColor"
-            stroke-width="2"
-            viewBox="0 0 24 24"
-          >
-            <path
-              stroke-linecap="round"
-              stroke-linejoin="round"
-              d="M3 5a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H5a2 2 0 01-2-2V5zm0 8a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H5a2 2 0 01-2-2v-2zm8-8a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V5zm0 8a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z"
-            ></path>
-          </svg>
+          <img src="@/assets/Phone.svg" alt="Phone" class="w-6 h-6" />
         </span>
         <p class="text-[var(--Color-Text-Text-Secondary)]">Phone</p>
         <p class="font-bold text-[var(--Color-Text-Text-Brand)]">+1 234 567 890</p>
       </div>
       <div class="flex flex-col items-center">
         <span
-          class="inline-flex items-center justify-center w-12 h-12 mb-2 rounded-full bg-[var(--Color-Surface-Surface-Primary)] dark:bg-[var(--Color-Surface-Surface-Invert)] border border-[var(--Color-Boarder-Border-Primary)]"
+          class="inline-flex items-center justify-center w-12 h-12 mb-2 rounded-full bg-[var(--Color-Surface-Surface-Primary)] border border-[var(--Color-Boarder-Border-Primary)]"
         >
-          <svg
-            class="w-6 h-6 text-[var(--Color-Text-Text-Brand)]"
-            fill="none"
-            stroke="currentColor"
-            stroke-width="2"
-            viewBox="0 0 24 24"
-          >
-            <path
-              stroke-linecap="round"
-              stroke-linejoin="round"
-              d="M17.657 16.657L13.414 12.414a2 2 0 00-2.828 0l-4.243 4.243a8 8 0 1111.314 0z"
-            ></path>
-            <circle cx="12" cy="8" r="4"></circle>
-          </svg>
+          <img src="@/assets/Pin_alt.svg" alt="Location" class="w-6 h-6" />
         </span>
         <p class="text-[var(--Color-Text-Text-Secondary)]">Location</p>
         <p class="font-bold text-[var(--Color-Text-Text-Brand)]">

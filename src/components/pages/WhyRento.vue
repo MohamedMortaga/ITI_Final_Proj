@@ -1,7 +1,7 @@
 <template>
-  <div class="container mx-auto   mt-12 flex flex-col lg:flex-row gap-8">
+  <div class="container mx-auto   mt-8 flex flex-col lg:flex-row gap-8">
     <!-- Text content on left -->
-    <div class="flex-1">
+    <div class="flex-1 ">
       <h3 class="text-xl font-bold mb-4 text-[var(--Color-Text-Text-Brand)]">
         {{$t('why')}} <span class="text-[var(--Color-Text-Text-Primary)]">{{ $t(`Rento`) }}</span>
       </h3>
@@ -19,7 +19,7 @@
     </div>
 
     <!-- Image aligned to right -->
-    <div class="flex-1 flex justify-end">
+    <div class="flex-1 flex justify-start">
       <img src="@/assets/whyrento.jpg" alt="Why Rento" class="rounded-xl w-full max-w-md object-cover h-auto" />
     </div>
   </div>

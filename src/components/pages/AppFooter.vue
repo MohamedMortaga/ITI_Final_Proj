@@ -9,7 +9,9 @@
         <div>
           <div class="text-2xl font-bold text-[var(--Color-Text-Text-Brand)] mb-4">{{ $t('rento') }}</div>
           <div class="flex flex-wrap gap-4 text-sm text-[var(--Color-Text-Text-Primary)]">
-            <a v-for="link in links" :key="link.text" :href="link.href" class="hover:underline">{{ $t(link.text) }}</a>
+            <router-link v-for="link in links" :key="link.text" :to="link.href" class="hover:underline hover:text-[var(--Color-Text-Text-Brand)] transition">
+              {{ $t(link.text) }}
+            </router-link>
           </div>
         </div>
         <div class="flex-1 max-w-xs">
@@ -21,13 +23,13 @@
               class="px-4 py-2 rounded bg-[var(--Color-Surface-Surface-Brand)] text-[var(--Color-Text-Text-Invert)] font-semibold hover:bg-[var(--Color-Text-Text-Brand)] transition">{{
                 $t('subscribe') }}</button>
           </div>
-          <div class="flex  items-center flex-wrap mt-4 text-xs text-[var(--Color-Text-Text-Secondary)] justify-around">
+          <div class="flex items-center flex-wrap mt-4 text-xs text-[var(--Color-Text-Text-Secondary)] justify-around">
             <div class="flex gap-2">
-              <a v-for="legal in legalLinks" :key="legal.text" :href="legal.href" class="hover:underline">
+              <router-link v-for="legal in legalLinks" :key="legal.text" :to="legal.href" class="hover:underline hover:text-[var(--Color-Text-Text-Brand)] transition">
                 {{ $t(legal.text) }}
-              </a>
+              </router-link>
             </div>
-            <div >
+            <div>
               © {{ new Date().getFullYear() }} {{ $t('rento') }} {{ $t('allRightsReserved') }}
             </div>
           </div>
@@ -43,19 +45,19 @@
 defineProps({
   links: {
     type: Array, default: () => [
-      { text: 'overview', href: '#' },
-      { text: 'features', href: '#' },
-      { text: 'pricing', href: '#' },
-      { text: 'careers', href: '#' },
-      { text: 'help', href: '#' },
-      { text: 'privacy', href: '#' }
+      { text: 'overview', href: '/overview' },
+      { text: 'features', href: '/features' },
+      { text: 'pricing', href: '/pricing' },
+      { text: 'careers', href: '/careers' },
+      { text: 'help', href: '/help' },
+      { text: 'privacy', href: '/privacy' }
     ]
   },
   legalLinks: {
     type: Array, default: () => [
-      { text: 'terms', href: '#' },
-      { text: 'privacy', href: '#' },
-      { text: 'cookies', href: '#' }
+      { text: 'terms', href: '/terms' },
+      { text: 'privacy', href: '/privacy' },
+      { text: 'cookies', href: '/cookies' }
     ]
   }
 });

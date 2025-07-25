@@ -208,5 +208,9 @@
   "ContinueWith": "Continue With",
   "Your Items": "Your Items",
   "defaultLocation": "Unknown Location",
-  "toolNotAvailable": "This tool is currently booked and not available."
+  "toolNotAvailable": "This tool is currently booked and not available.",
+  "haveSomethingToShare": "Have Something to Share?",
+  "startRentingItOut": "Start Renting It Out!",
+  "shareBannerDescription": "Got tools, cameras, gear, or equipment you don’t use every day? Don’t let them sit around collecting dust — turn them into extra income with Rento. Our platform makes it easy for you to share what you own with others who need it, whether it's for a day, a weekend, or longer.",
+  "listYourItemNow": "List Your Item Now"
 }

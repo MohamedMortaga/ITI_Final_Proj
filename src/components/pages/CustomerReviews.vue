@@ -7,7 +7,7 @@
       <div
         v-for="review in displayedReviews"
         :key="review.id"
-        class="bg-[var(--Color-Surface-Surface-Tertiary)] border border-[var(--Color-Boarder-Border-Primary)] rounded-xl p-6 flex-1 max-w-md mx-auto"
+        class="bg-[var(--Color-Surface-Surface-Tertiary)] border border-[var(--Color-Boarder-Border-Primary)] rounded-xl p-6 flex-1 w-full max-w-full md:max-w-lg md:w-[90%] mx-auto"
       >
         <div class="flex items-center mb-2">
           <span class="text-yellow-400 text-lg mr-2">{{ review.rating.toFixed(1) }}</span>

@@ -51,6 +51,8 @@
           :promptLogin="promptLogin"
         />
       </div>
+      <!-- Share Banner -->
+      <ShareBanner />
     </div>
 
     <CustomerReviews :reviews="formattedReviews" v-if="formattedReviews.length > 0" />
@@ -80,6 +82,7 @@ import CustomerReviews from "@/components/pages/CustomerReviews.vue";
 import WhyRento from "@/components/pages/WhyRento.vue";
 import MissionVisionValues from "@/components/pages/MissionVisionValues.vue";
 import AppFooter from "@/components/pages/AppFooter.vue";
+import ShareBanner from "@/components/pages/ShareBanner.vue";
 
 export default {
   name: "HomePage",
@@ -92,6 +95,7 @@ export default {
     MissionVisionValues,
     AppFooter,
     HeroBanner,
+    ShareBanner,
   },
   setup() {
     // const { documents: products } = getCollection("products");
