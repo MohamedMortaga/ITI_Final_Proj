@@ -207,5 +207,6 @@
   "confirmPassword": "تأكيد كلمة المرور",
   "ContinueWith": "متابعة مع",
   "Your Items": "منتجاتك",
-  "defaultLocation": "موقع غير معروف"
+  "defaultLocation": "موقع غير معروف",
+  "toolNotAvailable": "هذه الأداة محجوزة حاليًا وغير متاحة."
 }

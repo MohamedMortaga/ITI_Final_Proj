@@ -98,9 +98,19 @@
             </p>
             <button
               @click="showBookingForm = true"
-              class="w-full bg-[var(--color-success-500)] text-[var(--color-gray-25)] py-2 rounded-lg mt-2 hover:bg-[var(--color-success-600)] dark:bg-[var(--color-success-300)] dark:hover:bg-[var(--color-success-400)]"
+              :disabled="product?.status === 'pending' || isBookingPending"
+              class="w-full bg-[var(--color-success-500)] text-[var(--color-gray-25)] py-2 rounded-lg mt-2 hover:bg-[var(--color-success-600)] dark:bg-[var(--color-success-300)] dark:hover:bg-[var(--color-success-400)] disabled:bg-[var(--color-gray-400)] disabled:cursor-not-allowed"
+              :title="
+                product?.status === 'pending' || isBookingPending
+                  ? $t('toolNotAvailable')
+                  : $t('rentThisTool')
+              "
             >
-              {{ $t("rentThisTool") }}
+              {{
+                product?.status === "pending" || isBookingPending
+                  ? $t("toolNotAvailable")
+                  : $t("rentThisTool")
+              }}
             </button>
           </div>
         </div>
@@ -215,7 +225,7 @@
           </div>
           <div>
             <label
-              class="block text-[var(--color-gray-700)] dark:text-[var(--color-gray-300)]"
+              class="block text-[var(--color-gray-700)] dark:text=[var(--color-gray-300)]"
               >{{ $t("startDate") }}</label
             >
             <p
@@ -226,7 +236,7 @@
           </div>
           <div>
             <label
-              class="block text-[var(--color-gray-700)] dark:text-[var(--color-gray-300)]"
+              class="block text-[var(--color-gray-700)] dark:text=[var(--color-gray-300)]"
               >{{ $t("endDate") }}</label
             >
             <p
@@ -237,7 +247,7 @@
           </div>
           <div>
             <label
-              class="block text-[var(--color-gray-700)] dark:text-[var(--color-gray-300)]"
+              class="block text-[var(--color-gray-700)] dark:text=[var(--color-gray-300)]"
               >{{ $t("paymentMethod") }}</label
             >
             <select
@@ -258,7 +268,7 @@
             "
           >
             <label
-              class="block text-[var(--color-gray-700)] dark:text-[var(--color-gray-300)]"
+              class="block text-[var(--color-gray-700)] dark:text=[var(--color-gray-300)]"
               >{{ $t("phoneNumber") }}</label
             >
             <input
@@ -274,7 +284,7 @@
           <div v-if="booking.paymentMethod === 'credit_card'" class="space-y-4">
             <div>
               <label
-                class="block text-[var(--color-gray-700)] dark:text-[var(--color-gray-300)]"
+                class="block text-[var(--color-gray-700)] dark:text=[var(--color-gray-300)]"
                 >{{ $t("cardNumber") }}</label
               >
               <input
@@ -290,7 +300,7 @@
             <div class="flex gap-4">
               <div class="flex-1">
                 <label
-                  class="block text-[var(--color-gray-700)] dark:text-[var(--color-gray-300)]"
+                  class="block text-[var(--color-gray-700)] dark:text=[var(--color-gray-300)]"
                   >{{ $t("expiryDate") }}</label
                 >
                 <input
@@ -321,7 +331,7 @@
             </div>
             <div>
               <label
-                class="block text-[var(--color-gray-700)] dark:text-[var(--color-gray-300)]"
+                class="block text-[var(--color-gray-700)] dark:text=[var(--color-gray-300)]"
                 >{{ $t("cardHolderName") }}</label
               >
               <input
@@ -335,7 +345,7 @@
           </div>
           <div>
             <p
-              class="mt-2 text-[var(--color-success-500)] font-bold dark:text-[var(--color-success-300)]"
+              class="mt-2 text-[var(--color-success-500)] font-bold dark:text=[var(--color-success-300)]"
             >
               {{ $t("totalPrice") }}: {{ booking.totalPrice.toFixed(2) }} {{ $t("egp") }}
             </p>
@@ -360,7 +370,7 @@
         <form v-else @submit.prevent="verifyOTP" class="space-y-4">
           <div>
             <label
-              class="block text-[var(--color-gray-700)] dark:text-[var(--color-gray-300)]"
+              class="block text-[var(--color-gray-700)] dark:text=[var(--color-gray-300)]"
               >{{ $t("enterOTP") }}</label
             >
             <input
@@ -373,12 +383,12 @@
               required
             />
             <p
-              class="text-sm text-[var(--color-gray-600)] dark:text-[var(--color-gray-400)] mt-2"
+              class="text-sm text-[var(--color-gray-600)] dark:text=[var(--color-gray-400)] mt-2"
             >
               {{ $t("otpSentTo") }} {{ booking.phoneNumber }}
             </p>
             <p
-              class="mt-2 text-[var(--color-success-500)] font-bold dark:text-[var(--color-success-300)]"
+              class="mt-2 text-[var(--color-success-500)] font-bold dark:text=[var(--color-success-300)]"
             >
               {{ $t("totalPrice") }}: {{ booking.totalPrice.toFixed(2) }} {{ $t("egp") }}
             </p>
@@ -412,19 +422,19 @@
       >
         <button
           @click="showWebsiteReviewForm = false"
-          class="absolute top-2 right-2 text-[var(--color-gray-700)] dark:text-[var(--color-gray-300)] hover:text-[var(--color-gray-800)] dark:hover:text-[var(--color-gray-200)] text-2xl font-bold"
+          class="absolute top-2 right-2 text-[var(--color-gray-700)] dark:text=[var(--color-gray-300)] hover:text-[var(--color-gray-800)] dark:hover:text=[var(--color-gray-200)] text-2xl font-bold"
         >
           ×
         </button>
         <h2
-          class="text-xl font-bold text-[var(--color-success-500)] dark:text-[var(--color-success-300)] mb-4"
+          class="text-xl font-bold text-[var(--color-success-500)] dark:text=[var(--color-success-300)] mb-4"
         >
           {{ $t("rateOurWebsite") }}
         </h2>
         <form @submit.prevent="submitWebsiteReview" class="space-y-4">
           <div>
             <label
-              class="block text-[var(--color-gray-700)] dark:text-[var(--color-gray-300)]"
+              class="block text-[var(--color-gray-700)] dark:text=[var(--color-gray-300)]"
               >{{ $t("review") }}</label
             >
             <textarea
@@ -436,7 +446,7 @@
           </div>
           <div>
             <label
-              class="block text-[var(--color-gray-700)] dark:text-[var(--color-gray-300)]"
+              class="block text-[var(--color-gray-700)] dark:text=[var(--color-gray-300)]"
               >{{ $t("rate") }} (1 - 5)</label
             >
             <input
@@ -475,7 +485,7 @@
       class="mt-6 max-w-4xl mx-auto p-6 bg-[var(--color-gray-25)] dark:bg-[var(--color-gray-800)] rounded-2xl shadow-xl border border-[var(--color-success-200)]"
     >
       <h3
-        class="text-lg font-semibold text-[var(--color-gray-800)] mb-4 dark:text-[var(--color-gray-200)]"
+        class="text-lg font-semibold text-[var(--color-gray-800)] mb-4 dark:text=[var(--color-gray-200)]"
       >
         {{ $t("toolReviews") }}
       </h3>
@@ -485,7 +495,7 @@
           :key="review.id"
           class="p-4 bg-white rounded-lg shadow"
         >
-          <p class="text-[var(--color-gray-700)] dark:text-[var(--color-gray-300)]">
+          <p class="text-[var(--color-gray-700)] dark:text=[var(--color-gray-300)]">
             "{{ review.review }}" - {{ review.userName || review.rentUserId }}
           </p>
           <div class="flex items-center gap-1">
@@ -504,7 +514,7 @@
               ★
             </span>
             <span
-              class="text-[var(--color-gray-600)] dark:text-[var(--color-gray-400)] ml-2"
+              class="text-[var(--color-gray-600)] dark:text=[var(--color-gray-400)] ml-2"
             >
               {{ review.rate }}
             </span>
@@ -513,7 +523,7 @@
       </div>
       <button
         @click="showReviewForm = true"
-        class="mt-4 text-[var(--color-success-500)] text-sm dark:text-[var(--color-success-300)]"
+        class="mt-4 text-[var(--color-success-500)] text-sm dark:text=[var(--color-success-300)]"
       >
         {{ $t("addAReview") }}
       </button>
@@ -529,12 +539,12 @@
       >
         <button
           @click="showReviewForm = false"
-          class="absolute top-2 right-2 text-[var(--color-gray-700)] dark:text-[var(--color-gray-300)] hover:text-[var(--color-gray-800)] dark:hover:text-[var(--color-gray-200)] text-2xl font-bold"
+          class="absolute top-2 right-2 text-[var(--color-gray-700)] dark:text=[var(--color-gray-300)] hover:text-[var(--color-gray-800)] dark:hover:text=[var(--color-gray-200)] text-2xl font-bold"
         >
           ×
         </button>
         <h2
-          class="text-xl font-bold text-[var(--color-success-500)] dark:text-[var(--color-success-300)] mb-4"
+          class="text-xl font-bold text-[var(--color-success-500)] dark:text=[var(--color-success-300)] mb-4"
         >
           {{ $t("addAReview") }}
         </h2>
@@ -592,7 +602,7 @@
       class="mt-6 max-w-4xl mx-auto p-6 bg-[var(--color-gray-25)] dark:bg-[var(--color-gray-800)] rounded-2xl shadow-xl border border-[var(--color-success-200)]"
     >
       <h3
-        class="text-lg font-semibold text-[var(--color-gray-800)] mb-4 dark:text-[var(--color-gray-200)]"
+        class="text-lg font-semibold text-[var(--color-gray-800)] mb-4 dark:text=[var(--color-gray-200)]"
       >
         {{ $t("moreFrom") }} {{ booking.sellerName || $t("loading") }}
       </h3>
@@ -656,7 +666,7 @@
       </div>
       <button
         @click="showAllProducts = !showAllProducts"
-        class="mt-4 text-[var(--color-success-500)] text-sm dark:text-[var(--color-success-300)] hover:underline"
+        class="mt-4 text-[var(--color-success-500)] text-sm dark:text=[var(--color-success-300)] hover:underline"
       >
         {{ showAllProducts ? $t("showLess") : $t("viewAllItems") }}
       </button>
@@ -691,7 +701,7 @@ import {
   query,
   where,
   getDocs,
-  deleteDoc,
+  updateDoc,
 } from "firebase/firestore";
 import { db, auth } from "@/firebase/config";
 import Swal from "sweetalert2";
@@ -707,6 +717,7 @@ const showWebsiteReviewForm = ref(false);
 const showOTPForm = ref(false);
 const reviews = ref([]);
 const ownerProducts = ref([]);
+const isBookingPending = ref(false); // Track if there is a pending booking
 const booking = ref({
   deliveryAddress: "30.0459°N, 31.2357°E",
   deliveryFee: 0,
@@ -745,9 +756,9 @@ const newWebsiteReview = ref({
   userName: "",
   userImage: "",
 });
-
 const today = ref(new Date());
 const currentDate = ref(new Date());
+const selectedDates = ref({ start: null, end: null });
 
 const currentMonthYear = computed(() => {
   return currentDate.value.toLocaleString("en-US", {
@@ -787,6 +798,61 @@ const nextMonth = () => {
   );
 };
 
+// Check for pending bookings and update product status
+const checkPendingBookings = async () => {
+  try {
+    console.log("Checking pending bookings for product:", route.params.id);
+    const bookingsRef = collection(db, "bookings");
+    const q = query(
+      bookingsRef,
+      where("productId", "==", route.params.id),
+      where("status", "==", "pending")
+    );
+    const querySnapshot = await getDocs(q);
+    console.log("Found", querySnapshot.docs.length, "pending bookings");
+
+    const now = new Date(); // Current time: 08:01 PM EEST, July 25, 2025
+    const todayMidnight = new Date(now);
+    todayMidnight.setHours(0, 0, 0, 0); // Set to 12:00 AM today
+
+    let hasPendingBooking = false;
+
+    for (const docSnap of querySnapshot.docs) {
+      const bookingData = docSnap.data();
+      const endDate = new Date(bookingData.endDate);
+      endDate.setHours(0, 0, 0, 0); // Set to 12:00 AM of the end date
+      console.log(
+        "Booking end date (midnight):",
+        endDate,
+        "Today midnight:",
+        todayMidnight
+      );
+
+      if (todayMidnight > endDate) {
+        // End date (at midnight) has passed, update product status to free
+        const productRef = doc(db, "products", bookingData.productId);
+        await updateDoc(productRef, { status: "free" });
+        await updateDoc(doc(db, "bookings", docSnap.id), { status: "completed" });
+        console.log("Updated status to free for product:", bookingData.productId);
+      } else {
+        hasPendingBooking = true;
+        console.log("Active pending booking found with end date:", endDate);
+      }
+    }
+
+    isBookingPending.value = hasPendingBooking;
+    console.log("isBookingPending set to:", isBookingPending.value);
+  } catch (error) {
+    console.error("Error checking pending bookings:", error);
+    Swal.fire({
+      icon: "error",
+      title: "Error",
+      text: "Failed to check booking status.",
+      confirmButtonText: "OK",
+    });
+  }
+};
+
 const loadProduct = async () => {
   try {
     const id = route.params.id;
@@ -795,17 +861,31 @@ const loadProduct = async () => {
 
     if (docSnap.exists()) {
       product.value = docSnap.data();
+      product.value.status = product.value.status || "free";
       booking.value.productId = id;
       booking.value.sellerId = product.value.sellerId || product.value.userId;
       booking.value.productTitle = product.value.title;
       booking.value.productPrice = parseFloat(product.value.price) || 0;
       await loadSellerDetails(booking.value.sellerId);
       await loadOwnerProducts(booking.value.sellerId);
+      await checkPendingBookings(); // Immediate check on load
     } else {
       console.error("No such product!");
+      Swal.fire({
+        icon: "error",
+        title: "Error",
+        text: "Product not found.",
+        confirmButtonText: "OK",
+      });
     }
   } catch (error) {
     console.error("Error loading product:", error);
+    Swal.fire({
+      icon: "error",
+      title: "Error",
+      text: `Failed to load product: ${error.message}`,
+      confirmButtonText: "OK",
+    });
   }
 };
 
@@ -947,7 +1027,7 @@ const formatDate = (dateStr) => {
   });
 };
 
-const selectDate = (day) => {
+const selectDate = async (day) => {
   if (isPastDate(day)) return;
 
   const selectedDate = new Date(
@@ -958,6 +1038,48 @@ const selectDate = (day) => {
   const selectedIso = `${selectedDate.getFullYear()}-${String(
     selectedDate.getMonth() + 1
   ).padStart(2, "0")}-${String(day).padStart(2, "0")}`;
+
+  // Check for overlapping pending bookings
+  try {
+    const bookingsRef = collection(db, "bookings");
+    const q = query(
+      bookingsRef,
+      where("productId", "==", route.params.id),
+      where("status", "==", "pending")
+    );
+    const querySnapshot = await getDocs(q);
+
+    const selectedStartDate = new Date(selectedDates.value.start || selectedIso);
+    const selectedEndDate = selectedDates.value.end ? new Date(selectedIso) : null;
+
+    for (const docSnap of querySnapshot.docs) {
+      const bookingData = docSnap.data();
+      const bookingStartDate = new Date(bookingData.startDate);
+      const bookingEndDate = new Date(bookingData.endDate);
+
+      if (selectedEndDate) {
+        // Check if the selected date range overlaps with any pending booking
+        if (selectedStartDate <= bookingEndDate && selectedEndDate >= bookingStartDate) {
+          Swal.fire({
+            icon: "warning",
+            title: "Date Unavailable",
+            text: "The selected date range overlaps with an existing booking.",
+            confirmButtonText: "OK",
+          });
+          return;
+        }
+      }
+    }
+  } catch (error) {
+    console.error("Error checking date availability:", error);
+    Swal.fire({
+      icon: "error",
+      title: "Error",
+      text: "Failed to check date availability.",
+      confirmButtonText: "OK",
+    });
+    return;
+  }
 
   if (!selectedDates.value.start) {
     selectedDates.value.start = selectedIso;
@@ -987,10 +1109,11 @@ const updateDeliveryFee = () => {
     booking.value.deliveryFee = 0;
     return;
   }
-  const diffTime = Math.ceil(
-    (new Date(booking.value.endDate) - new Date(booking.value.startDate)) /
-      (1000 * 60 * 60 * 24)
-  );
+  const diffTime =
+    Math.ceil(
+      (new Date(booking.value.endDate) - new Date(booking.value.startDate)) /
+        (1000 * 60 * 60 * 24)
+    ) + 1;
   const basePrice = diffTime * booking.value.productPrice;
   if (booking.value.deliveryMethod === "pickup") {
     booking.value.deliveryFee = 0;
@@ -1009,16 +1132,14 @@ const resetPaymentFields = () => {
 };
 
 const formatCardNumber = (event) => {
-  let value = event.target.value.replace(/\D/g, ""); // Remove non-digits
+  let value = event.target.value.replace(/\D/g, "");
   let formatted = "";
 
-  // Add space after every 4 digits
   for (let i = 0; i < value.length; i += 4) {
     if (i > 0) formatted += " ";
     formatted += value.slice(i, i + 4);
   }
 
-  // Trim to max 19 characters (16 digits + 3 spaces)
   booking.value.cardNumber = formatted.trim().slice(0, 19);
 };
 
@@ -1027,21 +1148,21 @@ const formatExpiryDate = (event) => {
   if (value.length >= 2) {
     value = value.slice(0, 2) + "/" + value.slice(2, 4);
   }
-  booking.value.expiryDate = value.slice(0, 5); // Limit to MM/YY
+  booking.value.expiryDate = value.slice(0, 5);
 };
 
 const formatCvv = (event) => {
   let value = event.target.value.replace(/\D/g, "");
-  booking.value.cvv = value.slice(0, 4); // Limit to 3 or 4 digits
+  booking.value.cvv = value.slice(0, 4);
 };
 
 const formatOtp = (event) => {
   let value = event.target.value.replace(/\D/g, "");
-  booking.value.otp = value.slice(0, 6); // Limit to 6 digits
+  booking.value.otp = value.slice(0, 6);
 };
 
 const formatPhoneNumber = (event) => {
-  let value = event.target.value.replace(/\D/g, ""); // Remove non-digits
+  let value = event.target.value.replace(/\D/g, "");
   let formatted = "";
 
   if (value.length > 0) {
@@ -1054,7 +1175,7 @@ const formatPhoneNumber = (event) => {
     formatted += " " + value.slice(7, 11);
   }
 
-  booking.value.phoneNumber = formatted.slice(0, 14); // Limit to XXXX XXX XXXX
+  booking.value.phoneNumber = formatted.slice(0, 14);
 };
 
 watch(
@@ -1155,6 +1276,10 @@ const submitBooking = async () => {
       booking.value.deliveryMethod === "delivery" ? basePrice * 0.02 : 0;
     booking.value.totalPrice = basePrice + booking.value.deliveryFee;
 
+    // Update product status to pending
+    const productRef = doc(db, "products", booking.value.productId);
+    await updateDoc(productRef, { status: "pending" });
+
     // If payment method requires OTP, show OTP form and auto-fill OTP after 2 seconds
     if (
       booking.value.paymentMethod === "vodafone_cash" ||
@@ -1186,11 +1311,8 @@ const submitBooking = async () => {
       sellerName: booking.value.sellerName,
     });
 
-    // Delete the product from the products collection
-    const productRef = doc(db, "products", booking.value.productId);
-    await deleteDoc(productRef);
-
     showBookingForm.value = false;
+    isBookingPending.value = true; // Update local state immediately
 
     const isFirstBooking = await checkFirstBooking(auth.currentUser.uid);
     if (isFirstBooking) {
@@ -1200,10 +1322,10 @@ const submitBooking = async () => {
     Swal.fire({
       icon: "success",
       title: "Success",
-      text:
-        "Booking completed successfully! The item has been removed from the products list.",
+      text: "Booking completed successfully!",
       confirmButtonText: "OK",
     });
+    await checkPendingBookings(); // Re-check to ensure consistency
   } catch (error) {
     console.error("Error initiating booking:", error);
     Swal.fire({
@@ -1245,12 +1367,13 @@ const verifyOTP = async () => {
       sellerName: booking.value.sellerName,
     });
 
-    // Delete the product from the products collection
+    // Update product status to pending
     const productRef = doc(db, "products", booking.value.productId);
-    await deleteDoc(productRef);
+    await updateDoc(productRef, { status: "pending" });
 
     showBookingForm.value = false;
     showOTPForm.value = false;
+    isBookingPending.value = true; // Update local state
 
     const isFirstBooking = await checkFirstBooking(auth.currentUser.uid);
     if (isFirstBooking) {
@@ -1260,10 +1383,10 @@ const verifyOTP = async () => {
     Swal.fire({
       icon: "success",
       title: "Success",
-      text:
-        "Booking and payment verified successfully! The item has been removed from the products list.",
+      text: "Booking and payment verified successfully!",
       confirmButtonText: "OK",
     });
+    await checkPendingBookings(); // Re-check to ensure consistency
   } catch (error) {
     console.error("Full error details:", error);
     Swal.fire({
@@ -1399,23 +1522,6 @@ const submitWebsiteReview = async () => {
   }
 };
 
-const navigateToRentProcess = () => {
-  console.log("navigateToRentProcess triggered");
-  if (!auth.currentUser) {
-    Swal.fire({
-      icon: "warning",
-      title: "Login Required",
-      text: "Please log in to start the rent process.",
-      confirmButtonText: "OK",
-    });
-    return;
-  }
-  console.log("Navigating to RentProcess with id:", route.params.id);
-  router.push({ name: "RentProcess", params: { id: route.params.id } }).catch((err) => {
-    console.error("Navigation error:", err);
-  });
-};
-
 const navigateToProduct = (productId) => {
   if (route.params.id === productId) {
     window.location.href = `/product/${productId}`;
@@ -1431,13 +1537,16 @@ const navigateToProduct = (productId) => {
   }
 };
 
-const selectedDates = ref({ start: null, end: null });
-
 onMounted(() => {
   loadProduct();
   loadReviews();
   today.value = new Date();
   today.value.setHours(0, 0, 0, 0);
   console.log("Auth state on mount:", auth.currentUser);
+
+  // Immediate check on mount and periodic check every 5 minutes
+  checkPendingBookings();
+  const checkInterval = setInterval(checkPendingBookings, 5 * 60 * 1000); // Check every 5 minutes
+  return () => clearInterval(checkInterval);
 });
 </script>

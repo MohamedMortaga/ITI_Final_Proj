@@ -207,5 +207,6 @@
   "confirmPassword": "Confirm Password",
   "ContinueWith": "Continue With",
   "Your Items": "Your Items",
-  "defaultLocation": "Unknown Location"
+  "defaultLocation": "Unknown Location",
+  "toolNotAvailable": "This tool is currently booked and not available."
 }
