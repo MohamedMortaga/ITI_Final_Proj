@@ -27,6 +27,13 @@ import Help from '@/views/Help.vue';
 import Privacy from '@/views/Privacy.vue';
 import Terms from '@/views/Terms.vue';
 import Cookies from '@/views/Cookies.vue';
+import Profile from '@/views/Profile/Profile.vue';
+import MyProfile from '@/views/Profile/MyProfile.vue';
+import MyListings from '@/views/Profile/MyListings.vue';
+import MyRentals from '@/views/Profile/MyRentals.vue';
+import MyBalance from '@/views/Profile/MyBalance.vue';
+import Settings from '@/views/Profile/Settings.vue';
+import HelpCentre from '@/views/Profile/HelpCentre.vue';
 
 const routes = [
   {
@@ -127,6 +134,42 @@ const routes = [
     name: 'Cookies',
     component: Cookies,
     meta: { requiresAuth: false }
+  },
+  {
+    path: '/profile',
+    component: Profile,
+    children: [
+      {
+        path: '',
+        name: 'MyProfile',
+        component: MyProfile
+      },
+      {
+        path: 'listings',
+        name: 'MyListings',
+        component: MyListings
+      },
+      {
+        path: 'rentals',
+        name: 'MyRentals',
+        component: MyRentals
+      },
+      {
+        path: 'balance',
+        name: 'MyBalance',
+        component: MyBalance
+      },
+      {
+        path: 'settings',
+        name: 'Settings',
+        component: Settings
+      },
+      {
+        path: 'help',
+        name: 'HelpCentre',
+        component: HelpCentre
+      }
+    ]
   },
   // Admin routes
   {
