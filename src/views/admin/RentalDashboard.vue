@@ -1,19 +1,15 @@
 <template>
   <div class="min-h-screen p-8">
     <!-- Top Bar with Filter Button -->
-    <TopBar
-      title="Rental Dashboard"
-      searchPlaceholder="Search Rentals?"
-      @update:search="handleSearch"
-      @update:sort="handleSort"
-      @filter="handleFilter"
-    />
+    <TopBar title="Rental Dashboard" searchPlaceholder="Search Rentals?" @update:search="handleSearch"
+      @update:sort="handleSort" @filter="handleFilter" />
     <!-- Rentals Table -->
     <div class="bg-white rounded-xl shadow border">
       <table class="min-w-full divide-y">
         <thead>
           <tr>
             <th class="px-4 py-3">Product</th>
+            <th class="px-4 py-3">userImage</th>
             <th class="px-4 py-3">Rented By</th>
             <th class="px-4 py-3">Total Price</th>
             <th class="px-4 py-3">Delivery</th>
@@ -26,40 +22,43 @@
         <tbody>
           <tr v-for="rental in paginatedRentals" :key="rental.id" class="hover:bg-gray-50">
             <td class="px-4 py-3 flex items-center gap-2">
-              <img :src="rental.productImage || require('@/assets/logo.png')" alt="Product Image" class="h-10 w-10 object-cover rounded-full" />
-              <span class="font-medium">{{ rental.productTitle }}</span>
+              <img :src="rental.productImage || require('@/assets/logo.png')" alt="Product Image"
+                class="h-10 w-10 object-cover rounded-full" />
+              <!-- <span class="font-medium">{{ rental.productTitle }}</span> -->
+              <span class="font-medium">
+                {{ rental.productTitle || 'Product #' + rental.productId.slice(0, 6) }}
+              </span>
+
+
             </td>
-            <td class="px-4 py-3">{{ rental.sellerName }}</td>
+            <!-- <td class="px-4 py-3">{{ rental.sellerName }}</td> -->
+            <td class="px-4 py-3"> <img :src="rental.userImage || require('@/assets/default.png')"
+                class="w-8 h-8 rounded-full object-cover" /></td>
+            <td class="px-4 py-3">{{ rental.userName }}</td>
             <td class="px-4 py-3">{{ rental.totalPrice }} EGP</td>
             <td class="px-4 py-3">{{ rental.deliveryMethod }}</td>
             <td class="px-4 py-3">{{ formatDate(rental.startDate) }}</td>
             <td class="px-4 py-3">{{ formatDate(rental.endDate) }}</td>
             <td class="px-4 py-3 relative">
-              <span
-                :class="[
-                  'font-semibold px-2 py-1 rounded text-xs cursor-pointer select-none',
-                  rental.status === 'active' ? 'bg-green-100 text-green-700' :
+              <span :class="[
+                'font-semibold px-2 py-1 rounded text-xs cursor-pointer select-none',
+                rental.status === 'active' ? 'bg-green-100 text-green-700' :
                   rental.status === 'pending' ? 'bg-yellow-100 text-yellow-700' :
-                  rental.status === 'cancelled' ? 'bg-red-100 text-red-700' : ''
-                ]"
-                @click="openStatusDropdown(rental.id)"
-              >
+                    rental.status === 'cancelled' ? 'bg-red-100 text-red-700' : ''
+              ]" @click="openStatusDropdown(rental.id)">
                 {{ rental.status }}
               </span>
               <div v-if="statusDropdownId === rental.id" class="absolute z-10 mt-2 bg-white border rounded shadow w-32">
                 <ul>
-                  <li v-for="option in statusOptions" :key="option" @click="changeStatus(rental, option)" class="px-4 py-2 hover:bg-gray-100 cursor-pointer">
+                  <li v-for="option in statusOptions" :key="option" @click="changeStatus(rental, option)"
+                    class="px-4 py-2 hover:bg-gray-100 cursor-pointer">
                     {{ option.charAt(0).toUpperCase() + option.slice(1) }}
                   </li>
                 </ul>
               </div>
             </td>
             <td class="px-4 py-3 flex items-center space-x-2 justify-center">
-              <button
-                @click="deleteRental(rental.id)"
-                class="text-red-500 hover:text-red-700"
-                title="Delete"
-              >
+              <button @click="deleteRental(rental.id)" class="text-red-500 hover:text-red-700" title="Delete">
                 <i class="fas fa-trash"></i>
               </button>
             </td>
@@ -72,29 +71,17 @@
       </div>
       <!-- Pagination -->
       <div v-if="totalPages > 1" class="flex items-center justify-between px-4 py-3 border-t">
-        <button
-          class="text-gray-500 flex items-center"
-          :disabled="currentPage === 1"
-          @click="currentPage--"
-        >
+        <button class="text-gray-500 flex items-center" :disabled="currentPage === 1" @click="currentPage--">
           <i class="fas fa-chevron-left mr-1"></i> Previous
         </button>
         <div class="flex items-center space-x-2">
-          <button
-            v-for="page in totalPages"
-            :key="page"
-            class="w-8 h-8 rounded"
+          <button v-for="page in totalPages" :key="page" class="w-8 h-8 rounded"
             :class="{ 'bg-teal-500 text-white': currentPage === page, 'hover:bg-gray-200 text-gray-700': currentPage !== page }"
-            @click="currentPage = page"
-          >
+            @click="currentPage = page">
             {{ page }}
           </button>
         </div>
-        <button
-          class="text-gray-500 flex items-center"
-          :disabled="currentPage === totalPages"
-          @click="currentPage++"
-        >
+        <button class="text-gray-500 flex items-center" :disabled="currentPage === totalPages" @click="currentPage++">
           Next <i class="fas fa-chevron-right ml-1"></i>
         </button>
       </div>
@@ -118,16 +105,39 @@ const itemsPerPage = 10;
 const statusDropdownId = ref(null);
 const statusOptions = ['pending', 'active', 'cancelled'];
 
+// const fetchRentals = async () => {
+//   try {
+//     const rentalsRef = collection(db, 'bookings');
+//     const snapshot = await getDocs(rentalsRef);
+//     rentals.value = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+//   } catch (error) {
+//     console.error('Error fetching rentals:', error);
+//   }
+// };
 const fetchRentals = async () => {
   try {
-    const rentalsRef = collection(db, 'bookings');
-    const snapshot = await getDocs(rentalsRef);
-    rentals.value = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+    const bookingsSnap = await getDocs(collection(db, 'bookings'));
+    const usersSnap = await getDocs(collection(db, 'users'));
+
+    const usersMap = {};
+    usersSnap.forEach(doc => {
+      usersMap[doc.id] = doc.data();
+    });
+
+    rentals.value = bookingsSnap.docs.map(doc => {
+      const data = doc.data();
+      const userInfo = usersMap[data.userId] || {};
+      return {
+        id: doc.id,
+        ...data,
+        userName: userInfo.displayName || 'Unknown User',
+        userImage: userInfo.imageUrl || '',
+      };
+    });
   } catch (error) {
     console.error('Error fetching rentals:', error);
   }
 };
-
 const formatDate = (dateStr) => {
   if (!dateStr) return '';
   const date = new Date(dateStr);

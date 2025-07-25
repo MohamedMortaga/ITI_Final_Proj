@@ -1,80 +1,79 @@
 <template>
-  <div class="p-6 bg-gray-50 min-h-screen">
-    <h1 class="text-3xl font-extrabold text-gray-800">Bookings for {{ userName }}</h1>
-    <p class="text-gray-500 mt-1">List of all rentals for this user</p>
-
-    <div v-if="loading" class="text-gray-600 mt-8 text-center">
-      <p>Loading rentals...</p>
-    </div>
-
-    <div v-if="!loading && rentals.length" class="grid gap-6 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3">
-      <div
-        v-for="rental in rentals"
-        :key="rental.id"
-        class="bg-white rounded-2xl shadow-md hover:shadow-lg transition p-6 border border-gray-100 relative"
-      >
-        <!-- Image -->
-        <img
-          :src="rental.productImage || require('@/assets/logo.png')"
-          alt="Product Image"
-          class="h-48 w-full object-cover rounded-lg mb-4"
-        />
-
-        <!-- Title -->
-        <h2 class="text-xl font-semibold text-gray-800">{{ rental.productTitle }}</h2>
-
-        <!-- Price & Dates -->
-        <p class="text-sm text-gray-600"><span class="font-medium">Total Price:</span> {{ rental.totalPrice }} EGP</p>
-        <p class="text-sm text-gray-600"><span class="font-medium">Start Date:</span> {{ formatDate(rental.startDate) }}</p>
-        <p class="text-sm text-gray-600"><span class="font-medium">End Date:</span> {{ formatDate(rental.endDate) }}</p>
-
-        <!-- Status with color -->
-        <p class="text-sm font-medium mt-2">
-          Status:
-          <span
-            :class="[ 
-              'px-2 py-1 rounded-full text-xs font-bold',
-              rental.status === 'active' ? 'bg-green-100 text-green-700' :
-              rental.status === 'pending' ? 'bg-yellow-100 text-yellow-700' :
-              'bg-red-100 text-red-700'
-            ]"
-          >
-            {{ rental.status }}
-          </span>
-        </p>
-
-        <!-- Actions -->
-        <div class="flex justify-between items-center mt-4">
-          <!-- Change Status -->
-          <select
-            v-model="rental.status"
-            @change="updateStatus(rental.id, rental.status)"
-            class="px-2 py-1 text-sm border rounded"
-          >
-            <option value="pending">Pending</option>
-            <option value="active">Active</option>
-            <option value="cancelled">Cancelled</option>
-          </select>
-
-          <!-- Delete Booking -->
-          <button
-            @click="deleteRental(rental.id)"
-            class="text-red-500 hover:text-red-700 text-sm font-semibold"
-          >
-            Cancel Booking
-          </button>
-        </div>
+  <div class="min-h-screen p-8">
+    <div class="bg-white rounded-xl shadow border mt-4">
+      <table class="min-w-full divide-y">
+        <thead>
+          <tr>
+            <th class="px-4 py-3">Product</th>
+            <th class="px-4 py-3">Total Price</th>
+            <th class="px-4 py-3">Start Date</th>
+            <th class="px-4 py-3">End Date</th>
+            <th class="px-4 py-3">Payment Method</th>
+            <th class="px-4 py-3">Phone Number</th>
+            <th class="px-4 py-3">Card Holder</th>
+            <th class="px-4 py-3">Card</th>
+            <th class="px-4 py-3">Expiry</th>
+            <th class="px-4 py-3">Status</th>
+            <th class="px-4 py-3 text-center"><i class="fas fa-ellipsis-v"></i></th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr v-for="rental in rentals" :key="rental.id" class="hover:bg-gray-50">
+            <td class="px-4 py-3 font-medium">{{ rental.productTitle }}</td>
+            <td class="px-4 py-3">{{ rental.totalPrice }} EGP</td>
+            <td class="px-4 py-3">{{ formatDate(rental.startDate) }}</td>
+            <td class="px-4 py-3">{{ formatDate(rental.endDate) }}</td>
+            <td class="px-4 py-3">{{ rental.paymentMethod }}</td>
+            <td class="px-4 py-3">
+              <span v-if="['vodafone_cash', 'phone', 'etisalat_cash'].includes(rental.paymentMethod) && rental.phoneNumber">
+                {{ rental.phoneNumber }}
+              </span>
+              <span v-else>-</span>
+            </td>
+            <td class="px-4 py-3">{{ rental.cardHolderName || '-' }}</td>
+            <td class="px-4 py-3">{{ rental.cardNumber ? '**** **** **** ' + rental.cardNumber.slice(-4) : '-' }}</td>
+            <td class="px-4 py-3">{{ rental.expiryDate || '-' }}</td>
+            <td class="px-4 py-3">
+              <span :class="[
+                'px-2 py-1 rounded-full text-xs font-bold',
+                rental.status === 'active' ? 'bg-green-100 text-green-700' :
+                  rental.status === 'pending' ? 'bg-yellow-100 text-yellow-700' :
+                    'bg-red-100 text-red-700'
+              ]">
+                {{ rental.status }}
+              </span>
+            </td>
+            <td class="px-4 py-3 flex items-center space-x-2 justify-center">
+              <select
+                v-model="rental.status"
+                @change="updateStatus(rental.id, rental.status)"
+                class="px-2 py-1 text-sm border rounded"
+              >
+                <option value="pending">Pending</option>
+                <option value="active">Active</option>
+                <option value="cancelled">Cancelled</option>
+              </select>
+              <button
+                @click="deleteRental(rental.id)"
+                class="text-red-500 hover:text-red-700 text-sm font-semibold"
+              >
+                Cancel Booking
+              </button>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+      <!-- No Rentals Fallback -->
+      <div v-if="!rentals.length && !loading" class="text-gray-600 mt-8 text-center">
+        <p>No rentals found for this user.</p>
       </div>
-    </div>
-
-    <div v-else-if="!loading" class="text-gray-600 mt-8 text-center">
-      <p>No rentals found for this user.</p>
     </div>
   </div>
 </template>
 
 <script setup>
 import { ref, onMounted } from 'vue'
+import TopBar from '@/components/admin/TopBar.vue'
 import { useRoute } from 'vue-router'
 import { collection, getDocs, query, where, doc, getDoc, deleteDoc, updateDoc } from 'firebase/firestore'
 import { db } from '@/firebase/config'
@@ -157,6 +156,32 @@ const updateStatus = async (rentalId, newStatus) => {
     Swal.fire({ icon: 'error', title: 'Error updating status', text: error.message })
   }
 }
+
+const handleExport = () => {
+  if (!rentals.value.length) return;
+  const headers = [
+    'Product', 'Total Price', 'Start Date', 'End Date', 'Payment Method', 'Card Holder', 'Card', 'Expiry', 'Status'
+  ];
+  const rows = rentals.value.map(rental => [
+    rental.productTitle,
+    rental.totalPrice,
+    formatDate(rental.startDate),
+    formatDate(rental.endDate),
+    rental.paymentMethod,
+    rental.cardHolderName || '-',
+    rental.cardNumber ? '**** **** **** ' + rental.cardNumber.slice(-4) : '-',
+    rental.expiryDate || '-',
+    rental.status
+  ]);
+  const csvContent = [headers, ...rows].map(e => e.join(',')).join('\n');
+  const blob = new Blob([csvContent], { type: 'text/csv' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = `user_rentals_${userName.value}.csv`;
+  a.click();
+  URL.revokeObjectURL(url);
+};
 
 onMounted(() => {
   fetchUserRentals()
