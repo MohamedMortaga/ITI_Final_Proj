@@ -690,6 +690,7 @@ import {
   query,
   where,
   getDocs,
+  deleteDoc,
 } from "firebase/firestore";
 import { db, auth } from "@/firebase/config";
 import Swal from "sweetalert2";
@@ -1169,6 +1170,10 @@ const submitBooking = async () => {
         cardNumber: booking.value.cardNumber,
       });
 
+      // Delete the product from the products collection
+      const productRef = doc(db, "products", booking.value.productId);
+      await deleteDoc(productRef);
+
       showBookingForm.value = false;
 
       const isFirstBooking = await checkFirstBooking(auth.currentUser.uid);
@@ -1179,7 +1184,8 @@ const submitBooking = async () => {
       Swal.fire({
         icon: "success",
         title: "Success",
-        text: "Booking and payment processed successfully!",
+        text:
+          "Booking and payment processed successfully! The item has been removed from the products list.",
         confirmButtonText: "OK",
       });
       return;
@@ -1238,6 +1244,10 @@ const verifyOTP = async () => {
       sellerName: booking.value.sellerName,
     });
 
+    // Delete the product from the products collection
+    const productRef = doc(db, "products", booking.value.productId);
+    await deleteDoc(productRef);
+
     showBookingForm.value = false;
     showOTPForm.value = false;
 
@@ -1249,7 +1259,8 @@ const verifyOTP = async () => {
     Swal.fire({
       icon: "success",
       title: "Success",
-      text: "Booking and payment verified successfully!",
+      text:
+        "Booking and payment verified successfully! The item has been removed from the products list.",
       confirmButtonText: "OK",
     });
   } catch (error) {
