@@ -96,6 +96,12 @@
               >
               {{ product.price || "15" }} {{ $t("egp") }}
             </p>
+            <p
+              v-if="remainingTime && (product?.status === 'pending' || isBookingPending)"
+              class="text-[var(--color-warning-500)] text-sm mt-2"
+            >
+              Available in: {{ remainingTime }}
+            </p>
             <button
               @click="showBookingForm = true"
               :disabled="product?.status === 'pending' || isBookingPending"
@@ -225,7 +231,7 @@
           </div>
           <div>
             <label
-              class="block text-[var(--color-gray-700)] dark:text=[var(--color-gray-300)]"
+              class="block text-[var(--color-gray-700)] dark:text-[var(--color-gray-300)]"
               >{{ $t("startDate") }}</label
             >
             <p
@@ -236,7 +242,7 @@
           </div>
           <div>
             <label
-              class="block text-[var(--color-gray-700)] dark:text=[var(--color-gray-300)]"
+              class="block text-[var(--color-gray-700)] dark:text-[var(--color-gray-300)]"
               >{{ $t("endDate") }}</label
             >
             <p
@@ -247,7 +253,7 @@
           </div>
           <div>
             <label
-              class="block text-[var(--color-gray-700)] dark:text=[var(--color-gray-300)]"
+              class="block text-[var(--color-gray-700)] dark:text-[var(--color-gray-300)]"
               >{{ $t("paymentMethod") }}</label
             >
             <select
@@ -268,7 +274,7 @@
             "
           >
             <label
-              class="block text-[var(--color-gray-700)] dark:text=[var(--color-gray-300)]"
+              class="block text-[var(--color-gray-700)] dark:text-[var(--color-gray-300)]"
               >{{ $t("phoneNumber") }}</label
             >
             <input
@@ -284,7 +290,7 @@
           <div v-if="booking.paymentMethod === 'credit_card'" class="space-y-4">
             <div>
               <label
-                class="block text-[var(--color-gray-700)] dark:text=[var(--color-gray-300)]"
+                class="block text-[var(--color-gray-700)] dark:text-[var(--color-gray-300)]"
                 >{{ $t("cardNumber") }}</label
               >
               <input
@@ -300,7 +306,7 @@
             <div class="flex gap-4">
               <div class="flex-1">
                 <label
-                  class="block text-[var(--color-gray-700)] dark:text=[var(--color-gray-300)]"
+                  class="block text-[var(--color-gray-700)] dark:text-[var(--color-gray-300)]"
                   >{{ $t("expiryDate") }}</label
                 >
                 <input
@@ -315,7 +321,7 @@
               </div>
               <div class="flex-1">
                 <label
-                  class="block text-[var(--color-gray-700)] dark:text=[var(--color-gray-300)]"
+                  class="block text-[var(--color-gray-700)] dark:text-[var(--color-gray-300)]"
                   >{{ $t("cvv") }}</label
                 >
                 <input
@@ -331,7 +337,7 @@
             </div>
             <div>
               <label
-                class="block text-[var(--color-gray-700)] dark:text=[var(--color-gray-300)]"
+                class="block text-[var(--color-gray-700)] dark:text-[var(--color-gray-300)]"
                 >{{ $t("cardHolderName") }}</label
               >
               <input
@@ -345,7 +351,7 @@
           </div>
           <div>
             <p
-              class="mt-2 text-[var(--color-success-500)] font-bold dark:text=[var(--color-success-300)]"
+              class="mt-2 text-[var(--color-success-500)] font-bold dark:text-[var(--color-success-300)]"
             >
               {{ $t("totalPrice") }}: {{ booking.totalPrice.toFixed(2) }} {{ $t("egp") }}
             </p>
@@ -370,7 +376,7 @@
         <form v-else @submit.prevent="verifyOTP" class="space-y-4">
           <div>
             <label
-              class="block text-[var(--color-gray-700)] dark:text=[var(--color-gray-300)]"
+              class="block text-[var(--color-gray-700)] dark:text-[var(--color-gray-300)]"
               >{{ $t("enterOTP") }}</label
             >
             <input
@@ -383,12 +389,12 @@
               required
             />
             <p
-              class="text-sm text-[var(--color-gray-600)] dark:text=[var(--color-gray-400)] mt-2"
+              class="text-sm text-[var(--color-gray-600)] dark:text-[var(--color-gray-400)] mt-2"
             >
               {{ $t("otpSentTo") }} {{ booking.phoneNumber }}
             </p>
             <p
-              class="mt-2 text-[var(--color-success-500)] font-bold dark:text=[var(--color-success-300)]"
+              class="mt-2 text-[var(--color-success-500)] font-bold dark:text-[var(--color-success-300)]"
             >
               {{ $t("totalPrice") }}: {{ booking.totalPrice.toFixed(2) }} {{ $t("egp") }}
             </p>
@@ -422,19 +428,19 @@
       >
         <button
           @click="showWebsiteReviewForm = false"
-          class="absolute top-2 right-2 text-[var(--color-gray-700)] dark:text=[var(--color-gray-300)] hover:text-[var(--color-gray-800)] dark:hover:text=[var(--color-gray-200)] text-2xl font-bold"
+          class="absolute top-2 right-2 text-[var(--color-gray-700)] dark:text-[var(--color-gray-300)] hover:text-[var(--color-gray-800)] dark:hover:text-[var(--color-gray-200)] text-2xl font-bold"
         >
           ×
         </button>
         <h2
-          class="text-xl font-bold text-[var(--color-success-500)] dark:text=[var(--color-success-300)] mb-4"
+          class="text-xl font-bold text-[var(--color-success-500)] dark:text-[var(--color-success-300)] mb-4"
         >
           {{ $t("rateOurWebsite") }}
         </h2>
         <form @submit.prevent="submitWebsiteReview" class="space-y-4">
           <div>
             <label
-              class="block text-[var(--color-gray-700)] dark:text=[var(--color-gray-300)]"
+              class="block text-[var(--color-gray-700)] dark:text-[var(--color-gray-300)]"
               >{{ $t("review") }}</label
             >
             <textarea
@@ -446,7 +452,7 @@
           </div>
           <div>
             <label
-              class="block text-[var(--color-gray-700)] dark:text=[var(--color-gray-300)]"
+              class="block text-[var(--color-gray-700)] dark:text-[var(--color-gray-300)]"
               >{{ $t("rate") }} (1 - 5)</label
             >
             <input
@@ -485,7 +491,7 @@
       class="mt-6 max-w-4xl mx-auto p-6 bg-[var(--color-gray-25)] dark:bg-[var(--color-gray-800)] rounded-2xl shadow-xl border border-[var(--color-success-200)]"
     >
       <h3
-        class="text-lg font-semibold text-[var(--color-gray-800)] mb-4 dark:text=[var(--color-gray-200)]"
+        class="text-lg font-semibold text-[var(--color-gray-800)] mb-4 dark:text-[var(--color-gray-200)]"
       >
         {{ $t("toolReviews") }}
       </h3>
@@ -495,7 +501,7 @@
           :key="review.id"
           class="p-4 bg-white rounded-lg shadow"
         >
-          <p class="text-[var(--color-gray-700)] dark:text=[var(--color-gray-300)]">
+          <p class="text-[var(--color-gray-700)] dark:text-[var(--color-gray-300)]">
             "{{ review.review }}" - {{ review.userName || review.rentUserId }}
           </p>
           <div class="flex items-center gap-1">
@@ -514,7 +520,7 @@
               ★
             </span>
             <span
-              class="text-[var(--color-gray-600)] dark:text=[var(--color-gray-400)] ml-2"
+              class="text-[var(--color-gray-600)] dark:text-[var(--color-gray-400)] ml-2"
             >
               {{ review.rate }}
             </span>
@@ -523,7 +529,7 @@
       </div>
       <button
         @click="showReviewForm = true"
-        class="mt-4 text-[var(--color-success-500)] text-sm dark:text=[var(--color-success-300)]"
+        class="mt-4 text-[var(--color-success-500)] text-sm dark:text-[var(--color-success-300)]"
       >
         {{ $t("addAReview") }}
       </button>
@@ -539,19 +545,19 @@
       >
         <button
           @click="showReviewForm = false"
-          class="absolute top-2 right-2 text-[var(--color-gray-700)] dark:text=[var(--color-gray-300)] hover:text-[var(--color-gray-800)] dark:hover:text=[var(--color-gray-200)] text-2xl font-bold"
+          class="absolute top-2 right-2 text-[var(--color-gray-700)] dark:text-[var(--color-gray-300)] hover:text-[var(--color-gray-800)] dark:hover:text-[var(--color-gray-200)] text-2xl font-bold"
         >
           ×
         </button>
         <h2
-          class="text-xl font-bold text-[var(--color-success-500)] dark:text=[var(--color-success-300)] mb-4"
+          class="text-xl font-bold text-[var(--color-success-500)] dark:text-[var(--color-success-300)] mb-4"
         >
           {{ $t("addAReview") }}
         </h2>
         <form @submit.prevent="submitReview" class="space-y-4">
           <div>
             <label
-              class="block text-[var(--color-gray-700)] dark:text=[var(--color-gray-300)]"
+              class="block text-[var(--color-gray-700)] dark:text-[var(--color-gray-300)]"
               >{{ $t("review") }}</label
             >
             <textarea
@@ -563,7 +569,7 @@
           </div>
           <div>
             <label
-              class="block text-[var(--color-gray-700)] dark:text=[var(--color-gray-300)]"
+              class="block text-[var(--color-gray-700)] dark:text-[var(--color-gray-300)]"
               >{{ $t("rate") }} (1 - 5)</label
             >
             <input
@@ -602,7 +608,7 @@
       class="mt-6 max-w-4xl mx-auto p-6 bg-[var(--color-gray-25)] dark:bg-[var(--color-gray-800)] rounded-2xl shadow-xl border border-[var(--color-success-200)]"
     >
       <h3
-        class="text-lg font-semibold text-[var(--color-gray-800)] mb-4 dark:text=[var(--color-gray-200)]"
+        class="text-lg font-semibold text-[var(--color-gray-800)] mb-4 dark:text-[var(--color-gray-200)]"
       >
         {{ $t("moreFrom") }} {{ booking.sellerName || $t("loading") }}
       </h3>
@@ -666,7 +672,7 @@
       </div>
       <button
         @click="showAllProducts = !showAllProducts"
-        class="mt-4 text-[var(--color-success-500)] text-sm dark:text=[var(--color-success-300)] hover:underline"
+        class="mt-4 text-[var(--color-success-500)] text-sm dark:text-[var(--color-success-300)] hover:underline"
       >
         {{ showAllProducts ? $t("showLess") : $t("viewAllItems") }}
       </button>
@@ -674,13 +680,13 @@
 
     <div
       v-else
-      class="text-center text-[var(--color-gray-500)] py-10 text-lg dark:text=[var(--color-gray-400)]"
+      class="text-center text-[var(--color-gray-500)] py-10 text-lg dark:text-[var(--color-gray-400)]"
     >
       {{ $t("loadingProduct") }}
     </div>
     <router-link
       to="/home"
-      class="mt-6 inline-block text-[var(--color-success-500)] hover:underline text-sm dark:text=[var(--color-success-300)]"
+      class="mt-6 inline-block text-[var(--color-success-500)] hover:underline text-sm dark:text-[var(--color-success-300)]"
     >
       {{ $t("backToProducts") }}
     </router-link>
@@ -811,11 +817,12 @@ const checkPendingBookings = async () => {
     const querySnapshot = await getDocs(q);
     console.log("Found", querySnapshot.docs.length, "pending bookings");
 
-    const now = new Date(); // Current time: 08:01 PM EEST, July 25, 2025
+    const now = new Date(); // Current time: 08:14 PM EEST, July 25, 2025
     const todayMidnight = new Date(now);
     todayMidnight.setHours(0, 0, 0, 0); // Set to 12:00 AM today
 
     let hasPendingBooking = false;
+    let earliestEndDate = null;
 
     for (const docSnap of querySnapshot.docs) {
       const bookingData = docSnap.data();
@@ -836,11 +843,17 @@ const checkPendingBookings = async () => {
         console.log("Updated status to free for product:", bookingData.productId);
       } else {
         hasPendingBooking = true;
+        if (!earliestEndDate || endDate < earliestEndDate) {
+          earliestEndDate = endDate;
+        }
         console.log("Active pending booking found with end date:", endDate);
       }
     }
 
     isBookingPending.value = hasPendingBooking;
+    if (earliestEndDate) {
+      pendingEndDate.value = earliestEndDate; // Store the earliest end date for remaining time calculation
+    }
     console.log("isBookingPending set to:", isBookingPending.value);
   } catch (error) {
     console.error("Error checking pending bookings:", error);
@@ -1164,6 +1177,16 @@ const formatOtp = (event) => {
 const formatPhoneNumber = (event) => {
   let value = event.target.value.replace(/\D/g, "");
   let formatted = "";
+
+  if (value.length > 3 && !value.startsWith("010") && !value.startsWith("011")) {
+    value = ""; // Reset if it doesn't start with 010 or 011
+    Swal.fire({
+      icon: "warning",
+      title: "Invalid Phone Number",
+      text: "Please enter a valid phone number starting with 010 or 011.",
+      confirmButtonText: "OK",
+    });
+  }
 
   if (value.length > 0) {
     formatted += value.slice(0, 4);
@@ -1537,6 +1560,28 @@ const navigateToProduct = (productId) => {
   }
 };
 
+const pendingEndDate = ref(null); // Store the earliest pending end date
+
+const remainingTime = computed(() => {
+  if (!pendingEndDate.value || !isBookingPending.value) return null;
+
+  const now = new Date();
+  const endDate = new Date(pendingEndDate.value);
+  endDate.setHours(23, 59, 59, 999); // Set to end of the day
+  const diffMs = endDate - now;
+
+  if (diffMs <= 0) return "Available now";
+
+  const diffDays = Math.floor(diffMs / (1000 * 60 * 60 * 24));
+  const diffHours = Math.floor((diffMs % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+  const diffMinutes = Math.floor((diffMs % (1000 * 60 * 60)) / (1000 * 60));
+
+  // Always show hours and minutes, with days if applicable
+  const totalHours = diffDays * 24 + diffHours;
+  return `${totalHours} hour${totalHours !== 1 ? "s" : ""}, ${diffMinutes} minute${
+    diffMinutes !== 1 ? "s" : ""
+  }`;
+});
 onMounted(() => {
   loadProduct();
   loadReviews();
