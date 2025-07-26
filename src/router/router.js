@@ -12,6 +12,7 @@ import Login from '@/views/Login.vue';
 import Signup from '@/views/Signup.vue';
 import AddProduct from '@/views/AddProduct.vue';
 import ProductDetails from '@/views/ProductDetails.vue';
+import RentConfirmation from '@/views/RentConfirmation.vue';
 import AllProducts from '../views/AllProducts.vue';
 import AdminUsers from '@/views/admin/Users.vue';
 import ProductsDashboard from '@/views/admin/AdminProducts.vue';
@@ -52,6 +53,7 @@ const routes = [
   { path: '/logout', name: 'Logout', component: Logout, meta: { requiresAuth: true } },
   { path: '/addProduct', name: 'AddProduct', component: AddProduct, meta: { requiresAuth: true, requiresVerifiedEmail: true } },
   { path: '/product/:id', name: 'ProductDetails', component: ProductDetails, meta: { requiresAuth: true, requiresVerifiedEmail: true } },
+  { path: '/rent-confirmation/:id', name: 'RentConfirmation', component: RentConfirmation, meta: { requiresAuth: true, requiresVerifiedEmail: true } },
   { path: '/all-products', name: 'AllProducts', component: AllProducts, meta: { requiresAuth: false } }, // Changed to allow guest access
   {
     path: '/profile',
