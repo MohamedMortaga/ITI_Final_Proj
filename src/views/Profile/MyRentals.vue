@@ -1,76 +1,133 @@
 <template>
   <div class="max-w-6xl mx-auto py-10 px-4">
-    <!-- Search Bar and Title -->
+    <!-- Header -->
     <div class="mb-6 flex flex-col md:flex-row md:justify-between md:items-center gap-4">
-      <p class="text-xl md:text-2xl text-[var(--Color-Text-Text-Primary)] font-medium mb-2 md:mb-0">
-        {{ $t('Your Rentals') }}
+      <p class="text-xl md:text-2xl font-medium text-[var(--Color-Text-Text-Primary)]">
+        {{ $t("Your Rentals") }}
       </p>
       <div class="relative w-full md:w-auto">
-        <i class="fa-solid fa-magnifying-glass absolute left-4 top-1/2 -translate-y-1/2 text-[var(--Color-Text-Text-Brand)] w-5 h-5 pointer-events-none"></i>
+        <i
+          class="fa-solid fa-magnifying-glass absolute left-4 top-1/2 -translate-y-1/2 text-[var(--Color-Text-Text-Brand)] w-5 h-5 pointer-events-none"
+        ></i>
         <input
           v-model="searchQuery"
           type="text"
           :placeholder="$t('searchByTitle')"
-          class="w-full md:w-[500px] pl-12 pr-4 py-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-[var(--Color-Text-Text-Brand)] text-base text-[var(--Color-Text-Text-Primary)] placeholder-[var(--Color-Text-Text-Secondary)] bg-[var(--Color-Surface-Surface-Primary)] border-[var(--Color-Boarder-Border-Primary)] dark:border-[var(--Color-Boarder-Border-Primary)]"
+          class="w-full md:w-[500px] pl-12 pr-4 py-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-[var(--Color-Text-Text-Brand)] text-base text-[var(--Color-Text-Text-Primary)] placeholder-[var(--Color-Text-Text-Secondary)] bg-[var(--Color-Surface-Surface-Primary)] border-[var(--Color-Boarder-Border-Primary)]"
         />
       </div>
     </div>
-    <!-- Product Cards Grid -->
+
+    <!-- Product Grid -->
     <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-      <ProductCard
+      <div
         v-for="product in filteredProducts"
         :key="product.id"
-        :product="product"
-        :isAuthenticated="true"
-        :promptLogin="() => {}"
-      />
+        class="border rounded-lg p-4 shadow-md bg-white dark:bg-gray-800"
+      >
+        <img
+          :src="product.productImage"
+          alt="Product"
+          class="w-full h-48 object-cover rounded-lg mb-3"
+        />
+        <h2 class="text-lg font-semibold mb-1">{{ product.productTitle }}</h2>
+        <p class="text-sm text-gray-500 mb-2">
+          Return in:
+          <span
+            class="font-medium"
+            :class="{
+              'text-red-600': getRemainingTime(product.endDate) === 'Expired',
+              'text-blue-600': getRemainingTime(product.endDate) !== 'Expired',
+            }"
+          >
+            {{ getRemainingTime(product.endDate) }}
+          </span>
+        </p>
+
+        <!-- Hide Button for Expired -->
+        <button
+          v-if="getRemainingTime(product.endDate) === 'Expired'"
+          @click="hideBooking(product.id)"
+          class="mt-2 px-4 py-2 bg-yellow-600 text-white rounded hover:bg-yellow-700"
+        >
+          Remove from My Rentals
+        </button>
+      </div>
     </div>
   </div>
 </template>
 
 <script>
-import ProductCard from '@/components/pages/ProductCard.vue';
+import { db, auth } from "@/firebase/config";
+import { onAuthStateChanged } from "firebase/auth";
+import { collection, query, where, getDocs, updateDoc, doc } from "firebase/firestore";
 
 export default {
-  name: 'MyRentals',
-  components: { ProductCard },
+  name: "MyRentals",
   data() {
     return {
-      searchQuery: '',
-      products: [
-        {
-          id: 1,
-          img: require('@/assets/test.png'),
-          title: 'Canon EOS R5 Camera',
-          location: 'Nasr City',
-          rating: '4.5',
-          price: 300,
-        },
-        {
-          id: 2,
-          img: require('@/assets/test.png'),
-          title: 'Canon EOS R5 Camera',
-          location: 'Nasr City',
-          rating: '4.5',
-          price: 300,
-        },
-        {
-          id: 3,
-          img: require('@/assets/test.png'),
-          title: 'Canon EOS R5 Camera',
-          location: 'Nasr City',
-          rating: '4.5',
-          price: 300,
-        },
-      ],
+      searchQuery: "",
+      bookings: [],
+      userId: null,
     };
   },
   computed: {
     filteredProducts() {
-      if (!this.searchQuery) return this.products;
+      if (!this.searchQuery) return this.bookings;
       const q = this.searchQuery.toLowerCase();
-      return this.products.filter(p => p.title.toLowerCase().includes(q));
+      return this.bookings.filter((p) => p.productTitle.toLowerCase().includes(q));
     },
   },
+  methods: {
+    async fetchBookings() {
+      try {
+        const bookingsRef = collection(db, "bookings");
+        const q = query(bookingsRef, where("userId", "==", this.userId));
+        const querySnapshot = await getDocs(q);
+
+        // Show only bookings that are NOT hidden
+        this.bookings = querySnapshot.docs
+          .map((doc) => ({
+            id: doc.id,
+            ...doc.data(),
+          }))
+          .filter((booking) => booking.hiddenForUser !== true); // includes false or undefined
+      } catch (error) {
+        console.error("Error fetching bookings:", error);
+      }
+    },
+    getRemainingTime(endDateStr) {
+      const [year, month, day] = endDateStr.split("-").map(Number);
+      const returnDate = new Date(year, month - 1, day, 0, 0, 0);
+      const now = new Date();
+
+      const diffMs = returnDate - now;
+      if (diffMs <= 0) return "Expired";
+
+      const days = Math.floor(diffMs / (1000 * 60 * 60 * 24));
+      const hours = Math.floor((diffMs / (1000 * 60 * 60)) % 24);
+      const minutes = Math.floor((diffMs / (1000 * 60)) % 60);
+
+      return `${days}d ${hours}h ${minutes}m`;
+    },
+    async hideBooking(id) {
+      try {
+        await updateDoc(doc(db, "bookings", id), {
+          hiddenForUser: true,
+        });
+        this.bookings = this.bookings.filter((b) => b.id !== id);
+      } catch (error) {
+        console.error("Error hiding booking:", error);
+      }
+    },
+  },
+  async mounted() {
+    onAuthStateChanged(auth, async (user) => {
+      if (user) {
+        this.userId = user.uid;
+        await this.fetchBookings();
+      }
+    });
+  },
 };
-</script> 
+</script>

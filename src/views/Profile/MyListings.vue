@@ -1,12 +1,37 @@
 <template>
   <div class="max-w-6xl mx-auto py-10 px-4">
+    <!-- Approval Alert -->
+    <div
+      v-if="showApprovalAlert"
+      class="mb-6 p-4 bg-yellow-50 border-l-4 border-yellow-400 text-yellow-700 rounded-lg shadow-sm"
+    >
+      <div class="flex items-center justify-between">
+        <div class="flex items-center">
+          <i class="fas fa-info-circle mr-3 text-yellow-500"></i>
+          <p class="text-sm font-medium">
+            {{ $t("itemPendingApproval") }}
+          </p>
+        </div>
+        <button
+          @click="showApprovalAlert = false"
+          class="text-yellow-500 hover:text-yellow-700 focus:outline-none"
+        >
+          <i class="fas fa-times"></i>
+        </button>
+      </div>
+    </div>
+
     <!-- Search Bar and Title -->
     <div class="mb-6 flex flex-col md:flex-row md:justify-between md:items-center gap-4">
-      <p class="text-xl md:text-2xl text-[var(--Color-Text-Text-Primary)] font-medium mb-2 md:mb-0">
-        {{ $t('Your Items') }}
+      <p
+        class="text-xl md:text-2xl text-[var(--Color-Text-Text-Primary)] font-medium mb-2 md:mb-0"
+      >
+        {{ $t("Your Items") }}
       </p>
       <div class="relative w-full md:w-auto">
-        <i class="fa-solid fa-magnifying-glass absolute left-4 top-1/2 -translate-y-1/2 text-[var(--Color-Text-Text-Brand)] w-5 h-5 pointer-events-none"></i>
+        <i
+          class="fa-solid fa-magnifying-glass absolute left-4 top-1/2 -translate-y-1/2 text-[var(--Color-Text-Text-Brand)] w-5 h-5 pointer-events-none"
+        ></i>
         <input
           v-model="searchQuery"
           type="text"
@@ -15,76 +40,121 @@
         />
       </div>
     </div>
+
+    <!-- Category Filter Buttons -->
+    <div class="mb-4">
+      <CategoryButtons
+        :categories="categories"
+        :selectedCategory="selectedCategory"
+        @updateCategory="(val) => (selectedCategory = val)"
+      />
+    </div>
+
     <!-- Product List -->
-    <ProductList
-      :products="filteredProducts"
-      :highlightText="highlightText"
-      @editProduct="editProduct"
-      @deleteProduct="deleteProduct"
-      @addItem="addItem"
-    />
+    <div class="mb-8">
+      <ProductList
+        :products="filteredProducts"
+        :highlightText="highlightText"
+        @editProduct="editProductHandler"
+        @deleteProduct="deleteProduct"
+        @addItem="showForm = true"
+        @approveProduct="approveProduct"
+      />
+    </div>
+
+    <!-- Add / Edit Form -->
+    <div class="mb-8">
+      <ProductForm
+        v-if="showForm"
+        :form="form"
+        :categories="categories"
+        :isEdit="isEdit"
+        :uploading="uploading"
+        @submitForm="handleSubmit"
+        @imageUpload="handleImageUpload"
+        @cancelForm="showForm = false"
+      />
+    </div>
   </div>
 </template>
 
-<script>
-import ProductList from '@/components/pages/ProductList.vue';
+<script setup>
+import { ref, computed, onMounted } from "vue";
+import ProductList from "@/components/pages/ProductList.vue";
+import ProductForm from "@/components/pages/ProductForm.vue";
+import CategoryButtons from "@/components/pages/CategoryFilter.vue";
+import { useRouter } from "vue-router";
+import useAdminProducts from "@/composables/useAdminProducts";
 
-export default {
-  name: 'MyListings',
-  components: { ProductList },
-  data() {
-    return {
-      searchQuery: '',
-      products: [
-        {
-          id: 1,
-          img: require('@/assets/test.png'),
-          title: 'Canon EOS R5 Camera',
-          category: 'profficional Camera',
-          price: 300,
-        },
-        {
-          id: 2,
-          img: require('@/assets/test.png'),
-          title: 'Canon EOS R5 Camera',
-          category: 'profficional Camera',
-          price: 300,
-        },
-        {
-          id: 3,
-          img: require('@/assets/test.png'),
-          title: 'Canon EOS R5 Camera',
-          category: 'profficional Camera',
-          price: 300,
-        },
-      ],
-    };
-  },
-  computed: {
-    filteredProducts() {
-      if (!this.searchQuery) return this.products;
-      const q = this.searchQuery.toLowerCase();
-      return this.products.filter(p => p.title.toLowerCase().includes(q));
-    },
-  },
-  methods: {
-    highlightText(text) {
-      if (!this.searchQuery) return text;
-      const regex = new RegExp(`(${this.searchQuery})`, 'gi');
-      return text.replace(regex, '<span class="bg-yellow-200">$1</span>');
-    },
-    editProduct(product) {
-      // Placeholder for edit action
-      alert('Edit: ' + product.title);
-    },
-    deleteProduct(productId) {
-      // Placeholder for delete action
-      this.products = this.products.filter(p => p.id !== productId);
-    },
-    addItem() {
-      // Placeholder for add item action
-      alert('Add new item');
-    },
-  },
-};
-</script> 
+const router = useRouter();
+
+const {
+  form,
+  products,
+  categories,
+  isEdit,
+  uploading,
+  currentUser,
+  searchQuery,
+  selectedCategory,
+  loadProducts,
+  loadCategories,
+  submitForm,
+  handleImageUpload,
+  editProduct,
+  deleteProduct,
+  highlightText,
+  approveProduct,
+} = useAdminProducts();
+
+const showForm = ref(false);
+const showApprovalAlert = ref(false);
+
+async function handleSubmit() {
+  try {
+    await submitForm();
+    // Show approval alert only for new items (not edits)
+    if (!isEdit.value) {
+      showApprovalAlert.value = true;
+      // Hide after 5 seconds
+      setTimeout(() => {
+        showApprovalAlert.value = false;
+      }, 10000);
+    }
+    showForm.value = false;
+  } catch (error) {
+    console.error("Error submitting form:", error);
+  }
+}
+
+function editProductHandler(product) {
+  editProduct(product);
+  showForm.value = true;
+}
+
+const filteredProducts = computed(() => {
+  let filtered = products.value;
+  if (selectedCategory.value) {
+    filtered = filtered.filter((p) => p.category === selectedCategory.value);
+  }
+  if (searchQuery.value) {
+    filtered = filtered.filter((p) =>
+      p.title?.toLowerCase().includes(searchQuery.value.toLowerCase())
+    );
+  }
+  return filtered;
+});
+
+onMounted(() => {
+  if (!currentUser.value) {
+    router.push("/login");
+  } else {
+    loadProducts();
+    loadCategories();
+  }
+});
+</script>
+
+<style scoped>
+/* Add any custom styles here if needed */
+</style>

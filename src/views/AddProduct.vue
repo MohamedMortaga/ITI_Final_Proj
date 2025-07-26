@@ -3,9 +3,26 @@
   <div
     class="min-h-screen mx-auto bg-[var(--Color-Surface-Surface-Primary)] dark:bg-[var(--Color-Surface-Surface-Primary)] px-[16px] sm:px-6 md:px-12 lg:px-[120px] py-6"
   >
-    <!-- <h1 class="text-2xl font-bold mb-6 text-center text-pink-600 dark:text-pink-400">
-      Products 
-    </h1> -->
+    <!-- Approval Alert -->
+    <div
+      v-if="showApprovalAlert"
+      class="mb-6 p-4 bg-yellow-50 border-l-4 border-yellow-400 text-yellow-700 rounded-lg shadow-sm"
+    >
+      <div class="flex items-center justify-between">
+        <div class="flex items-center">
+          <i class="fas fa-info-circle mr-3 text-yellow-500"></i>
+          <p class="text-sm font-medium">
+            {{ $t("itemPendingApproval") }}
+          </p>
+        </div>
+        <button
+          @click="showApprovalAlert = false"
+          class="text-yellow-500 hover:text-yellow-700 focus:outline-none"
+        >
+          <i class="fas fa-times"></i>
+        </button>
+      </div>
+    </div>
 
     <!-- Search Bar -->
     <div class="mb-6 flex flex-col md:flex-row md:justify-between md:items-center gap-4">
@@ -88,13 +105,27 @@ const {
   editProduct,
   deleteProduct,
   highlightText,
+  approveProduct,
 } = useAdminProducts();
 
 const showForm = ref(false);
+const showApprovalAlert = ref(false);
 
-function handleSubmit() {
-  submitForm();
-  showForm.value = false;
+async function handleSubmit() {
+  try {
+    await submitForm();
+    // Show approval alert only for new items (not edits)
+    if (!isEdit.value) {
+      showApprovalAlert.value = true;
+      // Hide after 10 seconds
+      setTimeout(() => {
+        showApprovalAlert.value = false;
+      }, 10000);
+    }
+    showForm.value = false;
+  } catch (error) {
+    console.error("Error submitting form:", error);
+  }
 }
 
 function editProductHandler(product) {
