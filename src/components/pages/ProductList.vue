@@ -159,75 +159,78 @@
     <div
       v-for="product in products"
       :key="product.id"
-      class="flex flex-row items-center bg-[var(--Color-Surface-Surface-Primary)] dark:bg-[var(--Color-Surface-Surface-Primary)] border border-[var(--Color-Boarder-Border-Primary)] rounded-xl shadow-sm px-2 py-4 mb-4 md:hidden lg:hidden"
+      class="flex flex-row items-center bg-[var(--Color-Surface-Surface-Primary)] dark:bg-[var(--Color-Surface-Surface-Primary)] border border-[var(--Color-Boarder-Border-Primary)] rounded-xl shadow-sm px-3 py-3 mb-4 md:hidden lg:hidden"
     >
       <!-- Image -->
-      <div class="w-full flex justify-center mb-2">
+      <div class="flex-shrink-0 mr-3">
         <img
           v-if="product.img"
           :src="product.img"
           alt="Product Image"
-          class="w-24 h-24 object-cover rounded"
+          class="w-16 h-16 object-cover rounded"
         />
         <span v-else class="text-red-500 text-sm dark:text-red-400">{{$t('noImage')}}</span>
       </div>
-      <!-- Title -->
-      <div class="w-full text-center text-sm font-semibold text-[var(--Color-Text-Text-Primary)] dark:text-[var(--Color-Text-Text-Primary)] font-nunito mb-1" v-html="highlightText(product.title)"></div>
       
-      <!-- Price -->
-      <div class="text-[var(--Color-Text-Text-Primary)] dark:text-[var(--Color-Text-Text-Primary)] font-nunito px-4">
-        {{ product.price }} EGP <br>
-        <span class="text-xs text-[var(--Color-Text-Text-Secondary)] dark:text-[var(--Color-Text-Text-Secondary)] font-nunito">
-          {{$t('perDay')}}
-        </span>
-        <br>
-        <span class="text-xs text-[var(--Colors-Success-500)] dark:text-[var(--Colors-Success-400)] font-medium">
+      <!-- Content -->
+      <div class="flex-1 min-w-0">
+        <!-- Title -->
+        <div class="text-sm font-semibold text-[var(--Color-Text-Text-Primary)] dark:text-[var(--Color-Text-Text-Primary)] font-nunito mb-1 truncate" v-html="highlightText(product.title)"></div>
+        
+        <!-- Price -->
+        <div class="text-[var(--Color-Text-Text-Primary)] dark:text-[var(--Color-Text-Text-Primary)] font-nunito mb-1">
+          <span class="font-medium">{{ product.price }} EGP</span>
+          <span class="text-xs text-[var(--Color-Text-Text-Secondary)] dark:text-[var(--Color-Text-Text-Secondary)] font-nunito ml-1">
+            {{$t('perDay')}}
+          </span>
+        </div>
+        
+        <!-- Commission -->
+        <div class="text-xs text-[var(--Colors-Success-500)] dark:text-[var(--Colors-Success-400)] font-medium mb-1">
           {{$t('afterCommission')}}: {{ (product.price - product.price * 0.15).toFixed(2) }} EGP
-        </span>
+        </div>
+        
+        <!-- Status -->
+        <div class="mb-2">
+          <span
+            v-if="product.isApproved === true"
+            class="text-xs text-[var(--Colors-Success-500)] dark:text-[var(--Colors-Success-400)] font-semibold"
+          >
+            {{$t('approved') || 'Approved'}}
+          </span>
+          <span
+            v-else
+            class="text-xs text-[var(--Colors-Warning-400)] dark:text-[var(--Colors-Warning-300)] font-semibold"
+          >
+            {{$t('pending') || 'Pending'}}
+          </span>
+        </div>
       </div>
       
-       <div class="w-full flex flex-row gap-2 items-center justify-center mt-2 align-center">
-        <!-- Status -->
-      <div>
-        <span
-          v-if="product.isApproved === true"
-          class="text-[var(--Colors-Success-500)] dark:text-[var(--Colors-Success-400)] font-semibold"
-        >
-          {{$t('approved') || 'Approved'}}
-        </span>
-        <span
-          v-else
-          class="text-[var(--Colors-Warning-400)] dark:text-[var(--Colors-Warning-300)] font-semibold"
-        >
-          {{$t('pending') || 'Pending'}}
-        </span>
-        <!-- Actions -->
-      <div class="w-full flex flex-row gap-2 items-center justify-center mt-2">
+      <!-- Actions -->
+      <div class="flex flex-col gap-2 ml-2">
         <button
           @click="$emit('editProduct', product)"
           class="w-8 h-8 flex items-center justify-center rounded-full bg-[var(--Color-Surface-Surface-Brand)] text-white hover:bg-[var(--Colors-Primary-600)] transition"
           title="Edit"
         >
-          <i class="fa-solid fa-pen"></i>
+          <i class="fa-solid fa-pen text-xs"></i>
         </button>
         <button
           @click="$emit('deleteProduct', product.id)"
           class="w-8 h-8 flex items-center justify-center rounded-full bg-[var(--Colors-Error-400)] text-white hover:bg-red-700 transition"
           title="Delete"
         >
-          <i class="fa-solid fa-trash"></i>
+          <i class="fa-solid fa-trash text-xs"></i>
         </button>
       </div>
-      </div>
-       </div>
-       
     </div>
   </div>
   <div v-else class="text-center text-gray-500 py-10 text-lg dark:text-gray-400">
     {{$t('noProductsFound')}}
   </div>
-  <div class="flex justify-center mt-10 ">
-    <button class="w-[400px] bg-[var(--Color-Surface-Surface-Brand)]  text-white hover:bg-[var(--Colors-Primary-600)] px-4 py-2 rounded-lg" @click="$emit('addItem')">{{$t('addTool')}}</button>
+  <div class="flex justify-center mt-10">
+    <button class="w-full max-w-[400px] bg-[var(--Color-Surface-Surface-Brand)] text-white hover:bg-[var(--Colors-Primary-600)] px-4 py-2 rounded-lg" @click="$emit('addItem')">{{$t('addTool')}}</button>
   </div>
 </template>
 
