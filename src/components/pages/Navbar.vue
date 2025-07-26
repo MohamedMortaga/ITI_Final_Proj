@@ -4,7 +4,9 @@
       as="nav"
       :class="[
         'fixed top-0 w-full z-50 bg-[var(--Color-Surface-Surface-Primary)] text-[var(--Color-Text-Text-Primary)] mb-0 px-6 lg:px-[88px] transition-all duration-300',
-        isHomePage && !isScrolled ? '' : 'border-b border-[var(--Color-Boarder-Border-Primary)]'
+        isHomePage && !isScrolled
+          ? ''
+          : 'border-b border-[var(--Color-Boarder-Border-Primary)]',
       ]"
     >
       <div class="mx-auto sm:px-6 lg:px-8">
@@ -20,7 +22,7 @@
           <!-- Main content (centered nav links) -->
           <div class="flex-1 flex justify-center">
             <!-- Navigation links -->
-            <div class="flex items-center gap-3 hidden lg:flex">
+            <div class="items-center gap-3 hidden lg:flex">
               <router-link
                 v-for="link in navLinks"
                 :key="link.to"
@@ -308,7 +310,7 @@ const isScrolled = ref(false);
 
 // Check if current page is home or browse tools
 const isHomePage = computed(() => {
-  return route.path === '/' || route.path === '/home' || route.path === '/all-products';
+  return route.path === "/" || route.path === "/home" || route.path === "/all-products";
 });
 
 const navLinks = [
@@ -405,14 +407,14 @@ onMounted(() => {
   initializeDarkMode();
   initializeAuth();
   setDir(currentLang.value);
-  
+
   // Add scroll event listener
-  window.addEventListener('scroll', handleScroll);
+  window.addEventListener("scroll", handleScroll);
 });
 
 // Clean up event listener
 onUnmounted(() => {
-  window.removeEventListener('scroll', handleScroll);
+  window.removeEventListener("scroll", handleScroll);
 });
 
 watch(isDarkMode, (newValue) => {
@@ -501,9 +503,6 @@ button:hover {
 }
 
 /* Fixed navbar styles - clean and simple */
-.fixed {
-  /* No special effects - clean appearance */
-}
 
 /* Ensure smooth scrolling when navigating with fixed navbar */
 html {
