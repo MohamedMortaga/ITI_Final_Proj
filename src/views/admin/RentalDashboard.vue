@@ -98,7 +98,7 @@ import Swal from 'sweetalert2';
 
 const rentals = ref([]);
 const searchQuery = ref('');
-const sortOption = ref('Start Date Newest');
+const sortOption = ref('Newest First');
 const filterStatus = ref('');
 const currentPage = ref(1);
 const itemsPerPage = 10;
@@ -165,7 +165,7 @@ const filteredRentals = computed(() => {
   }
   // Sort
   filtered = [...filtered].sort((a, b) => {
-    if (sortOption.value === 'Start Date Newest') {
+    if (sortOption.value === 'Newest First') {
       return new Date(b.startDate) - new Date(a.startDate);
     } else {
       return new Date(a.startDate) - new Date(b.startDate);

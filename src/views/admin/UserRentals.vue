@@ -1,5 +1,14 @@
 <template>
   <div class="min-h-screen p-8">
+    <!-- Top Bar -->
+    <TopBar
+      title="User Rentals"
+      searchPlaceholder="Search rentals..."
+      @update:search="handleSearch"
+      @update:sort="handleSort"
+    />
+
+    <!-- Rentals Table -->
     <div class="bg-white rounded-xl shadow border mt-4">
       <table class="min-w-full divide-y">
         <thead>
@@ -18,7 +27,7 @@
           </tr>
         </thead>
         <tbody>
-          <tr v-for="rental in rentals" :key="rental.id" class="hover:bg-gray-50">
+          <tr v-for="rental in filteredRentals" :key="rental.id" class="hover:bg-gray-50">
             <td class="px-4 py-3 font-medium">{{ rental.productTitle }}</td>
             <td class="px-4 py-3">{{ rental.totalPrice }} EGP</td>
             <td class="px-4 py-3">{{ formatDate(rental.startDate) }}</td>
@@ -64,7 +73,7 @@
         </tbody>
       </table>
       <!-- No Rentals Fallback -->
-      <div v-if="!rentals.length && !loading" class="text-gray-600 mt-8 text-center">
+      <div v-if="!filteredRentals.length && !loading" class="text-gray-600 mt-8 text-center">
         <p>No rentals found for this user.</p>
       </div>
     </div>
@@ -72,7 +81,7 @@
 </template>
 
 <script setup>
-import { ref, onMounted } from 'vue'
+import { ref, onMounted, computed } from 'vue'
 import TopBar from '@/components/admin/TopBar.vue'
 import { useRoute } from 'vue-router'
 import { collection, getDocs, query, where, doc, getDoc, deleteDoc, updateDoc } from 'firebase/firestore'
@@ -85,6 +94,8 @@ const userId = route.params.userId
 const rentals = ref([])
 const userName = ref('')
 const loading = ref(true)
+const searchQuery = ref('')
+const sortOption = ref('Newest First')
 
 // Fetch rentals
 const fetchUserRentals = async () => {
@@ -100,6 +111,47 @@ const fetchUserRentals = async () => {
     loading.value = false
   }
 }
+
+// Filtered and sorted rentals
+const filteredRentals = computed(() => {
+  let filtered = rentals.value;
+  
+  // Search functionality
+  if (searchQuery.value) {
+    filtered = filtered.filter(rental =>
+      (rental.productTitle || '').toLowerCase().includes(searchQuery.value.toLowerCase()) ||
+      (rental.paymentMethod || '').toLowerCase().includes(searchQuery.value.toLowerCase())
+    );
+  }
+  
+  // Sort functionality
+  filtered = [...filtered].sort((a, b) => {
+    if (sortOption.value === 'Newest First') {
+      // Sort by start date, newest first
+      return new Date(b.startDate) - new Date(a.startDate);
+    } else if (sortOption.value === 'Oldest First') {
+      // Sort by start date, oldest first
+      return new Date(a.startDate) - new Date(b.startDate);
+    } else if (sortOption.value === 'Price High to Low') {
+      // Sort by price, high to low
+      return (b.totalPrice || 0) - (a.totalPrice || 0);
+    } else if (sortOption.value === 'Price Low to High') {
+      // Sort by price, low to high
+      return (a.totalPrice || 0) - (b.totalPrice || 0);
+    }
+    return 0;
+  });
+  
+  return filtered;
+});
+
+const handleSearch = (query) => {
+  searchQuery.value = query;
+};
+
+const handleSort = (option) => {
+  sortOption.value = option;
+};
 
 // Fetch user name
 const fetchUserName = async () => {

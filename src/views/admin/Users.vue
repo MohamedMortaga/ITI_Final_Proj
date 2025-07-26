@@ -28,8 +28,8 @@
             <td class="px-4 py-3">{{ user.email }}</td>
             <td class="px-4 py-3">{{ user.role || $t('notSet') }}</td>
             <td class="px-4 py-3">
-              <span v-if="user.createdAt && user.createdAt.toDate">
-                {{ user.createdAt.toDate().toLocaleDateString() }}
+              <span v-if="user.createdAt">
+                {{ formatCreatedAt(user.createdAt) }}
               </span>
               <span v-else>{{$t('notAvailable')}}</span>
             </td>
@@ -105,18 +105,31 @@
     >
       <div class="bg-white rounded-xl p-6 w-full max-w-sm space-y-4">
         <h2 class="text-lg font-semibold text-gray-800">{{$t('editRole')}} {{$t('for')}} {{ selectedUser.displayName }}</h2>
-        <input
-          v-model="updatedRole"
-          type="text"
-          :placeholder="$t('enterNewRole')"
-          class="w-full border rounded-md px-3 py-2"
-        />
+        <div class="space-y-2">
+          <label class="block text-sm font-medium text-gray-700">Select Role:</label>
+          <select
+            v-model="updatedRole"
+            class="w-full border rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
+          >
+            <option value="">Select a role</option>
+            <option value="user">User</option>
+            <option value="admin">Admin</option>
+          </select>
+        </div>
         <div class="flex justify-end gap-2">
-          <button @click="selectedUser = null" class="text-gray-500">{{$t('cancel')}}</button>
+          <button 
+            @click="selectedUser = null" 
+            class="px-4 py-2 text-gray-500 hover:text-gray-700 border border-gray-300 rounded-md hover:bg-gray-50"
+          >
+            {{$t('cancel')}}
+          </button>
           <button
             @click="updateRole"
-            class="bg-blue-600 text-white px-4 py-2 rounded-md hover:bg-blue-700"
-          >{{$t('save')}}</button>
+            :disabled="!updatedRole"
+            class="bg-blue-600 text-white px-4 py-2 rounded-md hover:bg-blue-700 disabled:bg-gray-400 disabled:cursor-not-allowed"
+          >
+            {{$t('save')}}
+          </button>
         </div>
       </div>
     </div>
@@ -142,7 +155,7 @@ const selectedUser  = ref(null)
 const updatedRole = ref('')
 
 const searchQuery = ref('')
-const sortOption = ref('Name A → Z')
+const sortOption = ref('Newest First')
 const filterRole = ref('')
 const currentPage = ref(1)
 const itemsPerPage = 10
@@ -172,19 +185,53 @@ const deleteUser  = async (userId) => {
   }
 }
 
-const editUser  = (user) => {
-  selectedUser .value = user
-  updatedRole.value = user.role || ''
+const editUser = (user) => {
+  selectedUser.value = user;
+  // Set the current role or empty string if no role is set
+  updatedRole.value = user.role || '';
 }
 
 const updateRole = async () => {
-  if (!selectedUser .value) return
-  const userRef = doc(db, 'users', selectedUser .value.id)
-  await updateDoc(userRef, { role: updatedRole.value })
-  selectedUser .value.role = updatedRole.value
-  selectedUser .value = null
-  await fetchUsers()
-  Swal.fire('Updated!', 'Role has been updated.', 'success')
+  if (!selectedUser.value) return;
+  
+  if (!updatedRole.value) {
+    Swal.fire({
+      icon: 'warning',
+      title: 'Role Required',
+      text: 'Please select a role for this user.',
+    });
+    return;
+  }
+
+  try {
+    const userRef = doc(db, 'users', selectedUser.value.id);
+    await updateDoc(userRef, { role: updatedRole.value });
+    
+    // Update the local user data
+    selectedUser.value.role = updatedRole.value;
+    
+    // Close modal and show success message
+    selectedUser.value = null;
+    updatedRole.value = '';
+    
+    Swal.fire({
+      icon: 'success',
+      title: 'Role Updated!',
+      text: `User role has been updated to ${updatedRole.value}.`,
+      timer: 2000,
+      showConfirmButton: false
+    });
+    
+    // Refresh the users list
+    await fetchUsers();
+  } catch (error) {
+    console.error('Error updating role:', error);
+    Swal.fire({
+      icon: 'error',
+      title: 'Update Failed',
+      text: 'Failed to update user role. Please try again.',
+    });
+  }
 }
 
 const toggleBlockUser  = async (user) => {
@@ -240,12 +287,25 @@ const filteredUsers = computed(() => {
   }
   // Sort
   filtered = [...filtered].sort((a, b) => {
-    const nameA = (a.displayName || '').toLowerCase();
-    const nameB = (b.displayName || '').toLowerCase();
-    if (sortOption.value === 'Name A → Z') {
-      return nameA.localeCompare(nameB);
+    if (sortOption.value === 'Newest First') {
+      // Sort by creation date, newest first
+      const dateA = a.createdAt ? (a.createdAt.toDate ? a.createdAt.toDate() : new Date(a.createdAt)) : new Date(0);
+      const dateB = b.createdAt ? (b.createdAt.toDate ? b.createdAt.toDate() : new Date(b.createdAt)) : new Date(0);
+      return dateB - dateA;
+    } else if (sortOption.value === 'Oldest First') {
+      // Sort by creation date, oldest first
+      const dateA = a.createdAt ? (a.createdAt.toDate ? a.createdAt.toDate() : new Date(a.createdAt)) : new Date(0);
+      const dateB = b.createdAt ? (b.createdAt.toDate ? b.createdAt.toDate() : new Date(b.createdAt)) : new Date(0);
+      return dateA - dateB;
     } else {
-      return nameB.localeCompare(nameA);
+      // Sort by name
+      const nameA = (a.displayName || '').toLowerCase();
+      const nameB = (b.displayName || '').toLowerCase();
+      if (sortOption.value === 'Name A → Z') {
+        return nameA.localeCompare(nameB);
+      } else {
+        return nameB.localeCompare(nameA);
+      }
     }
   });
   return filtered;
@@ -267,6 +327,64 @@ const handleSearch = (query) => {
 const handleSort = (option) => {
   sortOption.value = option
 }
+
+const formatCreatedAt = (timestamp) => {
+  if (!timestamp) return 'Not Available';
+  
+  try {
+    // Handle Firestore Timestamp objects
+    if (timestamp.toDate && typeof timestamp.toDate === 'function') {
+      return timestamp.toDate().toLocaleDateString('en-US', {
+        year: 'numeric',
+        month: 'short',
+        day: 'numeric',
+        hour: '2-digit',
+        minute: '2-digit'
+      });
+    }
+    
+    // Handle regular Date objects
+    if (timestamp instanceof Date) {
+      return timestamp.toLocaleDateString('en-US', {
+        year: 'numeric',
+        month: 'short',
+        day: 'numeric',
+        hour: '2-digit',
+        minute: '2-digit'
+      });
+    }
+    
+    // Handle timestamp numbers (milliseconds)
+    if (typeof timestamp === 'number') {
+      return new Date(timestamp).toLocaleDateString('en-US', {
+        year: 'numeric',
+        month: 'short',
+        day: 'numeric',
+        hour: '2-digit',
+        minute: '2-digit'
+      });
+    }
+    
+    // Handle string timestamps
+    if (typeof timestamp === 'string') {
+      const date = new Date(timestamp);
+      if (!isNaN(date.getTime())) {
+        return date.toLocaleDateString('en-US', {
+          year: 'numeric',
+          month: 'short',
+          day: 'numeric',
+          hour: '2-digit',
+          minute: '2-digit'
+        });
+      }
+    }
+    
+    return 'Invalid Date';
+  } catch (error) {
+    console.error('Error formatting timestamp:', error);
+    return 'Error';
+  }
+};
 
 onMounted(fetchUsers)
 </script>

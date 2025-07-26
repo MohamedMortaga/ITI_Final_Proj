@@ -26,20 +26,32 @@ const verifyPassword = () => {
   if (passwordInput.value === "123321") {
     isPasswordVerified.value = true;
     showPasswordModal.value = false;
+    passwordInput.value = ""; // Clear the input
   } else {
     alert("Incorrect password. Please try again.");
+    passwordInput.value = ""; // Clear the input on wrong password
   }
 };
 
+// Check password on initial load and when route changes to admin
+const checkPasswordOnRouteChange = () => {
+  if (route.meta.layout === "admin" && !isPasswordVerified.value) {
+    showPasswordModal.value = true;
+  }
+};
+
+// Watch for route changes to admin layout
 watch(
-  () => route.path,
-  () => {
-    passwordInput.value = "";
-    isPasswordVerified.value = false;
-    checkPassword();
-  },
-  { immediate: true }
+  () => route.meta.layout,
+  (newLayout) => {
+    if (newLayout === "admin" && !isPasswordVerified.value) {
+      showPasswordModal.value = true;
+    }
+  }
 );
+
+// Check password on initial load
+checkPasswordOnRouteChange();
 
 function toggleChat() {
   isChatOpen.value = !isChatOpen.value;
