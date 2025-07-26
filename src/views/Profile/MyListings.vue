@@ -50,13 +50,8 @@
       />
     </div> -->
 
-<<<<<<< Updated upstream
     <!-- Product List -->
     <div class="mb-6 md:mb-8">
-=======
-    Product List
-    <div class="mb-8">
->>>>>>> Stashed changes
       <ProductList
         :products="filteredProducts"
         :highlightText="highlightText"
