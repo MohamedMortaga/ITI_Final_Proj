@@ -2,7 +2,7 @@
   <div class="min-h-screen bg-white">
     <Navbar v-if="!route.meta.hideNavbar" />
     
-    <main>
+    <main class="pt-16">
       <slot />
     </main>
   </div>
