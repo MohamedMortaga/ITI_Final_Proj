@@ -1,14 +1,20 @@
 <template>
   <div class="min-h-screen bg-[var(--color-gray-25)] dark:bg-[var(--color-gray-800)]">
     <!-- Breadcrumbs -->
-    <div class="max-w-7xl mx-auto px-4 py-2 text-sm text-[var(--color-gray-600)] dark:text-[var(--color-gray-400)]">
+    <div
+      class="max-w-7xl mx-auto px-4 py-2 text-sm text-[var(--color-gray-600)] dark:text-[var(--color-gray-400)]"
+    >
       <span class="hover:text-[var(--color-success-500)] cursor-pointer">Home</span>
       <span class="mx-2">></span>
-      <span class="hover:text-[var(--color-success-500)] cursor-pointer">Furniture & DIY</span>
+      <span class="hover:text-[var(--color-success-500)] cursor-pointer"
+        >Furniture & DIY</span
+      >
       <span class="mx-2">></span>
       <span class="hover:text-[var(--color-success-500)] cursor-pointer">DIY tools</span>
       <span class="mx-2">></span>
-      <span class="text-[var(--color-gray-800)] dark:text-[var(--color-gray-200)]">{{ product?.title }}</span>
+      <span class="text-[var(--color-gray-800)] dark:text-[var(--color-gray-200)]">{{
+        product?.title
+      }}</span>
       <span class="mx-2">></span>
       <span class="text-[var(--color-success-500)]">Rent confirmation</span>
     </div>
@@ -26,14 +32,20 @@
                 class="w-full h-96 object-cover"
               />
               <!-- Navigation Arrows -->
-              <button class="absolute left-4 top-1/2 transform -translate-y-1/2 bg-white/80 hover:bg-white rounded-full p-2 shadow-lg">
+              <button
+                class="absolute left-4 top-1/2 transform -translate-y-1/2 bg-white/80 hover:bg-white rounded-full p-2 shadow-lg"
+              >
                 <i class="fas fa-chevron-left text-gray-600"></i>
               </button>
-              <button class="absolute right-4 top-1/2 transform -translate-y-1/2 bg-white/80 hover:bg-white rounded-full p-2 shadow-lg">
+              <button
+                class="absolute right-4 top-1/2 transform -translate-y-1/2 bg-white/80 hover:bg-white rounded-full p-2 shadow-lg"
+              >
                 <i class="fas fa-chevron-right text-gray-600"></i>
               </button>
               <!-- Pagination Dots -->
-              <div class="absolute bottom-4 left-1/2 transform -translate-x-1/2 flex space-x-2">
+              <div
+                class="absolute bottom-4 left-1/2 transform -translate-x-1/2 flex space-x-2"
+              >
                 <div class="w-2 h-2 bg-[var(--color-success-500)] rounded-full"></div>
                 <div class="w-2 h-2 bg-gray-300 rounded-full"></div>
               </div>
@@ -42,7 +54,9 @@
 
           <!-- Product Title and Action -->
           <div class="bg-white rounded-xl shadow-lg p-6">
-            <h1 class="text-3xl font-bold text-[var(--color-gray-800)] dark:text-[var(--color-gray-200)] mb-4">
+            <h1
+              class="text-3xl font-bold text-[var(--color-gray-800)] dark:text-[var(--color-gray-200)] mb-4"
+            >
               {{ product.title }}
             </h1>
             <button
@@ -50,22 +64,34 @@
               :disabled="product?.status === 'pending' || isBookingPending"
               class="w-full bg-[var(--color-success-500)] text-white py-3 px-6 rounded-lg font-semibold hover:bg-[var(--color-success-600)] disabled:bg-gray-400 disabled:cursor-not-allowed transition-colors"
             >
-              {{ product?.status === "pending" || isBookingPending ? $t("toolNotAvailable") : $t("rentThisTool") }}
+              {{
+                product?.status === "pending" || isBookingPending
+                  ? $t("toolNotAvailable")
+                  : $t("rentThisTool")
+              }}
             </button>
           </div>
 
           <!-- Product Description -->
           <div class="bg-white rounded-xl shadow-lg p-6">
-            <h2 class="text-xl font-semibold text-[var(--color-gray-800)] dark:text-[var(--color-gray-200)] mb-4">
+            <h2
+              class="text-xl font-semibold text-[var(--color-gray-800)] dark:text-[var(--color-gray-200)] mb-4"
+            >
               Description
             </h2>
-            <div class="space-y-4 text-[var(--color-gray-600)] dark:text-[var(--color-gray-400)]">
+            <div
+              class="space-y-4 text-[var(--color-gray-600)] dark:text-[var(--color-gray-400)]"
+            >
               <p>
                 {{ product.details }}
               </p>
-              
+
               <div>
-                <h3 class="font-semibold text-[var(--color-gray-800)] dark:text-[var(--color-gray-200)] mb-2">Inclusions:</h3>
+                <h3
+                  class="font-semibold text-[var(--color-gray-800)] dark:text-[var(--color-gray-200)] mb-2"
+                >
+                  Inclusions:
+                </h3>
                 <ul class="list-disc list-inside space-y-1">
                   <li>1 rechargeable battery (18V)</li>
                   <li>Charger included</li>
@@ -74,29 +100,45 @@
               </div>
 
               <div>
-                <h3 class="font-semibold text-[var(--color-gray-800)] dark:text-[var(--color-gray-200)] mb-2">Usage & Care:</h3>
+                <h3
+                  class="font-semibold text-[var(--color-gray-800)] dark:text-[var(--color-gray-200)] mb-2"
+                >
+                  Usage & Care:
+                </h3>
                 <p class="mb-2">Rented over 15 times with great feedback.</p>
                 <ul class="list-disc list-inside space-y-1">
                   <li>Assembling IKEA furniture</li>
                   <li>Wall mounting (TVs, shelves)</li>
                   <li>Minor drilling in wood or drywall</li>
                 </ul>
-                <p class="mt-2">I sanitize the tool after each rental, and it's checked for performance every month.</p>
-                <p class="mt-2">Perfect for short-term use without having to buy expensive tools.</p>
-                <p class="mt-2">Ready for pickup in Nasr City or I can arrange delivery depending on the distance.</p>
+                <p class="mt-2">
+                  I sanitize the tool after each rental, and it's checked for performance
+                  every month.
+                </p>
+                <p class="mt-2">
+                  Perfect for short-term use without having to buy expensive tools.
+                </p>
+                <p class="mt-2">
+                  Ready for pickup in Nasr City or I can arrange delivery depending on the
+                  distance.
+                </p>
               </div>
             </div>
           </div>
 
           <!-- About the Tool -->
           <div class="bg-white rounded-xl shadow-lg p-6">
-            <h2 class="text-xl font-semibold text-[var(--color-gray-800)] dark:text-[var(--color-gray-200)] mb-4">
+            <h2
+              class="text-xl font-semibold text-[var(--color-gray-800)] dark:text-[var(--color-gray-200)] mb-4"
+            >
               About the Tool
             </h2>
             <div class="grid grid-cols-2 gap-4">
               <div class="flex justify-between py-2 border-b border-gray-200">
                 <span class="font-medium text-[var(--color-gray-600)]">Category:</span>
-                <span class="text-[var(--color-gray-800)]">{{ product.category || product.type }}</span>
+                <span class="text-[var(--color-gray-800)]">{{
+                  product.category || product.type
+                }}</span>
               </div>
               <div class="flex justify-between py-2 border-b border-gray-200">
                 <span class="font-medium text-[var(--color-gray-600)]">Brand:</span>
@@ -104,11 +146,17 @@
               </div>
               <div class="flex justify-between py-2 border-b border-gray-200">
                 <span class="font-medium text-[var(--color-gray-600)]">Model:</span>
-                <span class="text-[var(--color-gray-800)]">{{ product.model || "GSR 18V-50 Professional" }}</span>
+                <span class="text-[var(--color-gray-800)]">{{
+                  product.model || "GSR 18V-50 Professional"
+                }}</span>
               </div>
               <div class="flex justify-between py-2 border-b border-gray-200">
-                <span class="font-medium text-[var(--color-gray-600)]">Price per day:</span>
-                <span class="text-[var(--color-success-500)] font-bold">{{ product.price || "15" }} {{ $t("egp") }}</span>
+                <span class="font-medium text-[var(--color-gray-600)]"
+                  >Price per day:</span
+                >
+                <span class="text-[var(--color-success-500)] font-bold"
+                  >{{ product.price || "15" }} {{ $t("egp") }}</span
+                >
               </div>
               <div class="flex justify-between py-2 border-b border-gray-200">
                 <span class="font-medium text-[var(--color-gray-600)]">Rent times:</span>
@@ -120,7 +168,11 @@
               :disabled="product?.status === 'pending' || isBookingPending"
               class="w-full mt-4 bg-[var(--color-success-500)] text-white py-3 px-6 rounded-lg font-semibold hover:bg-[var(--color-success-600)] disabled:bg-gray-400 disabled:cursor-not-allowed transition-colors"
             >
-              {{ product?.status === "pending" || isBookingPending ? $t("toolNotAvailable") : $t("rentThisTool") }}
+              {{
+                product?.status === "pending" || isBookingPending
+                  ? $t("toolNotAvailable")
+                  : $t("rentThisTool")
+              }}
             </button>
           </div>
         </div>
@@ -129,7 +181,9 @@
         <div class="space-y-6">
           <!-- Owner Details -->
           <div class="bg-white rounded-xl shadow-lg p-6">
-            <h3 class="text-lg font-semibold text-[var(--color-gray-800)] dark:text-[var(--color-gray-200)] mb-4">
+            <h3
+              class="text-lg font-semibold text-[var(--color-gray-800)] dark:text-[var(--color-gray-200)] mb-4"
+            >
               Owner details
             </h3>
             <div class="flex items-center gap-4 mb-4">
@@ -139,26 +193,47 @@
                 class="w-12 h-12 rounded-full object-cover"
               />
               <div>
-                <p class="font-semibold text-[var(--color-gray-800)] dark:text-[var(--color-gray-200)]">
+                <p
+                  class="font-semibold text-[var(--color-gray-800)] dark:text-[var(--color-gray-200)]"
+                >
                   {{ booking.sellerName || $t("loading") }}
                 </p>
                 <div class="flex items-center gap-1 text-sm text-[var(--color-gray-600)]">
-                  <span class="text-yellow-400">{{ "★".repeat(Math.floor(ownerStats.rating)) }}{{ "☆".repeat(5 - Math.floor(ownerStats.rating)) }}</span>
-                  <span>{{ ownerStats.rating }} ({{ ownerStats.reviewCount }} review{{ ownerStats.reviewCount !== 1 ? 's' : '' }})</span>
+                  <span class="text-yellow-400"
+                    >{{ "★".repeat(Math.floor(ownerStats.rating))
+                    }}{{ "☆".repeat(5 - Math.floor(ownerStats.rating)) }}</span
+                  >
+                  <span
+                    >{{ ownerStats.rating }} ({{ ownerStats.reviewCount }} review{{
+                      ownerStats.reviewCount !== 1 ? "s" : ""
+                    }})</span
+                  >
                 </div>
                 <div class="flex items-center gap-1 text-sm text-[var(--color-gray-600)]">
                   <i class="fas fa-map-marker-alt text-[var(--color-success-500)]"></i>
-                  <span>{{ product?.location || 'Cairo' }}</span>
+                  <span>{{ product?.location || "Cairo" }}</span>
                 </div>
-                <p class="text-sm text-[var(--color-gray-600)]">{{ ownerStats.successfulRentals }} successful rental{{ ownerStats.successfulRentals !== 1 ? 's' : '' }}</p>
-                <p class="text-sm text-[var(--color-gray-600)]">Member since {{ ownerStats.memberSince || 'Unknown' }}</p>
+                <p class="text-sm text-[var(--color-gray-600)]">
+                  {{ ownerStats.successfulRentals }} successful rental{{
+                    ownerStats.successfulRentals !== 1 ? "s" : ""
+                  }}
+                </p>
+                <p class="text-sm text-[var(--color-gray-600)]">
+                  Member since {{ ownerStats.memberSince || "Unknown" }}
+                </p>
               </div>
             </div>
             <div class="space-y-2">
-              <button @click="viewOwnerTools" class="w-full border border-[var(--color-success-500)] text-[var(--color-success-500)] py-2 rounded-lg hover:bg-[var(--color-success-50)] transition-colors">
+              <button
+                @click="viewOwnerTools"
+                class="w-full border border-[var(--color-success-500)] text-[var(--color-success-500)] py-2 rounded-lg hover:bg-[var(--color-success-50)] transition-colors"
+              >
                 view owner tools
               </button>
-              <button @click="sendMessage" class="w-full bg-[var(--color-success-500)] text-white py-2 rounded-lg hover:bg-[var(--color-success-600)] transition-colors">
+              <button
+                @click="sendMessage"
+                class="w-full bg-[var(--color-success-500)] text-white py-2 rounded-lg hover:bg-[var(--color-success-600)] transition-colors"
+              >
                 Send a message
               </button>
             </div>
@@ -174,7 +249,9 @@
               >
                 <i class="fas fa-chevron-left"></i>
               </button>
-              <h3 class="text-lg font-semibold text-[var(--color-gray-800)] dark:text-[var(--color-gray-200)]">
+              <h3
+                class="text-lg font-semibold text-[var(--color-gray-800)] dark:text-[var(--color-gray-200)]"
+              >
                 {{ currentMonthYear }}
               </h3>
               <button
@@ -184,15 +261,18 @@
                 <i class="fas fa-chevron-right"></i>
               </button>
             </div>
-            
+
             <!-- Days of Week -->
             <div class="grid grid-cols-7 gap-1 mb-2">
-              <span v-for="day in ['Mo', 'Tu', 'We', 'Th', 'Fr', 'Sa', 'Su']" :key="day" 
-                    class="text-center text-sm font-medium text-[var(--color-gray-600)] py-1">
+              <span
+                v-for="day in ['Mo', 'Tu', 'We', 'Th', 'Fr', 'Sa', 'Su']"
+                :key="day"
+                class="text-center text-sm font-medium text-[var(--color-gray-600)] py-1"
+              >
                 {{ day }}
               </span>
             </div>
-            
+
             <!-- Calendar Grid -->
             <div class="grid grid-cols-7 gap-1">
               <span
@@ -201,9 +281,11 @@
                 class="text-center p-2 text-sm cursor-pointer rounded-full hover:bg-[var(--color-success-100)] transition-colors"
                 :class="{
                   'bg-[var(--color-success-500)] text-white': isSelected(day),
-                  'bg-[var(--color-success-200)] text-[var(--color-success-700)]': isStart(day) || isEnd(day),
+                  'bg-[var(--color-success-200)] text-[var(--color-success-700)]':
+                    isStart(day) || isEnd(day),
                   'text-gray-400 cursor-not-allowed': isPastDate(day),
-                  'text-[var(--color-gray-800)]': !isPastDate(day) && !isSelected(day) && !isStart(day) && !isEnd(day)
+                  'text-[var(--color-gray-800)]':
+                    !isPastDate(day) && !isSelected(day) && !isStart(day) && !isEnd(day),
                 }"
                 @click="selectDate(day)"
               >
@@ -214,13 +296,21 @@
 
           <!-- Tool's Reviews -->
           <div class="bg-white rounded-xl shadow-lg p-6">
-            <h3 class="text-lg font-semibold text-[var(--color-gray-800)] dark:text-[var(--color-gray-200)] mb-4">
+            <h3
+              class="text-lg font-semibold text-[var(--color-gray-800)] dark:text-[var(--color-gray-200)] mb-4"
+            >
               Tool's reviews
             </h3>
             <div class="space-y-4">
-              <div v-for="review in reviews.slice(0, 3)" :key="review.id" class="border-b border-gray-200 pb-4 last:border-b-0">
+              <div
+                v-for="review in reviews.slice(0, 3)"
+                :key="review.id"
+                class="border-b border-gray-200 pb-4 last:border-b-0"
+              >
                 <div class="flex items-center gap-2 mb-2">
-                  <span class="font-medium text-[var(--color-gray-800)]">{{ review.userName || review.rentUserId }}</span>
+                  <span class="font-medium text-[var(--color-gray-800)]">{{
+                    review.userName || review.rentUserId
+                  }}</span>
                   <span class="text-yellow-400 text-sm">★★★★☆</span>
                   <span class="text-sm text-[var(--color-gray-600)]">4.5</span>
                 </div>
@@ -230,7 +320,9 @@
                 <span class="text-xs text-[var(--color-gray-500)]">Jul 10, 2025</span>
               </div>
             </div>
-            <button class="w-full mt-4 border border-[var(--color-success-500)] text-[var(--color-success-500)] py-2 rounded-lg hover:bg-[var(--color-success-50)] transition-colors">
+            <button
+              class="w-full mt-4 border border-[var(--color-success-500)] text-[var(--color-success-500)] py-2 rounded-lg hover:bg-[var(--color-success-50)] transition-colors"
+            >
               view all reviews
             </button>
           </div>
@@ -239,20 +331,29 @@
 
       <!-- More from Owner Section -->
       <div class="mt-8 bg-white rounded-xl shadow-lg p-6">
-        <h3 class="text-lg font-semibold text-[var(--color-gray-800)] dark:text-[var(--color-gray-200)] mb-4">
+        <h3
+          class="text-lg font-semibold text-[var(--color-gray-800)] dark:text-[var(--color-gray-200)] mb-4"
+        >
           More from {{ booking.sellerName || $t("loading") }}
         </h3>
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-          <div v-for="item in showAllProducts ? ownerProducts : ownerProducts.slice(0, 2)" :key="item.id"
-               class="bg-white border border-gray-200 rounded-xl shadow-sm overflow-hidden hover:shadow-lg transition-shadow">
+          <div
+            v-for="item in showAllProducts ? ownerProducts : ownerProducts.slice(0, 3)"
+            :key="item.id"
+            class="bg-white border border-gray-200 rounded-xl shadow-sm overflow-hidden hover:shadow-lg transition-shadow"
+          >
             <img
               :src="item.img || require('@/assets/test.png')"
               alt="product image"
               class="w-full h-40 object-cover"
             />
             <div class="p-4">
-              <h4 class="font-semibold text-[var(--color-gray-800)] mb-2">{{ item.title || "Untitled" }}</h4>
-              <div class="flex items-center justify-between text-sm text-[var(--color-gray-600)] mb-2">
+              <h4 class="font-semibold text-[var(--color-gray-800)] mb-2">
+                {{ item.title || "Untitled" }}
+              </h4>
+              <div
+                class="flex items-center justify-between text-sm text-[var(--color-gray-600)] mb-2"
+              >
                 <span class="flex items-center gap-1">
                   <i class="fas fa-map-marker-alt text-[var(--color-success-500)]"></i>
                   {{ item.location || $t("defaultLocation") }}
@@ -266,7 +367,9 @@
                 <span class="font-semibold text-[var(--color-gray-800)]">
                   {{ $t("egp") }} {{ item.price || "0" }}
                 </span>
-                <span class="text-sm text-[var(--color-gray-600)]">{{ $t("perDay") }}</span>
+                <span class="text-sm text-[var(--color-gray-600)]">{{
+                  $t("perDay")
+                }}</span>
               </div>
               <button
                 @click="navigateToProduct(item.id)"
@@ -295,9 +398,13 @@
         class="bg-white dark:bg-[var(--color-gray-800)] rounded-xl shadow-xl w-full max-w-4xl max-h-[90vh] overflow-y-auto"
       >
         <!-- Header -->
-        <div class="sticky top-0 bg-white dark:bg-[var(--color-gray-800)] border-b border-gray-200 dark:border-gray-700 p-6">
+        <div
+          class="sticky top-0 bg-white dark:bg-[var(--color-gray-800)] border-b border-gray-200 dark:border-gray-700 p-6"
+        >
           <div class="flex justify-between items-center">
-            <h2 class="text-2xl font-bold text-[var(--color-gray-800)] dark:text-[var(--color-gray-200)]">
+            <h2
+              class="text-2xl font-bold text-[var(--color-gray-800)] dark:text-[var(--color-gray-200)]"
+            >
               Rent confirmation
             </h2>
             <button
@@ -326,7 +433,9 @@
             <!-- Right: Rental Details -->
             <div class="space-y-4">
               <div>
-                <h3 class="text-xl font-bold text-[var(--color-gray-800)] dark:text-[var(--color-gray-200)] mb-2">
+                <h3
+                  class="text-xl font-bold text-[var(--color-gray-800)] dark:text-[var(--color-gray-200)] mb-2"
+                >
                   {{ product?.title }}
                 </h3>
                 <p class="text-2xl font-bold text-[var(--color-success-500)] mb-4">
@@ -336,17 +445,29 @@
 
               <!-- Picked Dates -->
               <div class="bg-gray-50 dark:bg-gray-700 rounded-lg p-4">
-                <h4 class="font-semibold text-[var(--color-gray-800)] dark:text-[var(--color-gray-200)] mb-2">
+                <h4
+                  class="font-semibold text-[var(--color-gray-800)] dark:text-[var(--color-gray-200)] mb-2"
+                >
                   Picked Dates
                 </h4>
                 <div class="space-y-2">
                   <div class="flex justify-between">
-                    <span class="text-[var(--color-gray-600)] dark:text-[var(--color-gray-400)]">From:</span>
-                    <span class="font-medium">{{ booking.startDate ? formatDate(booking.startDate) : 'Not selected' }}</span>
+                    <span
+                      class="text-[var(--color-gray-600)] dark:text-[var(--color-gray-400)]"
+                      >From:</span
+                    >
+                    <span class="font-medium">{{
+                      booking.startDate ? formatDate(booking.startDate) : "Not selected"
+                    }}</span>
                   </div>
                   <div class="flex justify-between">
-                    <span class="text-[var(--color-gray-600)] dark:text-[var(--color-gray-400)]">To:</span>
-                    <span class="font-medium">{{ booking.endDate ? formatDate(booking.endDate) : 'Not selected' }}</span>
+                    <span
+                      class="text-[var(--color-gray-600)] dark:text-[var(--color-gray-400)]"
+                      >To:</span
+                    >
+                    <span class="font-medium">{{
+                      booking.endDate ? formatDate(booking.endDate) : "Not selected"
+                    }}</span>
                   </div>
                 </div>
               </div>
@@ -354,13 +475,19 @@
               <!-- Subtotal -->
               <div class="bg-gray-50 dark:bg-gray-700 rounded-lg p-4">
                 <div class="flex justify-between items-center">
-                  <span class="text-[var(--color-gray-600)] dark:text-[var(--color-gray-400)]">Subtotal:</span>
+                  <span
+                    class="text-[var(--color-gray-600)] dark:text-[var(--color-gray-400)]"
+                    >Subtotal:</span
+                  >
                   <span class="text-xl font-bold text-[var(--color-success-500)]">
                     {{ $t("egp") }} {{ calculateSubtotal() }}
                   </span>
                 </div>
-                <p class="text-sm text-[var(--color-gray-500)] dark:text-[var(--color-gray-400)] mt-1">
-                  ({{ $t("egp") }}{{ product?.price || 0 }} × {{ calculateDays() }} {{ $t("perDay") }})
+                <p
+                  class="text-sm text-[var(--color-gray-500)] dark:text-[var(--color-gray-400)] mt-1"
+                >
+                  ({{ $t("egp") }}{{ product?.price || 0 }} × {{ calculateDays() }}
+                  {{ $t("perDay") }})
                 </p>
               </div>
             </div>
@@ -368,7 +495,9 @@
 
           <!-- Delivery Method Section -->
           <div class="border-t border-gray-200 dark:border-gray-700 pt-6">
-            <h3 class="text-lg font-semibold text-[var(--color-gray-800)] dark:text-[var(--color-gray-200)] mb-4">
+            <h3
+              class="text-lg font-semibold text-[var(--color-gray-800)] dark:text-[var(--color-gray-200)] mb-4"
+            >
               Delivery method
             </h3>
             <div class="space-y-3">
@@ -379,7 +508,10 @@
                   value="pickup"
                   class="text-[var(--color-success-500)] focus:ring-[var(--color-success-500)]"
                 />
-                <span class="text-[var(--color-gray-800)] dark:text-[var(--color-gray-200)]">Pick up from owner</span>
+                <span
+                  class="text-[var(--color-gray-800)] dark:text-[var(--color-gray-200)]"
+                  >Pick up from owner</span
+                >
               </label>
               <label class="flex items-center space-x-3 cursor-pointer">
                 <input
@@ -388,10 +520,13 @@
                   value="delivery"
                   class="text-[var(--color-success-500)] focus:ring-[var(--color-success-500)]"
                 />
-                <span class="text-[var(--color-gray-800)] dark:text-[var(--color-gray-200)]">Deliver to my address</span>
+                <span
+                  class="text-[var(--color-gray-800)] dark:text-[var(--color-gray-200)]"
+                  >Deliver to my address</span
+                >
               </label>
             </div>
-            
+
             <div v-if="booking.deliveryMethod === 'delivery'" class="mt-4">
               <input
                 v-model="booking.deliveryAddress"
@@ -404,11 +539,16 @@
 
           <!-- Personal Information Section -->
           <div class="border-t border-gray-200 dark:border-gray-700 pt-6">
-            <h3 class="text-lg font-semibold text-[var(--color-gray-800)] dark:text-[var(--color-gray-200)] mb-4">
+            <h3
+              class="text-lg font-semibold text-[var(--color-gray-800)] dark:text-[var(--color-gray-200)] mb-4"
+            >
               Personal information
             </h3>
-            
-            <div v-if="!auth.currentUser" class="bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800 rounded-lg p-4">
+
+            <div
+              v-if="!auth.currentUser"
+              class="bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800 rounded-lg p-4"
+            >
               <p class="text-blue-800 dark:text-blue-200 mb-4">
                 Please Login/Sign up to complete the rent process
               </p>
@@ -419,8 +559,10 @@
                 >
                   Sign up now!
                 </button>
-                <p class="text-center text-sm text-[var(--color-gray-600)] dark:text-[var(--color-gray-400)]">
-                  Already have an account? 
+                <p
+                  class="text-center text-sm text-[var(--color-gray-600)] dark:text-[var(--color-gray-400)]"
+                >
+                  Already have an account?
                   <button
                     @click="router.push('/login')"
                     class="text-[var(--color-success-500)] hover:underline"
@@ -434,7 +576,9 @@
             <div v-else class="space-y-4">
               <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
                 <div>
-                  <label class="block text-sm font-medium text-[var(--color-gray-700)] dark:text-[var(--color-gray-300)] mb-2">
+                  <label
+                    class="block text-sm font-medium text-[var(--color-gray-700)] dark:text-[var(--color-gray-300)] mb-2"
+                  >
                     Name
                   </label>
                   <input
@@ -445,7 +589,9 @@
                   />
                 </div>
                 <div>
-                  <label class="block text-sm font-medium text-[var(--color-gray-700)] dark:text-[var(--color-gray-300)] mb-2">
+                  <label
+                    class="block text-sm font-medium text-[var(--color-gray-700)] dark:text-[var(--color-gray-300)] mb-2"
+                  >
                     Phone Number
                   </label>
                   <input
@@ -456,7 +602,9 @@
                   />
                 </div>
                 <div>
-                  <label class="block text-sm font-medium text-[var(--color-gray-700)] dark:text-[var(--color-gray-300)] mb-2">
+                  <label
+                    class="block text-sm font-medium text-[var(--color-gray-700)] dark:text-[var(--color-gray-300)] mb-2"
+                  >
                     Email
                   </label>
                   <input
@@ -472,42 +620,78 @@
 
           <!-- Summary Section -->
           <div class="border-t border-gray-200 dark:border-gray-700 pt-6">
-            <h3 class="text-lg font-semibold text-[var(--color-gray-800)] dark:text-[var(--color-gray-200)] mb-4">
+            <h3
+              class="text-lg font-semibold text-[var(--color-gray-800)] dark:text-[var(--color-gray-200)] mb-4"
+            >
               Summary
             </h3>
             <div class="bg-gray-50 dark:bg-gray-700 rounded-lg p-4 space-y-3">
-              <div class="flex justify-between items-center border-b border-dashed border-gray-300 dark:border-gray-600 pb-2">
-                <span class="text-[var(--color-gray-600)] dark:text-[var(--color-gray-400)]">Tool:</span>
+              <div
+                class="flex justify-between items-center border-b border-dashed border-gray-300 dark:border-gray-600 pb-2"
+              >
+                <span
+                  class="text-[var(--color-gray-600)] dark:text-[var(--color-gray-400)]"
+                  >Tool:</span
+                >
                 <span class="font-medium">{{ product?.title }}</span>
               </div>
-              <div class="flex justify-between items-center border-b border-dashed border-gray-300 dark:border-gray-600 pb-2">
-                <span class="text-[var(--color-gray-600)] dark:text-[var(--color-gray-400)]">Owner:</span>
+              <div
+                class="flex justify-between items-center border-b border-dashed border-gray-300 dark:border-gray-600 pb-2"
+              >
+                <span
+                  class="text-[var(--color-gray-600)] dark:text-[var(--color-gray-400)]"
+                  >Owner:</span
+                >
                 <div class="flex items-center space-x-2">
                   <span class="font-medium">{{ booking.sellerName }}</span>
                   <i class="fas fa-check-circle text-[var(--color-success-500)]"></i>
                 </div>
               </div>
-              <div class="flex justify-between items-center border-b border-dashed border-gray-300 dark:border-gray-600 pb-2">
-                <span class="text-[var(--color-gray-600)] dark:text-[var(--color-gray-400)]">Rental Days:</span>
+              <div
+                class="flex justify-between items-center border-b border-dashed border-gray-300 dark:border-gray-600 pb-2"
+              >
+                <span
+                  class="text-[var(--color-gray-600)] dark:text-[var(--color-gray-400)]"
+                  >Rental Days:</span
+                >
                 <span class="font-medium">{{ calculateDays() }}</span>
               </div>
-              <div class="flex justify-between items-center border-b border-dashed border-gray-300 dark:border-gray-600 pb-2">
-                <span class="text-[var(--color-gray-600)] dark:text-[var(--color-gray-400)]">Daily Rate:</span>
+              <div
+                class="flex justify-between items-center border-b border-dashed border-gray-300 dark:border-gray-600 pb-2"
+              >
+                <span
+                  class="text-[var(--color-gray-600)] dark:text-[var(--color-gray-400)]"
+                  >Daily Rate:</span
+                >
                 <span class="font-medium">{{ $t("egp") }} {{ product?.price || 0 }}</span>
               </div>
-              <div class="flex justify-between items-center border-b border-dashed border-gray-300 dark:border-gray-600 pb-2">
-                <span class="text-[var(--color-gray-600)] dark:text-[var(--color-gray-400)]">Delivery Fee:</span>
-                <span class="font-medium">{{ $t("egp") }} {{ booking.deliveryFee.toFixed(2) }}</span>
+              <div
+                class="flex justify-between items-center border-b border-dashed border-gray-300 dark:border-gray-600 pb-2"
+              >
+                <span
+                  class="text-[var(--color-gray-600)] dark:text-[var(--color-gray-400)]"
+                  >Delivery Fee:</span
+                >
+                <span class="font-medium"
+                  >{{ $t("egp") }} {{ booking.deliveryFee.toFixed(2) }}</span
+                >
               </div>
               <div class="flex justify-between items-center pt-2">
-                <span class="text-lg font-bold text-[var(--color-gray-800)] dark:text-[var(--color-gray-200)]">Total amount:</span>
-                <span class="text-xl font-bold text-[var(--color-success-500)]">{{ $t("egp") }} {{ booking.totalPrice.toFixed(2) }}</span>
+                <span
+                  class="text-lg font-bold text-[var(--color-gray-800)] dark:text-[var(--color-gray-200)]"
+                  >Total amount:</span
+                >
+                <span class="text-xl font-bold text-[var(--color-success-500)]"
+                  >{{ $t("egp") }} {{ booking.totalPrice.toFixed(2) }}</span
+                >
               </div>
             </div>
           </div>
 
           <!-- Action Buttons -->
-          <div class="flex justify-end space-x-4 pt-6 border-t border-gray-200 dark:border-gray-700">
+          <div
+            class="flex justify-end space-x-4 pt-6 border-t border-gray-200 dark:border-gray-700"
+          >
             <button
               @click="showBookingForm = false"
               class="px-6 py-3 border border-gray-300 dark:border-gray-600 text-[var(--color-gray-700)] dark:text-[var(--color-gray-300)] rounded-lg hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors"
@@ -710,7 +894,7 @@ const ownerStats = ref({
   successfulRentals: 0,
   memberSince: null,
   rating: 0,
-  reviewCount: 0
+  reviewCount: 0,
 });
 const booking = ref({
   deliveryAddress: "30.0459°N, 31.2357°E",
@@ -902,7 +1086,7 @@ const loadSellerDetails = async (sellerId) => {
       booking.value.sellerName = sellerData.displayName || "Unknown Seller";
       booking.value.sellerImage = sellerData.imageUrl || "https://via.placeholder.com/40";
       newReview.value.sellerUserId = sellerId;
-      
+
       // Load owner statistics
       await loadOwnerStats(sellerId);
     } else {
@@ -935,10 +1119,12 @@ const loadOwnerStats = async (sellerId) => {
     if (userDocSnap.exists()) {
       const userData = userDocSnap.data();
       if (userData.createdAt) {
-        const createdAt = userData.createdAt.toDate ? userData.createdAt.toDate() : new Date(userData.createdAt);
-        ownerStats.value.memberSince = createdAt.toLocaleDateString('en-US', {
-          year: 'numeric',
-          month: 'long'
+        const createdAt = userData.createdAt.toDate
+          ? userData.createdAt.toDate()
+          : new Date(userData.createdAt);
+        ownerStats.value.memberSince = createdAt.toLocaleDateString("en-US", {
+          year: "numeric",
+          month: "long",
         });
       } else {
         ownerStats.value.memberSince = "Unknown";
@@ -947,14 +1133,11 @@ const loadOwnerStats = async (sellerId) => {
 
     // Get average rating and review count
     const reviewsRef = collection(db, "user-reviews");
-    const sellerReviewsQuery = query(
-      reviewsRef,
-      where("sellerUserId", "==", sellerId)
-    );
+    const sellerReviewsQuery = query(reviewsRef, where("sellerUserId", "==", sellerId));
     const reviewsSnapshot = await getDocs(sellerReviewsQuery);
-    
+
     if (!reviewsSnapshot.empty) {
-      const reviews = reviewsSnapshot.docs.map(doc => doc.data());
+      const reviews = reviewsSnapshot.docs.map((doc) => doc.data());
       const totalRating = reviews.reduce((sum, review) => sum + (review.rate || 0), 0);
       ownerStats.value.rating = (totalRating / reviews.length).toFixed(1);
       ownerStats.value.reviewCount = reviews.length;
@@ -968,7 +1151,7 @@ const loadOwnerStats = async (sellerId) => {
       successfulRentals: 0,
       memberSince: "Unknown",
       rating: "0",
-      reviewCount: 0
+      reviewCount: 0,
     };
   }
 };
@@ -1309,7 +1492,11 @@ const submitBooking = async () => {
     }
 
     // Validate personal information
-    if (!booking.value.userName || !booking.value.phoneNumber || !booking.value.userEmail) {
+    if (
+      !booking.value.userName ||
+      !booking.value.phoneNumber ||
+      !booking.value.userEmail
+    ) {
       Swal.fire({
         icon: "warning",
         title: "Missing Information",
@@ -1355,7 +1542,8 @@ const submitBooking = async () => {
     Swal.fire({
       icon: "success",
       title: "Booking Confirmed!",
-      text: "Your rental has been successfully confirmed. You will receive a confirmation email shortly.",
+      text:
+        "Your rental has been successfully confirmed. You will receive a confirmation email shortly.",
       confirmButtonText: "OK",
     });
     await checkPendingBookings(); // Re-check to ensure consistency
@@ -1580,14 +1768,14 @@ const navigateToRentConfirmation = () => {
     });
     return;
   }
-  
+
   router.push({
-    name: 'RentConfirmation',
+    name: "RentConfirmation",
     params: { id: route.params.id },
     query: {
       startDate: selectedDates.value.start,
-      endDate: selectedDates.value.end
-    }
+      endDate: selectedDates.value.end,
+    },
   });
 };
 
@@ -1624,7 +1812,8 @@ const sendMessage = () => {
   Swal.fire({
     icon: "info",
     title: "Message Feature",
-    text: "Message functionality will be implemented soon. For now, you can contact the owner through the booking process.",
+    text:
+      "Message functionality will be implemented soon. For now, you can contact the owner through the booking process.",
     confirmButtonText: "OK",
   });
 };

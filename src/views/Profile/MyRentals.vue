@@ -44,6 +44,25 @@
           </span>
         </p>
 
+        <!-- Cancel Button (after 10 hours from startDate and not expired) -->
+        <button
+          v-if="
+            isCancelable(product.startDate) &&
+            getRemainingTime(product.endDate) !== 'Expired'
+          "
+          @click="
+            cancelBooking(
+              product.id,
+              product.productPrice,
+              product.startDate,
+              product.endDate
+            )
+          "
+          class="mt-2 px-4 py-2 bg-red-600 text-white rounded hover:bg-red-700"
+        >
+          Cancel Booking
+        </button>
+
         <!-- Hide Button for Expired -->
         <button
           v-if="getRemainingTime(product.endDate) === 'Expired'"
@@ -60,7 +79,16 @@
 <script>
 import { db, auth } from "@/firebase/config";
 import { onAuthStateChanged } from "firebase/auth";
-import { collection, query, where, getDocs, updateDoc, doc } from "firebase/firestore";
+import {
+  collection,
+  query,
+  where,
+  getDocs,
+  updateDoc,
+  doc,
+  getDoc,
+  setDoc,
+} from "firebase/firestore";
 
 export default {
   name: "MyRentals",
@@ -85,13 +113,12 @@ export default {
         const q = query(bookingsRef, where("userId", "==", this.userId));
         const querySnapshot = await getDocs(q);
 
-        // Show only bookings that are NOT hidden
         this.bookings = querySnapshot.docs
           .map((doc) => ({
             id: doc.id,
             ...doc.data(),
           }))
-          .filter((booking) => booking.hiddenForUser !== true); // includes false or undefined
+          .filter((booking) => booking.hiddenForUser !== true);
       } catch (error) {
         console.error("Error fetching bookings:", error);
       }
@@ -100,15 +127,63 @@ export default {
       const [year, month, day] = endDateStr.split("-").map(Number);
       const returnDate = new Date(year, month - 1, day, 0, 0, 0);
       const now = new Date();
-
       const diffMs = returnDate - now;
       if (diffMs <= 0) return "Expired";
-
       const days = Math.floor(diffMs / (1000 * 60 * 60 * 24));
       const hours = Math.floor((diffMs / (1000 * 60 * 60)) % 24);
       const minutes = Math.floor((diffMs / (1000 * 60)) % 60);
-
       return `${days}d ${hours}h ${minutes}m`;
+    },
+    isCancelable(startDateStr) {
+      const [year, month, day] = startDateStr.split("-").map(Number);
+      const startDate = new Date(year, month - 1, day, 0, 0, 0);
+      const now = new Date();
+      const diffMs = now - startDate;
+      const hoursPassed = diffMs / (1000 * 60 * 60);
+      console.log(`startDate: ${startDate}, hoursPassed: ${hoursPassed}`);
+      return hoursPassed > 10; // Show button only after 10 hours
+    },
+    async cancelBooking(id, productPrice, startDateStr, endDateStr) {
+      try {
+        await updateDoc(doc(db, "bookings", id), {
+          hiddenForUser: true,
+        });
+
+        // Calculate number of days rented
+        const [startYear, startMonth, startDay] = startDateStr.split("-").map(Number);
+        const [endYear, endMonth, endDay] = endDateStr.split("-").map(Number);
+        const startDate = new Date(startYear, startMonth - 1, startDay, 0, 0, 0);
+        const endDate = new Date(endYear, endMonth - 1, endDay, 0, 0, 0);
+        const diffMs = endDate - startDate;
+        const daysRented = Math.ceil(diffMs / (1000 * 60 * 60 * 24));
+
+        // Refund 50% of the per-day price
+        const perDayPrice = Number(productPrice) / daysRented;
+        const refundAmount = perDayPrice * 0.5;
+
+        const userBalanceRef = doc(db, "userbalance", this.userId);
+        const userBalanceSnap = await getDoc(userBalanceRef);
+
+        let currentBalance = 0;
+        if (userBalanceSnap.exists()) {
+          currentBalance = Number(userBalanceSnap.data().balance) || 0;
+        }
+
+        // Subtract the refund amount from the balance (assuming balance is what user owes)
+        await setDoc(
+          userBalanceRef,
+          {
+            userid: this.userId,
+            balance: currentBalance - refundAmount, // Changed to subtract refund
+            lastUpdated: new Date(),
+          },
+          { merge: true }
+        );
+
+        this.bookings = this.bookings.filter((b) => b.id !== id);
+      } catch (error) {
+        console.error("Error canceling booking:", error);
+      }
     },
     async hideBooking(id) {
       try {
