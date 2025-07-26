@@ -11,35 +11,14 @@
 </template>
 
 <script setup>
-import { ref, computed } from "vue";
-// import AdminLayout from '@/layouts/AdminLayout.vue'
-// import TopBar from '@/components/admin/TopBar.vue'
+import { computed } from "vue";
 import ProductsTable from "@/components/admin/ProductsTable.vue";
+import { useAdminRealTime } from "@/composables/useAdminRealTime";
 
-// Example: Replace with your real fetch logic
-const products = ref([
-  { id: 1, name: "Banana" },
-  { id: 2, name: "Apple" },
-  { id: 3, name: "Orange" },
-]);
-
-const sortOption = ref("Name A → Z");
+// Initialize real-time data
+const { products } = useAdminRealTime();
 
 const filteredProducts = computed(() => {
-  let filtered = products.value;
-  // ...search/filter logic...
-  filtered = [...filtered].sort((a, b) => {
-    if (sortOption.value === "Name A → Z") {
-      return a.name.localeCompare(b.name);
-    } else {
-      return b.name.localeCompare(a.name);
-    }
-  });
-  // ...pagination...
-  return filtered;
+  return products.value || [];
 });
-
-const handleSort = (option) => {
-  sortOption.value = option;
-};
 </script>

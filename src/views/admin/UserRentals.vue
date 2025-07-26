@@ -84,33 +84,30 @@
 import { ref, onMounted, computed } from 'vue'
 import TopBar from '@/components/admin/TopBar.vue'
 import { useRoute } from 'vue-router'
-import { collection, getDocs, query, where, doc, getDoc, deleteDoc, updateDoc } from 'firebase/firestore'
+import { doc, getDoc, deleteDoc, updateDoc } from 'firebase/firestore'
 import { db } from '@/firebase/config'
 import Swal from 'sweetalert2'
+import { useAdminRealTime } from '@/composables/useAdminRealTime'
 
 const route = useRoute()
 const userId = route.params.userId
 
-const rentals = ref([])
+// Initialize real-time data
+const { bookings, users, initializeRealTimeData, cleanup } = useAdminRealTime()
+
 const userName = ref('')
-const loading = ref(true)
 const searchQuery = ref('')
 const sortOption = ref('Newest First')
 
-// Fetch rentals
-const fetchUserRentals = async () => {
-  try {
-    const rentalsRef = collection(db, 'bookings')
-    const q = query(rentalsRef, where('userId', '==', userId))
-    const snapshot = await getDocs(q)
-    rentals.value = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }))
-  } catch (error) {
-    console.error("Error fetching rentals:", error)
-    Swal.fire({ icon: 'error', title: 'Error fetching rentals', text: error.message })
-  } finally {
-    loading.value = false
-  }
-}
+// Computed property to filter bookings for this user
+const rentals = computed(() => {
+  return bookings.value.filter(booking => booking.userId === userId)
+})
+
+// Loading state based on real-time data
+const loading = computed(() => {
+  return bookings.value.length === 0 && true // Show loading until data is loaded
+})
 
 // Filtered and sorted rentals
 const filteredRentals = computed(() => {
@@ -189,7 +186,6 @@ const deleteRental = async (rentalId) => {
   if (result.isConfirmed) {
     try {
       await deleteDoc(doc(db, 'bookings', rentalId))
-      rentals.value = rentals.value.filter(r => r.id !== rentalId)
       Swal.fire('Cancelled!', 'The booking has been cancelled.', 'success')
     } catch (error) {
       console.error("Error deleting rental:", error)
@@ -236,7 +232,7 @@ const handleExport = () => {
 };
 
 onMounted(() => {
-  fetchUserRentals()
+  initializeRealTimeData()
   fetchUserName()
 })
 </script>

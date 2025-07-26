@@ -111,6 +111,21 @@
                   {{ $t("profile") }}
                 </router-link>
                 <router-link
+                  to="/messages"
+                  class="block px-4 py-2 text-sm hover:bg-[var(--Color-Surface-Surface-Brand)] transition-colors"
+                  style="color: var(--Color-Text-Text-Primary)"
+                  @click="closeDropdown"
+                >
+                  <i class="fas fa-comments mr-2"></i>
+                  Messages
+                  <span 
+                    v-if="unreadMessageCount > 0" 
+                    class="ml-2 bg-red-500 text-white text-xs rounded-full px-2 py-1"
+                  >
+                    {{ unreadMessageCount > 9 ? '9+' : unreadMessageCount }}
+                  </span>
+                </router-link>
+                <router-link
                   to="/settings"
                   class="block px-4 py-2 text-sm hover:bg-[var(--Color-Surface-Surface-Brand)] transition-colors"
                   style="color: var(--Color-Text-Text-Primary)"
@@ -206,6 +221,21 @@
                 {{ $t("profile") }}
               </router-link>
               <router-link
+                to="/messages"
+                class="block px-4 py-2 text-sm hover:bg-[var(--Color-Surface-Surface-Brand)] transition-colors"
+                style="color: var(--Color-Text-Text-Primary)"
+                @click="closeDropdown"
+              >
+                <i class="fas fa-comments mr-2"></i>
+                Messages
+                <span 
+                  v-if="unreadMessageCount > 0" 
+                  class="ml-2 bg-red-500 text-white text-xs rounded-full px-2 py-1"
+                >
+                  {{ unreadMessageCount > 9 ? '9+' : unreadMessageCount }}
+                </span>
+              </router-link>
+              <router-link
                 to="/settings"
                 class="block px-4 py-2 text-sm hover:bg-[var(--Color-Surface-Surface-Brand)] transition-colors"
                 style="color: var(--Color-Text-Text-Primary)"
@@ -284,11 +314,13 @@
 
 <script setup>
 import { Disclosure, DisclosureButton, DisclosurePanel } from "@headlessui/vue";
-import { ref, watch, onMounted } from "vue";
+import { ref, watch, onMounted, onUnmounted } from "vue";
 import { getAuth, signOut } from "firebase/auth";
 import { useRouter } from "vue-router";
 import Swal from "sweetalert2";
 import { useI18n } from "vue-i18n";
+import { collection, query, where, onSnapshot, getDocs } from "firebase/firestore";
+import { db } from "@/firebase/config";
 
 const { locale } = useI18n();
 const isDarkMode = ref(false);
@@ -300,6 +332,8 @@ const currentLang = ref(locale.value);
 const languages = ref(["en", "ar"]);
 const auth = getAuth();
 const router = useRouter();
+const unreadMessageCount = ref(0);
+let messagesUnsubscribe = null;
 
 const navLinks = [
   { to: "/home", text: "home" },
@@ -351,8 +385,57 @@ const initializeAuth = () => {
     isAuthenticated.value = !!user;
     if (user) {
       userProfileImage.value = user.photoURL;
+      loadUnreadMessageCount();
+    } else {
+      unreadMessageCount.value = 0;
+      if (messagesUnsubscribe) {
+        messagesUnsubscribe();
+        messagesUnsubscribe = null;
+      }
     }
   });
+};
+
+const loadUnreadMessageCount = () => {
+  if (!auth.currentUser) return;
+
+  try {
+    // Get all chat rooms where the current user is involved
+    const chatRoomsRef = collection(db, 'user-chats');
+    const chatRoomsQuery = query(
+      chatRoomsRef,
+      where('participants', 'array-contains', auth.currentUser.uid)
+    );
+
+    messagesUnsubscribe = onSnapshot(chatRoomsQuery, async (snapshot) => {
+      let totalUnread = 0;
+
+      for (const doc of snapshot.docs) {
+        const chatRoomData = doc.data();
+        const otherUserId = chatRoomData.participants.find(id => id !== auth.currentUser.uid);
+        
+        if (otherUserId) {
+          // Count unread messages from other user
+          const messagesRef = collection(db, 'user-chats', doc.id, 'messages');
+          const unreadQuery = query(
+            messagesRef,
+            where('senderId', '==', otherUserId),
+            where('read', '==', false)
+          );
+          
+          const unreadSnapshot = await getDocs(unreadQuery);
+          totalUnread += unreadSnapshot.size;
+        }
+      }
+
+      unreadMessageCount.value = totalUnread;
+    }, (error) => {
+      console.error('Error loading unread message count:', error);
+    });
+
+  } catch (error) {
+    console.error('Error setting up unread message listener:', error);
+  }
 };
 
 const handleLogout = async () => {
@@ -390,6 +473,12 @@ onMounted(() => {
   initializeDarkMode();
   initializeAuth();
   setDir(currentLang.value);
+});
+
+onUnmounted(() => {
+  if (messagesUnsubscribe) {
+    messagesUnsubscribe();
+  }
 });
 
 watch(isDarkMode, (newValue) => {

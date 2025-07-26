@@ -144,7 +144,7 @@ import { ref, computed, onMounted, nextTick, onUnmounted, watch } from "vue";
 import { useRoute } from "vue-router";
 import { getAuth, onAuthStateChanged } from "firebase/auth";
 import { collection, onSnapshot, doc } from "firebase/firestore";
-import { auth, db } from "@/firebase/config"; // Adjust the import path as needed
+import { auth, db } from "@/firebase/config";
 
 const emit = defineEmits(["close", "user-action"]);
 
@@ -1051,14 +1051,5 @@ onMounted(() => {
     font-size: 0.7rem;
     padding: 3px 6px;
   }
-
-  .image-preview {
-    padding: 4px;
-  }
-
-  .preview-image {
-    max-width: 60px;
-    max-height: 60px;
-  }
 }
-</style>
+</style> 

@@ -44,14 +44,14 @@
           >
             <i class="fas fa-pen"></i>
           </button>
-          <button
-            @click="deleteCategory(cat.id)"
+        <button
+          @click="deleteCategory(cat.id)"
             class="text-red-500 hover:text-red-700 text-lg"
-            title="Delete Category"
-            aria-label="Delete Category"
-          >
+          title="Delete Category"
+          aria-label="Delete Category"
+        >
             <i class="fas fa-trash"></i>
-          </button>
+        </button>
         </div>
       </div>
     </div>
@@ -123,7 +123,7 @@ const saveCategory = async () => {
   if (editingCategory.value) {
     await updateDoc(doc(db, 'categories', editingCategory.value.id), {
       name: categoryForm.value.name.trim(),
-    })
+  })
     editingCategory.value = null
   } else {
     await addCategory()

@@ -139,10 +139,11 @@
 <script setup>
 import TopBar from '@/components/admin/TopBar.vue'
 import { ref, computed, onMounted } from 'vue'
-import { collection, getDocs, doc, deleteDoc, updateDoc } from 'firebase/firestore'
+import { doc, deleteDoc, updateDoc } from 'firebase/firestore'
 import { db } from '@/firebase/config'
 import Swal from 'sweetalert2'
 import { useRouter } from 'vue-router'
+import { useAdminRealTime } from '@/composables/useAdminRealTime'
 
 const router = useRouter()
 
@@ -150,7 +151,9 @@ const goToUserRentals = (userId) => {
   router.push({ name: 'UserRentals', params: { userId } })
 }
 
-const users = ref([])
+// Initialize real-time data
+const { users, initializeRealTimeData, cleanup } = useAdminRealTime()
+
 const selectedUser  = ref(null)
 const updatedRole = ref('')
 
@@ -159,13 +162,6 @@ const sortOption = ref('Newest First')
 const filterRole = ref('')
 const currentPage = ref(1)
 const itemsPerPage = 10
-
-const fetchUsers = async () => {
-  const snapshot = await getDocs(collection(db, 'users'))
-  users.value = snapshot.docs.map(doc => {
-    return { id: doc.id, ...doc.data() }
-  })
-}
 
 const deleteUser  = async (userId) => {
   const confirm = await Swal.fire({
@@ -386,5 +382,7 @@ const formatCreatedAt = (timestamp) => {
   }
 };
 
-onMounted(fetchUsers)
+onMounted(() => {
+  initializeRealTimeData()
+})
 </script>

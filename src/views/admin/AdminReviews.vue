@@ -94,8 +94,6 @@
 <script setup>
 import { ref, onMounted } from 'vue'
 import {
-    collection,
-    getDocs,
     getDoc,
     addDoc,
     deleteDoc,
@@ -103,13 +101,15 @@ import {
     updateDoc,
 } from 'firebase/firestore'
 import { db } from '@/firebase/config'
-const products = ref([]);
+import { useAdminRealTime } from '@/composables/useAdminRealTime'
+import { useReviewsRealTime } from '@/composables/useReviewsRealTime'
 
+// Initialize real-time data
+const { products, initializeRealTimeData, cleanup } = useAdminRealTime()
+const { userReviews, webReviews, loading, initializeRealTimeReviews, cleanup: cleanupReviews } = useReviewsRealTime()
 
-const userReviews = ref([])
-const webReviews = ref([])
-const loadingUser = ref(true)
-const loadingWeb = ref(true)
+const loadingUser = computed(() => loading.value.userReviews)
+const loadingWeb = computed(() => loading.value.webReviews)
 const editing = ref(false)
 const editingId = ref(null)
 const productsMap = ref({})
@@ -124,16 +124,14 @@ const form = ref({
     collection: 'user-reviews',
 })
 
-const fetchProducts = async () => {
-    const snapshot = await getDocs(collection(db, "products"));
-    snapshot.forEach((doc) => {
-        const map = {}
-        snapshot.forEach((doc) => {
-            map[doc.id] = doc.data()
-        })
-        productsMap.value = map
-    });
-};
+// Update products map when products change
+const updateProductsMap = () => {
+    const map = {}
+    products.value.forEach((product) => {
+        map[product.id] = product
+    })
+    productsMap.value = map
+}
 
 function enrich(review) {
     const prod = productsMap.value[review.productId] || {}
@@ -210,12 +208,14 @@ function formatDate(ts) {
     return ts?.toDate().toLocaleString() || ''
 }
 
-// onMounted(async () => {
-//     await fetchProducts()
-//     fetchUserReviews()
-//     fetchWebReviews()
-// })
 onMounted(async () => {
+    initializeRealTimeData()
+    initializeRealTimeReviews()
+    
+    // Update products map when products are loaded
+    updateProductsMap()
+    
+    // Get user image from a specific review if needed
     const reviewId = 'P0H7uLmYXtNzPEEOKHTO' // Replace with your document ID
     const docRef = doc(db, 'web-reviews', reviewId)
     const docSnap = await getDoc(docRef)
@@ -223,10 +223,6 @@ onMounted(async () => {
     if (docSnap.exists()) {
         userImage.value = docSnap.data().userImage
     }
-    await fetchProducts()
-    await fetchProducts()
-    await fetchUserReviews()
-    await fetchWebReviews()
 })
 </script>
 

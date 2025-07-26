@@ -92,11 +92,14 @@
 <script setup>
 import TopBar from '@/components/admin/TopBar.vue';
 import { ref, computed, onMounted, onBeforeUnmount } from 'vue';
-import { collection, getDocs, updateDoc, deleteDoc, doc } from 'firebase/firestore';
+import { updateDoc, deleteDoc, doc } from 'firebase/firestore';
 import { db } from '@/firebase/config';
 import Swal from 'sweetalert2';
+import { useAdminRealTime } from '@/composables/useAdminRealTime';
 
-const rentals = ref([]);
+// Initialize real-time data
+const { bookings, users, initializeRealTimeData, cleanup } = useAdminRealTime();
+
 const searchQuery = ref('');
 const sortOption = ref('Newest First');
 const filterStatus = ref('');
@@ -105,39 +108,22 @@ const itemsPerPage = 10;
 const statusDropdownId = ref(null);
 const statusOptions = ['pending', 'active', 'cancelled'];
 
-// const fetchRentals = async () => {
-//   try {
-//     const rentalsRef = collection(db, 'bookings');
-//     const snapshot = await getDocs(rentalsRef);
-//     rentals.value = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
-//   } catch (error) {
-//     console.error('Error fetching rentals:', error);
-//   }
-// };
-const fetchRentals = async () => {
-  try {
-    const bookingsSnap = await getDocs(collection(db, 'bookings'));
-    const usersSnap = await getDocs(collection(db, 'users'));
+// Computed property to enrich bookings with user data
+const rentals = computed(() => {
+  const usersMap = {};
+  users.value.forEach(user => {
+    usersMap[user.id] = user;
+  });
 
-    const usersMap = {};
-    usersSnap.forEach(doc => {
-      usersMap[doc.id] = doc.data();
-    });
-
-    rentals.value = bookingsSnap.docs.map(doc => {
-      const data = doc.data();
-      const userInfo = usersMap[data.userId] || {};
-      return {
-        id: doc.id,
-        ...data,
-        userName: userInfo.displayName || 'Unknown User',
-        userImage: userInfo.imageUrl || '',
-      };
-    });
-  } catch (error) {
-    console.error('Error fetching rentals:', error);
-  }
-};
+  return bookings.value.map(booking => {
+    const userInfo = usersMap[booking.userId] || {};
+    return {
+      ...booking,
+      userName: userInfo.displayName || 'Unknown User',
+      userImage: userInfo.imageUrl || '',
+    };
+  });
+});
 const formatDate = (dateStr) => {
   if (!dateStr) return '';
   const date = new Date(dateStr);
@@ -230,7 +216,6 @@ async function changeStatus(rental, newStatus) {
   }
   try {
     await updateDoc(doc(db, 'bookings', rental.id), { status: newStatus });
-    rental.status = newStatus;
     statusDropdownId.value = null;
     Swal.fire('Updated', 'Booking status updated successfully.', 'success');
   } catch (error) {
@@ -253,7 +238,6 @@ const deleteRental = async (rentalId) => {
   if (result.isConfirmed) {
     try {
       await deleteDoc(doc(db, 'bookings', rentalId));
-      rentals.value = rentals.value.filter(r => r.id !== rentalId);
       Swal.fire('Deleted', 'Booking deleted successfully.', 'success');
     } catch (error) {
       console.error('Error deleting rental:', error);
@@ -262,8 +246,6 @@ const deleteRental = async (rentalId) => {
   }
 };
 
-onMounted(fetchRentals);
-
 // Close dropdown on click outside
 function handleClickOutside(event) {
   const dropdown = document.querySelector('.relative.ml-2');
@@ -271,10 +253,14 @@ function handleClickOutside(event) {
     showFilterDropdown.value = false;
   }
 }
+
 onMounted(() => {
+  initializeRealTimeData();
   document.addEventListener('mousedown', handleClickOutside);
 });
+
 onBeforeUnmount(() => {
+  cleanup();
   document.removeEventListener('mousedown', handleClickOutside);
 });
 </script>

@@ -1,9 +1,10 @@
 <script setup>
-import { computed, ref, watch } from "vue";
+import { computed, ref, watch, onMounted, onBeforeUnmount } from "vue";
 import { useRoute, useRouter } from "vue-router";
 import ChatBot from "@/components/ChatBot.vue";
 import AdminLayout from "@/layouts/AdminLayout.vue";
 import DefaultLayout from "@/layouts/DefaultLayout.vue";
+import { useGlobalRealTime } from "@/composables/useGlobalRealTime";
 
 const route = useRoute();
 const router = useRouter();
@@ -53,9 +54,26 @@ watch(
 // Check password on initial load
 checkPasswordOnRouteChange();
 
+// Initialize global real-time store
+const { initialize, cleanup } = useGlobalRealTime();
+
 function toggleChat() {
   isChatOpen.value = !isChatOpen.value;
 }
+
+function handleUserAction(action) {
+  console.log('User action:', action);
+}
+
+// Initialize real-time data on app mount
+onMounted(() => {
+  initialize();
+});
+
+// Cleanup on app unmount
+onBeforeUnmount(() => {
+  cleanup();
+});
 </script>
 
 <template>

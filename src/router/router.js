@@ -20,6 +20,7 @@ import CategoriesManager from '@/views/admin/CategoriesManager.vue';
 import RentalDashboard from '@/views/admin/RentalDashboard.vue';
 import UserRentals from '@/views/admin/UserRentals.vue';
 import AdminReviews from '@/views/admin/AdminReviews.vue';
+
 import Overview from '@/views/Overview.vue';
 import Features from '@/views/Features.vue';
 import Pricing from '@/views/Pricing.vue';
@@ -35,6 +36,7 @@ import MyRentals from '@/views/Profile/MyRentals.vue';
 import MyBalance from '@/views/Profile/MyBalance.vue';
 import Settings from '@/views/Profile/Settings.vue';
 import HelpCentre from '@/views/Profile/HelpCentre.vue';
+import Messages from '@/views/Messages.vue';
 
 const routes = [
   { path: '/contact', name: 'Contact', component: Contact, meta: { requiresAuth: false } },
@@ -75,6 +77,8 @@ const routes = [
   { path: '/rentals', name: 'Rentals', component: RentalDashboard, meta: { layout: 'admin', requiresAuth: true, requiresAdmin: true } },
   { path: '/admin/user/:userId/rentals', name: 'UserRentals', component: UserRentals, meta: { layout: 'admin', requiresAuth: true, requiresAdmin: true } },
   { path: '/admin/reviews', name: 'AdminReviews', component: AdminReviews, meta: { layout: 'admin', requiresAuth: true, requiresAdmin: true } },
+
+  { path: '/messages', name: 'Messages', component: Messages, meta: { requiresAuth: true } },
   { path: '/:pathMatch(.*)*', name: 'Error', component: Errorr, meta: { hideNavbar: true, requiresAuth: false } }
 ];
 

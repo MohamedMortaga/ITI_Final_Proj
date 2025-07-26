@@ -20,39 +20,39 @@
           <!-- Product Image Gallery -->
           <div class="bg-white rounded-xl shadow-lg overflow-hidden">
             <div class="relative">
-              <img
-                :src="product.img || require('@/assets/logo.png')"
-                alt="Product Image"
+        <img
+          :src="product.img || require('@/assets/logo.png')"
+          alt="Product Image"
                 class="w-full h-96 object-cover"
-              />
+        />
               <!-- Navigation Arrows -->
-              <button
+            <button
                 class="absolute left-4 top-1/2 transform -translate-y-1/2 bg-white/80 hover:bg-white rounded-full p-2 shadow-lg"
-              >
+            >
                 <i class="fas fa-chevron-left text-gray-600"></i>
-              </button>
-              <button
+            </button>
+            <button
                 class="absolute right-4 top-1/2 transform -translate-y-1/2 bg-white/80 hover:bg-white rounded-full p-2 shadow-lg"
-              >
+            >
                 <i class="fas fa-chevron-right text-gray-600"></i>
-              </button>
+            </button>
               <!-- Pagination Dots -->
               <div
                 class="absolute bottom-4 left-1/2 transform -translate-x-1/2 flex space-x-2"
               >
                 <div class="w-2 h-2 bg-[var(--color-success-500)] rounded-full"></div>
                 <div class="w-2 h-2 bg-gray-300 rounded-full"></div>
-              </div>
-            </div>
           </div>
+        </div>
+      </div>
 
           <!-- Product Title and Action -->
           <div class="bg-white rounded-xl shadow-lg p-6">
-            <h1
+          <h1
               class="text-3xl font-bold text-[var(--color-gray-800)] dark:text-[var(--color-gray-200)] mb-4"
-            >
-              {{ product.title }}
-            </h1>
+          >
+            {{ product.title }}
+          </h1>
             <button
               @click="navigateToRentConfirmation"
               :disabled="product?.status === 'pending' || isBookingPending"
@@ -234,20 +234,20 @@
 
         <!-- Right Column: Owner Details, Calendar, Reviews -->
         <div class="space-y-6">
-          <!-- Owner Details -->
+        <!-- Owner Details -->
           <div class="bg-white rounded-xl shadow-lg p-6">
-            <h3
+          <h3
               class="text-lg font-semibold text-[var(--color-gray-800)] dark:text-[var(--color-gray-200)] mb-4"
-            >
+          >
               Owner details
-            </h3>
+          </h3>
             <div class="flex items-center gap-4 mb-4">
-              <img
-                :src="booking.sellerImage || require('@/assets/default.png')"
-                alt="Owner"
+            <img
+              :src="booking.sellerImage || require('@/assets/default.png')"
+              alt="Owner"
                 class="w-12 h-12 rounded-full object-cover"
-              />
-              <div>
+            />
+            <div>
                 <p
                   class="font-semibold text-[var(--color-gray-800)] dark:text-[var(--color-gray-200)]"
                 >
@@ -287,10 +287,23 @@
               </button>
               <button
                 @click="sendMessage"
-                class="w-full bg-[var(--color-success-500)] text-white py-2 rounded-lg hover:bg-[var(--color-success-600)] transition-colors"
+                class="w-full bg-[var(--color-success-500)] text-white py-2 rounded-lg hover:bg-[var(--color-success-600)] transition-colors relative"
               >
                 Send a message
+                <span 
+                  v-if="unreadMessageCount > 0" 
+                  class="absolute -top-2 -right-2 bg-red-500 text-white text-xs rounded-full w-5 h-5 flex items-center justify-center"
+                >
+                  {{ unreadMessageCount > 9 ? '9+' : unreadMessageCount }}
+                </span>
               </button>
+              <router-link
+                to="/messages"
+                class="w-full border border-[var(--color-success-500)] text-[var(--color-success-500)] py-2 rounded-lg hover:bg-[var(--color-success-50)] transition-colors text-center block"
+              >
+                <i class="fas fa-comments mr-2"></i>
+                View All Messages
+              </router-link>
             </div>
           </div>
 
@@ -315,7 +328,7 @@
               >
                 <i class="fas fa-chevron-right"></i>
               </button>
-            </div>
+        </div>
 
             <!-- Days of Week -->
             <div class="grid grid-cols-7 gap-1 mb-2">
@@ -326,7 +339,7 @@
               >
                 {{ day }}
               </span>
-            </div>
+      </div>
 
             <!-- Calendar Grid -->
             <div class="grid grid-cols-7 gap-1">
@@ -355,7 +368,7 @@
             >
               Reset Date Selection
             </button>
-          </div>
+    </div>
 
           <!-- Tool's Reviews -->
           <div class="bg-white rounded-xl shadow-lg p-6">
@@ -392,12 +405,12 @@
                 }}</span>
               </div>
             </div>
-            <button
+        <button
               @click="showReviewForm = true"
               class="w-full mt-4 border border-[var(--color-success-500)] text-[var(--color-success-500)] py-2 rounded-lg hover:bg-[var(--color-success-50)] transition-colors"
-            >
+        >
               Add Review
-            </button>
+        </button>
             <button
               class="w-full mt-2 border border-[var(--color-success-500)] text-[var(--color-success-500)] py-2 rounded-lg hover:bg-[var(--color-success-50)] transition-colors"
             >
@@ -441,7 +454,7 @@
                   <i class="fas fa-star text-yellow-400"></i>
                   {{ item.rating || "0" }}
                 </span>
-              </div>
+          </div>
               <div class="flex items-center justify-between mb-3">
                 <span class="font-semibold text-[var(--color-gray-800)]">
                   {{ $t("egp") }} {{ item.price || "0" }}
@@ -465,7 +478,7 @@
         >
           {{ showAllProducts ? $t("showLess") : $t("viewAllItems") }}
         </button>
-      </div>
+          </div>
     </div>
 
     <!-- Booking Form Modal -->
@@ -511,7 +524,7 @@
 
             <!-- Right: Rental Details -->
             <div class="space-y-4">
-              <div>
+          <div>
                 <h3
                   class="text-xl font-bold text-[var(--color-gray-800)] dark:text-[var(--color-gray-200)] mb-2"
                 >
@@ -519,8 +532,8 @@
                 </h3>
                 <p class="text-2xl font-bold text-[var(--color-success-500)] mb-4">
                   {{ $t("egp") }} {{ product?.price || 0 }}/{{ $t("perDay") }}
-                </p>
-              </div>
+            </p>
+          </div>
 
               <!-- Picked Dates -->
               <div class="bg-gray-50 dark:bg-gray-700 rounded-lg p-4">
@@ -538,7 +551,7 @@
                     <span class="font-medium">{{
                       booking.startDate ? formatDate(booking.startDate) : "Not selected"
                     }}</span>
-                  </div>
+          </div>
                   <div class="flex justify-between">
                     <span
                       class="text-[var(--color-gray-600)] dark:text-[var(--color-gray-400)]"
@@ -561,14 +574,14 @@
                   <span class="text-xl font-bold text-[var(--color-success-500)]">
                     {{ $t("egp") }} {{ calculateSubtotal() }}
                   </span>
-                </div>
+          </div>
                 <p
                   class="text-sm text-[var(--color-gray-500)] dark:text-[var(--color-gray-400)] mt-1"
                 >
                   ({{ $t("egp") }}{{ product?.price || 0 }} × {{ calculateDays() }}
                   {{ $t("perDay") }})
                 </p>
-              </div>
+            </div>
             </div>
           </div>
 
@@ -632,43 +645,43 @@
                 Please Login/Sign up to complete the rent process
               </p>
               <div class="space-y-3">
-                <button
+            <button
                   @click="router.push('/signup')"
                   class="w-full bg-[var(--color-success-500)] text-white py-3 px-6 rounded-lg font-semibold hover:bg-[var(--color-success-600)] transition-colors"
-                >
+            >
                   Sign up now!
-                </button>
+            </button>
                 <p
                   class="text-center text-sm text-[var(--color-gray-600)] dark:text-[var(--color-gray-400)]"
                 >
                   Already have an account?
-                  <button
+            <button
                     @click="router.push('/login')"
                     class="text-[var(--color-success-500)] hover:underline"
-                  >
+            >
                     Login
-                  </button>
+            </button>
                 </p>
-              </div>
+          </div>
             </div>
 
             <div v-else class="space-y-4">
               <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
-                <div>
-                  <label
+          <div>
+            <label
                     class="block text-sm font-medium text-[var(--color-gray-700)] dark:text-[var(--color-gray-300)] mb-2"
-                  >
+            >
                     Name
                   </label>
-                  <input
+            <input
                     v-model="booking.userName"
-                    type="text"
+              type="text"
                     class="w-full p-3 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-[var(--color-gray-800)] dark:text-[var(--color-gray-200)]"
                     :placeholder="auth.currentUser?.displayName || 'Enter your name'"
                   />
-                </div>
-                <div>
-                  <label
+          </div>
+          <div>
+            <label
                     class="block text-sm font-medium text-[var(--color-gray-700)] dark:text-[var(--color-gray-300)] mb-2"
                   >
                     Phone Number
@@ -680,22 +693,22 @@
                     placeholder="0102 219 4510"
                     maxlength="14"
                     @input="formatPhoneNumber"
-                    required
+              required
                   />
-                </div>
-                <div>
-                  <label
+          </div>
+          <div>
+            <label
                     class="block text-sm font-medium text-[var(--color-gray-700)] dark:text-[var(--color-gray-300)] mb-2"
-                  >
+            >
                     Email
                   </label>
-                  <input
+            <input
                     v-model="booking.userEmail"
                     type="email"
                     class="w-full p-3 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-[var(--color-gray-800)] dark:text-[var(--color-gray-200)]"
                     :placeholder="auth.currentUser?.email || 'Enter your email'"
                   />
-                </div>
+          </div>
               </div>
             </div>
           </div>
@@ -716,7 +729,7 @@
                   >Tool:</span
                 >
                 <span class="font-medium">{{ product?.title }}</span>
-              </div>
+          </div>
               <div
                 class="flex justify-between items-center border-b border-dashed border-gray-300 dark:border-gray-600 pb-2"
               >
@@ -727,21 +740,21 @@
                 <div class="flex items-center space-x-2">
                   <span class="font-medium">{{ booking.sellerName }}</span>
                   <i class="fas fa-check-circle text-[var(--color-success-500)]"></i>
-                </div>
-              </div>
-              <div
+      </div>
+    </div>
+    <div
                 class="flex justify-between items-center border-b border-dashed border-gray-300 dark:border-gray-600 pb-2"
-              >
+    >
                 <span
                   class="text-[var(--color-gray-600)] dark:text-[var(--color-gray-400)]"
                   >Rental Days:</span
-                >
+      >
                 <span class="font-medium">{{ calculateDays() }}</span>
               </div>
-              <div
+        <div
                 class="flex justify-between items-center border-b border-dashed border-gray-300 dark:border-gray-600 pb-2"
-              >
-                <span
+        >
+            <span
                   class="text-[var(--color-gray-600)] dark:text-[var(--color-gray-400)]"
                   >Daily Rate:</span
                 >
@@ -750,7 +763,7 @@
               <div
                 class="flex justify-between items-center border-b border-dashed border-gray-300 dark:border-gray-600 pb-2"
               >
-                <span
+            <span
                   class="text-[var(--color-gray-600)] dark:text-[var(--color-gray-400)]"
                   >Delivery Fee:</span
                 >
@@ -759,22 +772,22 @@
                 >
               </div>
               <div class="flex justify-between items-center pt-2">
-                <span
+            <span
                   class="text-lg font-bold text-[var(--color-gray-800)] dark:text-[var(--color-gray-200)]"
                   >Total amount:</span
-                >
+            >
                 <span class="text-xl font-bold text-[var(--color-success-500)]"
                   >{{ $t("egp") }} {{ booking.totalPrice.toFixed(2) }}</span
                 >
-              </div>
-            </div>
           </div>
+        </div>
+      </div>
 
           <!-- Action Buttons -->
           <div
             class="flex justify-end space-x-4 pt-6 border-t border-gray-200 dark:border-gray-700"
           >
-            <button
+      <button
               @click="showBookingForm = false"
               class="px-6 py-3 border border-gray-300 dark:border-gray-600 text-[var(--color-gray-700)] dark:text-[var(--color-gray-300)] rounded-lg hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors"
             >
@@ -786,7 +799,7 @@
               class="px-8 py-3 bg-[var(--color-success-500)] text-white rounded-lg font-semibold hover:bg-[var(--color-success-600)] disabled:bg-gray-400 disabled:cursor-not-allowed transition-colors"
             >
               Confirm
-            </button>
+      </button>
           </div>
         </div>
       </div>
@@ -859,6 +872,113 @@
       </div>
     </div>
 
+    <!-- Chat Modal -->
+    <div
+      v-if="showChatModal"
+      class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4"
+    >
+      <div
+        class="bg-white dark:bg-[var(--color-gray-800)] rounded-xl shadow-xl w-full max-w-2xl h-[600px] flex flex-col"
+      >
+        <!-- Chat Header -->
+        <div
+          class="bg-[var(--color-success-500)] text-white p-4 rounded-t-xl flex justify-between items-center"
+        >
+          <div class="flex items-center gap-3">
+            <img
+              :src="booking.sellerImage || require('@/assets/default.png')"
+              alt="Owner"
+              class="w-10 h-10 rounded-full object-cover"
+            />
+            <div>
+              <h3 class="font-semibold text-lg">{{ booking.sellerName }}</h3>
+              <p class="text-sm opacity-90">Product: {{ product?.title }}</p>
+            </div>
+          </div>
+          <button
+            @click="closeChatModal"
+            class="text-white hover:text-gray-200 text-2xl font-bold"
+          >
+            ×
+          </button>
+        </div>
+
+        <!-- Chat Messages -->
+        <div
+          id="chat-messages-container"
+          class="flex-1 overflow-y-auto p-4 space-y-4 bg-gray-50 dark:bg-[var(--color-gray-700)]"
+        >
+          <!-- Loading State -->
+          <div v-if="chatLoading" class="flex justify-center items-center h-32">
+            <div class="animate-spin rounded-full h-8 w-8 border-b-2 border-[var(--color-success-500)]"></div>
+          </div>
+
+          <!-- Error State -->
+          <div v-else-if="chatError" class="text-center text-red-500 p-4">
+            <i class="fas fa-exclamation-triangle mb-2"></i>
+            <p>{{ chatError }}</p>
+          </div>
+
+          <!-- Messages -->
+          <div v-else-if="chatMessages.length === 0" class="text-center text-gray-500 p-8">
+            <i class="fas fa-comments text-4xl mb-4 opacity-50"></i>
+            <p>No messages yet. Start the conversation!</p>
+          </div>
+
+          <div v-else>
+            <div
+              v-for="message in chatMessages"
+              :key="message.id"
+              class="flex"
+              :class="isOwnMessage(message) ? 'justify-end' : 'justify-start'"
+            >
+                             <div
+                 class="max-w-xs lg:max-w-md px-4 py-2 rounded-lg relative"
+                 :class="
+                   isOwnMessage(message)
+                     ? 'bg-[var(--color-success-500)] text-white'
+                     : 'bg-white dark:bg-[var(--color-gray-600)] text-[var(--color-gray-800)] dark:text-[var(--color-gray-200)]'
+                 "
+               >
+                 <div class="flex items-center gap-2 mb-1">
+                   <span class="text-xs opacity-75">{{ message.senderName }}</span>
+                   <span class="text-xs opacity-75">{{ formatChatTime(message.timestamp) }}</span>
+                   <!-- Read indicator for own messages -->
+                   <span v-if="isOwnMessage(message)" class="text-xs opacity-75">
+                     <i :class="message.read ? 'fas fa-check-double text-blue-300' : 'fas fa-check text-gray-300'"></i>
+                   </span>
+                   <!-- Unread indicator for other's messages -->
+                   <span v-else-if="!message.read" class="w-2 h-2 bg-red-500 rounded-full"></span>
+                 </div>
+                 <p class="text-sm">{{ message.content }}</p>
+               </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Chat Input -->
+        <div class="p-4 border-t border-gray-200 dark:border-gray-600 bg-white dark:bg-[var(--color-gray-800)]">
+          <form @submit.prevent="sendChatMessage" class="flex gap-2">
+            <input
+              v-model="newChatMessage"
+              type="text"
+              placeholder="Type your message..."
+              @keyup.enter="sendChatMessage"
+              class="flex-1 px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-[var(--color-success-500)] bg-white dark:bg-[var(--color-gray-700)] text-[var(--color-gray-800)] dark:text-[var(--color-gray-200)]"
+              :disabled="!auth.currentUser"
+            />
+            <button
+              type="submit"
+              :disabled="!newChatMessage.trim() || !auth.currentUser"
+              class="px-6 py-2 bg-[var(--color-success-500)] text-white rounded-lg hover:bg-[var(--color-success-600)] disabled:bg-gray-400 disabled:cursor-not-allowed transition-colors"
+            >
+              <i class="fas fa-paper-plane"></i>
+            </button>
+          </form>
+        </div>
+      </div>
+    </div>
+
     <router-link
       to="/home"
       class="mt-6 inline-block text-[var(--color-success-500)] hover:underline text-sm dark:text-[var(--color-success-300)]"
@@ -883,6 +1003,8 @@ import {
   where,
   getDocs,
   updateDoc,
+  addDoc,
+  orderBy,
 } from "firebase/firestore";
 import { db, auth } from "@/firebase/config";
 import Swal from "sweetalert2";
@@ -1757,15 +1879,244 @@ const viewOwnerTools = () => {
 };
 
 const sendMessage = () => {
-  // Open chat or message modal
-  Swal.fire({
-    icon: "info",
-    title: "Message Feature",
-    text:
-      "Message functionality will be implemented soon. For now, you can contact the owner through the booking process.",
-    confirmButtonText: "OK",
-  });
+  // Check if user is authenticated
+  if (!auth.currentUser) {
+    Swal.fire({
+      icon: "warning",
+      title: "Login Required",
+      text: "Please log in to send a message to the owner.",
+      confirmButtonText: "OK",
+    });
+    return;
+  }
+
+  // Check if user is trying to message themselves
+  if (auth.currentUser.uid === booking.value.sellerId) {
+    Swal.fire({
+      icon: "info",
+      title: "Cannot Message Yourself",
+      text: "You cannot send a message to yourself.",
+      confirmButtonText: "OK",
+    });
+    return;
+  }
+
+  // Open chat modal
+  showChatModal.value = true;
+  initializeChat();
+  
+  // Mark existing messages as read after a short delay
+  setTimeout(() => {
+    markMessagesAsRead();
+  }, 1000);
 };
+
+// Add these new refs and functions after the existing refs
+const showChatModal = ref(false);
+const chatMessages = ref([]);
+const newChatMessage = ref("");
+const chatLoading = ref(false);
+const chatError = ref(null);
+const chatUnsubscribe = ref(null);
+
+// Initialize chat with the product owner
+const initializeChat = async () => {
+  if (!auth.currentUser || !booking.value.sellerId) return;
+
+  try {
+    chatLoading.value = true;
+    chatError.value = null;
+
+    // Create a unique chat room ID between the two users
+    const chatRoomId = [auth.currentUser.uid, booking.value.sellerId].sort().join('_');
+    
+    // First, ensure the chat room exists
+    await createOrGetChatRoom(chatRoomId);
+    
+    // Set up real-time listener for messages
+    const messagesRef = collection(db, 'user-chats', chatRoomId, 'messages');
+    const messagesQuery = query(messagesRef, orderBy('timestamp', 'asc'));
+    
+    chatUnsubscribe.value = onSnapshot(messagesQuery, (snapshot) => {
+      const messages = [];
+      snapshot.forEach((doc) => {
+        messages.push({
+          id: doc.id,
+          ...doc.data(),
+          timestamp: doc.data().timestamp?.toDate() || new Date()
+        });
+      });
+      
+      // Check for new messages from other user
+      const newMessages = snapshot.docChanges().filter(change => 
+        change.type === 'added' && 
+        change.doc.data().senderId !== auth.currentUser?.uid
+      );
+      
+      if (newMessages.length > 0 && !showChatModal.value) {
+        // Show notification for new messages when chat is not open
+        Swal.fire({
+          icon: "info",
+          title: "New Message",
+          text: `You have a new message from ${booking.value.sellerName}`,
+          confirmButtonText: "View",
+          showCancelButton: true,
+          cancelButtonText: "Later"
+        }).then((result) => {
+          if (result.isConfirmed) {
+            showChatModal.value = true;
+          }
+        });
+      }
+      
+      chatMessages.value = messages;
+    }, (error) => {
+      console.error('Error loading chat messages:', error);
+      chatError.value = 'Failed to load messages';
+    });
+
+    chatLoading.value = false;
+  } catch (error) {
+    console.error('Error initializing chat:', error);
+    chatError.value = 'Failed to initialize chat';
+    chatLoading.value = false;
+  }
+};
+
+// Create or get chat room
+const createOrGetChatRoom = async (chatRoomId) => {
+  try {
+    const chatRoomRef = doc(db, 'user-chats', chatRoomId);
+    const chatRoomDoc = await getDoc(chatRoomRef);
+    
+    if (!chatRoomDoc.exists()) {
+      // Create new chat room
+      await setDoc(chatRoomRef, {
+        participants: [auth.currentUser.uid, booking.value.sellerId].sort(),
+        createdAt: serverTimestamp(),
+        updatedAt: serverTimestamp(),
+        productId: route.params.id,
+        productTitle: product.value.title,
+        lastMessage: null,
+        lastMessageTime: null
+      });
+    }
+  } catch (error) {
+    console.error('Error creating/getting chat room:', error);
+  }
+};
+
+// Send a message to the product owner
+const sendChatMessage = async () => {
+  if (!newChatMessage.value.trim() || !auth.currentUser || !booking.value.sellerId) return;
+
+  try {
+    const chatRoomId = [auth.currentUser.uid, booking.value.sellerId].sort().join('_');
+    const messagesRef = collection(db, 'user-chats', chatRoomId, 'messages');
+    const chatRoomRef = doc(db, 'user-chats', chatRoomId);
+    
+    const messageData = {
+      content: newChatMessage.value.trim(),
+      senderId: auth.currentUser.uid,
+      senderName: auth.currentUser.displayName || auth.currentUser.email,
+      senderImage: auth.currentUser.photoURL || null,
+      receiverId: booking.value.sellerId,
+      receiverName: booking.value.sellerName,
+      productId: route.params.id,
+      productTitle: product.value.title,
+      timestamp: serverTimestamp(),
+      read: false
+    };
+
+    // Add message to messages collection
+    await addDoc(messagesRef, messageData);
+    
+    // Update chat room with last message info
+    await updateDoc(chatRoomRef, {
+      lastMessage: newChatMessage.value.trim(),
+      lastMessageTime: serverTimestamp(),
+      updatedAt: serverTimestamp()
+    });
+    
+    newChatMessage.value = "";
+
+    // Scroll to bottom after sending
+    await nextTick();
+    scrollChatToBottom();
+  } catch (error) {
+    console.error('Error sending message:', error);
+    Swal.fire({
+      icon: "error",
+      title: "Error",
+      text: "Failed to send message. Please try again.",
+      confirmButtonText: "OK",
+    });
+  }
+};
+
+// Scroll chat to bottom
+const scrollChatToBottom = () => {
+  const chatContainer = document.getElementById('chat-messages-container');
+  if (chatContainer) {
+    chatContainer.scrollTop = chatContainer.scrollHeight;
+  }
+};
+
+// Close chat modal
+const closeChatModal = () => {
+  showChatModal.value = false;
+  if (chatUnsubscribe.value) {
+    chatUnsubscribe.value();
+    chatUnsubscribe.value = null;
+  }
+  chatMessages.value = [];
+  newChatMessage.value = "";
+};
+
+// Mark messages as read
+const markMessagesAsRead = async () => {
+  if (!auth.currentUser || !booking.value.sellerId) return;
+  
+  try {
+    const chatRoomId = [auth.currentUser.uid, booking.value.sellerId].sort().join('_');
+    const messagesRef = collection(db, 'user-chats', chatRoomId, 'messages');
+    
+    // Get unread messages from other user
+    const unreadMessages = chatMessages.value.filter(
+      message => message.senderId !== auth.currentUser.uid && !message.read
+    );
+    
+    // Mark them as read
+    const updatePromises = unreadMessages.map(message => {
+      const messageRef = doc(db, 'user-chats', chatRoomId, 'messages', message.id);
+      return updateDoc(messageRef, { read: true });
+    });
+    
+    await Promise.all(updatePromises);
+  } catch (error) {
+    console.error('Error marking messages as read:', error);
+  }
+};
+
+// Format chat message time
+const formatChatTime = (timestamp) => {
+  if (!timestamp) return '';
+  const date = new Date(timestamp);
+  return date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+};
+
+// Check if message is from current user
+const isOwnMessage = (message) => {
+  return message.senderId === auth.currentUser?.uid;
+};
+
+// Computed property for unread message count
+const unreadMessageCount = computed(() => {
+  if (!auth.currentUser) return 0;
+  return chatMessages.value.filter(
+    message => message.senderId !== auth.currentUser.uid && !message.read
+  ).length;
+});
 
 const calculateDays = () => {
   if (!booking.value.startDate || !booking.value.endDate) {
@@ -1788,6 +2139,20 @@ const calculateSubtotal = () => {
   return basePrice;
 };
 
+// Watch for new chat messages and auto-scroll to bottom
+watch(chatMessages, () => {
+  nextTick(() => {
+    scrollChatToBottom();
+  });
+}, { deep: true });
+
+// Watch for seller information to initialize chat when available
+watch(() => booking.value.sellerId, (newSellerId) => {
+  if (newSellerId && auth.currentUser && auth.currentUser.uid !== newSellerId && !chatUnsubscribe.value) {
+    initializeChat();
+  }
+});
+
 onMounted(() => {
   loadProduct();
   loadReviews();
@@ -1798,6 +2163,18 @@ onMounted(() => {
   // Immediate check on mount and periodic check every 5 minutes
   checkPendingBookings();
   const checkInterval = setInterval(checkPendingBookings, 5 * 60 * 1000); // Check every 5 minutes
-  return () => clearInterval(checkInterval);
+  
+  // Initialize chat listener for notifications (if user is authenticated and not the owner)
+  if (auth.currentUser && booking.value.sellerId && auth.currentUser.uid !== booking.value.sellerId) {
+    initializeChat();
+  }
+  
+  // Cleanup function
+  return () => {
+    clearInterval(checkInterval);
+    if (chatUnsubscribe.value) {
+      chatUnsubscribe.value();
+    }
+  };
 });
 </script>

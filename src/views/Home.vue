@@ -69,7 +69,7 @@
 import { ref, computed, onMounted, watch } from "vue";
 import { getAuth, onAuthStateChanged } from "firebase/auth";
 import { useRouter } from "vue-router";
-import getCollection from "../composables/getCollection";
+import { useGlobalRealTime } from "@/composables/useGlobalRealTime";
 import { collection, getDocs, query, where } from "firebase/firestore";
 import { db } from "@/firebase/config";
 import Swal from "sweetalert2";
@@ -99,10 +99,7 @@ export default {
     ShareBanner,
   },
   setup() {
-    const { documents: products } = getCollection("products", [
-      ["isApproved", "==", true],
-    ]);
-    const { documents: reviews } = getCollection("web-reviews");
+    const { approvedProducts, webReviews } = useGlobalRealTime();
     const searchQuery = ref("");
     const selectedCategory = ref("");
     const displayName = ref("");
@@ -112,14 +109,9 @@ export default {
     const router = useRouter();
     const allProducts = ref([]);
 
-    const approvedProducts = computed(() => {
-      if (!products.value) return [];
-      return products.value.filter((p) => p.isApproved === true);
-    });
-
     const formattedReviews = computed(() => {
-      if (!reviews.value) return [];
-      return reviews.value
+      if (!webReviews.value) return [];
+      return webReviews.value
         .filter((review) => review.rate && review.review)
         .map((review) => ({
           id: review.id,
@@ -170,10 +162,10 @@ export default {
     };
 
     const loadProductsWithRatings = async () => {
-      if (!products.value) return;
+      if (!approvedProducts.value) return;
 
       const productsWithRatings = await Promise.all(
-        products.value.map(async (product) => {
+        approvedProducts.value.map(async (product) => {
           const avgRating = await calculateAverageRating(product.id);
           return { ...product, rating: parseFloat(avgRating) || 0 };
         })
@@ -214,12 +206,11 @@ export default {
       return filtered;
     });
 
-    watch([products, selectedCategory, searchQuery], () => {
+    watch([approvedProducts, selectedCategory, searchQuery], () => {
       loadProductsWithRatings();
     });
 
     return {
-      products,
       searchQuery,
       selectedCategory,
       filteredProducts,

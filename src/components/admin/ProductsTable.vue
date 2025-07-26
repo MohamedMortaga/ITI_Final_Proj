@@ -127,8 +127,6 @@
 import TopBar from '@/components/admin/TopBar.vue';
 import { ref, computed, onMounted } from 'vue';
 import {
-  collection,
-  getDocs,
   doc,
   deleteDoc,
   updateDoc,
@@ -136,9 +134,11 @@ import {
 import { db } from '@/firebase/config';
 import Swal from 'sweetalert2';
 import * as XLSX from 'xlsx';
+import { useAdminRealTime } from '@/composables/useAdminRealTime';
 
-const products = ref([]);
-const users = ref({});
+// Initialize real-time data
+const { products, users, initializeRealTimeData, cleanup } = useAdminRealTime();
+
 const searchQuery = ref('');
 const sortOption = ref('Name A → Z');
 const filterCategory = ref('');
@@ -146,7 +146,6 @@ const currentPage = ref(1);
 const itemsPerPage = 10;
 const selectedProducts = ref([]);
 const selectAll = ref(false);
-const allProducts = ref([])
 const disapproveProduct = async (id) => {
   try {
     const productRef = doc(db, "products", id);
@@ -209,41 +208,20 @@ const totalPages = computed(() => {
 });
 
 
-const fetchProducts = async () => {
-  try {
-    const snapshot = await getDocs(collection(db, 'products'));
-    const allProducts = snapshot.docs.map(doc => {
-      const data = doc.data();
-      return {
-        id: doc.id,
-        ...data,
-      };
-    });
-    products.value = allProducts;
-    await fetchUsers();
-  } catch (err) {
-    console.error('Failed to load products:', err);
-  }
-};
-
-
-const fetchUsers = async () => {
-  try {
-    const userSnapshot = await getDocs(collection(db, 'users'));
-    userSnapshot.docs.forEach(doc => {
-      users.value[doc.id] = doc.data();
-    });
-  } catch (err) {
-    console.error('Failed to load users:', err);
-  }
-};
+// Users map for easy lookup
+const usersMap = computed(() => {
+  const map = {};
+  users.value.forEach(user => {
+    map[user.id] = user;
+  });
+  return map;
+});
 
 const approveProduct = async (productId) => {
   try {
     await updateDoc(doc(db, 'products', productId), {
       isApproved: true,
     });
-    await fetchProducts();
     Swal.fire('Approved!', 'Product has been approved.', 'success');
   } catch (err) {
     console.error('Failed to approve product:', err);
@@ -265,7 +243,6 @@ const deleteProduct = async (productId) => {
   if (confirm.isConfirmed) {
     try {
       await deleteDoc(doc(db, 'products', productId));
-      products.value = products.value.filter(product => product.id !== productId);
       Swal.fire('Deleted!', 'Product has been deleted.', 'success');
     } catch (err) {
       console.error('Failed to delete product:', err);
@@ -324,10 +301,7 @@ const toggleSelectAll = () => {
 };
 
 onMounted(() => {
-  fetchProducts();
-  // Add export handler to TopBar's export button
-  // Since TopBar's export button doesn't emit an event, we need to handle it differently
-  // For simplicity, we'll assume it's triggered via a global event or direct call
+  initializeRealTimeData();
 });
 </script>
 

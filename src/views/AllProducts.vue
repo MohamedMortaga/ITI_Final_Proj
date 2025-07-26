@@ -59,8 +59,8 @@ import CategoryButtons from "@/components/pages/CategoryButtons.vue";
 import ProductCard from "@/components/pages/ProductCard.vue";
 import AppFooter from "@/components/pages/AppFooter.vue";
 
-// Firebase composable
-import getCollection from "../composables/getCollection";
+// Global real-time composable
+import { useGlobalRealTime } from "@/composables/useGlobalRealTime";
 
 export default {
   name: "AllProducts",
@@ -71,9 +71,7 @@ export default {
     AppFooter,
   },
   setup() {
-    const { documents: products } = getCollection("products");
-    const { documents: reviews } = getCollection("user-reviews");
- 
+    const { products, userReviews } = useGlobalRealTime();
 
     const searchQuery = ref("");
     const selectedCategory = ref("");
@@ -108,9 +106,9 @@ export default {
     // Compute average ratings from user-reviews
     const productRatings = computed(() => {
       const map = {};
-      if (!reviews.value) return {};
+      if (!userReviews.value) return {};
 
-      reviews.value.forEach((review) => {
+      userReviews.value.forEach((review) => {
         const pid = review.productId;
         if (!map[pid]) {
           map[pid] = { total: 0, count: 0 };
@@ -159,8 +157,6 @@ export default {
     });
 
     return {
-      products,
-      reviews,
       searchQuery,
       selectedCategory,
       filteredProducts,
