@@ -65,6 +65,7 @@ function toggleChat() {
     </component>
     <button
       class="chat-toggle-btn"
+      :class="{ 'profile-chat-btn': route.path.startsWith('/profile') }"
       @click="toggleChat"
       :aria-label="isChatOpen ? 'Close chat' : 'Open chat'"
     >
@@ -147,6 +148,10 @@ function toggleChat() {
 }
 .chat-toggle-btn:hover svg {
   stroke: var(--Color-Text-Text-Invert);
+}
+
+.profile-chat-btn {
+  bottom: 80px !important;
 }
 
 .modal {
