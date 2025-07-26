@@ -64,6 +64,10 @@
 </template>
 
 <script>
+import { useRouter } from "vue-router";
+import Swal from "sweetalert2";
+import { useI18n } from "vue-i18n"; // Import useI18n
+
 export default {
   props: {
     product: {
@@ -76,11 +80,31 @@ export default {
       required: true,
       default: false,
     },
-    promptLogin: {
-      type: Function,
-      required: true,
-      default: () => {},
-    },
+  },
+  setup(props) {
+    const router = useRouter();
+    const { t } = useI18n(); // Destructure t for translations
+
+    const promptLogin = () => {
+      Swal.fire({
+        position: "top-end",
+        icon: "info",
+        title: t("pleaseLoginToRent"), // Translated title
+        showConfirmButton: true,
+        confirmButtonText: t("goToLogin"), // Translated button text
+        showCancelButton: true,
+        cancelButtonText: t("cancel"), // Translated button text
+        timer: 5000,
+      }).then((result) => {
+        if (result.isConfirmed) {
+          router.push("/login");
+        }
+      });
+    };
+
+    return {
+      promptLogin,
+    };
   },
 };
 </script>
