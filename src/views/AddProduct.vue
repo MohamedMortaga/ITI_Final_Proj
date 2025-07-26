@@ -76,7 +76,7 @@
         :uploading="uploading"
         @submitForm="handleSubmit"
         @imageUpload="handleImageUpload"
-        @cancelForm="showForm = false"
+        @cancelForm="handleCancelForm"
       />
     </div>
   </div>
@@ -106,10 +106,17 @@ const {
   deleteProduct,
   highlightText,
   approveProduct,
+  resetForm,
 } = useAdminProducts();
 
 const showForm = ref(false);
 const showApprovalAlert = ref(false);
+
+function handleCancelForm() {
+  resetForm();
+  uploading.value = false;
+  showForm.value = false;
+}
 
 async function handleSubmit() {
   try {

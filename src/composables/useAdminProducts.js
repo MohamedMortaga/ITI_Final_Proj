@@ -236,6 +236,7 @@ export default function useAdminProducts() {
     editProduct,
     deleteProduct,
     highlightText,
-    disapproveProduct
+    disapproveProduct,
+    resetForm
   };
 }
