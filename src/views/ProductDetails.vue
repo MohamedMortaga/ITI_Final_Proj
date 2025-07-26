@@ -416,6 +416,7 @@
         </h3>
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
           <div
+            @click="navigateToProduct(item.id)"
             v-for="item in showAllProducts ? ownerProducts : ownerProducts.slice(0, 3)"
             :key="item.id"
             class="bg-white border border-gray-200 rounded-xl shadow-sm overflow-hidden hover:shadow-lg transition-shadow"
