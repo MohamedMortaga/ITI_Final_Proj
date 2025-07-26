@@ -6,29 +6,29 @@
     <!-- Breadcrumbs -->
     <div class="max-w-7xl mx-auto px-4 py-4">
       <nav class="text-sm text-[var(--color-gray-600)] dark:text-[var(--color-gray-400)]">
-        <router-link 
-          to="/home" 
+        <router-link
+          to="/home"
           class="hover:text-[var(--color-success-500)] cursor-pointer transition-colors"
         >
           Home
         </router-link>
         <span class="mx-2">></span>
-        <router-link 
-          to="/all-products?category=Furniture & DIY" 
+        <router-link
+          to="/all-products?category=Furniture & DIY"
           class="hover:text-[var(--color-success-500)] cursor-pointer transition-colors"
         >
           Furniture & DIY
         </router-link>
         <span class="mx-2">></span>
-        <router-link 
-          to="/all-products?category=DIY tools" 
+        <router-link
+          to="/all-products?category=DIY tools"
           class="hover:text-[var(--color-success-500)] cursor-pointer transition-colors"
         >
           DIY tools
         </router-link>
         <span class="mx-2">></span>
-        <router-link 
-          :to="`/product/${route.params.id}`" 
+        <router-link
+          :to="`/product/${route.params.id}`"
           class="text-[var(--color-gray-800)] dark:text-[var(--color-gray-200)] hover:text-[var(--color-success-500)] cursor-pointer transition-colors"
         >
           {{ product?.title }}
@@ -43,7 +43,9 @@
       <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
         <!-- Left Column: Product Image -->
         <div class="space-y-6">
-          <div class="bg-white dark:bg-[var(--color-gray-900)] rounded-xl shadow-lg overflow-hidden">
+          <div
+            class="bg-white dark:bg-[var(--color-gray-900)] rounded-xl shadow-lg overflow-hidden"
+          >
             <img
               :src="product?.img || require('@/assets/logo.png')"
               alt="Product Image"
@@ -55,7 +57,9 @@
         <!-- Right Column: Rental Details -->
         <div class="space-y-6">
           <div class="bg-white dark:bg-[var(--color-gray-900)] rounded-xl shadow-lg p-6">
-            <h1 class="text-2xl font-bold text-[var(--color-gray-800)] dark:text-[var(--color-gray-200)] mb-2">
+            <h1
+              class="text-2xl font-bold text-[var(--color-gray-800)] dark:text-[var(--color-gray-200)] mb-2"
+            >
               {{ product?.title }}
             </h1>
             <p class="text-3xl font-bold text-[var(--color-success-500)] mb-6">
@@ -64,17 +68,29 @@
 
             <!-- Picked Dates -->
             <div class="bg-gray-50 dark:bg-gray-800 rounded-lg p-4 mb-6">
-              <h3 class="font-semibold text-[var(--color-gray-800)] dark:text-[var(--color-gray-200)] mb-3">
+              <h3
+                class="font-semibold text-[var(--color-gray-800)] dark:text-[var(--color-gray-200)] mb-3"
+              >
                 Picked Dates
               </h3>
               <div class="space-y-2">
                 <div class="flex justify-between">
-                  <span class="text-[var(--color-gray-600)] dark:text-[var(--color-gray-400)]">From:</span>
-                  <span class="font-medium">{{ booking.startDate ? formatDate(booking.startDate) : 'Not selected' }}</span>
+                  <span
+                    class="text-[var(--color-gray-600)] dark:text-[var(--color-gray-400)]"
+                    >From:</span
+                  >
+                  <span class="font-medium">{{
+                    booking.startDate ? formatDate(booking.startDate) : "Not selected"
+                  }}</span>
                 </div>
                 <div class="flex justify-between">
-                  <span class="text-[var(--color-gray-600)] dark:text-[var(--color-gray-400)]">To:</span>
-                  <span class="font-medium">{{ booking.endDate ? formatDate(booking.endDate) : 'Not selected' }}</span>
+                  <span
+                    class="text-[var(--color-gray-600)] dark:text-[var(--color-gray-400)]"
+                    >To:</span
+                  >
+                  <span class="font-medium">{{
+                    booking.endDate ? formatDate(booking.endDate) : "Not selected"
+                  }}</span>
                 </div>
               </div>
             </div>
@@ -82,13 +98,19 @@
             <!-- Subtotal -->
             <div class="bg-gray-50 dark:bg-gray-800 rounded-lg p-4">
               <div class="flex justify-between items-center">
-                <span class="text-[var(--color-gray-600)] dark:text-[var(--color-gray-400)]">Subtotal:</span>
+                <span
+                  class="text-[var(--color-gray-600)] dark:text-[var(--color-gray-400)]"
+                  >Subtotal:</span
+                >
                 <span class="text-2xl font-bold text-[var(--color-success-500)]">
                   {{ $t("egp") }} {{ calculateSubtotal() }}
                 </span>
               </div>
-              <p class="text-sm text-[var(--color-gray-500)] dark:text-[var(--color-gray-400)] mt-1">
-                ({{ $t("egp") }}{{ product?.price || 0 }} × {{ calculateDays() }} {{ $t("perDay") }})
+              <p
+                class="text-sm text-[var(--color-gray-500)] dark:text-[var(--color-gray-400)] mt-1"
+              >
+                ({{ $t("egp") }}{{ product?.price || 0 }} × {{ calculateDays() }}
+                {{ $t("perDay") }})
               </p>
             </div>
           </div>
@@ -97,7 +119,9 @@
 
       <!-- Delivery Method Section -->
       <div class="mt-8 bg-white dark:bg-[var(--color-gray-900)] rounded-xl shadow-lg p-6">
-        <h2 class="text-xl font-semibold text-[var(--color-gray-800)] dark:text-[var(--color-gray-200)] mb-4">
+        <h2
+          class="text-xl font-semibold text-[var(--color-gray-800)] dark:text-[var(--color-gray-200)] mb-4"
+        >
           Delivery method
         </h2>
         <div class="space-y-4">
@@ -108,7 +132,9 @@
               value="pickup"
               class="text-[var(--color-success-500)] focus:ring-[var(--color-success-500)]"
             />
-            <span class="text-[var(--color-gray-800)] dark:text-[var(--color-gray-200)]">Pick up from owner</span>
+            <span class="text-[var(--color-gray-800)] dark:text-[var(--color-gray-200)]"
+              >Pick up from owner</span
+            >
           </label>
           <label class="flex items-center space-x-3 cursor-pointer">
             <input
@@ -117,10 +143,12 @@
               value="delivery"
               class="text-[var(--color-success-500)] focus:ring-[var(--color-success-500)]"
             />
-            <span class="text-[var(--color-gray-800)] dark:text-[var(--color-gray-200)]">Deliver to my address</span>
+            <span class="text-[var(--color-gray-800)] dark:text-[var(--color-gray-200)]"
+              >Deliver to my address</span
+            >
           </label>
         </div>
-        
+
         <div v-if="booking.deliveryMethod === 'delivery'" class="mt-4">
           <input
             v-model="booking.deliveryAddress"
@@ -133,11 +161,16 @@
 
       <!-- Personal Information Section -->
       <div class="mt-8 bg-white dark:bg-[var(--color-gray-900)] rounded-xl shadow-lg p-6">
-        <h2 class="text-xl font-semibold text-[var(--color-gray-800)] dark:text-[var(--color-gray-200)] mb-4">
+        <h2
+          class="text-xl font-semibold text-[var(--color-gray-800)] dark:text-[var(--color-gray-200)] mb-4"
+        >
           Personal information
         </h2>
-        
-        <div v-if="!auth.currentUser" class="bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800 rounded-lg p-6">
+
+        <div
+          v-if="!auth.currentUser"
+          class="bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800 rounded-lg p-6"
+        >
           <p class="text-blue-800 dark:text-blue-200 mb-4 text-lg">
             Please Login/Sign up to complete the rent process
           </p>
@@ -148,8 +181,10 @@
             >
               Sign up now!
             </button>
-            <p class="text-center text-[var(--color-gray-600)] dark:text-[var(--color-gray-400)]">
-              Already have an account? 
+            <p
+              class="text-center text-[var(--color-gray-600)] dark:text-[var(--color-gray-400)]"
+            >
+              Already have an account?
               <button
                 @click="router.push('/login')"
                 class="text-[var(--color-success-500)] hover:underline font-medium"
@@ -163,7 +198,9 @@
         <div v-else class="space-y-4">
           <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
             <div>
-              <label class="block text-sm font-medium text-[var(--color-gray-700)] dark:text-[var(--color-gray-300)] mb-2">
+              <label
+                class="block text-sm font-medium text-[var(--color-gray-700)] dark:text-[var(--color-gray-300)] mb-2"
+              >
                 Name
               </label>
               <input
@@ -174,18 +211,25 @@
               />
             </div>
             <div>
-              <label class="block text-sm font-medium text-[var(--color-gray-700)] dark:text-[var(--color-gray-300)] mb-2">
+              <label
+                class="block text-sm font-medium text-[var(--color-gray-700)] dark:text-[var(--color-gray-300)] mb-2"
+              >
                 Phone Number
               </label>
               <input
                 v-model="booking.phoneNumber"
                 type="tel"
                 class="w-full p-3 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-[var(--color-gray-800)] dark:text-[var(--color-gray-200)]"
-                placeholder="+0 123456789"
+                placeholder="0102 219 4510"
+                maxlength="14"
+                @input="formatPhoneNumber"
+                required
               />
             </div>
             <div>
-              <label class="block text-sm font-medium text-[var(--color-gray-700)] dark:text-[var(--color-gray-300)] mb-2">
+              <label
+                class="block text-sm font-medium text-[var(--color-gray-700)] dark:text-[var(--color-gray-300)] mb-2"
+              >
                 Email
               </label>
               <input
@@ -201,7 +245,9 @@
 
       <!-- Payment Method Section -->
       <div class="mt-8 bg-white dark:bg-[var(--color-gray-900)] rounded-xl shadow-lg p-6">
-        <h2 class="text-xl font-semibold text-[var(--color-gray-800)] dark:text-[var(--color-gray-200)] mb-4">
+        <h2
+          class="text-xl font-semibold text-[var(--color-gray-800)] dark:text-[var(--color-gray-200)] mb-4"
+        >
           Payment method
         </h2>
         <div class="space-y-4">
@@ -216,8 +262,12 @@
           </select>
 
           <!-- Phone Number for Mobile Payment -->
-          <div v-if="['vodafone_cash', 'etisalat_wallet'].includes(booking.paymentMethod)">
-            <label class="block text-sm font-medium text-[var(--color-gray-700)] dark:text-[var(--color-gray-300)] mb-2">
+          <div
+            v-if="['vodafone_cash', 'etisalat_wallet'].includes(booking.paymentMethod)"
+          >
+            <label
+              class="block text-sm font-medium text-[var(--color-gray-700)] dark:text-[var(--color-gray-300)] mb-2"
+            >
               Phone Number
             </label>
             <input
@@ -227,13 +277,16 @@
               placeholder="0102 219 4510"
               maxlength="14"
               @input="formatPhoneNumber"
+              required
             />
           </div>
 
           <!-- Credit Card Details -->
           <div v-if="booking.paymentMethod === 'credit_card'" class="space-y-4">
             <div>
-              <label class="block text-sm font-medium text-[var(--color-gray-700)] dark:text-[var(--color-gray-300)] mb-2">
+              <label
+                class="block text-sm font-medium text-[var(--color-gray-700)] dark:text-[var(--color-gray-300)] mb-2"
+              >
                 Card Number
               </label>
               <input
@@ -247,7 +300,9 @@
             </div>
             <div class="grid grid-cols-3 gap-4">
               <div>
-                <label class="block text-sm font-medium text-[var(--color-gray-700)] dark:text-[var(--color-gray-300)] mb-2">
+                <label
+                  class="block text-sm font-medium text-[var(--color-gray-700)] dark:text-[var(--color-gray-300)] mb-2"
+                >
                   Expiry Date
                 </label>
                 <input
@@ -260,7 +315,9 @@
                 />
               </div>
               <div>
-                <label class="block text-sm font-medium text-[var(--color-gray-700)] dark:text-[var(--color-gray-300)] mb-2">
+                <label
+                  class="block text-sm font-medium text-[var(--color-gray-700)] dark:text-[var(--color-gray-300)] mb-2"
+                >
                   CVV
                 </label>
                 <input
@@ -273,7 +330,9 @@
                 />
               </div>
               <div>
-                <label class="block text-sm font-medium text-[var(--color-gray-700)] dark:text-[var(--color-gray-300)] mb-2">
+                <label
+                  class="block text-sm font-medium text-[var(--color-gray-700)] dark:text-[var(--color-gray-300)] mb-2"
+                >
                   Card Holder Name
                 </label>
                 <input
@@ -289,13 +348,20 @@
       </div>
 
       <!-- OTP Form (Hidden by default) -->
-      <div v-if="showOTPForm" class="mt-8 bg-white dark:bg-[var(--color-gray-900)] rounded-xl shadow-lg p-6">
-        <h2 class="text-xl font-semibold text-[var(--color-gray-800)] dark:text-[var(--color-gray-200)] mb-4">
+      <div
+        v-if="showOTPForm"
+        class="mt-8 bg-white dark:bg-[var(--color-gray-900)] rounded-xl shadow-lg p-6"
+      >
+        <h2
+          class="text-xl font-semibold text-[var(--color-gray-800)] dark:text-[var(--color-gray-200)] mb-4"
+        >
           Verify Payment
         </h2>
         <div class="space-y-4">
           <div>
-            <label class="block text-sm font-medium text-[var(--color-gray-700)] dark:text-[var(--color-gray-300)] mb-2">
+            <label
+              class="block text-sm font-medium text-[var(--color-gray-700)] dark:text-[var(--color-gray-300)] mb-2"
+            >
               Enter OTP
             </label>
             <input
@@ -306,7 +372,9 @@
               placeholder="123456"
               pattern="[0-9]{6}"
             />
-            <p class="text-sm text-[var(--color-gray-600)] dark:text-[var(--color-gray-400)] mt-2">
+            <p
+              class="text-sm text-[var(--color-gray-600)] dark:text-[var(--color-gray-400)] mt-2"
+            >
               OTP sent to {{ booking.phoneNumber }}
             </p>
           </div>
@@ -329,36 +397,65 @@
 
       <!-- Summary Section -->
       <div class="mt-8 bg-white dark:bg-[var(--color-gray-900)] rounded-xl shadow-lg p-6">
-        <h2 class="text-xl font-semibold text-[var(--color-gray-800)] dark:text-[var(--color-gray-200)] mb-4">
+        <h2
+          class="text-xl font-semibold text-[var(--color-gray-800)] dark:text-[var(--color-gray-200)] mb-4"
+        >
           Summary
         </h2>
         <div class="bg-gray-50 dark:bg-gray-800 rounded-lg p-6 space-y-4">
-          <div class="flex justify-between items-center border-b border-dashed border-gray-300 dark:border-gray-600 pb-3">
-            <span class="text-[var(--color-gray-600)] dark:text-[var(--color-gray-400)]">Tool:</span>
+          <div
+            class="flex justify-between items-center border-b border-dashed border-gray-300 dark:border-gray-600 pb-3"
+          >
+            <span class="text-[var(--color-gray-600)] dark:text-[var(--color-gray-400)]"
+              >Tool:</span
+            >
             <span class="font-medium">{{ product?.title }}</span>
           </div>
-          <div class="flex justify-between items-center border-b border-dashed border-gray-300 dark:border-gray-600 pb-3">
-            <span class="text-[var(--color-gray-600)] dark:text-[var(--color-gray-400)]">Owner:</span>
+          <div
+            class="flex justify-between items-center border-b border-dashed border-gray-300 dark:border-gray-600 pb-3"
+          >
+            <span class="text-[var(--color-gray-600)] dark:text-[var(--color-gray-400)]"
+              >Owner:</span
+            >
             <div class="flex items-center space-x-2">
               <span class="font-medium">{{ booking.sellerName }}</span>
               <i class="fas fa-check-circle text-[var(--color-success-500)]"></i>
             </div>
           </div>
-          <div class="flex justify-between items-center border-b border-dashed border-gray-300 dark:border-gray-600 pb-3">
-            <span class="text-[var(--color-gray-600)] dark:text-[var(--color-gray-400)]">Rental Days:</span>
+          <div
+            class="flex justify-between items-center border-b border-dashed border-gray-300 dark:border-gray-600 pb-3"
+          >
+            <span class="text-[var(--color-gray-600)] dark:text-[var(--color-gray-400)]"
+              >Rental Days:</span
+            >
             <span class="font-medium">{{ calculateDays() }}</span>
           </div>
-          <div class="flex justify-between items-center border-b border-dashed border-gray-300 dark:border-gray-600 pb-3">
-            <span class="text-[var(--color-gray-600)] dark:text-[var(--color-gray-400)]">Daily Rate:</span>
+          <div
+            class="flex justify-between items-center border-b border-dashed border-gray-300 dark:border-gray-600 pb-3"
+          >
+            <span class="text-[var(--color-gray-600)] dark:text-[var(--color-gray-400)]"
+              >Daily Rate:</span
+            >
             <span class="font-medium">{{ $t("egp") }} {{ product?.price || 0 }}</span>
           </div>
-          <div class="flex justify-between items-center border-b border-dashed border-gray-300 dark:border-gray-600 pb-3">
-            <span class="text-[var(--color-gray-600)] dark:text-[var(--color-gray-400)]">Delivery Fee:</span>
-            <span class="font-medium">{{ $t("egp") }} {{ booking.deliveryFee.toFixed(2) }}</span>
+          <div
+            class="flex justify-between items-center border-b border-dashed border-gray-300 dark:border-gray-600 pb-3"
+          >
+            <span class="text-[var(--color-gray-600)] dark:text-[var(--color-gray-400)]"
+              >Delivery Fee:</span
+            >
+            <span class="font-medium"
+              >{{ $t("egp") }} {{ booking.deliveryFee.toFixed(2) }}</span
+            >
           </div>
           <div class="flex justify-between items-center pt-3">
-            <span class="text-xl font-bold text-[var(--color-gray-800)] dark:text-[var(--color-gray-200)]">Total amount:</span>
-            <span class="text-2xl font-bold text-[var(--color-success-500)]">{{ $t("egp") }} {{ booking.totalPrice.toFixed(2) }}</span>
+            <span
+              class="text-xl font-bold text-[var(--color-gray-800)] dark:text-[var(--color-gray-200)]"
+              >Total amount:</span
+            >
+            <span class="text-2xl font-bold text-[var(--color-success-500)]"
+              >{{ $t("egp") }} {{ booking.totalPrice.toFixed(2) }}</span
+            >
           </div>
         </div>
 
@@ -376,13 +473,17 @@
     </div>
 
     <!-- Footer -->
-    <footer class="bg-white dark:bg-[var(--color-gray-900)] border-t border-gray-200 dark:border-gray-700 mt-16">
+    <footer
+      class="bg-white dark:bg-[var(--color-gray-900)] border-t border-gray-200 dark:border-gray-700 mt-16"
+    >
       <div class="max-w-7xl mx-auto px-4 py-12">
         <div class="grid grid-cols-1 md:grid-cols-4 gap-8">
           <!-- Logo and Navigation -->
           <div class="col-span-1 md:col-span-2">
             <h3 class="text-2xl font-bold text-[var(--color-success-500)] mb-4">Rento</h3>
-            <div class="flex space-x-6 text-sm text-[var(--color-gray-600)] dark:text-[var(--color-gray-400)]">
+            <div
+              class="flex space-x-6 text-sm text-[var(--color-gray-600)] dark:text-[var(--color-gray-400)]"
+            >
               <a href="#" class="hover:text-[var(--color-success-500)]">Overview</a>
               <a href="#" class="hover:text-[var(--color-success-500)]">Features</a>
               <a href="#" class="hover:text-[var(--color-success-500)]">Pricing</a>
@@ -394,14 +495,20 @@
 
           <!-- Newsletter -->
           <div class="col-span-1">
-            <h4 class="font-semibold text-[var(--color-gray-800)] dark:text-[var(--color-gray-200)] mb-3">Stay up to date</h4>
+            <h4
+              class="font-semibold text-[var(--color-gray-800)] dark:text-[var(--color-gray-200)] mb-3"
+            >
+              Stay up to date
+            </h4>
             <div class="flex space-x-2">
               <input
                 type="email"
                 placeholder="Enter your email"
                 class="flex-1 px-3 py-2 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-[var(--color-gray-800)] dark:text-[var(--color-gray-200)]"
               />
-              <button class="bg-[var(--color-success-500)] text-white px-4 py-2 rounded-lg hover:bg-[var(--color-success-600)] transition-colors">
+              <button
+                class="bg-[var(--color-success-500)] text-white px-4 py-2 rounded-lg hover:bg-[var(--color-success-600)] transition-colors"
+              >
                 Subscribe
               </button>
             </div>
@@ -409,10 +516,14 @@
 
           <!-- Copyright and Legal -->
           <div class="col-span-1">
-            <p class="text-sm text-[var(--color-gray-600)] dark:text-[var(--color-gray-400)] mb-3">
+            <p
+              class="text-sm text-[var(--color-gray-600)] dark:text-[var(--color-gray-400)] mb-3"
+            >
               © 2077 Rento All rights reserved.
             </p>
-            <div class="flex space-x-4 text-sm text-[var(--color-gray-600)] dark:text-[var(--color-gray-400)]">
+            <div
+              class="flex space-x-4 text-sm text-[var(--color-gray-600)] dark:text-[var(--color-gray-400)]"
+            >
               <a href="#" class="hover:text-[var(--color-success-500)]">Terms</a>
               <a href="#" class="hover:text-[var(--color-success-500)]">Privacy</a>
               <a href="#" class="hover:text-[var(--color-success-500)]">Cookies</a>
@@ -497,7 +608,7 @@ const loadProduct = async () => {
         text: "Product not found.",
         confirmButtonText: "OK",
       });
-      router.push('/home');
+      router.push("/home");
     }
   } catch (error) {
     console.error("Error loading product:", error);
@@ -573,33 +684,30 @@ const resetPaymentFields = () => {
 };
 
 const formatPhoneNumber = (event) => {
-  let input = event.target.value.replace(/\D/g, "");
-  if (input.length > 14) {
-    input = input.slice(0, 14);
+  let value = event.target.value.replace(/\D/g, "");
+  let formatted = "";
+
+  if (value.length > 3 && !value.startsWith("010") && !value.startsWith("011")) {
+    value = ""; // Reset if it doesn't start with 010 or 011
+    Swal.fire({
+      icon: "warning",
+      title: "Invalid Phone Number",
+      text: "Please enter a valid phone number starting with 010 or 011.",
+      confirmButtonText: "OK",
+    });
   }
-  let output = "";
-  if (input.length > 0) {
-    output = "+";
-    if (input.length > 2) {
-      output += input.slice(0, 2) + " ";
-    }
-    if (input.length > 4) {
-      output += input.slice(2, 5) + " ";
-    }
-    if (input.length > 7) {
-      output += input.slice(5, 8) + " ";
-    }
-    if (input.length > 9) {
-      output += input.slice(8, 10) + " ";
-    }
-    if (input.length > 11) {
-      output += input.slice(10, 12) + " ";
-    }
-    if (input.length > 13) {
-      output += input.slice(12, 14);
-    }
+
+  if (value.length > 0) {
+    formatted += value.slice(0, 4);
   }
-  event.target.value = output;
+  if (value.length > 4) {
+    formatted += " " + value.slice(4, 7);
+  }
+  if (value.length > 7) {
+    formatted += " " + value.slice(7, 11);
+  }
+
+  booking.value.phoneNumber = formatted.slice(0, 14);
 };
 
 const formatCardNumber = (event) => {
@@ -665,9 +773,7 @@ const verifyOTP = async () => {
   }
 
   try {
-    // In a real application, you would send the OTP to your backend
-    // and verify it against a stored one.
-    // For demonstration, we'll just simulate a successful verification.
+    // Simulate OTP verification (replace with actual backend call in production)
     console.log("OTP verified successfully!");
     Swal.fire({
       icon: "success",
@@ -675,8 +781,8 @@ const verifyOTP = async () => {
       text: "Your payment has been successfully verified.",
       confirmButtonText: "OK",
     });
-    // Proceed to booking creation
-    await submitBooking();
+    // Directly call createBooking instead of submitBooking
+    await createBooking();
   } catch (error) {
     console.error("Error verifying OTP:", error);
     Swal.fire({
@@ -711,7 +817,11 @@ const submitBooking = async () => {
     }
 
     // Validate personal information
-    if (!booking.value.userName || !booking.value.phoneNumber || !booking.value.userEmail) {
+    if (
+      !booking.value.userName ||
+      !booking.value.phoneNumber ||
+      !booking.value.userEmail
+    ) {
       Swal.fire({
         icon: "warning",
         title: "Missing Information",
@@ -723,7 +833,12 @@ const submitBooking = async () => {
 
     // Validate payment method and details
     if (booking.value.paymentMethod === "credit_card") {
-      if (!booking.value.cardNumber || !booking.value.expiryDate || !booking.value.cvv || !booking.value.cardHolderName) {
+      if (
+        !booking.value.cardNumber ||
+        !booking.value.expiryDate ||
+        !booking.value.cvv ||
+        !booking.value.cardHolderName
+      ) {
         Swal.fire({
           icon: "warning",
           title: "Missing Payment Details",
@@ -732,7 +847,11 @@ const submitBooking = async () => {
         });
         return;
       }
-    } else if (['vodafone_cash', 'etisalat_wallet'].includes(booking.value.paymentMethod)) {
+      // For credit card, proceed directly to booking
+      await createBooking();
+    } else if (
+      ["vodafone_cash", "etisalat_wallet"].includes(booking.value.paymentMethod)
+    ) {
       if (!booking.value.phoneNumber) {
         Swal.fire({
           icon: "warning",
@@ -742,19 +861,6 @@ const submitBooking = async () => {
         });
         return;
       }
-    }
-
-    // Calculate total price and delivery fee
-    const start = new Date(booking.value.startDate);
-    const end = new Date(booking.value.endDate);
-    const diffTime = Math.ceil((end - start) / (1000 * 60 * 60 * 24)) + 1;
-    const basePrice = diffTime * booking.value.productPrice;
-    booking.value.deliveryFee =
-      booking.value.deliveryMethod === "delivery" ? basePrice * 0.02 : 0;
-    booking.value.totalPrice = basePrice + booking.value.deliveryFee;
-
-    // Handle payment process
-    if (['vodafone_cash', 'etisalat_wallet'].includes(booking.value.paymentMethod)) {
       // Show OTP form for mobile payments
       showOTPForm.value = true;
       Swal.fire({
@@ -763,26 +869,21 @@ const submitBooking = async () => {
         text: `An OTP has been sent to ${booking.value.phoneNumber}. Please verify to complete the booking.`,
         confirmButtonText: "OK",
       });
-      // Auto-fill OTP after 2 seconds for demo
+      // Auto-fill OTP after 2 seconds for demo (remove in production)
       setTimeout(() => {
         booking.value.otp = "123456";
       }, 2000);
-      return;
     }
-
-    // For credit card, proceed with booking directly
-    await createBooking();
   } catch (error) {
-    console.error("Error creating booking:", error);
+    console.error("Error processing booking:", error);
     Swal.fire({
       icon: "error",
       title: "Error",
-      text: `Failed to create booking: ${error.message}`,
+      text: `Failed to process booking: ${error.message}`,
       confirmButtonText: "OK",
     });
   }
 };
-
 const createBooking = async () => {
   try {
     // Update product status to pending
@@ -804,10 +905,11 @@ const createBooking = async () => {
     Swal.fire({
       icon: "success",
       title: "Booking Confirmed!",
-      text: "Your rental has been successfully confirmed. You will receive a confirmation email shortly.",
+      text:
+        "Your rental has been successfully confirmed. You will receive a confirmation email shortly.",
       confirmButtonText: "OK",
     }).then(() => {
-      router.push('/home');
+      router.push("/home");
     });
   } catch (error) {
     console.error("Error creating booking:", error);
@@ -846,7 +948,7 @@ watch(
 
 onMounted(() => {
   loadProduct();
-  
+
   // Get dates from route query parameters
   if (route.query.startDate) {
     booking.value.startDate = route.query.startDate;
@@ -855,4 +957,4 @@ onMounted(() => {
     booking.value.endDate = route.query.endDate;
   }
 });
-</script> 
+</script>

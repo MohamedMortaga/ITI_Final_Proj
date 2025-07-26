@@ -6,12 +6,6 @@
     >
       <span class="hover:text-[var(--color-success-500)] cursor-pointer">Home</span>
       <span class="mx-2">></span>
-      <span class="hover:text-[var(--color-success-500)] cursor-pointer"
-        >Furniture & DIY</span
-      >
-      <span class="mx-2">></span>
-      <span class="hover:text-[var(--color-success-500)] cursor-pointer">DIY tools</span>
-      <span class="mx-2">></span>
       <span class="text-[var(--color-gray-800)] dark:text-[var(--color-gray-200)]">{{
         product?.title
       }}</span>
@@ -70,8 +64,69 @@
                   : $t("rentThisTool")
               }}
             </button>
+            <p
+              v-if="isBookingPending && remainingTime"
+              class="mt-2 text-sm text-[var(--color-gray-600)] dark:text-[var(--color-gray-400)] text-center"
+            >
+              Available in: {{ remainingTime }}
+            </p>
           </div>
 
+          <!-- About the Tool -->
+          <div class="bg-white rounded-xl shadow-lg p-6">
+            <h2
+              class="text-xl font-semibold text-[var(--color-gray-800)] dark:text-[var(--color-gray-200)] mb-4"
+            >
+              About the Tool
+            </h2>
+            <div class="grid grid-cols-2 gap-4">
+              <div class="flex justify-between py-2 border-b border-gray-200">
+                <span class="font-medium text-[var(--color-gray-600)]">Category:</span>
+                <span class="text-[var(--color-gray-800)]">{{
+                  product.category || product.type
+                }}</span>
+              </div>
+              <div class="flex justify-between py-2 border-b border-gray-200">
+                <span class="font-medium text-[var(--color-gray-600)]">Brand:</span>
+                <span class="text-[var(--color-gray-800)]">Bosch</span>
+              </div>
+              <div class="flex justify-between py-2 border-b border-gray-200">
+                <span class="font-medium text-[var(--color-gray-600)]">Model:</span>
+                <span class="text-[var(--color-gray-800)]">{{
+                  product.model || "GSR 18V-50 Professional"
+                }}</span>
+              </div>
+              <div class="flex justify-between py-2 border-b border-gray-200">
+                <span class="font-medium text-[var(--color-gray-600)]"
+                  >Price per day:</span
+                >
+                <span class="text-[var(--color-success-500)] font-bold"
+                  >{{ product.price || "15" }} {{ $t("egp") }}</span
+                >
+              </div>
+              <div class="flex justify-between py-2 border-b border-gray-200">
+                <span class="font-medium text-[var(--color-gray-600)]">Rent times:</span>
+                <span class="text-[var(--color-gray-800)]">15</span>
+              </div>
+            </div>
+            <button
+              @click="navigateToRentConfirmation"
+              :disabled="product?.status === 'pending' || isBookingPending"
+              class="w-full mt-4 bg-[var(--color-success-500)] text-white py-3 px-6 rounded-lg font-semibold hover:bg-[var(--color-success-600)] disabled:bg-gray-400 disabled:cursor-not-allowed transition-colors"
+            >
+              {{
+                product?.status === "pending" || isBookingPending
+                  ? $t("toolNotAvailable")
+                  : $t("rentThisTool")
+              }}
+            </button>
+            <p
+              v-if="isBookingPending && remainingTime"
+              class="mt-2 text-sm text-[var(--color-gray-600)] dark:text-[var(--color-gray-400)] text-center"
+            >
+              Available in: {{ remainingTime }}
+            </p>
+          </div>
           <!-- Product Description -->
           <div class="bg-white rounded-xl shadow-lg p-6">
             <h2
@@ -290,8 +345,16 @@
                 @click="selectDate(day)"
               >
                 {{ day }}
+                <span v-if="isStart(day)">s</span>
+                <span v-if="isEnd(day)">e</span>
               </span>
             </div>
+            <button
+              @click="resetDateSelection"
+              class="w-full mt-4 bg-[var(--color-success-500)] text-white py-2 px-6 rounded-lg font-semibold hover:bg-[var(--color-success-600)] transition-colors"
+            >
+              Reset Date Selection
+            </button>
           </div>
 
           <!-- Tool's Reviews -->
@@ -311,17 +374,32 @@
                   <span class="font-medium text-[var(--color-gray-800)]">{{
                     review.userName || review.rentUserId
                   }}</span>
-                  <span class="text-yellow-400 text-sm">★★★★☆</span>
-                  <span class="text-sm text-[var(--color-gray-600)]">4.5</span>
+                  <span class="text-yellow-400 text-sm">
+                    {{
+                      "★".repeat(Math.floor(review.rate)) +
+                      "☆".repeat(5 - Math.floor(review.rate))
+                    }}
+                  </span>
+                  <span class="text-sm text-[var(--color-gray-600)]">{{
+                    review.rate
+                  }}</span>
                 </div>
                 <p class="text-[var(--color-gray-600)] text-sm mb-1">
                   "{{ review.review }}"
                 </p>
-                <span class="text-xs text-[var(--color-gray-500)]">Jul 10, 2025</span>
+                <span class="text-xs text-[var(--color-gray-500)]">{{
+                  formatDate(review.timestamp?.toDate())
+                }}</span>
               </div>
             </div>
             <button
+              @click="showReviewForm = true"
               class="w-full mt-4 border border-[var(--color-success-500)] text-[var(--color-success-500)] py-2 rounded-lg hover:bg-[var(--color-success-50)] transition-colors"
+            >
+              Add Review
+            </button>
+            <button
+              class="w-full mt-2 border border-[var(--color-success-500)] text-[var(--color-success-500)] py-2 rounded-lg hover:bg-[var(--color-success-50)] transition-colors"
             >
               view all reviews
             </button>
@@ -598,7 +676,10 @@
                     v-model="booking.phoneNumber"
                     type="tel"
                     class="w-full p-3 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-[var(--color-gray-800)] dark:text-[var(--color-gray-200)]"
-                    placeholder="+0 123456789"
+                    placeholder="0102 219 4510"
+                    maxlength="14"
+                    @input="formatPhoneNumber"
+                    required
                   />
                 </div>
                 <div>
@@ -710,73 +791,6 @@
       </div>
     </div>
 
-    <!-- Website Review Form Modal -->
-    <div
-      v-if="showWebsiteReviewForm"
-      class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50"
-    >
-      <div
-        class="bg-[var(--color-gray-25)] dark:bg-[var(--color-gray-800)] p-6 rounded-lg shadow-xl w-full max-w-md"
-      >
-        <button
-          @click="showWebsiteReviewForm = false"
-          class="absolute top-2 right-2 text-[var(--color-gray-700)] dark:text-[var(--color-gray-300)] hover:text-[var(--color-gray-800)] dark:hover:text-[var(--color-gray-200)] text-2xl font-bold"
-        >
-          ×
-        </button>
-        <h2
-          class="text-xl font-bold text-[var(--color-success-500)] dark:text-[var(--color-success-300)] mb-4"
-        >
-          {{ $t("rateOurWebsite") }}
-        </h2>
-        <form @submit.prevent="submitWebsiteReview" class="space-y-4">
-          <div>
-            <label
-              class="block text-[var(--color-gray-700)] dark:text-[var(--color-gray-300)]"
-              >{{ $t("review") }}</label
-            >
-            <textarea
-              v-model="newWebsiteReview.review"
-              class="w-full p-2 rounded-lg bg-[var(--color-gray-100)] dark:bg-[var(--color-gray-700)] border border-[var(--color-success-200)]"
-              :placeholder="$t('writeWebsiteReview')"
-              required
-            ></textarea>
-          </div>
-          <div>
-            <label
-              class="block text-[var(--color-gray-700)] dark:text-[var(--color-gray-300)]"
-              >{{ $t("rate") }} (1 - 5)</label
-            >
-            <input
-              v-model.number="newWebsiteReview.rate"
-              type="range"
-              min="1"
-              max="5"
-              step="1"
-              class="w-full p-2 rounded-lg bg-[var(--color-gray-100)] dark:bg-[var(--color-gray-700)] border border-[var(--color-success-200)]"
-              required
-            />
-            <span class="ml-2">{{ newWebsiteReview.rate }} ★★★★★</span>
-          </div>
-          <div class="flex justify-end gap-4">
-            <button
-              type="button"
-              @click="showWebsiteReviewForm = false"
-              class="bg-[var(--color-gray-400)] text-[var(--color-gray-25)] py-2 px-4 rounded-lg hover:bg-[var(--color-gray-500)]"
-            >
-              {{ $t("cancel") }}
-            </button>
-            <button
-              type="submit"
-              class="bg-[var(--color-success-500)] text-[var(--color-gray-25)] py-2 px-4 rounded-lg hover:bg-[var(--color-success-600)] dark:bg-[var(--color-success-300)] dark:hover:bg-[var(--color-success-400)]"
-            >
-              {{ $t("submitReview") }}
-            </button>
-          </div>
-        </form>
-      </div>
-    </div>
-
     <!-- Add Review Form Modal -->
     <div
       v-if="showReviewForm"
@@ -844,12 +858,6 @@
       </div>
     </div>
 
-    <div
-      v-else
-      class="text-center text-[var(--color-gray-500)] py-10 text-lg dark:text-[var(--color-gray-400)]"
-    >
-      {{ $t("loadingProduct") }}
-    </div>
     <router-link
       to="/home"
       class="mt-6 inline-block text-[var(--color-success-500)] hover:underline text-sm dark:text-[var(--color-success-300)]"
@@ -885,8 +893,6 @@ const router = useRouter();
 const product = ref(null);
 const showBookingForm = ref(false);
 const showReviewForm = ref(false);
-const showWebsiteReviewForm = ref(false);
-const showOTPForm = ref(false);
 const reviews = ref([]);
 const ownerProducts = ref([]);
 const isBookingPending = ref(false); // Track if there is a pending booking
@@ -928,13 +934,6 @@ const newReview = ref({
   sellerUserId: "",
   rentUserId: "",
   userName: "",
-});
-const newWebsiteReview = ref({
-  review: "",
-  rate: 1,
-  userId: "",
-  userName: "",
-  userImage: "",
 });
 const today = ref(new Date());
 const currentDate = ref(new Date());
@@ -991,7 +990,7 @@ const checkPendingBookings = async () => {
     const querySnapshot = await getDocs(q);
     console.log("Found", querySnapshot.docs.length, "pending bookings");
 
-    const now = new Date(); // Current time: 08:14 PM EEST, July 25, 2025
+    const now = new Date(); // Current time: 05:39 PM EEST, July 26, 2025
     const todayMidnight = new Date(now);
     todayMidnight.setHours(0, 0, 0, 0); // Set to 12:00 AM today
 
@@ -1261,13 +1260,11 @@ const isPastDate = (day) => {
   return selectedDate < todayDate;
 };
 
-const formatDate = (dateStr) => {
-  if (!dateStr) return "";
-  const [year, month, day] = dateStr.split("-").map(Number);
-  const date = new Date(year, month - 1, day);
+const formatDate = (date) => {
+  if (!date) return "Unknown";
   return date.toLocaleString("en-US", {
     year: "numeric",
-    month: "long",
+    month: "short",
     day: "numeric",
   });
 };
@@ -1347,6 +1344,15 @@ const selectDate = async (day) => {
     booking.value.startDate = selectedIso;
     booking.value.endDate = "";
   }
+};
+
+const resetDateSelection = () => {
+  selectedDates.value.start = null;
+  selectedDates.value.end = null;
+  booking.value.startDate = "";
+  booking.value.endDate = "";
+  booking.value.deliveryFee = 0;
+  booking.value.totalPrice = 0;
 };
 
 const updateDeliveryFee = () => {
@@ -1680,64 +1686,6 @@ const submitReview = async () => {
       icon: "error",
       title: "Error",
       text: `Failed to submit review: ${error.message}`,
-      confirmButtonText: "OK",
-    });
-  }
-};
-
-const submitWebsiteReview = async () => {
-  if (!auth.currentUser) {
-    Swal.fire({
-      icon: "warning",
-      title: "Login Required",
-      text: "Please log in to add a website review.",
-      confirmButtonText: "OK",
-    });
-    return;
-  }
-
-  try {
-    newWebsiteReview.value.userId = auth.currentUser.uid;
-    newWebsiteReview.value.userName =
-      auth.currentUser.displayName || auth.currentUser.email.split("@")[0] || "Anonymous";
-    newWebsiteReview.value.userImage =
-      auth.currentUser.photoURL || require("@/assets/default.png");
-
-    if (
-      !Number.isInteger(newWebsiteReview.value.rate) ||
-      newWebsiteReview.value.rate < 1 ||
-      newWebsiteReview.value.rate > 5
-    ) {
-      Swal.fire({
-        icon: "warning",
-        title: "Invalid Rating",
-        text: "Rate must be a whole number between 1 and 5.",
-        confirmButtonText: "OK",
-      });
-      return;
-    }
-    const webReviewsRef = collection(db, "web-reviews");
-    await setDoc(doc(webReviewsRef), {
-      ...newWebsiteReview.value,
-      timestamp: serverTimestamp(),
-    });
-
-    newWebsiteReview.value.review = "";
-    newWebsiteReview.value.rate = 1;
-    newWebsiteReview.value.userImage = "";
-    showWebsiteReviewForm.value = false;
-    Swal.fire({
-      icon: "success",
-      title: "Success",
-      text: "Website review submitted successfully! Thank you for your feedback.",
-      confirmButtonText: "OK",
-    });
-  } catch (error) {
-    console.error("Error submitting website review:", error);
-    Swal.fire({
-      icon: "error",
-      title: "Error",
-      text: `Failed to submit website review: ${error.message}`,
       confirmButtonText: "OK",
     });
   }
