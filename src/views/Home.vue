@@ -33,8 +33,9 @@
         <router-link
           to="/all-products"
           class="text-[var(--Color-Text-Text-Brand)] font-medium hover:underline"
-          >{{ $t("viewAll") }}</router-link
         >
+          {{ $t("viewAll") }}
+        </router-link>
       </div>
       <div
         v-if="filteredProducts.length === 0"
@@ -98,7 +99,6 @@ export default {
     ShareBanner,
   },
   setup() {
-    // const { documents: products } = getCollection("products");
     const { documents: products } = getCollection("products", [
       ["isApproved", "==", true],
     ]);
@@ -111,6 +111,7 @@ export default {
     const auth = getAuth();
     const router = useRouter();
     const allProducts = ref([]);
+
     const approvedProducts = computed(() => {
       if (!products.value) return [];
       return products.value.filter((p) => p.isApproved === true);
@@ -148,9 +149,9 @@ export default {
       Swal.fire({
         position: "top-end",
         icon: "warning",
-        title: $t("pleaseLoginToRent"),
+        title: "Please log in to continue",
         showConfirmButton: true,
-        confirmButtonText: $t("goToLogin"),
+        confirmButtonText: "Go to Login",
       }).then((result) => {
         if (result.isConfirmed) {
           router.push({ name: "Login" });

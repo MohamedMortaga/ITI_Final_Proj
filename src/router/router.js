@@ -1,7 +1,7 @@
 import { createRouter, createWebHistory } from 'vue-router';
 import { getAuth } from 'firebase/auth';
 import { doc, getDoc } from 'firebase/firestore';
-import { auth, db } from '@/firebase/config'; // Ensure this matches your setup
+import { auth, db } from '@/firebase/config';
 import Swal from 'sweetalert2';
 
 import Logout from '@/views/Logout.vue';
@@ -36,184 +36,44 @@ import Settings from '@/views/Profile/Settings.vue';
 import HelpCentre from '@/views/Profile/HelpCentre.vue';
 
 const routes = [
-  {
-    path: '/contact',
-    name: 'Contact',
-    component: Contact,
-    meta: { requiresAuth: false }
-  },
-  { 
-    path: '/', 
-    redirect: '/home' 
-  },
-  {
-    path: '/signup',
-    name: 'Signup',
-    component: Signup,
-    meta: { hideNavbar: true },
-  },
-  {
-    path: '/login',
-    name: 'Login',
-    component: Login,
-    meta: { hideNavbar: true },
-  },
-  {
-    path: '/home',
-    name: 'HomePage',
-    component: Home,
-    meta: { requiresAuth: false, requiresVerifiedEmail: false },
-  },
-  {
-    path: '/logout',
-    name: 'Logout',
-    component: Logout,
-    meta: { requiresAuth: true },
-  },
-  {
-    path: '/addProduct',
-    name: 'AddProduct',
-    component: AddProduct,
-    meta: { requiresAuth: true, requiresVerifiedEmail: true },
-  },
-  {
-    path: '/product/:id',
-    name: 'ProductDetails',
-    component: ProductDetails,
-    meta: { requiresAuth: true, requiresVerifiedEmail: true },
-  },
-  { 
-    path: '/all-products', 
-    name: 'AllProducts', 
-    component: AllProducts 
-  },
-  {
-    path: '/overview',
-    name: 'Overview',
-    component: Overview,
-    meta: { requiresAuth: false }
-  },
-  {
-    path: '/features',
-    name: 'Features',
-    component: Features,
-    meta: { requiresAuth: false }
-  },
-  {
-    path: '/pricing',
-    name: 'Pricing',
-    component: Pricing,
-    meta: { requiresAuth: false }
-  },
-  {
-    path: '/careers',
-    name: 'Careers',
-    component: Careers,
-    meta: { requiresAuth: false }
-  },
-  {
-    path: '/help',
-    name: 'Help',
-    component: Help,
-    meta: { requiresAuth: false }
-  },
-  {
-    path: '/privacy',
-    name: 'Privacy',
-    component: Privacy,
-    meta: { requiresAuth: false }
-  },
-  {
-    path: '/terms',
-    name: 'Terms',
-    component: Terms,
-    meta: { requiresAuth: false }
-  },
-  {
-    path: '/cookies',
-    name: 'Cookies',
-    component: Cookies,
-    meta: { requiresAuth: false }
-  },
+  { path: '/contact', name: 'Contact', component: Contact, meta: { requiresAuth: false } },
+  { path: '/', redirect: '/home' },
+  { path: '/signup', name: 'Signup', component: Signup, meta: { hideNavbar: true, requiresAuth: false } },
+  { path: '/login', name: 'Login', component: Login, meta: { hideNavbar: true, requiresAuth: false } },
+  { path: '/home', name: 'HomePage', component: Home, meta: { requiresAuth: false } },
+  { path: '/overview', name: 'Overview', component: Overview, meta: { requiresAuth: false } },
+  { path: '/features', name: 'Features', component: Features, meta: { requiresAuth: false } },
+  { path: '/pricing', name: 'Pricing', component: Pricing, meta: { requiresAuth: false } },
+  { path: '/careers', name: 'Careers', component: Careers, meta: { requiresAuth: false } },
+  { path: '/help', name: 'Help', component: Help, meta: { requiresAuth: false } },
+  { path: '/privacy', name: 'Privacy', component: Privacy, meta: { requiresAuth: false } },
+  { path: '/terms', name: 'Terms', component: Terms, meta: { requiresAuth: false } },
+  { path: '/cookies', name: 'Cookies', component: Cookies, meta: { requiresAuth: false } },
+  { path: '/logout', name: 'Logout', component: Logout, meta: { requiresAuth: true } },
+  { path: '/addProduct', name: 'AddProduct', component: AddProduct, meta: { requiresAuth: true, requiresVerifiedEmail: true } },
+  { path: '/product/:id', name: 'ProductDetails', component: ProductDetails, meta: { requiresAuth: true, requiresVerifiedEmail: true } },
+  { path: '/all-products', name: 'AllProducts', component: AllProducts, meta: { requiresAuth: false } }, // Changed to allow guest access
   {
     path: '/profile',
     component: Profile,
+    meta: { requiresAuth: true },
     children: [
-      {
-        path: '',
-        name: 'MyProfile',
-        component: MyProfile
-      },
-      {
-        path: 'listings',
-        name: 'MyListings',
-        component: MyListings
-      },
-      {
-        path: 'rentals',
-        name: 'MyRentals',
-        component: MyRentals
-      },
-      {
-        path: 'balance',
-        name: 'MyBalance',
-        component: MyBalance
-      },
-      {
-        path: 'settings',
-        name: 'Settings',
-        component: Settings
-      },
-      {
-        path: 'help',
-        name: 'HelpCentre',
-        component: HelpCentre
-      }
+      { path: '', name: 'MyProfile', component: MyProfile, meta: { requiresAuth: true } },
+      { path: 'listings', name: 'MyListings', component: MyListings, meta: { requiresAuth: true } },
+      { path: 'rentals', name: 'MyRentals', component: MyRentals, meta: { requiresAuth: true } },
+      { path: 'balance', name: 'MyBalance', component: MyBalance, meta: { requiresAuth: true } },
+      { path: 'settings', name: 'Settings', component: Settings, meta: { requiresAuth: true } },
+      { path: 'help', name: 'HelpCentre', component: HelpCentre, meta: { requiresAuth: true } }
     ]
   },
   // Admin routes
-  {
-    path: '/admin/users',
-    name: 'AdminUsers',
-    component: AdminUsers,
-    meta: { layout: 'admin', requiresAuth: true, requiresAdmin: true }
-  },
-  {
-    path: '/admin/products',
-    name: 'ProductsDashboard',
-    component: ProductsDashboard,
-    meta: { layout: 'admin', requiresAuth: true, requiresAdmin: true }
-  },
-  {
-    path: '/admin/categories',
-    name: 'Categories',
-    component: CategoriesManager,
-    meta: { layout: 'admin', requiresAuth: true, requiresAdmin: true }
-  },
-  {
-    path: '/rentals',
-    name: 'Rentals',
-    component: RentalDashboard,
-    meta: { layout: 'admin', requiresAuth: true, requiresAdmin: true }
-  },
-  {
-    path: '/admin/user/:userId/rentals',
-    name: 'UserRentals',   
-    component: UserRentals,
-    meta: { layout: 'admin', requiresAuth: true, requiresAdmin: true }
-  },
-  {
-    path: '/admin/reviews',
-    name: 'AdminReviews',
-    component: AdminReviews,
-    meta: { layout: 'admin', requiresAuth: true, requiresAdmin: true }
-  },
-  {
-    path: '/:pathMatch(.*)*',
-    name: 'Error',
-    component: Errorr,
-    meta: { hideNavbar: true },
-  }
+  { path: '/admin/users', name: 'AdminUsers', component: AdminUsers, meta: { layout: 'admin', requiresAuth: true, requiresAdmin: true } },
+  { path: '/admin/products', name: 'ProductsDashboard', component: ProductsDashboard, meta: { layout: 'admin', requiresAuth: true, requiresAdmin: true } },
+  { path: '/admin/categories', name: 'Categories', component: CategoriesManager, meta: { layout: 'admin', requiresAuth: true, requiresAdmin: true } },
+  { path: '/rentals', name: 'Rentals', component: RentalDashboard, meta: { layout: 'admin', requiresAuth: true, requiresAdmin: true } },
+  { path: '/admin/user/:userId/rentals', name: 'UserRentals', component: UserRentals, meta: { layout: 'admin', requiresAuth: true, requiresAdmin: true } },
+  { path: '/admin/reviews', name: 'AdminReviews', component: AdminReviews, meta: { layout: 'admin', requiresAuth: true, requiresAdmin: true } },
+  { path: '/:pathMatch(.*)*', name: 'Error', component: Errorr, meta: { hideNavbar: true, requiresAuth: false } }
 ];
 
 const router = createRouter({
@@ -242,7 +102,7 @@ router.beforeEach(async (to, from, next) => {
   try {
     const user = await checkAuth();
 
-    // Redirect authenticated users from auth pages
+    // Redirect authenticated and verified users from auth pages
     if ((to.name === 'Login' || to.name === 'Signup') && user && user.emailVerified) {
       Swal.fire({
         position: 'top-end',
@@ -283,7 +143,6 @@ router.beforeEach(async (to, from, next) => {
       const userDoc = await getDoc(doc(db, "users", user.uid));
       if (userDoc.exists()) {
         const role = userDoc.data().role;
-        console.log("User UID:", user.uid, "Role:", role); // Debug log
         if (role !== "admin") {
           Swal.fire({
             icon: 'warning',
@@ -295,7 +154,6 @@ router.beforeEach(async (to, from, next) => {
           return next('/home');
         }
       } else {
-        console.log("No user document found for UID:", user.uid); // Debug log
         Swal.fire({
           icon: 'warning',
           title: 'Access Denied',

@@ -87,11 +87,6 @@ onAuthStateChanged(auth, (user) => {
     loadProducts();
     loadCategories();
   } else {
-    Swal.fire({
-      position: "center",
-      icon: "error",
-      title: "Please log in to view or manage products and categories.",
-    });
     products.value = [];
     categories.value = [];
   }
