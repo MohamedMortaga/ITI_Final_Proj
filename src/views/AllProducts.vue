@@ -9,6 +9,11 @@
     <!-- Search Bar -->
     <SearchBar v-model:searchQuery="searchQuery" />
 
+    <!-- Full-width divider that ignores parent padding -->
+    <div
+      class="border-t border-[var(--Color-Boarder-Border-Primary)] w-screen -ml-6 lg:-ml-[88px]"
+    ></div>
+
     <!-- Category Buttons -->
     <CategoryButtons
       :categories="categories"

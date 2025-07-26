@@ -2,7 +2,10 @@
   <div :class="[isDarkMode ? 'dark' : 'light']">
     <Disclosure
       as="nav"
-      class="bg-[var(--Color-Surface-Surface-Primary)] text-[var(--Color-Text-Text-Primary)] mb-0 px-6 lg:px-[88px]"
+      :class="[
+        'fixed top-0 w-full z-50 bg-[var(--Color-Surface-Surface-Primary)] text-[var(--Color-Text-Text-Primary)] mb-0 px-6 lg:px-[88px] transition-all duration-300',
+        isHomePage && !isScrolled ? '' : 'border-b border-[var(--Color-Boarder-Border-Primary)]'
+      ]"
     >
       <div class="mx-auto sm:px-6 lg:px-8">
         <div class="relative flex h-16 items-center justify-between">
@@ -284,13 +287,14 @@
 
 <script setup>
 import { Disclosure, DisclosureButton, DisclosurePanel } from "@headlessui/vue";
-import { ref, watch, onMounted } from "vue";
+import { ref, watch, onMounted, onUnmounted, computed } from "vue";
 import { getAuth, signOut } from "firebase/auth";
-import { useRouter } from "vue-router";
+import { useRouter, useRoute } from "vue-router";
 import Swal from "sweetalert2";
 import { useI18n } from "vue-i18n";
 
 const { locale } = useI18n();
+const route = useRoute();
 const isDarkMode = ref(false);
 const isAuthenticated = ref(false);
 const userProfileImage = ref("");
@@ -300,6 +304,12 @@ const currentLang = ref(locale.value);
 const languages = ref(["en", "ar"]);
 const auth = getAuth();
 const router = useRouter();
+const isScrolled = ref(false);
+
+// Check if current page is home or browse tools
+const isHomePage = computed(() => {
+  return route.path === '/' || route.path === '/home' || route.path === '/all-products';
+});
 
 const navLinks = [
   { to: "/home", text: "home" },
@@ -386,10 +396,23 @@ const closeDropdown = () => {
   showDropdown.value = false;
 };
 
+// Handle scroll events
+const handleScroll = () => {
+  isScrolled.value = window.scrollY > 10;
+};
+
 onMounted(() => {
   initializeDarkMode();
   initializeAuth();
   setDir(currentLang.value);
+  
+  // Add scroll event listener
+  window.addEventListener('scroll', handleScroll);
+});
+
+// Clean up event listener
+onUnmounted(() => {
+  window.removeEventListener('scroll', handleScroll);
 });
 
 watch(isDarkMode, (newValue) => {
@@ -475,5 +498,15 @@ button {
 router-link:hover,
 button:hover {
   opacity: 0.9;
+}
+
+/* Fixed navbar styles - clean and simple */
+.fixed {
+  /* No special effects - clean appearance */
+}
+
+/* Ensure smooth scrolling when navigating with fixed navbar */
+html {
+  scroll-behavior: smooth;
 }
 </style>
