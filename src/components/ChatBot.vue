@@ -143,7 +143,7 @@
 import { ref, computed, onMounted, nextTick, onUnmounted, watch } from "vue";
 import { useRoute } from "vue-router";
 import { getAuth, onAuthStateChanged } from "firebase/auth";
-import { collection, onSnapshot } from "firebase/firestore";
+import { collection, onSnapshot, doc } from "firebase/firestore";
 import { auth, db } from "@/firebase/config"; // Adjust the import path as needed
 
 const emit = defineEmits(["close", "user-action"]);
@@ -166,7 +166,20 @@ const isCameraSupported = ref(
 const user = ref(null);
 const unsubscribe = ref(null);
 const products = ref([]);
-const productsLoaded = ref(false); // Flag to track when products are loaded
+const userBookings = ref([]);
+const userBalance = ref({
+  balance: 0,
+  email: "",
+  lastUpdated: "",
+  name: null,
+  phone: "",
+  profit: 0,
+  serviceFee: 0,
+  userid: "",
+  userimage: null,
+  username: null,
+});
+const productsLoaded = ref(false);
 
 const currentChatMessages = computed(() => {
   const chat = chats.value.find((c) => c.id === currentChatId.value);
@@ -323,7 +336,7 @@ async function handleGenerateImage() {
         if (data?.error?.message) {
           errorMsg = data.error.message;
         }
-      } catch (e) {
+      } catch (err) {
         errorMsg = await response.text();
       }
       chat.messages.pop();
@@ -335,7 +348,7 @@ async function handleGenerateImage() {
       });
     }
   } catch (err) {
-    console.error("Image API error:", err);
+    console.error("Image generation error:", err);
     chat.messages.pop();
     chat.messages.push({
       role: "bot",
@@ -349,7 +362,7 @@ async function handleGenerateImage() {
 
 function isImagePrompt(text) {
   const keywords = ["image", "draw", "picture", "photo", "generate"];
-  return keywords.some((word) => text.toLowerCase().includes(word));
+  return keywords.some((kw) => text.toLowerCase().includes(kw.toString()));
 }
 
 async function sendMessage() {
@@ -459,6 +472,90 @@ function deleteStagedImage() {
   scrollToBottom();
 }
 
+// Function to update system prompt
+function updateSystemPrompt() {
+  const chat = chats.value[0];
+  if (!chat) return;
+
+  const initialPrompt = `
+    You are an AI assistant for a website with the following structure and features:
+    - If a user asks for products or a product, provide a list of products using the details provided below. Only list products from the provided list.
+    - Your role is to assist users navigating the site, answering questions about products, login/signup processes, contact information, and more.
+    - Track user actions (e.g., navigation, message sending, image uploads) and provide context-aware responses.
+    - If a user asks for help or performs an action, suggest assistance with a message around the chatbot icon.
+    - Act as a recommendation system based on the user's previous bookings.
+    - Current date and time: ${new Date().toLocaleString("en-US", {
+      timeZone: "Europe/Bucharest",
+      hour12: false,
+    })}
+    ${
+      user.value
+        ? `
+    - User Information:
+      - Email: ${user.value.email}
+      - Display Name: ${user.value.displayName || "User"}
+      - Email Verified: ${user.value.emailVerified}
+      - Login Method: ${user.value.providerData[0]?.providerId || "Email/Password"}
+    `
+        : "- No user is currently logged in."
+    }
+    - Booking Information:
+      - The following list contains the user's previous bookings:
+      ${userBookings.value
+        .map(
+          (booking) => `
+        - Product: ${booking.productTitle}
+        - Seller: ${booking.sellerName}
+        - Start Date: ${booking.startDate}
+        - Status: ${booking.status}
+        - Total Price: ${booking.totalPrice} EGP`
+        )
+        .join("")}
+    - User Balance Information:
+      - The following details are from the userbalance collection for user ID ${
+        userBalance.value.userid || "N/A"
+      }:
+        - Balance: ${userBalance.value.balance} EGP
+        - Email: ${userBalance.value.email || "N/A"}
+        - Last Updated: ${userBalance.value.lastUpdated || "N/A"}
+        - Name: ${userBalance.value.name || "N/A"}
+        - Phone: ${userBalance.value.phone || "N/A"}
+        - Profit: ${userBalance.value.profit} EGP
+        - Service Fee: ${userBalance.value.serviceFee} EGP
+        - User ID: ${userBalance.value.userid || "N/A"}
+        - User Image: ${userBalance.value.userimage || "N/A"}
+        - Username: ${userBalance.value.username || "N/A"}
+    - Website Features:
+      - You can view detailed product information, including pictures, available dates, owner details, booking options, reviews, and similar items.
+      - The main page allows searching and filtering products based on preferences.
+      - Users can interact through booking options, reviews, and feedback.
+      - The site supports multiple languages for global access.
+      - An account is required for certain features, like renting products.
+      - Contact support is available via a form, email, phone, or location details.
+      - The design is modern with options for different viewing styles.
+      - The web name is Rento.
+    - Product Information:
+      - The following list contains all products currently available in the database:
+      ${products.value
+        .map(
+          (product) => `
+        - Title: ${product.title}
+        - Price: ${product.price}
+        - Category: ${product.category}
+        - Owner Name: ${product.ownerName}`
+        )
+        .join("")}
+  `;
+  chat.messages = chat.messages.filter((m) => m.role !== "system");
+  chat.messages.push({
+    role: "system",
+    content: initialPrompt,
+    type: "text",
+    timestamp: Date.now(),
+  });
+  console.log("System prompt updated:", initialPrompt);
+}
+
 onMounted(() => {
   if (chats.value.length === 0) {
     createNewChat();
@@ -475,117 +572,136 @@ onMounted(() => {
         category: doc.data().category || "Uncategorized",
         ownerName: doc.data().ownerName || "Unknown",
       }));
-      productsLoaded.value = true; // Set flag when products are loaded
+      productsLoaded.value = true;
     },
     (error) => {
       console.error("Error fetching products:", error);
     }
   );
 
-  // Watch for products to be loaded before setting the prompt
-  watch(productsLoaded, (loaded) => {
-    if (loaded) {
-      try {
-        unsubscribe.value = onAuthStateChanged(auth, (currentUser) => {
-          user.value = currentUser;
-          const initialPrompt = `
-            You are an AI assistant for a website with the following structure and features:
-            - If a user asks for products or a product, provide a list of products using the details provided below. Only list products from the provided list.
-            - Your role is to assist users navigating the site, answering questions about products, login/signup processes, contact information, and more.
-            - Track user actions (e.g., navigation, message sending, image uploads) and provide context-aware responses.
-            - If a user asks for help or performs an action, suggest assistance with a message around the chatbot icon.
-            - Current date and time: 11:55 AM EEST on Thursday, July 24, 2025
-            ${
-              user.value
-                ? `
-            - User Information: 
-              - Email: ${user.value.email}
-              - Display Name: ${user.value.displayName || "User"}
-              - Email Verified: ${user.value.emailVerified}
-              - Login Method: ${
-                user.value.providerData[0]?.providerId || "Email/Password"
-              }
-            `
-                : "- No user is currently logged in."
-            }
-            - Website Features:
-              - You can view detailed product information, including pictures, available dates, owner details, booking options, reviews, and similar items.
-              - The main page allows searching and filtering products based on preferences.
-              - Users can interact through booking options, reviews, and feedback.
-              - The site supports multiple languages for global access.
-              - An account is required for certain features, like renting products.
-              - Contact support is available via a form, email, phone, or location details.
-              - The design is modern with options for different viewing styles.
-              - The web name is Rento.
-            - Product Information:
-              - The following list contains all products currently available in the database:
-              ${products.value
-                .map(
-                  (product) => `
-                  - Title: ${product.title}
-                  - Price: ${product.price}
-                  - Category: ${product.category}
-                  - Owner Name: ${product.ownerName}`
-                )
-                .join("")}
-          `;
-          const chat = chats.value[0];
-          chat.messages = chat.messages.filter((m) => m.role !== "system");
-          chat.messages.push({
-            role: "system",
-            content: initialPrompt,
-            type: "text",
-            timestamp: Date.now(),
-          });
-          console.log("Chat initialized with system prompt:", initialPrompt);
-        });
-      } catch (err) {
-        console.error("Firebase auth error:", err);
-        const chat = chats.value[0];
-        chat.messages = chat.messages.filter((m) => m.role !== "system");
-        chat.messages.push({
-          role: "system",
-          content: `
-            You are an AI assistant for a website with the following structure and features:
-            - If a user asks for products or a product, provide a list of products using the details provided below. Only list products from the provided list.
-            - Your role is to assist users navigating the site, answering questions about products, login/signup processes, contact information, and more.
-            - Track user actions (e.g., navigation, message sending, image uploads) and provide context-aware responses.
-            - If a user asks for help or performs an action, suggest assistance with a message around the chatbot icon.
-            - Current date and time: 11:55 AM EEST on Thursday, July 24, 2025
-            - No user is currently logged in (authentication issue).
-            - Website Features:
-              - You can view detailed product information, including pictures, available dates, owner details, booking options, reviews, and similar items.
-              - The main page allows searching and filtering products based on preferences.
-              - Users can interact through booking options, reviews, and feedback.
-              - The site supports multiple languages for global access.
-              - An account is required for certain features, like renting products.
-              - Contact support is available via a form, email, phone, or location details.
-              - The design is modern with options for different viewing styles.
-              - The web name is Rento.
-            - Product Information:
-              - The following list contains all products currently available in the database:
-              ${products.value
-                .map(
-                  (product) => `
-                - Product ${product.id}: 
-                  - Title: ${product.title}
-                  - Price: ${product.price}
-                  - Category: ${product.category}
-                  - Owner Name: ${product.ownerName}`
-                )
-                .join("")}
-          `,
-          type: "text",
-          timestamp: Date.now(),
-        });
-      }
+  // Fetch bookings in real-time from Firestore
+  const unsubscribeBookings = onSnapshot(
+    collection(db, "bookings"),
+    (querySnapshot) => {
+      userBookings.value = querySnapshot.docs
+        .filter((doc) => doc.data().userId === (user.value ? user.value.uid : null))
+        .map((doc) => ({
+          productTitle: doc.data().productTitle || "Unknown",
+          sellerName: doc.data().sellerName || "Unknown",
+          startDate: doc.data().startDate || "Unknown",
+          status: doc.data().status || "Unknown",
+          totalPrice: doc.data().totalPrice || 0,
+        }));
+      console.log("Current bookings for user:", userBookings.value);
+      productsLoaded.value = true;
+    },
+    (error) => {
+      console.error("Error fetching bookings:", error);
     }
+  );
+
+  // Watch authentication state and fetch user balance dynamically
+  unsubscribe.value = onAuthStateChanged(auth, (currentUser) => {
+    user.value = currentUser;
+    let unsubscribeUserBalance = null;
+    if (currentUser) {
+      // Fetch user balance for the logged-in user
+      unsubscribeUserBalance = onSnapshot(
+        doc(db, "userbalance", currentUser.uid),
+        (docSnap) => {
+          if (docSnap.exists()) {
+            const userBalanceData = docSnap.data();
+            userBalance.value = {
+              balance: userBalanceData.balance || 0,
+              email: userBalanceData.email || "",
+              lastUpdated: userBalanceData.lastUpdated
+                ? new Date(userBalanceData.lastUpdated).toLocaleString("en-US", {
+                    timeZone: "UTC+3",
+                    hour12: true,
+                  })
+                : "",
+              name: userBalanceData.name || null,
+              phone: userBalanceData.phone || "",
+              profit: userBalanceData.profit || 0,
+              serviceFee: userBalanceData.serviceFee || 0,
+              userid: userBalanceData.userid || currentUser.uid,
+              userimage: userBalanceData.userimage || null,
+              username: userBalanceData.username || null,
+            };
+          } else {
+            userBalance.value = {
+              balance: 0,
+              email: currentUser.email || "",
+              lastUpdated: "",
+              name: null,
+              phone: "",
+              profit: 0,
+              serviceFee: 0,
+              userid: currentUser.uid,
+              userimage: null,
+              username: null,
+            };
+          }
+          productsLoaded.value = true;
+          updateSystemPrompt(); // Update system prompt after balance is fetched
+        },
+        (error) => {
+          console.error("Error fetching user balance:", error);
+          userBalance.value = {
+            balance: 0,
+            email: currentUser.email || "",
+            lastUpdated: "",
+            name: null,
+            phone: "",
+            profit: 0,
+            serviceFee: 0,
+            userid: currentUser.uid,
+            userimage: null,
+            username: null,
+          };
+          productsLoaded.value = true;
+          updateSystemPrompt(); // Update system prompt even on error
+        }
+      );
+    } else {
+      // Handle no user logged in
+      userBalance.value = {
+        balance: 0,
+        email: "",
+        lastUpdated: "",
+        name: null,
+        phone: "",
+        profit: 0,
+        serviceFee: 0,
+        userid: "",
+        userimage: null,
+        username: null,
+      };
+      productsLoaded.value = true;
+      updateSystemPrompt(); // Update system prompt for no user
+    }
+
+    // Clean up balance subscription when user changes
+    onUnmounted(() => {
+      if (unsubscribeUserBalance) unsubscribeUserBalance();
+    });
   });
 
-  // Cleanup subscriptions on unmount
+  // Watch for changes in userBalance and update system prompt
+  watch(
+    () => [userBalance.value, productsLoaded.value, userBookings.value.length],
+    () => {
+      if (productsLoaded.value) {
+        updateSystemPrompt();
+      }
+    },
+    { deep: true }
+  );
+
   onUnmounted(() => {
     if (unsubscribe.value) unsubscribe.value();
     if (unsubscribeProducts) unsubscribeProducts();
+    if (unsubscribeBookings) unsubscribeBookings();
   });
 });
 </script>
@@ -600,7 +716,7 @@ onMounted(() => {
   background: var(--Color-Surface-Surface-Primary);
   color: var(--Color-Text-Text-Primary);
   border-radius: 16px;
-  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.10);
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
   z-index: 1000;
   display: flex;
   flex-direction: column;
@@ -707,6 +823,7 @@ onMounted(() => {
   display: flex;
   flex-direction: column;
   gap: 12px;
+  -webkit-overflow-scrolling: touch;
 }
 
 .chat-message {
@@ -810,95 +927,6 @@ onMounted(() => {
   color: var(--Color-Text-Text-Invert);
 }
 
-.history-modal {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100vw;
-  height: 100vh;
-  background: rgba(0, 0, 0, 0.3);
-  z-index: 1000;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-
-.modal-content {
-  background: var(--Color-Surface-Surface-Primary);
-  padding: 20px;
-  border-radius: 16px;
-  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.10);
-  width: 400px;
-  max-width: 90vw;
-  max-height: 70vh;
-  overflow-y: auto;
-  color: var(--Color-Text-Text-Primary);
-}
-
-.history-list {
-  list-style: none;
-  padding: 0;
-  margin: 0 0 16px 0;
-}
-
-.history-item {
-  padding: 10px;
-  border-bottom: 1px solid var(--Color-Boarder-Border-Primary);
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  cursor: pointer;
-  transition: background 0.2s;
-}
-
-.history-item:hover {
-  background: var(--Color-Surface-Surface-Tertiary);
-}
-
-.history-title {
-  font-size: 1rem;
-  color: var(--Color-Text-Text-Primary);
-}
-
-.no-chats {
-  padding: 10px;
-  color: var(--Color-Text-Text-Secondary);
-  text-align: center;
-}
-
-.delete-btn {
-  background: none;
-  border: none;
-  color: var(--Color-Text-Text-Brand);
-  font-size: 0.9rem;
-  cursor: pointer;
-  padding: 4px 8px;
-  border-radius: 8px;
-  transition: background 0.2s;
-}
-
-.delete-btn:hover {
-  background: var(--Color-Surface-Surface-Tertiary);
-}
-
-.close-btn-modal {
-  display: block;
-  width: 100%;
-  padding: 8px;
-  font-size: 1rem;
-  border: 1px solid var(--Color-Boarder-Border-Primary);
-  background: var(--Color-Surface-Surface-Brand);
-  color: var(--Color-Text-Text-Invert);
-  border-radius: 8px;
-  cursor: pointer;
-  transition: background 0.2s;
-}
-
-.close-btn-modal:hover {
-  background: var(--Color-Text-Text-Brand);
-  color: var(--Color-Text-Text-Invert);
-}
-
 @media screen and (max-width: 768px) {
   .chatbot-container {
     bottom: 20px;
@@ -910,12 +938,15 @@ onMounted(() => {
 
   .chat-app-container {
     flex-direction: column;
+    height: 100%;
   }
 
   .chat-sidebar {
     width: 100%;
     border-right: none;
     border-bottom: 1px solid var(--Color-Boarder-Border-Primary);
+    max-height: 20vh;
+    overflow-y: auto;
   }
 
   #chat-list li {
@@ -935,10 +966,15 @@ onMounted(() => {
 
   .chat-main {
     flex: 1;
+    height: 70vh;
   }
 
   .chat-history {
+    flex: 1;
     padding: 10px;
+    max-height: 60vh;
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
   }
 
   .chat-message {
@@ -992,35 +1028,21 @@ onMounted(() => {
     flex: 1 1 calc(33.33% - 4px);
     min-width: 70px;
   }
-
-  .modal-content {
-    width: 80vw;
-    padding: 15px;
-  }
-
-  .history-item {
-    padding: 8px;
-  }
-
-  .history-title {
-    font-size: 0.9rem;
-  }
-
-  .delete-btn {
-    font-size: 0.8rem;
-    padding: 2px 6px;
-  }
-
-  .close-btn-modal {
-    padding: 6px;
-    font-size: 0.9rem;
-  }
 }
 
 @media screen and (max-width: 480px) {
   .chatbot-container {
     height: 85vh;
     max-height: 85vh;
+  }
+
+  .chat-main {
+    height: 65vh;
+  }
+
+  .chat-history {
+    max-height: 55vh;
+    padding: 8px;
   }
 
   .chat-form button {
@@ -1037,29 +1059,6 @@ onMounted(() => {
   .preview-image {
     max-width: 60px;
     max-height: 60px;
-  }
-
-  .modal-content {
-    width: 90vw;
-    padding: 10px;
-  }
-
-  .history-item {
-    padding: 6px;
-  }
-
-  .history-title {
-    font-size: 0.8rem;
-  }
-
-  .delete-btn {
-    font-size: 0.7rem;
-    padding: 2px 4px;
-  }
-
-  .close-btn-modal {
-    padding: 5px;
-    font-size: 0.8rem;
   }
 }
 </style>
