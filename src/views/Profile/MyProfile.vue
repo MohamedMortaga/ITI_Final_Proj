@@ -1,26 +1,26 @@
 <template>
   <div
-    class="min-h-screen bg-[var(--color-gray-25)] dark:bg-[var(--color-gray-800)] text-[var(--color-gray-700)] dark:text-[var(--color-gray-300)]"
+    class=" w-full bg-[var(--Color-Surface-Surface-Primary)] dark:bg-[var(--Color-Surface-Surface-Primary)] text-[var(--Color-Text-Text-Primary)] dark:text-[var(--Color-Text-Text-Primary)]"
   >
     <!-- Profile Section -->
-    <div class="max-w-6xl mx-auto py-10 px-4">
-      <div class="flex flex-col items-center md:items-start md:flex-row gap-8 mb-8">
+    <div class="w-full mx-auto py-10 px-4">
+      <div class="flex flex-col items-center md:items-start md:flex-row gap-8 mb-8 align-center">
         <img
           :src="sanitizeUrl(userProfile.imageUrl) || require('@/assets/default.png')"
           alt="Profile"
-          class="w-28 h-28 rounded-full object-cover border-4 border-[var(--color-primary-100)] shadow"
+          class="w-28 h-28 rounded-full object-cover border-4 border-[var(--Color-Boarder-Surface-Brand)] shadow"
           @error="onImageError"
         />
-        <div class="flex flex-col justify-center items-center md:items-start">
+        <div class="flex flex-col justify-center items-center md:items-start py-[32px]">
           <h2 class="text-2xl font-bold mb-1">
-            <span class="text-[var(--color-primary-600)]">{{ $t("welcome") }} </span>
+            <span class="text-[var(--Color-Text-Text-Brand)]">{{ $t("welcome") }} </span>
             <span class="text-[var(--Color-Text-Text-Primary)]">
               {{ userProfile.displayName || $t("unknownUser") }}</span
             >
           </h2>
         </div>
       </div>
-      <div class="bg-white dark:bg-[var(--color-gray-800)] rounded-xl shadow p-8">
+      <div class="w-full bg-[var(--Color-Surface-Surface-Primary)] dark:bg-[var(--Color-Surface-Surface-Primary)] rounded-xl border border-[var(--Color-Boarder-Border-Primary)] p-8">
         <h3 class="text-lg font-bold mb-6 text-[var(--Color-Text-Text-Primary)]">
           {{ $t("personalInformation") }}
         </h3>
@@ -33,7 +33,7 @@
               <input
                 v-model="userProfile.firstName"
                 type="text"
-                class="w-full border border-[var(--color-gray-200)] rounded-md px-4 py-2 pr-10 focus:outline-none focus:ring-2 focus:ring-[var(--color-primary-200)] text-[var(--Color-Text-Text-Primary)]"
+                class="w-full border bg-[var(--Color-Surface-Surface-Primary)] dark:bg-[var(--Color-Surface-Surface-Primary)] border-[var(--Color-Boarder-Border-Primary)] rounded-md px-4 py-2 pr-10 focus:outline-none focus:ring-2 focus:ring-[var(--Color-Boarder-Surface-Brand)] text-[var(--Color-Text-Text-Primary)]"
               />
               <span
                 class="absolute right-3 top-1/2 -translate-y-1/2 text-[var(--color-gray-400)] cursor-pointer"
@@ -51,7 +51,7 @@
               <input
                 v-model="userProfile.lastName"
                 type="text"
-                class="w-full border border-[var(--color-gray-200)] rounded-md px-4 py-2 pr-10 focus:outline-none focus:ring-2 focus:ring-[var(--color-primary-200)] text-[var(--Color-Text-Text-Primary)]"
+                class="w-full border bg-[var(--Color-Surface-Surface-Primary)] dark:bg-[var(--Color-Surface-Surface-Primary)] border-[var(--Color-Boarder-Border-Primary)] rounded-md px-4 py-2 pr-10 focus:outline-none focus:ring-2 focus:ring-[var(--Color-Boarder-Surface-Brand)] text-[var(--Color-Text-Text-Primary)]"
               />
               <span
                 class="absolute right-3 top-1/2 -translate-y-1/2 text-[var(--color-gray-400)] cursor-pointer"
@@ -68,7 +68,7 @@
             <input
               v-model="userProfile.email"
               type="email"
-              class="w-full border border-[var(--color-gray-200)] rounded-md px-4 py-2 text-[var(--Color-Text-Text-Primary)]"
+              class="w-full border bg-[var(--Colors-Gray-25)] dark:bg-[var(--Colors-Gray-600)] border-[var(--Color-Boarder-Border-Primary)] rounded-md px-4 py-2 text-[var(--Color-Text-Text-Primary)]"
               disabled
             />
           </div>
@@ -80,7 +80,7 @@
               <input
                 v-model="userProfile.phone"
                 type="tel"
-                class="w-full border border-[var(--color-gray-200)] rounded-md px-4 py-2 pr-10 focus:outline-none focus:ring-2 focus:ring-[var(--color-primary-200)] text-[var(--Color-Text-Text-Primary)]"
+                class="w-full border bg-[var(--Color-Surface-Surface-Primary)] dark:bg-[var(--Color-Surface-Surface-Primary)] border-[var(--Color-Boarder-Border-Primary)] rounded-md px-4 py-2 pr-10 focus:outline-none focus:ring-2 focus:ring-[var(--Color-Boarder-Surface-Brand)] text-[var(--Color-Text-Text-Primary)]"
                 placeholder="0102 219 4510"
                 @input="formatPhoneNumber"
               />
@@ -105,7 +105,7 @@
               <input
                 v-model="userProfile.city"
                 type="text"
-                class="w-full border border-[var(--color-gray-200)] rounded-md px-4 py-2 pr-10 focus:outline-none focus:ring-2 focus:ring-[var(--color-primary-200)] text-[var(--Color-Text-Text-Primary)]"
+                class="w-full border bg-[var(--Color-Surface-Surface-Primary)] dark:bg-[var(--Color-Surface-Surface-Primary)] border-[var(--Color-Boarder-Border-Primary)] rounded-md px-4 py-2 pr-10 focus:outline-none focus:ring-2 focus:ring-[var(--Color-Boarder-Surface-Brand)] text-[var(--Color-Text-Text-Primary)]"
               />
               <span
                 class="absolute right-3 top-1/2 -translate-y-1/2 text-[var(--color-gray-400)] cursor-pointer"
@@ -123,7 +123,7 @@
               <input
                 v-model="userProfile.district"
                 type="text"
-                class="w-full border border-[var(--color-gray-200)] rounded-md px-4 py-2 pr-10 focus:outline-none focus:ring-2 focus:ring-[var(--color-primary-200)] text-[var(--Color-Text-Text-Primary)]"
+                class="w-full border bg-[var(--Color-Surface-Surface-Primary)] dark:bg-[var(--Color-Surface-Surface-Primary)] border-[var(--Color-Boarder-Border-Primary)] rounded-md px-4 py-2 pr-10 focus:outline-none focus:ring-2 focus:ring-[var(--Color-Boarder-Surface-Brand)] text-[var(--Color-Text-Text-Primary)]"
               />
               <span
                 class="absolute right-3 top-1/2 -translate-y-1/2 text-[var(--color-gray-400)] cursor-pointer"
@@ -136,7 +136,7 @@
         </div>
         <button
           @click="saveProfile"
-          class="mt-6 bg-[var(--color-success-500)] text-[var(--color-gray-25)] py-2 px-4 rounded-lg hover:bg-[var(--color-success-600)] dark:bg-[var(--color-success-300)] dark:hover:bg-[var(--color-success-400)]"
+          class=" w-[213px] mt-6 bg-[var(--Color-Surface-Surface-Brand)] text-white py-2 px-4 rounded-lg hover:bg-[var(--Colors-Primary-600)]  dark:hover:bg-[var(--Colors-Primary-600)]"
         >
           {{ $t("saveChanges") }}
         </button>
