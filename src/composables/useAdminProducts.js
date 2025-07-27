@@ -34,7 +34,9 @@ const commissionRate = 0.15;
 const loadCategories = async () => {
   try {
     const snapshot = await getDocs(collection(db, "categories"));
-    categories.value = snapshot.docs.map((doc) => ({ id: doc.id, ...doc.data() }));
+    categories.value = snapshot.docs
+      .map((doc) => ({ id: doc.id, ...doc.data() }))
+      .filter((cat) => cat.status !== 'inactive'); // Only show active categories
     if (categories.value.length === 0) {
       Swal.fire({
         position: "center",

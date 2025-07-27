@@ -34,7 +34,7 @@
           >
             {{ cat.status === 'inactive' ? $t('inactive') : $t('active') }}
           </span>
-          <button @click="toggleStatus(cat)" class="text-gray-400 hover:text-teal-500" title="Toggle Status">
+          <button @click="toggleStatus(cat)" class="text-gray-400 hover:text-teal-500" :title="cat.status === 'inactive' ? 'Make Active (Show on Website)' : 'Make Inactive (Hide from Website)'">
             <i :class="cat.status === 'inactive' ? 'fas fa-toggle-off' : 'fas fa-toggle-on'"></i>
           </button>
           <button
@@ -134,7 +134,29 @@ const saveCategory = async () => {
 
 const toggleStatus = async (cat) => {
   const newStatus = cat.status === 'inactive' ? 'active' : 'inactive'
-  await updateDoc(doc(db, 'categories', cat.id), { status: newStatus })
+  const statusText = newStatus === 'active' ? 'active' : 'inactive'
+  
+  try {
+    await updateDoc(doc(db, 'categories', cat.id), { status: newStatus })
+    
+    // Show confirmation message
+    const Swal = await import('sweetalert2')
+    Swal.default.fire({
+      icon: 'success',
+      title: 'Status Updated!',
+      text: `Category "${cat.name}" is now ${statusText}. ${newStatus === 'inactive' ? 'It will no longer appear on the website.' : 'It is now visible on the website.'}`,
+      timer: 3000,
+      showConfirmButton: false
+    })
+  } catch (error) {
+    console.error('Error updating category status:', error)
+    const Swal = await import('sweetalert2')
+    Swal.default.fire({
+      icon: 'error',
+      title: 'Error!',
+      text: 'Failed to update category status.'
+    })
+  }
 }
 
 const deleteCategory = async (id) => {

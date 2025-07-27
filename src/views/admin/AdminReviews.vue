@@ -18,10 +18,10 @@
                             <!-- <p class="font-semibold text-gray-800 dark:text-gray-200">
                                 {{ review.productName }} (ID: {{ review.productId }})
                             </p> -->
-                            <p class="text-sm text-gray-500">
+                            <!-- <p class="text-sm text-gray-500">
                                 Name: {{ productsMap[review.productId]?.title || 'Unknown Product' }}
 
-                            </p>
+                            </p> -->
                             <p class="text-sm text-gray-700 dark:text-gray-300">{{ review.review }}</p>
                             <p class="text-yellow-500 mt-1">{{ $t('rating') }}: {{ review.rate }} ★</p>
                             <p class="text-xs text-gray-500 mt-1">{{ $t('by') }}: {{ review.userName }}</p>
@@ -92,7 +92,7 @@
 
 
 <script setup>
-import { ref, onMounted } from 'vue'
+import { ref, onMounted , computed } from 'vue'
 import {
     getDoc,
     addDoc,
