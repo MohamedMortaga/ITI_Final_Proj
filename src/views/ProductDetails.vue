@@ -1,16 +1,16 @@
 <template>
-  <div class="min-h-screen bg-[var(--color-gray-25)] dark:bg-[var(--color-gray-800)]">
+  <div class="min-h-screen" :style="{ backgroundColor: 'var(--Color-Surface-Surface-Primary)', color: 'var(--Color-Text-Text-Primary)' }">
     <!-- Breadcrumbs -->
     <div
-      class="max-w-7xl mx-auto px-4 py-2 text-sm text-[var(--color-gray-600)] dark:text-[var(--color-gray-400)]"
+      class="max-w-7xl mx-auto px-4 py-2 text-sm text-[var(--Color-Text-Text-Secondary)]"
     >
-      <span class="hover:text-[var(--color-success-500)] cursor-pointer">Home</span>
+      <span class="hover:text-[var(--Color-Text-Text-Brand)] cursor-pointer">{{ $t("home") }}</span>
       <span class="mx-2">></span>
-      <span class="text-[var(--color-gray-800)] dark:text-[var(--color-gray-200)]">{{
+      <span class="text-[var(--Color-Text-Text-Primary)]">{{
         product?.title
       }}</span>
       <span class="mx-2">></span>
-      <span class="text-[var(--color-success-500)]">Rent confirmation</span>
+      <span class="text-[var(--Color-Text-Text-Brand)]">{{ $t("rentConfirmation") }}</span>
     </div>
 
     <div v-if="product" class="max-w-7xl mx-auto px-4 py-6">
@@ -18,7 +18,7 @@
         <!-- Left Column: Product Image and Info -->
         <div class="lg:col-span-2 space-y-6">
           <!-- Product Image Gallery -->
-          <div class="bg-white rounded-xl shadow-lg overflow-hidden">
+          <div class="bg-[var(--Color-Surface-Surface-Tertiary)] rounded-xl border border-[var(--Color-Boarder-Border-Primary)] overflow-hidden">
             <div class="relative">
         <img
           :src="product.img || require('@/assets/logo.png')"
@@ -47,95 +47,42 @@
       </div>
 
           <!-- Product Title and Action -->
-          <div class="bg-white rounded-xl shadow-lg p-6">
-          <h1
-              class="text-3xl font-bold text-[var(--color-gray-800)] dark:text-[var(--color-gray-200)] mb-4"
-          >
-            {{ product.title }}
-          </h1>
-            <button
-              @click="navigateToRentConfirmation"
-              :disabled="product?.status === 'pending' || isBookingPending"
-              class="w-full bg-[var(--color-success-500)] text-white py-3 px-6 rounded-lg font-semibold hover:bg-[var(--color-success-600)] disabled:bg-gray-400 disabled:cursor-not-allowed transition-colors"
-            >
-              {{
-                product?.status === "pending" || isBookingPending
-                  ? $t("toolNotAvailable")
-                  : $t("rentThisTool")
-              }}
-            </button>
+          <div class="bg-[var(--Color-Surface-Surface-Tertiary)] rounded-xl border border-[var(--Color-Boarder-Border-Primary)] p-6">
+            <div class="flex items-center justify-between mb-4">
+              <h1
+                class="text-3xl font-bold text-[var(--Color-Text-Text-Primary)]"
+              >
+                {{ product.title }}
+              </h1>
+              <button
+                @click="navigateToRentConfirmation"
+                :disabled="product?.status === 'pending' || isBookingPending"
+                class="bg-[var(--Color-Surface-Surface-Brand)] text-[var(--Color-Text-Text-Invert)] py-3 px-6 rounded-lg font-semibold hover:bg-[var(--Color-Text-Text-Brand)] hover:text-white disabled:bg-gray-400 disabled:cursor-not-allowed transition-colors whitespace-nowrap"
+              >
+                {{
+                  product?.status === "pending" || isBookingPending
+                    ? $t("toolNotAvailable")
+                    : $t("rentThisTool")
+                }}
+              </button>
+            </div>
             <p
               v-if="isBookingPending && remainingTime"
-              class="mt-2 text-sm text-[var(--color-gray-600)] dark:text-[var(--color-gray-400)] text-center"
+              class="text-sm text-[var(--Color-Text-Text-Secondary)] text-center"
             >
-              Available in: {{ remainingTime }}
+              {{ $t("availableIn") }}: {{ remainingTime }}
             </p>
           </div>
 
-          <!-- About the Tool -->
-          <div class="bg-white rounded-xl shadow-lg p-6">
-            <h2
-              class="text-xl font-semibold text-[var(--color-gray-800)] dark:text-[var(--color-gray-200)] mb-4"
-            >
-              About the Tool
-            </h2>
-            <div class="grid grid-cols-2 gap-4">
-              <div class="flex justify-between py-2 border-b border-gray-200">
-                <span class="font-medium text-[var(--color-gray-600)]">Category:</span>
-                <span class="text-[var(--color-gray-800)]">{{
-                  product.category || product.type
-                }}</span>
-              </div>
-              <div class="flex justify-between py-2 border-b border-gray-200">
-                <span class="font-medium text-[var(--color-gray-600)]">Brand:</span>
-                <span class="text-[var(--color-gray-800)]">Bosch</span>
-              </div>
-              <div class="flex justify-between py-2 border-b border-gray-200">
-                <span class="font-medium text-[var(--color-gray-600)]">Model:</span>
-                <span class="text-[var(--color-gray-800)]">{{
-                  product.model || "GSR 18V-50 Professional"
-                }}</span>
-              </div>
-              <div class="flex justify-between py-2 border-b border-gray-200">
-                <span class="font-medium text-[var(--color-gray-600)]"
-                  >Price per day:</span
-                >
-                <span class="text-[var(--color-success-500)] font-bold"
-                  >{{ product.price || "15" }} {{ $t("egp") }}</span
-                >
-              </div>
-              <div class="flex justify-between py-2 border-b border-gray-200">
-                <span class="font-medium text-[var(--color-gray-600)]">Rent times:</span>
-                <span class="text-[var(--color-gray-800)]">15</span>
-              </div>
-            </div>
-            <button
-              @click="navigateToRentConfirmation"
-              :disabled="product?.status === 'pending' || isBookingPending"
-              class="w-full mt-4 bg-[var(--color-success-500)] text-white py-3 px-6 rounded-lg font-semibold hover:bg-[var(--color-success-600)] disabled:bg-gray-400 disabled:cursor-not-allowed transition-colors"
-            >
-              {{
-                product?.status === "pending" || isBookingPending
-                  ? $t("toolNotAvailable")
-                  : $t("rentThisTool")
-              }}
-            </button>
-            <p
-              v-if="isBookingPending && remainingTime"
-              class="mt-2 text-sm text-[var(--color-gray-600)] dark:text-[var(--color-gray-400)] text-center"
-            >
-              Available in: {{ remainingTime }}
-            </p>
-          </div>
           <!-- Product Description -->
-          <div class="bg-white rounded-xl shadow-lg p-6">
-            <h2
-              class="text-xl font-semibold text-[var(--color-gray-800)] dark:text-[var(--color-gray-200)] mb-4"
-            >
-              Description
-            </h2>
+          <h2
+            class="text-xl font-semibold text-[var(--Color-Text-Text-Primary)] mb-4"
+          >
+            {{ $t("description") }}
+          </h2>
+          <div class="bg-[var(--Color-Surface-Surface-Tertiary)] rounded-xl border border-[var(--Color-Boarder-Border-Primary)] p-6">
             <div
-              class="space-y-4 text-[var(--color-gray-600)] dark:text-[var(--color-gray-400)]"
+              class="space-y-4 text-[var(--Color-Text-Text-Secondary)]"
             >
               <p>
                 {{ product.details }}
@@ -143,85 +90,83 @@
 
               <div>
                 <h3
-                  class="font-semibold text-[var(--color-gray-800)] dark:text-[var(--color-gray-200)] mb-2"
+                  class="font-semibold text-[var(--Color-Text-Text-Primary)] mb-2"
                 >
-                  Inclusions:
+                  {{ $t("inclusions") }}:
                 </h3>
                 <ul class="list-disc list-inside space-y-1">
-                  <li>1 rechargeable battery (18V)</li>
-                  <li>Charger included</li>
-                  <li>Optional drill bits (upon request)</li>
+                  <li>{{ $t("batteryIncluded") }}</li>
+                  <li>{{ $t("chargerIncluded") }}</li>
+                  <li>{{ $t("optionalDrillBits") }}</li>
                 </ul>
               </div>
 
-              <div>
+                            <div>
                 <h3
-                  class="font-semibold text-[var(--color-gray-800)] dark:text-[var(--color-gray-200)] mb-2"
-                >
-                  Usage & Care:
+                  class="font-semibold text-[var(--Color-Text-Text-Primary)] mb-2"
+          >
+                  {{ $t("usageAndCare") }}:
                 </h3>
-                <p class="mb-2">Rented over 15 times with great feedback.</p>
+                <p class="mb-2">{{ $t("rentedOver15Times") }}</p>
                 <ul class="list-disc list-inside space-y-1">
-                  <li>Assembling IKEA furniture</li>
-                  <li>Wall mounting (TVs, shelves)</li>
-                  <li>Minor drilling in wood or drywall</li>
+                  <li>{{ $t("assemblingIkeaFurniture") }}</li>
+                  <li>{{ $t("wallMounting") }}</li>
+                  <li>{{ $t("minorDrilling") }}</li>
                 </ul>
                 <p class="mt-2">
-                  I sanitize the tool after each rental, and it's checked for performance
-                  every month.
+                  {{ $t("sanitizeToolAfterRental") }}
                 </p>
                 <p class="mt-2">
-                  Perfect for short-term use without having to buy expensive tools.
+                  {{ $t("perfectForShortTermUse") }}
                 </p>
                 <p class="mt-2">
-                  Ready for pickup in Nasr City or I can arrange delivery depending on the
-                  distance.
+                  {{ $t("readyForPickupNasrCity") }}
                 </p>
               </div>
             </div>
           </div>
 
           <!-- About the Tool -->
-          <div class="bg-white rounded-xl shadow-lg p-6">
-            <h2
-              class="text-xl font-semibold text-[var(--color-gray-800)] dark:text-[var(--color-gray-200)] mb-4"
-            >
-              About the Tool
-            </h2>
-            <div class="grid grid-cols-2 gap-4">
-              <div class="flex justify-between py-2 border-b border-gray-200">
-                <span class="font-medium text-[var(--color-gray-600)]">Category:</span>
-                <span class="text-[var(--color-gray-800)]">{{
+          <h2
+            class="text-xl font-semibold text-[var(--Color-Text-Text-Primary)] mb-4"
+          >
+            {{ $t("aboutTheTool") }}
+          </h2>
+          <div class="bg-[var(--Color-Surface-Surface-Tertiary)] rounded-xl border border-[var(--Color-Boarder-Border-Primary)] p-6">
+            <div class="space-y-3">
+                            <div class="flex justify-between py-2 border-b border-[var(--Color-Boarder-Border-Primary)]">
+                <span class="font-medium text-[var(--Color-Text-Text-Secondary)]">{{ $t("category") }}:</span>
+                <span class="text-[var(--Color-Text-Text-Primary)]">{{
                   product.category || product.type
                 }}</span>
               </div>
-              <div class="flex justify-between py-2 border-b border-gray-200">
-                <span class="font-medium text-[var(--color-gray-600)]">Brand:</span>
-                <span class="text-[var(--color-gray-800)]">Bosch</span>
+              <div class="flex justify-between py-2 border-b border-[var(--Color-Boarder-Border-Primary)]">
+                <span class="font-medium text-[var(--Color-Text-Text-Secondary)]">{{ $t("brand") }}:</span>
+                <span class="text-[var(--Color-Text-Text-Primary)]">{{ $t("bosch") }}</span>
               </div>
-              <div class="flex justify-between py-2 border-b border-gray-200">
-                <span class="font-medium text-[var(--color-gray-600)]">Model:</span>
-                <span class="text-[var(--color-gray-800)]">{{
-                  product.model || "GSR 18V-50 Professional"
+              <div class="flex justify-between py-2 border-b border-[var(--Color-Boarder-Border-Primary)]">
+                <span class="font-medium text-[var(--Color-Text-Text-Secondary)]">{{ $t("model") }}:</span>
+                <span class="text-[var(--Color-Text-Text-Primary)]">{{
+                  product.model || $t("gsr18v50Professional")
                 }}</span>
               </div>
-              <div class="flex justify-between py-2 border-b border-gray-200">
-                <span class="font-medium text-[var(--color-gray-600)]"
-                  >Price per day:</span
-                >
-                <span class="text-[var(--color-success-500)] font-bold"
+              <div class="flex justify-between py-2 border-b border-[var(--Color-Boarder-Border-Primary)]">
+                <span class="font-medium text-[var(--Color-Text-Text-Secondary)]">{{ $t("rentTimes") }}:</span>
+                <span class="text-[var(--Color-Text-Text-Primary)]">15</span>
+              </div>
+              <div class="flex justify-between py-2 border-b border-[var(--Color-Boarder-Border-Primary)]">
+                <span class="font-medium text-[var(--Color-Text-Text-Secondary)]"
+                  >{{ $t("pricePerDay") }}:</span
+              >
+                <span class="text-[var(--Color-Text-Text-Brand)] font-bold"
                   >{{ product.price || "15" }} {{ $t("egp") }}</span
                 >
-              </div>
-              <div class="flex justify-between py-2 border-b border-gray-200">
-                <span class="font-medium text-[var(--color-gray-600)]">Rent times:</span>
-                <span class="text-[var(--color-gray-800)]">15</span>
               </div>
             </div>
             <button
               @click="navigateToRentConfirmation"
               :disabled="product?.status === 'pending' || isBookingPending"
-              class="w-full mt-4 bg-[var(--color-success-500)] text-white py-3 px-6 rounded-lg font-semibold hover:bg-[var(--color-success-600)] disabled:bg-gray-400 disabled:cursor-not-allowed transition-colors"
+              class="w-full mt-4 bg-[var(--Color-Surface-Surface-Brand)] text-[var(--Color-Text-Text-Invert)] py-3 px-6 rounded-lg font-semibold hover:bg-[var(--Color-Text-Text-Brand)] hover:text-white disabled:bg-gray-400 disabled:cursor-not-allowed transition-colors"
             >
               {{
                 product?.status === "pending" || isBookingPending
@@ -230,101 +175,29 @@
               }}
             </button>
           </div>
+
         </div>
 
-        <!-- Right Column: Owner Details, Calendar, Reviews -->
+        <!-- Right Column: Calendar, Owner Details, Reviews -->
         <div class="space-y-6">
-        <!-- Owner Details -->
-          <div class="bg-white rounded-xl shadow-lg p-6">
-          <h3
-              class="text-lg font-semibold text-[var(--color-gray-800)] dark:text-[var(--color-gray-200)] mb-4"
-          >
-              Owner details
-          </h3>
-            <div class="flex items-center gap-4 mb-4">
-            <img
-              :src="booking.sellerImage || require('@/assets/default.png')"
-              alt="Owner"
-                class="w-12 h-12 rounded-full object-cover"
-            />
-            <div>
-                <p
-                  class="font-semibold text-[var(--color-gray-800)] dark:text-[var(--color-gray-200)]"
-                >
-                  {{ booking.sellerName || $t("loading") }}
-                </p>
-                <div class="flex items-center gap-1 text-sm text-[var(--color-gray-600)]">
-                  <span class="text-yellow-400"
-                    >{{ "★".repeat(Math.floor(ownerStats.rating))
-                    }}{{ "☆".repeat(5 - Math.floor(ownerStats.rating)) }}</span
-                  >
-                  <span
-                    >{{ ownerStats.rating }} ({{ ownerStats.reviewCount }} review{{
-                      ownerStats.reviewCount !== 1 ? "s" : ""
-                    }})</span
-                  >
-                </div>
-                <div class="flex items-center gap-1 text-sm text-[var(--color-gray-600)]">
-                  <i class="fas fa-map-marker-alt text-[var(--color-success-500)]"></i>
-                  <span>{{ product?.location || "Cairo" }}</span>
-                </div>
-                <p class="text-sm text-[var(--color-gray-600)]">
-                  {{ ownerStats.successfulRentals }} successful rental{{
-                    ownerStats.successfulRentals !== 1 ? "s" : ""
-                  }}
-                </p>
-                <p class="text-sm text-[var(--color-gray-600)]">
-                  Member since {{ ownerStats.memberSince || "Unknown" }}
-                </p>
-              </div>
-            </div>
-            <div class="space-y-2">
-              <button
-                @click="viewOwnerTools"
-                class="w-full border border-[var(--color-success-500)] text-[var(--color-success-500)] py-2 rounded-lg hover:bg-[var(--color-success-50)] transition-colors"
-              >
-                view owner tools
-              </button>
-              <button
-                @click="sendMessage"
-                class="w-full bg-[var(--color-success-500)] text-white py-2 rounded-lg hover:bg-[var(--color-success-600)] transition-colors relative"
-              >
-                Send a message
-                <span 
-                  v-if="unreadMessageCount > 0" 
-                  class="absolute -top-2 -right-2 bg-red-500 text-white text-xs rounded-full w-5 h-5 flex items-center justify-center"
-                >
-                  {{ unreadMessageCount > 9 ? '9+' : unreadMessageCount }}
-                </span>
-              </button>
-              <router-link
-                to="/messages"
-                class="w-full border border-[var(--color-success-500)] text-[var(--color-success-500)] py-2 rounded-lg hover:bg-[var(--color-success-50)] transition-colors text-center block"
-              >
-                <i class="fas fa-comments mr-2"></i>
-                View All Messages
-              </router-link>
-            </div>
-          </div>
-
           <!-- Availability Calendar -->
-          <div class="bg-white rounded-xl shadow-lg p-6">
+          <div class="bg-[var(--Color-Surface-Surface-Tertiary)] rounded-xl border border-[var(--Color-Boarder-Border-Primary)] p-6">
             <div class="flex justify-between items-center mb-4">
               <button
                 @click="prevMonth"
                 :disabled="!canGoToPrevMonth"
-                class="text-[var(--color-success-500)] hover:text-[var(--color-success-600)] disabled:opacity-50 disabled:cursor-not-allowed"
+                class="text-[var(--Color-Text-Text-Brand)] hover:text-[var(--Color-Text-Text-Brand)] disabled:opacity-50 disabled:cursor-not-allowed"
               >
                 <i class="fas fa-chevron-left"></i>
               </button>
               <h3
-                class="text-lg font-semibold text-[var(--color-gray-800)] dark:text-[var(--color-gray-200)]"
+                class="text-lg font-semibold text-[var(--Color-Text-Text-Primary)]"
               >
                 {{ currentMonthYear }}
               </h3>
               <button
                 @click="nextMonth"
-                class="text-[var(--color-success-500)] hover:text-[var(--color-success-600)]"
+                class="text-[var(--Color-Text-Text-Brand)] hover:text-[var(--Color-Text-Text-Brand)]"
               >
                 <i class="fas fa-chevron-right"></i>
               </button>
@@ -333,9 +206,9 @@
             <!-- Days of Week -->
             <div class="grid grid-cols-7 gap-1 mb-2">
               <span
-                v-for="day in ['Mo', 'Tu', 'We', 'Th', 'Fr', 'Sa', 'Su']"
+                v-for="day in weekDays"
                 :key="day"
-                class="text-center text-sm font-medium text-[var(--color-gray-600)] py-1"
+                class="text-center text-sm font-medium text-[var(--Color-Text-Text-Secondary)] py-1"
               >
                 {{ day }}
               </span>
@@ -346,45 +219,117 @@
               <span
                 v-for="day in daysInMonth"
                 :key="day"
-                class="text-center p-2 text-sm cursor-pointer rounded-full hover:bg-[var(--color-success-100)] transition-colors"
+                class="text-center p-2 text-sm cursor-pointer rounded-full hover:bg-[var(--Color-Text-Text-Brand)] hover:text-white transition-colors"
                 :class="{
-                  'bg-[var(--color-success-500)] text-white': isSelected(day),
-                  'bg-[var(--color-success-200)] text-[var(--color-success-700)]':
+                  'bg-[var(--Color-Surface-Surface-Brand)] text-[var(--Color-Text-Text-Invert)]': isSelected(day),
+                  'bg-[var(--Color-Text-Text-Brand)] text-white':
                     isStart(day) || isEnd(day),
                   'text-gray-400 cursor-not-allowed': isPastDate(day),
-                  'text-[var(--color-gray-800)]':
+                  'text-[var(--Color-Text-Text-Primary)]':
                     !isPastDate(day) && !isSelected(day) && !isStart(day) && !isEnd(day),
                 }"
                 @click="selectDate(day)"
               >
                 {{ day }}
-                <span v-if="isStart(day)">s</span>
-                <span v-if="isEnd(day)">e</span>
+                <span v-if="isStart(day)">{{ $t("start") }}</span>
+                <span v-if="isEnd(day)">{{ $t("end") }}</span>
               </span>
             </div>
             <button
               @click="resetDateSelection"
-              class="w-full mt-4 bg-[var(--color-success-500)] text-white py-2 px-6 rounded-lg font-semibold hover:bg-[var(--color-success-600)] transition-colors"
+              class="w-full mt-4 bg-[var(--Color-Surface-Surface-Brand)] text-[var(--Color-Text-Text-Invert)] py-2 px-6 rounded-lg font-semibold hover:bg-[var(--Color-Text-Text-Brand)] hover:text-white transition-colors"
             >
-              Reset Date Selection
+              {{ $t("resetDateSelection") }}
             </button>
     </div>
 
+        <!-- Owner Details -->
+          <h3
+              class="text-lg font-semibold text-[var(--Color-Text-Text-Primary)] mb-4"
+          >
+              {{ $t("ownerDetails") }}
+          </h3>
+          <div class="bg-[var(--Color-Surface-Surface-Tertiary)] rounded-xl border border-[var(--Color-Boarder-Border-Primary)] p-6">
+            <div class="mb-4">
+              <div class="flex items-start gap-4 mb-2">
+                <img
+                  :src="booking.sellerImage || require('@/assets/default.png')"
+                  alt="Owner"
+                  class="w-16 h-16 rounded-full object-cover"
+                />
+                <div>
+                  <div class="flex items-center gap-2 mb-1">
+                    <p class="font-semibold text-[var(--Color-Text-Text-Primary)] text-lg">
+                      {{ booking.sellerName || $t("loading") }}
+                    </p>
+                    <i class="fas fa-check-circle text-[var(--Color-Text-Text-Brand)] text-sm"></i>
+                  </div>
+                  <div class="flex items-center gap-2 mb-1">
+                    <span class="text-[var(--Color-Text-Text-Secondary)]">{{ ownerStats.rating }}</span>
+                    <span class="text-yellow-400 text-sm">★</span>
+                    <span class="text-[var(--Color-Text-Text-Secondary)] text-sm">({{ ownerStats.reviewCount }} review{{
+                      ownerStats.reviewCount !== 1 ? "s" : ""
+                    }})</span>
+                  </div>
+                  <div class="flex items-center gap-2 mb-2">
+                    <i class="fas fa-map-marker-alt text-[var(--Color-Text-Text-Brand)] text-xs"></i>
+                    <span class="text-[var(--Color-Text-Text-Secondary)] text-sm">{{ product?.location || "Cairo" }}</span>
+                  </div>
+                </div>
+              </div>
+                              <div class="flex items-center gap-8 text-sm text-[var(--Color-Text-Text-Secondary)]" style="margin-left: 5rem;">
+                  <span>
+                    {{ ownerStats.successfulRentals }} {{ $t("successfulRentals") }}
+                  </span>
+                  <span>
+                    {{ $t("memberSince") }} {{ ownerStats.memberSince || $t("july2025") }}
+                  </span>
+                </div>
+            </div>
+            <div class="space-y-3">
+              <button
+                @click="viewOwnerTools"
+                class="w-full border border-[var(--Color-Text-Text-Brand)] text-[var(--Color-Text-Text-Brand)] py-2.5 rounded-lg hover:bg-[var(--Color-Text-Text-Brand)] hover:text-white transition-colors font-medium"
+              >
+                {{ $t("viewOwnerTools") }}
+              </button>
+              <button
+                @click="sendMessage"
+                class="w-full bg-[var(--Color-Surface-Surface-Brand)] text-[var(--Color-Text-Text-Invert)] py-2.5 rounded-lg hover:bg-[var(--Color-Text-Text-Brand)] hover:text-white transition-colors relative font-medium"
+              >
+                <i class="fas fa-envelope mr-2"></i>
+                {{ $t("sendMessage") }}
+                <span 
+                  v-if="unreadMessageCount > 0" 
+                  class="absolute -top-2 -right-2 bg-red-500 text-white text-xs rounded-full w-5 h-5 flex items-center justify-center"
+                >
+                  {{ unreadMessageCount > 9 ? '9+' : unreadMessageCount }}
+                </span>
+              </button>
+              <router-link
+                to="/messages"
+                class="w-full border border-[var(--Color-Text-Text-Brand)] text-[var(--Color-Text-Text-Brand)] py-2.5 rounded-lg hover:bg-[var(--Color-Text-Text-Brand)] hover:text-white transition-colors font-medium text-center block"
+              >
+                {{ $t("viewAllMessages") }}
+              </router-link>
+            </div>
+          </div>
+
           <!-- Tool's Reviews -->
-          <div class="bg-white rounded-xl shadow-lg p-6">
-            <h3
-              class="text-lg font-semibold text-[var(--color-gray-800)] dark:text-[var(--color-gray-200)] mb-4"
-            >
-              Tool's reviews
-            </h3>
+          <h3
+            class="text-lg font-semibold text-[var(--Color-Text-Text-Primary)] mb-4"
+          >
+            {{ $t("toolReviews") }}
+          </h3>
+          <div class="bg-[var(--Color-Surface-Surface-Tertiary)] rounded-xl border border-[var(--Color-Boarder-Border-Primary)] p-6">
             <div class="space-y-4">
               <div
                 v-for="review in reviews.slice(0, 3)"
                 :key="review.id"
-                class="border-b border-gray-200 pb-4 last:border-b-0"
+                class="border-b border-[var(--Color-Boarder-Border-Primary)] pb-4 last:border-b-0"
               >
                 <div class="flex items-center gap-2 mb-2">
-                  <span class="font-medium text-[var(--color-gray-800)]">{{
+                  <span class="font-medium text-[var(--Color-Text-Text-Primary)]">{{
                     review.userName || review.rentUserId
                   }}</span>
                   <span class="text-yellow-400 text-sm">
@@ -393,46 +338,51 @@
                       "☆".repeat(5 - Math.floor(review.rate))
                     }}
                   </span>
-                  <span class="text-sm text-[var(--color-gray-600)]">{{
+                  <span class="text-sm text-[var(--Color-Text-Text-Secondary)]">{{
                     review.rate
                   }}</span>
                 </div>
-                <p class="text-[var(--color-gray-600)] text-sm mb-1">
+                <p class="text-[var(--Color-Text-Text-Secondary)] text-sm mb-1">
                   "{{ review.review }}"
                 </p>
-                <span class="text-xs text-[var(--color-gray-500)]">{{
+                <span class="text-xs text-[var(--Color-Text-Text-Secondary)]">{{
                   formatDate(review.timestamp?.toDate())
                 }}</span>
               </div>
             </div>
-        <button
+          </div>
+          <div class="space-y-2 mt-4">
+                          <button
               @click="showReviewForm = true"
-              class="w-full mt-4 border border-[var(--color-success-500)] text-[var(--color-success-500)] py-2 rounded-lg hover:bg-[var(--color-success-50)] transition-colors"
-        >
-              Add Review
-        </button>
-            <button
-              class="w-full mt-2 border border-[var(--color-success-500)] text-[var(--color-success-500)] py-2 rounded-lg hover:bg-[var(--color-success-50)] transition-colors"
+              class="w-full border border-[var(--Color-Text-Text-Brand)] text-[var(--Color-Text-Text-Brand)] py-2 rounded-lg hover:bg-[var(--Color-Text-Text-Brand)] hover:text-white transition-colors"
             >
-              view all reviews
+              {{ $t("addAReview") }}
             </button>
+            <button
+              class="w-full border border-[var(--Color-Text-Text-Brand)] text-[var(--Color-Text-Text-Brand)] py-2 rounded-lg hover:bg-[var(--Color-Text-Text-Brand)] hover:text-white transition-colors"
+            >
+              {{ $t("viewAllReviews") }}
+              </button>
           </div>
         </div>
       </div>
 
       <!-- More from Owner Section -->
-      <div class="mt-8 bg-white rounded-xl shadow-lg p-6">
-        <h3
-          class="text-lg font-semibold text-[var(--color-gray-800)] dark:text-[var(--color-gray-200)] mb-4"
+      <div class="flex items-center py-6">
+        <h2
+          class="text-xl font-semibold text-[var(--Color-Text-Text-Primary)]"
         >
-          More from {{ booking.sellerName || $t("loading") }}
-        </h3>
+          {{ $t("moreFrom") }} {{ booking.sellerName || $t("owner") }}
+        </h2>
+      </div>
+      <div class="bg-[var(--Color-Surface-Surface-Tertiary)] rounded-xl p-6">
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
           <div
+            v-if="ownerProducts.length > 0"
             @click="navigateToProduct(item.id)"
             v-for="item in showAllProducts ? ownerProducts : ownerProducts.slice(0, 3)"
             :key="item.id"
-            class="bg-white border border-gray-200 rounded-xl shadow-sm overflow-hidden hover:shadow-lg transition-shadow"
+            class="bg-[var(--Color-Surface-Surface-Tertiary)] border border-[var(--Color-Boarder-Border-Primary)] rounded-xl overflow-hidden hover:border-[var(--Color-Text-Text-Brand)] transition-colors cursor-pointer"
           >
             <img
               :src="item.img || require('@/assets/test.png')"
@@ -440,41 +390,50 @@
               class="w-full h-40 object-cover"
             />
             <div class="p-4">
-              <h4 class="font-semibold text-[var(--color-gray-800)] mb-2">
+              <h4 class="font-semibold text-[var(--Color-Text-Text-Primary)] mb-2">
                 {{ item.title || "Untitled" }}
               </h4>
               <div
-                class="flex items-center justify-between text-sm text-[var(--color-gray-600)] mb-2"
+                class="flex items-center justify-between text-sm text-[var(--Color-Text-Text-Secondary)] mb-2"
               >
                 <span class="flex items-center gap-1">
-                  <i class="fas fa-map-marker-alt text-[var(--color-success-500)]"></i>
+                  <i class="fas fa-map-marker-alt text-[var(--Color-Text-Text-Brand)]"></i>
                   {{ item.location || $t("defaultLocation") }}
                 </span>
                 <span class="flex items-center gap-1">
                   <i class="fas fa-star text-yellow-400"></i>
                   {{ item.rating || "0" }}
                 </span>
-          </div>
+              </div>
               <div class="flex items-center justify-between mb-3">
-                <span class="font-semibold text-[var(--color-gray-800)]">
+                <span class="font-semibold text-[var(--Color-Text-Text-Primary)]">
                   {{ $t("egp") }} {{ item.price || "0" }}
                 </span>
-                <span class="text-sm text-[var(--color-gray-600)]">{{
+                <span class="text-sm text-[var(--Color-Text-Text-Secondary)]">{{
                   $t("perDay")
                 }}</span>
               </div>
               <button
                 @click="navigateToProduct(item.id)"
-                class="w-full bg-[var(--color-success-500)] text-white py-2 rounded-lg font-semibold hover:bg-[var(--color-success-600)] transition-colors"
+                class="w-full bg-[var(--Color-Surface-Surface-Brand)] text-[var(--Color-Text-Text-Invert)] py-2 rounded-lg font-semibold hover:bg-[var(--Color-Text-Text-Brand)] hover:text-white transition-colors"
               >
                 {{ $t("rentItem") }}
               </button>
             </div>
           </div>
+          
+          <!-- No products available message -->
+          <div
+            v-else
+            class="col-span-full text-center py-8 text-[var(--Color-Text-Text-Secondary)]"
+          >
+            <i class="fas fa-box-open text-4xl mb-4 opacity-50"></i>
+            <p>{{ $t("noProductsAvailable") }}</p>
+          </div>
         </div>
         <button
           @click="showAllProducts = !showAllProducts"
-          class="mt-4 text-[var(--color-success-500)] hover:underline"
+          class="mt-4 text-[var(--Color-Text-Text-Brand)] hover:underline"
         >
           {{ showAllProducts ? $t("showLess") : $t("viewAllItems") }}
         </button>
@@ -487,21 +446,21 @@
       class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4"
     >
       <div
-        class="bg-white dark:bg-[var(--color-gray-800)] rounded-xl shadow-xl w-full max-w-4xl max-h-[90vh] overflow-y-auto"
+        class="bg-[var(--Color-Surface-Surface-Tertiary)] rounded-xl border border-[var(--Color-Boarder-Border-Primary)] w-full max-w-4xl max-h-[90vh] overflow-y-auto"
       >
         <!-- Header -->
         <div
-          class="sticky top-0 bg-white dark:bg-[var(--color-gray-800)] border-b border-gray-200 dark:border-gray-700 p-6"
+          class="sticky top-0 bg-[var(--Color-Surface-Surface-Tertiary)] border-b border-[var(--Color-Boarder-Border-Primary)] p-6"
         >
           <div class="flex justify-between items-center">
-            <h2
-              class="text-2xl font-bold text-[var(--color-gray-800)] dark:text-[var(--color-gray-200)]"
-            >
-              Rent confirmation
-            </h2>
+                          <h2
+                class="text-2xl font-bold text-[var(--Color-Text-Text-Primary)]"
+      >
+                {{ $t("rentConfirmation") }}
+              </h2>
             <button
               @click="showBookingForm = false"
-              class="text-[var(--color-gray-500)] hover:text-[var(--color-gray-700)] dark:text-[var(--color-gray-400)] dark:hover:text-[var(--color-gray-200)] text-2xl font-bold"
+              class="text-[var(--Color-Text-Text-Secondary)] hover:text-[var(--Color-Text-Text-Primary)] text-2xl font-bold"
             >
               ×
             </button>
@@ -526,62 +485,62 @@
             <div class="space-y-4">
           <div>
                 <h3
-                  class="text-xl font-bold text-[var(--color-gray-800)] dark:text-[var(--color-gray-200)] mb-2"
+                  class="text-xl font-bold text-[var(--Color-Text-Text-Primary)] mb-2"
                 >
                   {{ product?.title }}
                 </h3>
-                <p class="text-2xl font-bold text-[var(--color-success-500)] mb-4">
+                <p class="text-2xl font-bold text-[var(--Color-Text-Text-Brand)] mb-4">
                   {{ $t("egp") }} {{ product?.price || 0 }}/{{ $t("perDay") }}
             </p>
           </div>
 
-              <!-- Picked Dates -->
-              <div class="bg-gray-50 dark:bg-gray-700 rounded-lg p-4">
+                            <!-- Picked Dates -->
+              <div class="bg-[var(--Color-Surface-Surface-Secondary)] rounded-lg p-4">
                 <h4
-                  class="font-semibold text-[var(--color-gray-800)] dark:text-[var(--color-gray-200)] mb-2"
+                  class="font-semibold text-[var(--Color-Text-Text-Primary)] mb-2"
                 >
-                  Picked Dates
+                  {{ $t("pickedDates") }}
                 </h4>
                 <div class="space-y-2">
-                  <div class="flex justify-between">
+                                    <div class="flex justify-between">
                     <span
-                      class="text-[var(--color-gray-600)] dark:text-[var(--color-gray-400)]"
-                      >From:</span
+                      class="text-[var(--Color-Text-Text-Secondary)]"
+                      >{{ $t("from") }}:</span
                     >
                     <span class="font-medium">{{
-                      booking.startDate ? formatDate(booking.startDate) : "Not selected"
+                      booking.startDate ? formatDate(booking.startDate) : $t("notSelected")
                     }}</span>
           </div>
                   <div class="flex justify-between">
                     <span
-                      class="text-[var(--color-gray-600)] dark:text-[var(--color-gray-400)]"
-                      >To:</span
-                    >
+                      class="text-[var(--Color-Text-Text-Secondary)]"
+                      >{{ $t("to") }}:</span
+            >
                     <span class="font-medium">{{
-                      booking.endDate ? formatDate(booking.endDate) : "Not selected"
+                      booking.endDate ? formatDate(booking.endDate) : $t("notSelected")
                     }}</span>
-                  </div>
+          </div>
                 </div>
               </div>
 
               <!-- Subtotal -->
-              <div class="bg-gray-50 dark:bg-gray-700 rounded-lg p-4">
+              <div class="bg-[var(--Color-Surface-Surface-Secondary)] rounded-lg p-4">
                 <div class="flex justify-between items-center">
-                  <span
-                    class="text-[var(--color-gray-600)] dark:text-[var(--color-gray-400)]"
-                    >Subtotal:</span
+                                    <span
+                    class="text-[var(--Color-Text-Text-Secondary)]"
+                    >{{ $t("subtotal") }}:</span
                   >
-                  <span class="text-xl font-bold text-[var(--color-success-500)]">
+                  <span class="text-xl font-bold text-[var(--Color-Text-Text-Brand)]">
                     {{ $t("egp") }} {{ calculateSubtotal() }}
                   </span>
           </div>
-                <p
-                  class="text-sm text-[var(--color-gray-500)] dark:text-[var(--color-gray-400)] mt-1"
-                >
+        <p
+                  class="text-sm text-[var(--Color-Text-Text-Secondary)] mt-1"
+            >
                   ({{ $t("egp") }}{{ product?.price || 0 }} × {{ calculateDays() }}
                   {{ $t("perDay") }})
-                </p>
-            </div>
+            </p>
+          </div>
             </div>
           </div>
 
@@ -785,18 +744,18 @@
 
           <!-- Action Buttons -->
           <div
-            class="flex justify-end space-x-4 pt-6 border-t border-gray-200 dark:border-gray-700"
+            class="flex justify-end space-x-4 pt-6 border-t border-[var(--Color-Boarder-Border-Primary)]"
           >
       <button
               @click="showBookingForm = false"
-              class="px-6 py-3 border border-gray-300 dark:border-gray-600 text-[var(--color-gray-700)] dark:text-[var(--color-gray-300)] rounded-lg hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors"
+              class="px-6 py-3 border border-[var(--Color-Boarder-Border-Primary)] text-[var(--Color-Text-Text-Primary)] rounded-lg hover:bg-[var(--Color-Surface-Surface-Secondary)] transition-colors"
             >
               {{ $t("cancel") }}
             </button>
             <button
               @click="submitBooking"
               :disabled="!auth.currentUser || !booking.startDate || !booking.endDate"
-              class="px-8 py-3 bg-[var(--color-success-500)] text-white rounded-lg font-semibold hover:bg-[var(--color-success-600)] disabled:bg-gray-400 disabled:cursor-not-allowed transition-colors"
+              class="px-8 py-3 bg-[var(--Color-Surface-Surface-Brand)] text-[var(--Color-Text-Text-Invert)] rounded-lg font-semibold hover:bg-[var(--Color-Text-Text-Brand)] hover:text-white disabled:bg-gray-400 disabled:cursor-not-allowed transition-colors"
             >
               Confirm
       </button>
@@ -811,35 +770,35 @@
       class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50"
     >
       <div
-        class="bg-[var(--color-gray-25)] dark:bg-[var(--color-gray-800)] p-6 rounded-lg shadow-xl w-full max-w-md"
+        class="bg-[var(--Color-Surface-Surface-Tertiary)] p-6 rounded-lg border border-[var(--Color-Boarder-Border-Primary)] w-full max-w-md"
       >
         <button
           @click="showReviewForm = false"
-          class="absolute top-2 right-2 text-[var(--color-gray-700)] dark:text-[var(--color-gray-300)] hover:text-[var(--color-gray-800)] dark:hover:text-[var(--color-gray-200)] text-2xl font-bold"
+          class="absolute top-2 right-2 text-[var(--Color-Text-Text-Secondary)] hover:text-[var(--Color-Text-Text-Primary)] text-2xl font-bold"
         >
           ×
         </button>
         <h2
-          class="text-xl font-bold text-[var(--color-success-500)] dark:text-[var(--color-success-300)] mb-4"
+          class="text-xl font-bold text-[var(--Color-Text-Text-Brand)] mb-4"
         >
           {{ $t("addAReview") }}
         </h2>
         <form @submit.prevent="submitReview" class="space-y-4">
           <div>
             <label
-              class="block text-[var(--color-gray-700)] dark:text-[var(--color-gray-300)]"
+              class="block text-[var(--Color-Text-Text-Primary)]"
               >{{ $t("review") }}</label
             >
             <textarea
               v-model="newReview.review"
-              class="w-full p-2 rounded-lg bg-[var(--color-gray-100)] dark:bg-[var(--color-gray-700)] border border-[var(--color-success-200)]"
+              class="w-full p-2 rounded-lg bg-[var(--Color-Surface-Surface-Secondary)] border border-[var(--Color-Boarder-Border-Primary)]"
               :placeholder="$t('writeReview')"
               required
             ></textarea>
           </div>
           <div>
             <label
-              class="block text-[var(--color-gray-700)] dark:text-[var(--color-gray-300)]"
+              class="block text-[var(--Color-Text-Text-Primary)]"
               >{{ $t("rate") }} (1 - 5)</label
             >
             <input
@@ -848,7 +807,7 @@
               min="1"
               max="5"
               step="1"
-              class="w-full p-2 rounded-lg bg-[var(--color-gray-100)] dark:bg-[var(--color-gray-700)] border border-[var(--color-success-200)]"
+              class="w-full p-2 rounded-lg bg-[var(--Color-Surface-Surface-Secondary)] border border-[var(--Color-Boarder-Border-Primary)]"
               required
             />
             <span class="ml-2">{{ newReview.rate }} ★★★★★</span>
@@ -857,13 +816,13 @@
             <button
               type="button"
               @click="showReviewForm = false"
-              class="bg-[var(--color-gray-400)] text-[var(--color-gray-25)] py-2 px-4 rounded-lg hover:bg-[var(--color-gray-500)]"
+              class="bg-[var(--Color-Surface-Surface-Secondary)] text-[var(--Color-Text-Text-Primary)] py-2 px-4 rounded-lg hover:bg-[var(--Color-Boarder-Border-Primary)]"
             >
               {{ $t("cancel") }}
             </button>
             <button
               type="submit"
-              class="bg-[var(--color-success-500)] text-[var(--color-gray-25)] py-2 px-4 rounded-lg hover:bg-[var(--color-success-600)] dark:bg-[var(--color-success-300)] dark:hover:bg-[var(--color-success-400)]"
+              class="bg-[var(--Color-Surface-Surface-Brand)] text-[var(--Color-Text-Text-Invert)] py-2 px-4 rounded-lg hover:bg-[var(--Color-Text-Text-Brand)] hover:text-white"
             >
               {{ $t("submitReview") }}
             </button>
@@ -878,11 +837,11 @@
       class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4"
     >
       <div
-        class="bg-white dark:bg-[var(--color-gray-800)] rounded-xl shadow-xl w-full max-w-2xl h-[600px] flex flex-col"
+        class="bg-[var(--Color-Surface-Surface-Tertiary)] rounded-xl border border-[var(--Color-Boarder-Border-Primary)] w-full max-w-2xl h-[600px] flex flex-col"
       >
         <!-- Chat Header -->
         <div
-          class="bg-[var(--color-success-500)] text-white p-4 rounded-t-xl flex justify-between items-center"
+          class="bg-[var(--Color-Surface-Surface-Brand)] text-[var(--Color-Text-Text-Invert)] p-4 rounded-t-xl flex justify-between items-center"
         >
           <div class="flex items-center gap-3">
             <img
@@ -906,7 +865,7 @@
         <!-- Chat Messages -->
         <div
           id="chat-messages-container"
-          class="flex-1 overflow-y-auto p-4 space-y-4 bg-gray-50 dark:bg-[var(--color-gray-700)]"
+          class="flex-1 overflow-y-auto p-4 space-y-4 bg-[var(--Color-Surface-Surface-Secondary)]"
         >
           <!-- Loading State -->
           <div v-if="chatLoading" class="flex justify-center items-center h-32">
@@ -936,8 +895,8 @@
                  class="max-w-xs lg:max-w-md px-4 py-2 rounded-lg relative"
                  :class="
                    isOwnMessage(message)
-                     ? 'bg-[var(--color-success-500)] text-white'
-                     : 'bg-white dark:bg-[var(--color-gray-600)] text-[var(--color-gray-800)] dark:text-[var(--color-gray-200)]'
+                     ? 'bg-[var(--Color-Surface-Surface-Brand)] text-[var(--Color-Text-Text-Invert)]'
+                     : 'bg-[var(--Color-Surface-Surface-Tertiary)] text-[var(--Color-Text-Text-Primary)]'
                  "
                >
                  <div class="flex items-center gap-2 mb-1">
@@ -956,32 +915,32 @@
           </div>
         </div>
 
-        <!-- Chat Input -->
-        <div class="p-4 border-t border-gray-200 dark:border-gray-600 bg-white dark:bg-[var(--color-gray-800)]">
+                <!-- Chat Input -->
+        <div class="p-4 border-t border-[var(--Color-Boarder-Border-Primary)] bg-[var(--Color-Surface-Surface-Tertiary)]">
           <form @submit.prevent="sendChatMessage" class="flex gap-2">
             <input
               v-model="newChatMessage"
               type="text"
               placeholder="Type your message..."
               @keyup.enter="sendChatMessage"
-              class="flex-1 px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-[var(--color-success-500)] bg-white dark:bg-[var(--color-gray-700)] text-[var(--color-gray-800)] dark:text-[var(--color-gray-200)]"
+              class="flex-1 px-4 py-2 border border-[var(--Color-Boarder-Border-Primary)] rounded-lg focus:outline-none focus:ring-2 focus:ring-[var(--Color-Text-Text-Brand)] bg-[var(--Color-Surface-Surface-Secondary)] text-[var(--Color-Text-Text-Primary)]"
               :disabled="!auth.currentUser"
             />
-            <button
+      <button
               type="submit"
               :disabled="!newChatMessage.trim() || !auth.currentUser"
-              class="px-6 py-2 bg-[var(--color-success-500)] text-white rounded-lg hover:bg-[var(--color-success-600)] disabled:bg-gray-400 disabled:cursor-not-allowed transition-colors"
-            >
+              class="px-6 py-2 bg-[var(--Color-Surface-Surface-Brand)] text-[var(--Color-Text-Text-Invert)] rounded-lg hover:bg-[var(--Color-Text-Text-Brand)] hover:text-white disabled:bg-gray-400 disabled:cursor-not-allowed transition-colors"
+      >
               <i class="fas fa-paper-plane"></i>
-            </button>
+      </button>
           </form>
-        </div>
+    </div>
       </div>
     </div>
 
     <router-link
       to="/home"
-      class="mt-6 inline-block text-[var(--color-success-500)] hover:underline text-sm dark:text-[var(--color-success-300)]"
+      class="mt-6 inline-block text-[var(--Color-Text-Text-Brand)] hover:underline text-sm"
     >
       {{ $t("backToProducts") }}
     </router-link>
@@ -1009,7 +968,7 @@ import {
 import { db, auth } from "@/firebase/config";
 import Swal from "sweetalert2";
 
-const { t } = useI18n();
+const { t, locale } = useI18n();
 const showAllProducts = ref(false);
 const route = useRoute();
 const router = useRouter();
@@ -1058,15 +1017,25 @@ const newReview = ref({
   rentUserId: "",
   userName: "",
 });
+
+
 const today = ref(new Date());
 const currentDate = ref(new Date());
 const selectedDates = ref({ start: null, end: null });
 
 const currentMonthYear = computed(() => {
-  return currentDate.value.toLocaleString("en-US", {
+  return currentDate.value.toLocaleString(locale.value === 'ar' ? 'ar-EG' : 'en-US', {
     month: "long",
     year: "numeric",
   });
+});
+
+const weekDays = computed(() => {
+  if (locale.value === 'ar') {
+    return ['أح', 'إث', 'ثل', 'أر', 'خم', 'جم', 'سب'];
+  } else {
+    return ['Mo', 'Tu', 'We', 'Th', 'Fr', 'Sa', 'Su'];
+  }
 });
 
 const daysInMonth = computed(() => {
@@ -1282,18 +1251,40 @@ const loadOwnerProducts = async (sellerId) => {
   try {
     console.log("Loading owner products for sellerId:", sellerId);
     const productsRef = collection(db, "products");
-    const q = query(productsRef, where("userId", "==", sellerId));
-    const querySnapshot = await getDocs(q);
-    console.log("Query returned", querySnapshot.docs.length, "documents");
-
-    if (querySnapshot.empty) {
-      const fallbackQ = query(
-        productsRef,
-        where("ownerName", "==", booking.value.sellerName)
-      );
-      const fallbackSnapshot = await getDocs(fallbackQ);
-      console.log("Fallback query returned", fallbackSnapshot.docs.length, "documents");
-      ownerProducts.value = fallbackSnapshot.docs
+    
+    // Try multiple queries to find owner's products
+    let ownerProductsFound = [];
+    
+    // Query 1: Look for products with userId field
+    const q1 = query(productsRef, where("userId", "==", sellerId));
+    const querySnapshot1 = await getDocs(q1);
+    console.log("Query 1 (userId) returned", querySnapshot1.docs.length, "documents");
+    
+    if (!querySnapshot1.empty) {
+      ownerProductsFound = querySnapshot1.docs;
+    } else {
+      // Query 2: Look for products with sellerId field
+      const q2 = query(productsRef, where("sellerId", "==", sellerId));
+      const querySnapshot2 = await getDocs(q2);
+      console.log("Query 2 (sellerId) returned", querySnapshot2.docs.length, "documents");
+      
+      if (!querySnapshot2.empty) {
+        ownerProductsFound = querySnapshot2.docs;
+      } else {
+        // Query 3: Look for products with ownerName field
+        const q3 = query(productsRef, where("ownerName", "==", booking.value.sellerName));
+        const querySnapshot3 = await getDocs(q3);
+        console.log("Query 3 (ownerName) returned", querySnapshot3.docs.length, "documents");
+        
+        if (!querySnapshot3.empty) {
+          ownerProductsFound = querySnapshot3.docs;
+        }
+      }
+    }
+    
+    // If we found owner products, use them
+    if (ownerProductsFound.length > 0) {
+      ownerProducts.value = ownerProductsFound
         .map((doc) => ({
           id: doc.id,
           ...doc.data(),
@@ -1305,7 +1296,12 @@ const loadOwnerProducts = async (sellerId) => {
         }))
         .filter((product) => product.id !== route.params.id);
     } else {
-      ownerProducts.value = querySnapshot.docs
+      // If no owner products found, get other products from the database
+      console.log("No owner products found, fetching other products from database");
+      const allProductsQuery = query(productsRef, orderBy("timestamp", "desc"));
+      const allProductsSnapshot = await getDocs(allProductsQuery);
+      
+      ownerProducts.value = allProductsSnapshot.docs
         .map((doc) => ({
           id: doc.id,
           ...doc.data(),
@@ -1315,8 +1311,11 @@ const loadOwnerProducts = async (sellerId) => {
           price: doc.data().price || "0",
           rating: doc.data().rating || "0",
         }))
-        .filter((product) => product.id !== route.params.id);
+        .filter((product) => product.id !== route.params.id)
+        .slice(0, 6); // Limit to 6 products
     }
+    
+    console.log("Final ownerProducts count:", ownerProducts.value.length);
   } catch (error) {
     console.error("Error loading owner products:", error);
     ownerProducts.value = [];
@@ -1829,6 +1828,8 @@ const navigateToProduct = (productId) => {
   }
 };
 
+
+
 const navigateToRentConfirmation = () => {
   if (!selectedDates.value.start || !selectedDates.value.end) {
     Swal.fire({
@@ -1860,7 +1861,7 @@ const remainingTime = computed(() => {
   endDate.setHours(23, 59, 59, 999); // Set to end of the day
   const diffMs = endDate - now;
 
-  if (diffMs <= 0) return "Available now";
+  if (diffMs <= 0) return t("availableNow");
 
   const diffDays = Math.floor(diffMs / (1000 * 60 * 60 * 24));
   const diffHours = Math.floor((diffMs % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
@@ -1868,9 +1869,12 @@ const remainingTime = computed(() => {
 
   // Always show hours and minutes, with days if applicable
   const totalHours = diffDays * 24 + diffHours;
-  return `${totalHours} hour${totalHours !== 1 ? "s" : ""}, ${diffMinutes} minute${
-    diffMinutes !== 1 ? "s" : ""
-  }`;
+  
+  if (locale.value === 'ar') {
+    return `${totalHours} ${totalHours === 1 ? t("hour") : t("hours")}, ${diffMinutes} ${diffMinutes === 1 ? t("minute") : t("minutes")}`;
+  } else {
+    return `${totalHours} hour${totalHours !== 1 ? "s" : ""}, ${diffMinutes} minute${diffMinutes !== 1 ? "s" : ""}`;
+  }
 });
 
 const viewOwnerTools = () => {
