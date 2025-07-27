@@ -77,15 +77,10 @@
 </template>
 
 <script setup>
-import { ref, computed, onMounted } from 'vue';
+import { ref, computed, onMounted } from "vue";
 import { db, auth } from "@/firebase/config";
 import { onAuthStateChanged } from "firebase/auth";
-import {
-  updateDoc,
-  doc,
-  getDoc,
-  setDoc,
-} from "firebase/firestore";
+import { updateDoc, doc, getDoc, setDoc } from "firebase/firestore";
 import { useGlobalRealTime } from "@/composables/useGlobalRealTime";
 
 // Initialize real-time data
@@ -98,8 +93,8 @@ const userId = ref(null);
 const userBookings = computed(() => {
   if (!userId.value || !bookings.value) return [];
   return bookings.value
-    .filter(booking => booking.userId === userId.value)
-    .filter(booking => booking.hiddenForUser !== true);
+    .filter((booking) => booking.userId === userId.value)
+    .filter((booking) => booking.hiddenForUser !== true);
 });
 
 // Computed property for filtered products

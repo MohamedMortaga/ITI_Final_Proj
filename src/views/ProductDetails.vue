@@ -1072,6 +1072,12 @@ const nextMonth = () => {
 // Check for pending bookings and update product status
 const checkPendingBookings = async () => {
   try {
+    // Only run if we have a valid product ID
+    if (!route.params.id) {
+      console.log("No product ID available for booking check");
+      return;
+    }
+    
     console.log("Checking pending bookings for product:", route.params.id);
     const bookingsRef = collection(db, "bookings");
     const q = query(
@@ -1082,7 +1088,7 @@ const checkPendingBookings = async () => {
     const querySnapshot = await getDocs(q);
     console.log("Found", querySnapshot.docs.length, "pending bookings");
 
-    const now = new Date(); // Current time: 05:39 PM EEST, July 26, 2025
+    const now = new Date();
     const todayMidnight = new Date(now);
     todayMidnight.setHours(0, 0, 0, 0); // Set to 12:00 AM today
 
@@ -1091,7 +1097,21 @@ const checkPendingBookings = async () => {
 
     for (const docSnap of querySnapshot.docs) {
       const bookingData = docSnap.data();
+      
+      // Check if endDate exists and is valid
+      if (!bookingData.endDate) {
+        console.warn("Booking missing endDate:", docSnap.id);
+        continue;
+      }
+      
       const endDate = new Date(bookingData.endDate);
+      
+      // Check if the date is valid
+      if (isNaN(endDate.getTime())) {
+        console.warn("Invalid endDate for booking:", docSnap.id, bookingData.endDate);
+        continue;
+      }
+      
       endDate.setHours(0, 0, 0, 0); // Set to 12:00 AM of the end date
       console.log(
         "Booking end date (midnight):",
@@ -1102,10 +1122,15 @@ const checkPendingBookings = async () => {
 
       if (todayMidnight > endDate) {
         // End date (at midnight) has passed, update product status to free
-        const productRef = doc(db, "products", bookingData.productId);
-        await updateDoc(productRef, { status: "free" });
-        await updateDoc(doc(db, "bookings", docSnap.id), { status: "completed" });
-        console.log("Updated status to free for product:", bookingData.productId);
+        try {
+          const productRef = doc(db, "products", bookingData.productId);
+          await updateDoc(productRef, { status: "free" });
+          await updateDoc(doc(db, "bookings", docSnap.id), { status: "completed" });
+          console.log("Updated status to free for product:", bookingData.productId);
+        } catch (updateError) {
+          console.warn("Failed to update booking/product status:", updateError);
+          // Continue with other bookings even if this one fails
+        }
       } else {
         hasPendingBooking = true;
         if (!earliestEndDate || endDate < earliestEndDate) {
@@ -1122,12 +1147,8 @@ const checkPendingBookings = async () => {
     console.log("isBookingPending set to:", isBookingPending.value);
   } catch (error) {
     console.error("Error checking pending bookings:", error);
-    Swal.fire({
-      icon: "error",
-      title: "Error",
-      text: "Failed to check booking status.",
-      confirmButtonText: "OK",
-    });
+    // Don't show error to user for this background check, just log it
+    console.warn("Background booking status check failed:", error.message);
   }
 };
 
@@ -2164,10 +2185,6 @@ onMounted(() => {
   today.value.setHours(0, 0, 0, 0);
   console.log("Auth state on mount:", auth.currentUser);
 
-  // Immediate check on mount and periodic check every 5 minutes
-  checkPendingBookings();
-  const checkInterval = setInterval(checkPendingBookings, 5 * 60 * 1000); // Check every 5 minutes
-  
   // Initialize chat listener for notifications (if user is authenticated and not the owner)
   if (auth.currentUser && booking.value.sellerId && auth.currentUser.uid !== booking.value.sellerId) {
     initializeChat();
@@ -2175,7 +2192,6 @@ onMounted(() => {
   
   // Cleanup function
   return () => {
-    clearInterval(checkInterval);
     if (chatUnsubscribe.value) {
       chatUnsubscribe.value();
     }
