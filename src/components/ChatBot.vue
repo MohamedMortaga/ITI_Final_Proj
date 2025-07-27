@@ -616,7 +616,7 @@ function updateSystemPrompt() {
 }
 
 async function checkAndLogWarnings(response, chatId, timestamp) {
-  const prompt = `Review the following response for potential illegal content such as phone numbers (e.g., patterns like XXX-XXX-XXXX or XXXXXXXXXX), email addresses, or the term 'illegal': ${response}. Return a JSON object with the following structure: { warnings: [{ messageId: string, content: string, issue: string, timestamp: number }], isClean: boolean }. Do not include any other text. but not mintion for Potential spam or none issue found`;
+  const prompt = `Review the following response for potential illegal content such as phone numbers (e.g., patterns like XXX-XXX-XXXX or XXXXXXXXXX), email addresses, or the term 'illegal': ${response}. Return a JSON object with the following structure: { warnings: [{ messageId: string, content: string, issue: string, timestamp: number }], isClean: boolean }. Do not include any other text.`;
   const aiResponse = await sendMessageToAI(prompt);
   try {
     const result = JSON.parse(aiResponse);
@@ -664,12 +664,12 @@ async function processExistingChats(chatId) {
     .sort((a, b) => b.timestamp - a.timestamp)[0];
 
   if (lastMessage) {
-    const prompt = `Review the following message for potential illegal content such as phone numbers (e.g., patterns like XXX-XXX-XXXX or XXXXXXXXXX), or the term 'illegal Do not include any other text. but not mintion for Potential spam or none issue found'): ${JSON.stringify(
+    const prompt = `Review the following message for potential illegal content such as phone numbers (e.g., patterns like XXX-XXX-XXXX or XXXXXXXXXX), or the term 'illegal Do not include any other text.'): ${JSON.stringify(
       {
         role: lastMessage.role,
         content: lastMessage.content,
       }
-    )}. Return a JSON object with the following structure: { warnings: [{ messageId: string, content: string, issue: string, timestamp: number }], isClean: boolean }. Do not include any other text.`;
+    )}. Return a JSON object with the following structure: { warnings: [{ messageId: string, content: string, issue: string, timestamp: number  }], isClean: boolean }. Do not include any other text.`;
     const response = await sendMessageToAI(prompt);
     try {
       const result = JSON.parse(response);
