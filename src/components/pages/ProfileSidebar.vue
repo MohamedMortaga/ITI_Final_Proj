@@ -28,28 +28,17 @@
       </ul>
     </nav>
     
-    <!-- Logout section with reduced spacing -->
-    <div class="mt-2 ">
-      <button
-        @click="handleLogout"
-        class="flex items-center gap-3 px-4 py-2 rounded-full text-[var(--Color-Text-Text-Secondary)] hover:bg-[var(--Colors-Primary-25)] hover:text-[var(--Color-Surface-Surface-Brand)] transition w-full"
-        @mouseenter="hoveredItem = 'logout'"
-        @mouseleave="hoveredItem = null"
-      >
-        <img :src="logoutIcon" alt="Logout" class="w-5 h-5" />
-        <span>{{ $t("logout") }}</span>
-      </button>
-    </div>
+
   </aside>
 
   <!-- Mobile Bottom Navigation -->
   <nav class="lg:hidden fixed bottom-0 left-0 right-0 z-50 bg-[var(--Color-Surface-Surface-Primary)] border-t border-[var(--Color-Boarder-Border-Primary)]">
-    <div class="flex justify-around items-center px-2 py-2">
+    <div class="flex justify-around items-center px-1 py-1">
       <router-link
         v-for="item in mobileMenuItems"
         :key="item.name"
         :to="item.route"
-        class="flex flex-col items-center justify-center px-3 py-2 rounded-lg text-[var(--Color-Text-Text-Secondary)] transition text-center"
+        class="flex flex-col items-center justify-center px-1 py-1 rounded-lg text-[var(--Color-Text-Text-Secondary)] transition text-center min-w-0 flex-1"
         :class="{
           'bg-[var(--Colors-Primary-25)] text-[var(--Color-Surface-Surface-Brand)]': isActive(item.route),
           'hover:bg-[var(--Colors-Primary-25)] hover:text-[var(--Color-Surface-Surface-Brand)]': !isActive(item.route)
@@ -62,9 +51,9 @@
         <img 
           :src="getIconSrc(item)" 
           :alt="item.label" 
-          class="w-6 h-6 mb-1" 
+          class="w-5 h-5 mb-1" 
         />
-        <span class="text-xs text-center">{{ $t(item.label) }}</span>
+        <span class="text-[10px] text-center leading-tight max-w-full truncate px-1">{{ getMobileLabel(item.label) }}</span>
       </router-link>
     </div>
   </nav>
@@ -77,8 +66,6 @@
 import { ref } from "vue";
 import { useI18n } from "vue-i18n";
 import { useRouter } from "vue-router";
-import { getAuth, signOut } from "firebase/auth";
-import Swal from "sweetalert2";
 import userAltIcon from '@/assets/User_alt_light.svg';
 import userAltClickedIcon from '@/assets/clicked-profile-icons/User_alt_light.svg';
 import boxAltIcon from '@/assets/Box_alt.svg';
@@ -87,7 +74,6 @@ import lineOutIcon from '@/assets/Line_out.svg';
 import lineOutClickedIcon from '@/assets/clicked-profile-icons/Line_out.svg';
 import settingLineIcon from '@/assets/Setting_line.svg';
 import settingLineClickedIcon from '@/assets/clicked-profile-icons/Setting_line.svg';
-import signOutCircleIcon from '@/assets/Sign_out_circle_light.svg';
 import walletAltIcon from '@/assets/Wallet_alt.svg';
 import walletAltClickedIcon from '@/assets/clicked-profile-icons/Wallet_alt.svg';
 
@@ -175,38 +161,11 @@ export default {
       },
     ];
 
-    const logoutIcon = signOutCircleIcon;
-
-    const handleLogout = async () => {
-      try {
-        const auth = getAuth();
-        await signOut(auth);
-        Swal.fire({
-          position: "top-end",
-          icon: "success",
-          title: "Successfully logged out",
-          showConfirmButton: false,
-          timer: 1500,
-        });
-        router.push("/home");
-      } catch (error) {
-        Swal.fire({
-          position: "top-end",
-          icon: "error",
-          title: "Logout failed",
-          showConfirmButton: false,
-          timer: 1500,
-        });
-      }
-    };
-
     return {
       i18n: { t, locale },
       menuItems,
       mobileMenuItems,
-      logoutIcon,
       hoveredItem,
-      handleLogout,
     };
   },
   methods: {
@@ -216,6 +175,16 @@ export default {
     getIconSrc(item) {
       // Use clicked icon for active state or when hovered
       return (this.isActive(item.route) || this.hoveredItem === item.name) ? item.clickedIcon : item.icon;
+    },
+    getMobileLabel(label) {
+      const mobileLabels = {
+        'myProfile': 'Profile',
+        'myListings': 'Listings',
+        'myRentals': 'Rentals',
+        'myBalance': 'Balance',
+        'settings': 'Settings'
+      };
+      return mobileLabels[label] || this.$t(label);
     },
   },
 };

@@ -1,49 +1,48 @@
 <template>
-  <div class="max-w-4xl mx-auto py-8 px-4">
+  <div class="max-w-5xl mx-8 py-4 sm:py-8 px-3 sm:px-4">
     <!-- Page Header -->
-    <div class="mb-8">
-      <h1 class="text-3xl font-bold text-[var(--Color-Text-Text-Brand)] mb-2">
+    <div class="mb-6 sm:mb-8">
+      <h1 class="text-xl sm:text-2xl text-[var(--Color-Text-Text-Primary)] font-medium dark:text-[var(--Color-Text-Text-Primary)] mb-2">
         {{ $t('settings') || 'Settings' }}
       </h1>
-      <p class="text-[var(--Color-Text-Text-Secondary)]">
+      <p class="text-sm sm:text-base text-[var(--Color-Text-Text-Secondary)] dark:text-[var(--Color-Text-Text-Secondary)]">
         {{ $t('manageYourAccount') || 'Manage your account settings and preferences' }}
       </p>
     </div>
 
     <!-- Settings Sections -->
-    <div class="space-y-6">
+    <div class="space-y-4 sm:space-y-6">
       <!-- Profile Settings -->
-      <div class="bg-[var(--Color-Surface-Surface-Primary)] border border-[var(--Color-Boarder-Border-Primary)] rounded-xl p-6">
+      <!-- <div class="bg-[var(--Color-Surface-Surface-Primary)] border border-[var(--Color-Boarder-Border-Primary)] rounded-xl p-4 sm:p-6">
         <div class="flex items-center mb-4">
-          <div class="w-10 h-10 bg-[var(--Color-Surface-Surface-Brand)] rounded-lg flex items-center justify-center mr-3">
-            <i class="fas fa-user text-white"></i>
+          <div class="w-8 h-8 sm:w-10 sm:h-10 bg-[var(--Color-Surface-Surface-Brand)] rounded-lg flex items-center justify-center mr-3">
+            <i class="fas fa-user text-white text-sm sm:text-base"></i>
           </div>
-          <h2 class="text-xl font-semibold text-[var(--Color-Text-Text-Primary)]">
+          <h2 class="text-lg sm:text-xl font-semibold text-[var(--Color-Text-Text-Primary)]">
             {{ $t('profileSettings') || 'Profile Settings' }}
           </h2>
         </div>
         
                  <div class="space-y-4">
-           <!-- Profile Picture Display Only -->
-           <div class="flex items-center space-x-4">
-             <div class="w-20 h-20 bg-gray-25 dark:bg-gray-600 rounded-full flex items-center justify-center">
-               <i class="fas fa-user text-[var(--Color-Text-Text-Secondary)] text-2xl"></i>
+           <div class="flex items-center space-x-3 sm:space-x-4">
+             <div class="w-16 h-16 sm:w-20 sm:h-20 bg-gray-25 dark:bg-gray-600 rounded-full flex items-center justify-center">
+               <i class="fas fa-user text-[var(--Color-Text-Text-Secondary)] text-xl sm:text-2xl"></i>
              </div>
              <div>
-               <p class="text-[var(--Color-Text-Text-Primary)] font-medium">Profile Photo</p>
-               <p class="text-sm text-[var(--Color-Text-Text-Secondary)]">Your profile picture</p>
+               <p class="text-[var(--Color-Text-Text-Primary)] font-medium text-sm sm:text-base">Profile Photo</p>
+               <p class="text-xs sm:text-sm text-[var(--Color-Text-Text-Secondary)]">Your profile picture</p>
              </div>
            </div>
          </div>
-      </div>
+      </div> -->
 
       <!-- Security Settings -->
-      <div class="bg-[var(--Color-Surface-Surface-Primary)] border border-[var(--Color-Boarder-Border-Primary)] rounded-xl p-6">
+      <div class="bg-[var(--Color-Surface-Surface-Primary)] border border-[var(--Color-Boarder-Border-Primary)] rounded-xl p-4 sm:p-6">
         <div class="flex items-center mb-4">
-          <div class="w-10 h-10 bg-[var(--Colors-Error-400)] rounded-lg flex items-center justify-center mr-3">
-            <i class="fas fa-shield-alt text-white"></i>
+          <div class="w-8 h-8 sm:w-10 sm:h-10 bg-[var(--Colors-Error-400)] rounded-lg flex items-center justify-center mr-3">
+            <i class="fas fa-shield-alt text-white text-sm sm:text-base"></i>
           </div>
-          <h2 class="text-xl font-semibold text-[var(--Color-Text-Text-Primary)]">
+          <h2 class="text-lg sm:text-xl font-semibold text-[var(--Color-Text-Text-Primary)]">
             {{ $t('security') || 'Security' }}
           </h2>
         </div>
@@ -51,58 +50,58 @@
         <div class="space-y-4">
           <!-- Current Password -->
           <div>
-            <label class="block text-sm font-medium text-[var(--Color-Text-Text-Primary)] mb-2">
+            <label class="block text-xs sm:text-sm font-medium text-[var(--Color-Text-Text-Primary)] mb-2">
               {{ $t('currentPassword') || 'Current Password' }}
             </label>
             <input 
               type="password" 
-              class="w-full px-3 py-2 border border-[var(--Color-Boarder-Border-Primary)] rounded-lg bg-[var(--Color-Surface-Surface-Primary)] text-[var(--Color-Text-Text-Primary)] focus:outline-none focus:ring-2 focus:ring-[var(--Color-Text-Text-Brand)]"
+              class="w-full px-3 py-2 text-sm sm:text-base border border-[var(--Color-Boarder-Border-Primary)] rounded-lg bg-[var(--Color-Surface-Surface-Primary)] text-[var(--Color-Text-Text-Primary)] focus:outline-none focus:ring-2 focus:ring-[var(--Color-Text-Text-Brand)]"
               placeholder="Enter current password"
             />
           </div>
 
           <!-- New Password -->
           <div>
-            <label class="block text-sm font-medium text-[var(--Color-Text-Text-Primary)] mb-2">
+            <label class="block text-xs sm:text-sm font-medium text-[var(--Color-Text-Text-Primary)] mb-2">
               {{ $t('newPassword') || 'New Password' }}
             </label>
             <input 
               type="password" 
-              class="w-full px-3 py-2 border border-[var(--Color-Boarder-Border-Primary)] rounded-lg bg-[var(--Color-Surface-Surface-Primary)] text-[var(--Color-Text-Text-Primary)] focus:outline-none focus:ring-2 focus:ring-[var(--Color-Text-Text-Brand)]"
+              class="w-full px-3 py-2 text-sm sm:text-base border border-[var(--Color-Boarder-Border-Primary)] rounded-lg bg-[var(--Color-Surface-Surface-Primary)] text-[var(--Color-Text-Text-Primary)] focus:outline-none focus:ring-2 focus:ring-[var(--Color-Text-Text-Brand)]"
               placeholder="Enter new password"
             />
           </div>
 
           <!-- Confirm Password -->
           <div>
-            <label class="block text-sm font-medium text-[var(--Color-Text-Text-Primary)] mb-2">
+            <label class="block text-xs sm:text-sm font-medium text-[var(--Color-Text-Text-Primary)] mb-2">
               {{ $t('confirmPassword') || 'Confirm Password' }}
             </label>
             <input 
               type="password" 
-              class="w-full px-3 py-2 border border-[var(--Color-Boarder-Border-Primary)] rounded-lg bg-[var(--Color-Surface-Surface-Primary)] text-[var(--Color-Text-Text-Primary)] focus:outline-none focus:ring-2 focus:ring-[var(--Color-Text-Text-Brand)]"
+              class="w-full px-3 py-2 text-sm sm:text-base border border-[var(--Color-Boarder-Border-Primary)] rounded-lg bg-[var(--Color-Surface-Surface-Primary)] text-[var(--Color-Text-Text-Primary)] focus:outline-none focus:ring-2 focus:ring-[var(--Color-Text-Text-Brand)]"
               placeholder="Confirm new password"
             />
           </div>
 
                      <!-- Two-Factor Authentication -->
-           <div class="flex items-center justify-between p-4 bg-gray-25 dark:bg-gray-600 rounded-lg">
+           <!-- <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between p-3 sm:p-4 bg-gray-25 dark:bg-gray-600 rounded-lg space-y-3 sm:space-y-0">
             <div>
-              <h3 class="font-medium text-[var(--Color-Text-Text-Primary)]">
+              <h3 class="font-medium text-[var(--Color-Text-Text-Primary)] text-sm sm:text-base">
                 {{ $t('twoFactorAuth') || 'Two-Factor Authentication' }}
               </h3>
-              <p class="text-sm text-[var(--Color-Text-Text-Secondary)]">
+              <p class="text-xs sm:text-sm text-[var(--Color-Text-Text-Secondary)]">
                 {{ $t('twoFactorDesc') || 'Add an extra layer of security to your account' }}
               </p>
             </div>
-            <button class="px-4 py-2 bg-[var(--Color-Surface-Surface-Brand)] text-white rounded-lg hover:bg-[var(--Colors-Primary-600)] transition">
+            <button class="px-3 sm:px-4 py-2 bg-[var(--Color-Surface-Surface-Brand)] text-white rounded-lg hover:bg-[var(--Colors-Primary-600)] transition text-sm sm:text-base">
               {{ $t('enable') || 'Enable' }}
             </button>
-          </div>
+          </div> -->
 
           <!-- Update Password Button -->
           <div class="pt-4">
-            <button class="px-6 py-2 bg-[var(--Color-Surface-Surface-Brand)] text-white rounded-lg hover:bg-[var(--Colors-Primary-600)] transition">
+            <button class="w-full sm:w-auto px-4 sm:px-6 py-2 bg-[var(--Color-Surface-Surface-Brand)] text-white rounded-lg hover:bg-[var(--Colors-Primary-600)] transition text-sm sm:text-base">
               {{ $t('updatePassword') || 'Update Password' }}
             </button>
           </div>
@@ -110,146 +109,82 @@
       </div>
 
       <!-- Notification Settings -->
-      <div class="bg-[var(--Color-Surface-Surface-Primary)] border border-[var(--Color-Boarder-Border-Primary)] rounded-xl p-6">
+      <div class="bg-[var(--Color-Surface-Surface-Primary)] border border-[var(--Color-Boarder-Border-Primary)] rounded-xl p-4 sm:p-6">
         <div class="flex items-center mb-4">
-          <div class="w-10 h-10 bg-[var(--Colors-Warning-400)] rounded-lg flex items-center justify-center mr-3">
-            <i class="fas fa-bell text-white"></i>
+          <div class="w-8 h-8 sm:w-10 sm:h-10 bg-[var(--Colors-Warning-400)] rounded-lg flex items-center justify-center mr-3">
+            <i class="fas fa-bell text-white text-sm sm:text-base"></i>
           </div>
-          <h2 class="text-xl font-semibold text-[var(--Color-Text-Text-Primary)]">
+          <h2 class="text-lg sm:text-xl font-semibold text-[var(--Color-Text-Text-Primary)]">
             {{ $t('notifications') || 'Notifications' }}
           </h2>
         </div>
         
         <div class="space-y-4">
                      <!-- Email Notifications -->
-           <div class="flex items-center justify-between p-4 bg-gray-25 dark:bg-gray-600 rounded-lg">
-            <div>
-              <h3 class="font-medium text-[var(--Color-Text-Text-Primary)]">
+           <div class="flex items-center justify-between p-3 sm:p-4 bg-gray-25 dark:bg-gray-600 rounded-lg">
+            <div class="flex-1 min-w-0">
+              <h3 class="font-medium text-[var(--Color-Text-Text-Primary)] text-sm sm:text-base">
                 {{ $t('emailNotifications') || 'Email Notifications' }}
               </h3>
-              <p class="text-sm text-[var(--Color-Text-Text-Secondary)]">
+              <p class="text-xs sm:text-sm text-[var(--Color-Text-Text-Secondary)]">
                 {{ $t('emailNotificationsDesc') || 'Receive notifications via email' }}
               </p>
             </div>
-            <div class="w-12 h-6 bg-[var(--Color-Surface-Surface-Brand)] rounded-full relative">
-              <div class="w-5 h-5 bg-white rounded-full absolute top-0.5 right-0.5 transition-transform"></div>
+            <div class="w-10 h-5 sm:w-12 sm:h-6 bg-[var(--Color-Surface-Surface-Brand)] rounded-full relative ml-3">
+              <div class="w-4 h-4 sm:w-5 sm:h-5 bg-white rounded-full absolute top-0.5 right-0.5 transition-transform"></div>
             </div>
           </div>
 
                      <!-- SMS Notifications -->
-           <div class="flex items-center justify-between p-4 bg-gray-25 dark:bg-gray-600 rounded-lg">
-            <div>
-              <h3 class="font-medium text-[var(--Color-Text-Text-Primary)]">
+           <div class="flex items-center justify-between p-3 sm:p-4 bg-gray-25 dark:bg-gray-600 rounded-lg">
+            <div class="flex-1 min-w-0">
+              <h3 class="font-medium text-[var(--Color-Text-Text-Primary)] text-sm sm:text-base">
                 {{ $t('smsNotifications') || 'SMS Notifications' }}
               </h3>
-              <p class="text-sm text-[var(--Color-Text-Text-Secondary)]">
+              <p class="text-xs sm:text-sm text-[var(--Color-Text-Text-Secondary)]">
                 {{ $t('smsNotificationsDesc') || 'Receive notifications via SMS' }}
               </p>
             </div>
-            <div class="w-12 h-6 bg-[var(--Color-Surface-Surface-Secondary)] rounded-full relative">
-              <div class="w-5 h-5 bg-white rounded-full absolute top-0.5 left-0.5 transition-transform"></div>
+            <div class="w-10 h-5 sm:w-12 sm:h-6 bg-[var(--Color-Surface-Surface-Secondary)] rounded-full relative ml-3">
+              <div class="w-4 h-4 sm:w-5 sm:h-5 bg-white rounded-full absolute top-0.5 left-0.5 transition-transform"></div>
             </div>
           </div>
 
-                     <!-- Push Notifications -->
-           <div class="flex items-center justify-between p-4 bg-gray-25 dark:bg-gray-600 rounded-lg">
-            <div>
-              <h3 class="font-medium text-[var(--Color-Text-Text-Primary)]">
-                {{ $t('pushNotifications') || 'Push Notifications' }}
-              </h3>
-              <p class="text-sm text-[var(--Color-Text-Text-Secondary)]">
-                {{ $t('pushNotificationsDesc') || 'Receive push notifications in browser' }}
-              </p>
-            </div>
-            <div class="w-12 h-6 bg-[var(--Color-Surface-Surface-Brand)] rounded-full relative">
-              <div class="w-5 h-5 bg-white rounded-full absolute top-0.5 right-0.5 transition-transform"></div>
-            </div>
-          </div>
         </div>
       </div>
 
-      <!-- Privacy Settings -->
-      <div class="bg-[var(--Color-Surface-Surface-Primary)] border border-[var(--Color-Boarder-Border-Primary)] rounded-xl p-6">
+      <!-- Logout Section -->
+      <div class="bg-[var(--Color-Surface-Surface-Primary)] border border-[var(--Color-Boarder-Border-Primary)] rounded-xl p-4 sm:p-6">
         <div class="flex items-center mb-4">
-          <div class="w-10 h-10 bg-[var(--Colors-Success-500)] rounded-lg flex items-center justify-center mr-3">
-            <i class="fas fa-lock text-white"></i>
+          <div class="w-8 h-8 sm:w-10 sm:h-10 bg-[var(--Colors-Error-400)] rounded-lg flex items-center justify-center mr-3">
+            <i class="fas fa-sign-out-alt text-white text-sm sm:text-base"></i>
           </div>
-          <h2 class="text-xl font-semibold text-[var(--Color-Text-Text-Primary)]">
-            {{ $t('privacy') || 'Privacy' }}
+          <h2 class="text-lg sm:text-xl font-semibold text-[var(--Color-Text-Text-Primary)]">
+            {{ $t('accountActions') || 'Account Actions' }}
           </h2>
         </div>
         
         <div class="space-y-4">
-                     <!-- Profile Visibility -->
-           <div class="flex items-center justify-between p-4 bg-gray-25 dark:bg-gray-600 rounded-lg">
-            <div>
-              <h3 class="font-medium text-[var(--Color-Text-Text-Primary)]">
-                {{ $t('profileVisibility') || 'Profile Visibility' }}
-              </h3>
-              <p class="text-sm text-[var(--Color-Text-Text-Secondary)]">
-                {{ $t('profileVisibilityDesc') || 'Control who can see your profile' }}
-              </p>
+          <div class="p-3 sm:p-4 bg-gray-25 dark:bg-gray-600 rounded-lg">
+            <div class="flex items-center justify-between">
+              <div>
+                <h3 class="font-medium text-[var(--Color-Text-Text-Primary)] text-sm sm:text-base">
+                  {{ $t('logout') || 'Logout' }}
+                </h3>
+                <!-- <p class="text-xs sm:text-sm text-[var(--Color-Text-Text-Secondary)]">
+                  {{ $t('logoutDesc') || 'Sign out of your account and return to the home page' }}
+                </p> -->
+              </div>
+              <button 
+                @click="handleLogout"
+                class="w-auto sm:w-auto px-4 sm:px-6 py-2 bg-[var(--Colors-Error-400)] text-white rounded-lg hover:bg-[var(--Colors-Error-500)] transition text-sm sm:text-base flex items-center gap-2"
+                :disabled="isLoggingOut"
+              >
+                <i class="fas fa-sign-out-alt text-sm"></i>
+                <!-- <span v-if="!isLoggingOut">{{ $t('logout') || 'Logout' }}</span>
+                <span v-else>{{ $t('loggingOut') || 'Logging out...' }}</span> -->
+              </button>
             </div>
-            <select class="px-3 py-2 border border-[var(--Color-Boarder-Border-Primary)] rounded-lg bg-[var(--Color-Surface-Surface-Primary)] text-[var(--Color-Text-Text-Primary)]">
-              <option>{{ $t('public') || 'Public' }}</option>
-              <option>{{ $t('private') || 'Private' }}</option>
-              <option>{{ $t('friendsOnly') || 'Friends Only' }}</option>
-            </select>
-          </div>
-
-                     <!-- Data Sharing -->
-           <div class="flex items-center justify-between p-4 bg-gray-25 dark:bg-gray-600 rounded-lg">
-            <div>
-              <h3 class="font-medium text-[var(--Color-Text-Text-Primary)]">
-                {{ $t('dataSharing') || 'Data Sharing' }}
-              </h3>
-              <p class="text-sm text-[var(--Color-Text-Text-Secondary)]">
-                {{ $t('dataSharingDesc') || 'Allow sharing of your data for analytics' }}
-              </p>
-            </div>
-            <div class="w-12 h-6 bg-[var(--Color-Surface-Surface-Secondary)] rounded-full relative">
-              <div class="w-5 h-5 bg-white rounded-full absolute top-0.5 left-0.5 transition-transform"></div>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <!-- Account Actions -->
-      <div class="bg-[var(--Color-Surface-Surface-Primary)] border border-[var(--Color-Boarder-Border-Primary)] rounded-xl p-6">
-        <div class="flex items-center mb-4">
-          <div class="w-10 h-10 bg-[var(--Colors-Error-400)] rounded-lg flex items-center justify-center mr-3">
-            <i class="fas fa-exclamation-triangle text-white"></i>
-          </div>
-          <h2 class="text-xl font-semibold text-[var(--Color-Text-Text-Primary)]">
-            {{ $t('dangerZone') || 'Danger Zone' }}
-          </h2>
-        </div>
-        
-        <div class="space-y-4">
-                     <!-- Deactivate Account -->
-           <div class="p-4 bg-gray-25 dark:bg-gray-600 rounded-lg">
-            <h3 class="font-medium text-[var(--Color-Text-Text-Primary)] mb-2">
-              {{ $t('deactivateAccount') || 'Deactivate Account' }}
-            </h3>
-            <p class="text-sm text-[var(--Color-Text-Text-Secondary)] mb-3">
-              {{ $t('deactivateAccountDesc') || 'Temporarily disable your account. You can reactivate it anytime.' }}
-            </p>
-            <button class="px-4 py-2 bg-[var(--Colors-Warning-400)] text-white rounded-lg hover:bg-[var(--Colors-Warning-500)] transition">
-              {{ $t('deactivate') || 'Deactivate' }}
-            </button>
-          </div>
-
-                     <!-- Delete Account -->
-           <div class="p-4 bg-gray-25 dark:bg-gray-600 rounded-lg">
-            <h3 class="font-medium text-[var(--Color-Text-Text-Primary)] mb-2">
-              {{ $t('deleteAccount') || 'Delete Account' }}
-            </h3>
-            <p class="text-sm text-[var(--Color-Text-Text-Secondary)] mb-3">
-              {{ $t('deleteAccountDesc') || 'Permanently delete your account and all associated data. This action cannot be undone.' }}
-            </p>
-            <button class="px-4 py-2 bg-[var(--Colors-Error-400)] text-white rounded-lg hover:bg-[var(--Colors-Error-500)] transition">
-              {{ $t('deleteAccount') || 'Delete Account' }}
-            </button>
           </div>
         </div>
       </div>
@@ -258,7 +193,48 @@
 </template>
 
 <script setup>
-// Component logic can be added here
+import { ref } from 'vue'
+import { useRouter } from 'vue-router'
+import { getAuth, signOut } from 'firebase/auth'
+import Swal from 'sweetalert2'
+
+const router = useRouter()
+const isLoggingOut = ref(false)
+
+const handleLogout = async () => {
+  try {
+    isLoggingOut.value = true
+    
+    const auth = getAuth()
+    await signOut(auth)
+    
+    // Show success message
+    Swal.fire({
+      position: "top-end",
+      icon: "success",
+      title: "Successfully logged out",
+      showConfirmButton: false,
+      timer: 1500,
+    })
+    
+    // Redirect to home page
+    router.push("/home")
+  } catch (error) {
+    console.error('Logout error:', error)
+    
+    // Show error message
+    Swal.fire({
+      position: "top-end",
+      icon: "error",
+      title: "Logout failed",
+      text: error.message || "An error occurred during logout",
+      showConfirmButton: false,
+      timer: 3000,
+    })
+  } finally {
+    isLoggingOut.value = false
+  }
+}
 </script>
 
 <style scoped>

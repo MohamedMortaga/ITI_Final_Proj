@@ -23,7 +23,7 @@
       <div
         v-for="product in filteredProducts"
         :key="product.id"
-        class="border rounded-lg p-4 shadow-md bg-white dark:bg-gray-800"
+        class="border rounded-lg p-4  bg-[var(--Color-Surface-Surface-Primary)] border-[var(--Color-Boarder-Border-Primary)] dark:bg-[var(--Color-Surface-Surface-Primary)] text-[var(--Color-Text-Text-Primary)] dark:text-[var(--Color-Text-Text-Primary)]"
       >
         <img
           :src="product.productImage"
@@ -31,13 +31,13 @@
           class="w-full h-48 object-cover rounded-lg mb-3"
         />
         <h2 class="text-lg font-semibold mb-1">{{ product.productTitle }}</h2>
-        <p class="text-sm text-gray-500 mb-2">
+        <p class="text-sm text-[var(--Color-Text-Text-Secondary)] dark:text-[var(--Color-Text-Text-Secondary)] mb-2">
           Return in:
           <span
             class="font-medium"
             :class="{
-              'text-red-600': getRemainingTime(product.endDate) === 'Expired',
-              'text-blue-600': getRemainingTime(product.endDate) !== 'Expired',
+              'text-[var(--Colors-Error-400)]': getRemainingTime(product.endDate) === 'Expired',
+              'text-[var(--Color-Text-Text-Brand)]': getRemainingTime(product.endDate) !== 'Expired',
             }"
           >
             {{ getRemainingTime(product.endDate) }}
@@ -58,7 +58,7 @@
               product.endDate
             )
           "
-          class="mt-2 px-4 py-2 bg-red-600 text-white rounded hover:bg-red-700"
+          class="mt-2 px-4 py-2 bg-[var(--Colors-Error-400)] text-white rounded hover:bg-[var(--Colors-Error-500)]"
         >
           Cancel Booking
         </button>

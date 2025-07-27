@@ -1,13 +1,13 @@
 <template>
   <div class="container mx-auto p-4">
-    <h1 class="text-2xl font-bold mb-4">Balance Overview</h1>
+    <h1 class="text-2xl text-[var(--Color-Text-Text-Primary)] font-medium dark:text-[var(--Color-Text-Text-Primary)] mb-4">Balance Overview</h1>
 
-    <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6 text-[var(--Color-Text-Text-Primary)] dark:text-[var(--Color-Text-Text-Primary)]">
       <div>
         <label>Total Income</label>
         <input
           type="text"
-          class="w-full p-2 border rounded"
+          class="w-full p-2 border rounded-lg bg-[var(--Color-Surface-Surface-Primary)] border-[var(--Color-Boarder-Border-Primary)] dark:bg-[var(--Color-Surface-Surface-Primary)] dark:border-[var(--Color-Boarder-Border-Primary)] focus:outline-none"
           :value="`EGP ${totalIncome.toFixed(2)}`"
           readonly
         />
@@ -16,7 +16,7 @@
         <label>Total Service Fee (Our Profit)</label>
         <input
           type="text"
-          class="w-full p-2 border rounded"
+          class="w-full p-2 border rounded-lg bg-[var(--Color-Surface-Surface-Primary)] border-[var(--Color-Boarder-Border-Primary)] dark:bg-[var(--Color-Surface-Surface-Primary)] dark:border-[var(--Color-Boarder-Border-Primary)] focus:outline-none"
           :value="`EGP ${totalServiceFee.toFixed(2)}`"
           readonly
         />
@@ -25,7 +25,7 @@
         <label>Total Profit (You)</label>
         <input
           type="text"
-          class="w-full p-2 border rounded"
+          class="w-full p-2 border rounded-lg bg-[var(--Color-Surface-Surface-Primary)] border-[var(--Color-Boarder-Border-Primary)] dark:bg-[var(--Color-Surface-Surface-Primary)] dark:border-[var(--Color-Boarder-Border-Primary)] focus:outline-none"
           :value="`EGP ${totalProfit.toFixed(2)}`"
           readonly
         />
@@ -33,12 +33,12 @@
     </div>
 
     <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
-      <div v-for="item in items" :key="item.id" class="border p-4 rounded shadow">
+      <div v-for="item in items" :key="item.id" class="border p-4 rounded-lg bg-[var(--Color-Surface-Surface-Primary)] border-[var(--Color-Boarder-Border-Primary)] dark:bg-[var(--Color-Surface-Surface-Primary)] dark:border-[var(--Color-Boarder-Border-Primary)]">
         <img :src="item.img" class="w-full h-40 object-cover mb-2" />
-        <h2 class="font-bold">{{ item.title }}</h2>
-        <p>Price/Day: {{ item.pricePerDay }}</p>
-        <p>Service Fee: {{ item.serviceFee }}</p>
-        <p>Total Profit: {{ item.totalProfit }}</p>
+        <h2 class="text-[var(--Color-Text-Text-Primary)] dark:text-[var(--Color-Text-Text-Primary)] font-medium">{{ item.title }}</h2>
+        <p class="text-[var(--Color-Text-Text-Secondary)] dark:text-[var(--Color-Text-Text-Secondary)]">Price/Day: {{ item.pricePerDay }}</p>
+        <p class="text-[var(--Color-Text-Text-Secondary)] dark:text-[var(--Color-Text-Text-Secondary)]">Service Fee: {{ item.serviceFee }}</p>
+        <p class="text-[var(--Color-Text-Text-Secondary)] dark:text-[var(--Color-Text-Text-Secondary)]">Total Profit: {{ item.totalProfit }}</p>
       </div>
     </div>
   </div>
