@@ -20,23 +20,6 @@
       </button>
     </header>
     <div class="chat-app-container">
-      <aside class="chat-sidebar">
-        <div class="sidebar-header">
-          <span>Chats</span>
-          <button id="new-chat" @click="createNewChat">+ New Chat</button>
-        </div>
-        <ul id="chat-list">
-          <li
-            v-for="chat in chats"
-            :key="chat.id"
-            :class="{ active: chat.id === currentChatId }"
-            @click="switchChat(chat.id)"
-          >
-            {{ chat.title }}
-            <button @click.stop="closeChat(chat.id)" class="close-chat-btn">×</button>
-          </li>
-        </ul>
-      </aside>
       <main class="chat-main">
         <div id="chat-history" class="chat-history" ref="chatHistory">
           <div
@@ -96,6 +79,42 @@
               {{ formatTimestamp(msg.timestamp) }}
             </div>
           </div>
+          <!-- Loading indicator at the bottom -->
+          <div
+            v-if="isProcessing"
+            class="loading-indicator"
+            :style="{
+              alignSelf: 'flex-start',
+              display: 'flex',
+              flexDirection: 'row',
+              alignItems: 'center',
+              gap: '8px',
+              padding: '12px 16px',
+              width: '100%',
+              justifyContent: 'flex-start',
+            }"
+          >
+            <div class="avatar" :style="{ background: '#f7ca18' }">🤖</div>
+            <div
+              class="bubble"
+              :style="{
+                maxWidth: '400px',
+                wordBreak: 'break-word',
+                padding: '12px 16px',
+                borderRadius: '12px 12px 12px 0',
+                background: '#f7ca18',
+                color: '#222',
+              }"
+            >
+              Loading...
+            </div>
+            <div
+              class="time"
+              :style="{ fontSize: '0.75rem', color: '#888', margin: '0 0 0 8px' }"
+            >
+              {{ formatTimestamp(Date.now()) }}
+            </div>
+          </div>
         </div>
         <form id="chat-input-form" class="chat-form" @submit.prevent="sendMessage">
           <div class="input-container">
@@ -105,6 +124,7 @@
               id="chat-input"
               placeholder="Type your message..."
               autocomplete="off"
+              :disabled="isProcessing"
               required
               @keyup.enter="sendMessage"
             />
@@ -123,13 +143,31 @@
               @change="handleImageUpload"
               style="display: none"
             />
-            <button type="submit">Send</button>
-            <button type="button" @click="$refs.imageUpload.click()">Upload Image</button>
-            <button type="button" @click="captureImage" v-if="isCameraSupported">
+            <button type="submit" :disabled="isProcessing">Send</button>
+            <button
+              type="button"
+              @click="$refs.imageUpload.click()"
+              :disabled="isProcessing"
+            >
+              Upload Image
+            </button>
+            <button
+              type="button"
+              @click="captureImage"
+              v-if="isCameraSupported"
+              :disabled="isProcessing"
+            >
               Camera
             </button>
-            <button type="button" @click="clearChat">Clear Chat</button>
-            <button type="button" id="generate-image" @click="handleGenerateImage">
+            <button type="button" @click="clearChat" :disabled="isProcessing">
+              Clear Chat
+            </button>
+            <button
+              type="button"
+              id="generate-image"
+              @click="handleGenerateImage"
+              :disabled="isProcessing"
+            >
               Generate Image
             </button>
           </div>
@@ -138,12 +176,21 @@
     </div>
   </div>
 </template>
-
 <script setup>
 import { ref, computed, onMounted, nextTick, onUnmounted, watch } from "vue";
 import { useRoute } from "vue-router";
 import { getAuth, onAuthStateChanged } from "firebase/auth";
-import { collection, onSnapshot, doc, setDoc } from "firebase/firestore";
+import {
+  collection,
+  onSnapshot,
+  doc,
+  setDoc,
+  query,
+  where,
+  getDocs,
+  orderBy,
+  limit,
+} from "firebase/firestore";
 import { auth, db } from "@/firebase/config";
 
 const emit = defineEmits(["close", "user-action"]);
@@ -180,25 +227,30 @@ const userBalance = ref({
   username: null,
 });
 const productsLoaded = ref(false);
+const isProcessing = ref(false);
+
+const visibleChats = computed(() => {
+  return chats.value.filter((chat) => !chat.isBackgroundProcessed);
+});
 
 const currentChatMessages = computed(() => {
   const chat = chats.value.find((c) => c.id === currentChatId.value);
   return chat
-    ? chat.messages.filter(
-        (msg) =>
-          msg.role !== "system" &&
-          !msg.content.includes("warnings:") &&
-          !msg.content.includes("isClean:")
-      )
+    ? chat.messages.filter((msg) => msg.role !== "system" && msg.content !== "Loading...")
     : [];
 });
 
 function createNewChat() {
   const chatId = "chat_" + Date.now();
-  chats.value.push({ id: chatId, title: "New Chat", messages: [] });
+  chats.value.push({
+    id: chatId,
+    title: "New Chat",
+    messages: [],
+    isBackgroundProcessed: false,
+  });
   currentChatId.value = chatId;
   stagedImage.value = null;
-  updateSystemPrompt();
+  applyInitialSystemPrompt(chatId);
 }
 
 function updateChatTitle(chat) {
@@ -214,22 +266,6 @@ function switchChat(chatId) {
   currentChatId.value = chatId;
   stagedImage.value = null;
   scrollToBottom();
-  processExistingChats();
-}
-
-function closeChat(chatId) {
-  const index = chats.value.findIndex((c) => c.id === chatId);
-  if (index !== -1) {
-    chats.value.splice(index, 1);
-    if (currentChatId.value === chatId) {
-      currentChatId.value = chats.value.length > 0 ? chats.value[0].id : null;
-      if (!currentChatId.value) {
-        createNewChat();
-      }
-    }
-    stagedImage.value = null;
-    scrollToBottom();
-  }
 }
 
 function clearChat() {
@@ -257,16 +293,15 @@ function scrollToBottom() {
 async function sendMessageToAI(message, imageUrl = null) {
   try {
     let allMessages = [];
-    chats.value.forEach((chat) => {
-      allMessages = allMessages.concat(
-        chat.messages
-          .filter((m) => m.type === "text" || m.type === "image")
-          .map((m) => ({
-            role: m.role,
-            content: m.type === "image" ? `Image: ${m.content}` : m.content,
-          }))
-      );
-    });
+    const currentChat = chats.value.find((c) => c.id === currentChatId.value);
+    if (currentChat) {
+      allMessages = currentChat.messages
+        .filter((m) => m.type === "text" || m.type === "image")
+        .map((m) => ({
+          role: m.role,
+          content: m.type === "image" ? `Image: ${m.content}` : m.content,
+        }));
+    }
     if (allMessages.length > 50) {
       allMessages = allMessages.slice(-50);
     }
@@ -311,6 +346,7 @@ async function handleGenerateImage() {
   chat.messages.push({ role: "user", content: prompt, type: "text", timestamp });
   updateChatTitle(chat);
   chatInput.value = "";
+  isProcessing.value = true;
   chat.messages.push({
     role: "bot",
     content: "Generating image...",
@@ -365,6 +401,8 @@ async function handleGenerateImage() {
       type: "text",
       timestamp: Date.now(),
     });
+  } finally {
+    isProcessing.value = false;
   }
   scrollToBottom();
 }
@@ -377,7 +415,7 @@ function isImagePrompt(text) {
 async function sendMessage() {
   const message = chatInput.value.trim();
   const chat = chats.value.find((c) => c.id === currentChatId.value);
-  if (!chat) return;
+  if (!chat || isProcessing.value) return;
   const timestamp = Date.now();
 
   if (!message && stagedImage.value) {
@@ -388,15 +426,25 @@ async function sendMessage() {
       timestamp,
     });
     updateChatTitle(chat);
+    isProcessing.value = true;
+    chat.messages.push({
+      role: "bot",
+      content: "Loading...",
+      type: "text",
+      timestamp: Date.now(),
+    });
+    scrollToBottom();
     const aiResponse = await sendMessageToAI("User uploaded an image", stagedImage.value);
+    chat.messages.pop();
+    await checkAndLogWarnings(aiResponse, currentChatId.value, timestamp);
     chat.messages.push({
       role: "bot",
       content: aiResponse,
       type: "text",
       timestamp: Date.now(),
     });
-    checkAndLogWarnings(aiResponse, chat.id, timestamp);
     stagedImage.value = null;
+    isProcessing.value = false;
     scrollToBottom();
     emit("user-action", { action: "image-upload", content: stagedImage.value });
     return;
@@ -427,23 +475,25 @@ async function sendMessage() {
       scrollToBottom();
       return;
     }
+    isProcessing.value = true;
     chat.messages.push({
       role: "bot",
-      content: "...",
+      content: "Loading...",
       type: "text",
       timestamp: Date.now(),
     });
     scrollToBottom();
     const aiResponse = await sendMessageToAI(message, stagedImage.value);
     chat.messages.pop();
+    await checkAndLogWarnings(aiResponse, currentChatId.value, timestamp);
     chat.messages.push({
       role: "bot",
       content: aiResponse,
       type: "text",
       timestamp: Date.now(),
     });
-    checkAndLogWarnings(aiResponse, chat.id, timestamp);
     stagedImage.value = null;
+    isProcessing.value = false;
     scrollToBottom();
     emit("user-action", { action: "message", content: message });
   }
@@ -484,12 +534,9 @@ function deleteStagedImage() {
 }
 
 function updateSystemPrompt() {
-  const chat = chats.value[0];
-  if (!chat) return;
-
   const initialPrompt = `
     You are an AI assistant for a website with the following structure and features:
-    - If a user asks for products or a product, provide a list of travelling products and services using the details provided below. Only list products from the provided list.
+    - If a user asks for products or a product, provide a list of products using the details provided below. Only list products from the provided list.
     - Your role is to assist users navigating the site, answering questions about products, login/signup processes, contact information, and more.
     - Track user actions (e.g., navigation, message sending, image uploads) and provide context-aware responses.
     - If a user asks for help or performs an action, suggest assistance with a message around the chatbot icon.
@@ -556,89 +603,197 @@ function updateSystemPrompt() {
         )
         .join("")}
   `;
-  chat.messages = chat.messages.filter((m) => m.role !== "system");
-  chat.messages.push({
-    role: "system",
-    content: initialPrompt,
-    type: "text",
-    timestamp: Date.now(),
+  chats.value.forEach((chat) => {
+    chat.messages = chat.messages.filter((m) => m.role !== "system");
+    chat.messages.push({
+      role: "system",
+      content: initialPrompt,
+      type: "text",
+      timestamp: Date.now(),
+    });
   });
+  return initialPrompt;
 }
 
 async function checkAndLogWarnings(response, chatId, timestamp) {
-  const prompt = `Review the following response for potential illegal content such as phone numbers (e.g., patterns like XXX-XXX-XXXX or XXXXXXXXXX), email addresses, or the term 'illegal': ${response}. Return a JSON object with the following structure: { warnings: [{ messageId: string, content: string, issue: string, timestamp: number }], isClean: boolean }. Do not include any other text.`;
+  const prompt = `Review the following response for potential illegal content such as phone numbers (e.g., patterns like XXX-XXX-XXXX or XXXXXXXXXX), email addresses, or the term 'illegal': ${response}. Return a JSON object with the following structure: { warnings: [{ messageId: string, content: string, issue: string, timestamp: number }], isClean: boolean }. Do not include any other text. but not mintion for Potential spam or none issue found`;
   const aiResponse = await sendMessageToAI(prompt);
   try {
     const result = JSON.parse(aiResponse);
     if (result.warnings && result.warnings.length > 0) {
-      result.warnings.forEach((warning) => {
-        setDoc(
-          doc(
-            db,
-            "warnings",
-            `warning_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`
-          ),
-          {
-            chatId: chatId,
-            userId: user.value?.uid || "anonymous",
-            messageId: warning.messageId || "unknown",
-            content: warning.content || "",
-            issue: warning.issue || "Unknown issue",
-            timestamp: warning.timestamp || timestamp,
-            detectedAt: new Date().toISOString(),
-          }
-        ).catch((error) => console.error("Error saving warning:", error));
-      });
-    }
-  } catch (error) {
-    console.error("Failed to parse AI response:", error);
-  }
-}
-
-async function processExistingChats() {
-  const chat = chats.value.find((c) => c.id === currentChatId.value);
-  if (!chat || chat.messages.length === 0) return;
-
-  const existingMessages = chat.messages
-    .filter((m) => m.type === "text")
-    .map((m) => ({ role: m.role, content: m.content }));
-  if (existingMessages.length > 0) {
-    const prompt = `Review the following messages for potential illegal content such as phone numbers (e.g., patterns like XXX-XXX-XXXX or XXXXXXXXXX), email addresses, or the term 'illegal': ${JSON.stringify(
-      existingMessages
-    )}. Return a JSON object with the following structure: { warnings: [{ messageId: string, content: string, issue: string, timestamp: number }], isClean: boolean }. Do not include any other text.`;
-    const response = await sendMessageToAI(prompt);
-    try {
-      const result = JSON.parse(response);
-      if (result.warnings && result.warnings.length > 0) {
-        result.warnings.forEach((warning) => {
-          setDoc(
+      for (const warning of result.warnings) {
+        const q = query(
+          collection(db, "warnings"),
+          where("chatId", "==", chatId),
+          where("content", "==", warning.content || ""),
+          where("issue", "==", warning.issue || "Unknown issue")
+        );
+        const querySnapshot = await getDocs(q);
+        if (querySnapshot.empty) {
+          await setDoc(
             doc(
               db,
               "warnings",
               `warning_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`
             ),
             {
-              chatId: chat.id,
+              chatId: chatId,
               userId: user.value?.uid || "anonymous",
               messageId: warning.messageId || "unknown",
               content: warning.content || "",
               issue: warning.issue || "Unknown issue",
-              timestamp: warning.timestamp || Date.now(),
+              timestamp: warning.timestamp || timestamp,
               detectedAt: new Date().toISOString(),
             }
-          ).catch((error) => console.error("Error saving warning:", error));
-        });
+          );
+        }
+      }
+    }
+  } catch (error) {
+    console.error("Failed to parse AI response:", error);
+  }
+}
+
+async function processExistingChats(chatId) {
+  const chat = chats.value.find((c) => c.id === chatId);
+  if (!chat || chat.isBackgroundProcessed) return;
+
+  // Get the last non-system text message
+  const lastMessage = chat.messages
+    .filter((m) => m.type === "text" && m.role !== "system")
+    .sort((a, b) => b.timestamp - a.timestamp)[0];
+
+  if (lastMessage) {
+    const prompt = `Review the following message for potential illegal content such as phone numbers (e.g., patterns like XXX-XXX-XXXX or XXXXXXXXXX), or the term 'illegal Do not include any other text. but not mintion for Potential spam or none issue found'): ${JSON.stringify(
+      {
+        role: lastMessage.role,
+        content: lastMessage.content,
+      }
+    )}. Return a JSON object with the following structure: { warnings: [{ messageId: string, content: string, issue: string, timestamp: number }], isClean: boolean }. Do not include any other text.`;
+    const response = await sendMessageToAI(prompt);
+    try {
+      const result = JSON.parse(response);
+      if (result.warnings && result.warnings.length > 0) {
+        for (const warning of result.warnings) {
+          const q = query(
+            collection(db, "warnings"),
+            where("chatId", "==", chat.id),
+            where("content", "==", warning.content || ""),
+            where("issue", "==", warning.issue || "Unknown issue")
+          );
+          const querySnapshot = await getDocs(q);
+          if (querySnapshot.empty) {
+            await setDoc(
+              doc(
+                db,
+                "warnings",
+                `warning_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`
+              ),
+              {
+                chatId: chat.id,
+                userId: user.value?.uid || "anonymous",
+                messageId: warning.messageId || "unknown",
+                content: warning.content || "",
+                issue: warning.issue || "Unknown issue",
+                timestamp: warning.timestamp || lastMessage.timestamp,
+                detectedAt: new Date().toISOString(),
+              }
+            );
+          }
+        }
       }
     } catch (error) {
       console.error("Failed to parse AI response:", error);
     }
   }
+  chat.isBackgroundProcessed = true;
+}
+
+async function processAllChatsInBackground() {
+  if (isProcessing.value) return;
+  isProcessing.value = true;
+  try {
+    for (const chat of chats.value) {
+      if (!chat.isBackgroundProcessed && chat.id !== currentChatId.value) {
+        await processExistingChats(chat.id);
+        await new Promise((resolve) => setTimeout(resolve, 100));
+      }
+    }
+  } finally {
+    isProcessing.value = false;
+  }
+}
+
+function applyInitialSystemPrompt(chatId) {
+  const chat = chats.value.find((c) => c.id === chatId);
+  if (chat) {
+    chat.messages = chat.messages.filter((m) => m.role !== "system");
+    chat.messages.push({
+      role: "system",
+      content: updateSystemPrompt(),
+      type: "text",
+      timestamp: Date.now(),
+    });
+    if (chat.id !== currentChatId.value) {
+      processExistingChats(chatId);
+    }
+  }
 }
 
 onMounted(() => {
-  if (chats.value.length === 0) {
-    createNewChat();
-  }
+  createNewChat();
+
+  const unsubscribeChats = onSnapshot(
+    collection(db, "user-chats"),
+    (querySnapshot) => {
+      chats.value = [
+        ...chats.value.filter((c) => c.id === currentChatId.value),
+        ...querySnapshot.docs
+          .filter((doc) => doc.id !== currentChatId.value)
+          .map((doc) => ({
+            id: doc.id,
+            title: doc.data().productTitle || "New Chat",
+            messages: [],
+            createdAt: doc.data().createdAt || new Date().toISOString(),
+            lastMessage: doc.data().lastMessage || "",
+            lastMessageTime: doc.data().lastMessageTime || new Date().toISOString(),
+            isBackgroundProcessed: false,
+          })),
+      ];
+
+      chats.value.forEach((chat) => {
+        if (chat.id !== currentChatId.value) {
+          const q = query(
+            collection(db, "user-chats", chat.id, "messages"),
+            orderBy("timestamp", "desc"),
+            limit(1)
+          );
+          const unsubscribeMessages = onSnapshot(
+            q,
+            (messageSnapshot) => {
+              chat.messages = messageSnapshot.docs.map((msgDoc) => ({
+                role: msgDoc.data().role || "user",
+                content: msgDoc.data().content || "",
+                type: msgDoc.data().type || "text",
+                timestamp: msgDoc.data().timestamp || Date.now(),
+              }));
+            },
+            (error) => {
+              console.error("Error fetching messages for chat", chat.id, error);
+            }
+          );
+          onUnmounted(() => {
+            if (unsubscribeMessages) unsubscribeMessages();
+          });
+        }
+      });
+
+      processAllChatsInBackground();
+    },
+    (error) => {
+      console.error("Error fetching chats:", error);
+    }
+  );
 
   const unsubscribeProducts = onSnapshot(
     collection(db, "products"),
@@ -669,6 +824,7 @@ onMounted(() => {
           status: doc.data().status || "Unknown",
           totalPrice: doc.data().totalPrice || 0,
         }));
+      console.log("Current bookings for user:", userBookings.value);
       productsLoaded.value = true;
     },
     (error) => {
@@ -676,7 +832,7 @@ onMounted(() => {
     }
   );
 
-  const unsubscribeAuth = onAuthStateChanged(auth, (currentUser) => {
+  unsubscribe.value = onAuthStateChanged(auth, (currentUser) => {
     user.value = currentUser;
     let unsubscribeUserBalance = null;
     if (currentUser) {
@@ -773,10 +929,10 @@ onMounted(() => {
     if (unsubscribe.value) unsubscribe.value();
     if (unsubscribeProducts) unsubscribeProducts();
     if (unsubscribeBookings) unsubscribeBookings();
+    if (unsubscribeChats) unsubscribeChats();
   });
 });
 </script>
-
 <style scoped>
 .chatbot-container {
   position: fixed;
@@ -821,63 +977,6 @@ onMounted(() => {
   display: flex;
   flex: 1;
   overflow: hidden;
-}
-
-.chat-sidebar {
-  width: 200px;
-  background: var(--Color-Surface-Surface-Tertiary);
-  border-right: 1px solid var(--Color-Boarder-Border-Primary);
-  display: flex;
-  flex-direction: column;
-}
-
-.sidebar-header {
-  padding: 12px;
-  font-size: 1rem;
-  font-weight: bold;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  border-bottom: 1px solid var(--Color-Boarder-Border-Primary);
-}
-
-#chat-list {
-  flex: 1;
-  list-style: none;
-  margin: 0;
-  padding: 0;
-  overflow-y: auto;
-}
-
-#chat-list li {
-  padding: 8px 12px;
-  cursor: pointer;
-  border-bottom: 1px solid var(--Color-Boarder-Border-Primary);
-  transition: background 0.2s;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  color: var(--Color-Text-Text-Primary);
-}
-
-#chat-list li.active,
-#chat-list li:hover {
-  background: var(--Color-Surface-Surface-Brand);
-  color: var(--Color-Text-Text-Invert);
-}
-
-.close-chat-btn {
-  background: none;
-  border: none;
-  color: var(--Color-Text-Text-Brand);
-  font-size: 1rem;
-  cursor: pointer;
-  padding: 0 4px;
-  line-height: 1;
-}
-
-.close-chat-btn:hover {
-  color: var(--Color-Text-Text-Primary);
 }
 
 .chat-main {
@@ -941,6 +1040,11 @@ onMounted(() => {
   color: var(--Color-Text-Text-Primary);
 }
 
+#chat-input:disabled {
+  background: var(--Color-Surface-Surface-Tertiary);
+  cursor: not-allowed;
+}
+
 .image-preview {
   display: flex;
   align-items: center;
@@ -993,7 +1097,12 @@ onMounted(() => {
   white-space: nowrap;
 }
 
-.chat-form button:hover {
+.chat-form button:disabled {
+  background: var(--Color-Surface-Surface-Tertiary);
+  cursor: not-allowed;
+}
+
+.chat-form button:hover:not(:disabled) {
   background: var(--Color-Text-Text-Brand);
   color: var(--Color-Text-Text-Invert);
 }
@@ -1010,29 +1119,6 @@ onMounted(() => {
   .chat-app-container {
     flex-direction: column;
     height: 100%;
-  }
-
-  .chat-sidebar {
-    width: 100%;
-    border-right: none;
-    border-bottom: 1px solid var(--Color-Boarder-Border-Primary);
-    max-height: 20vh;
-    overflow-y: auto;
-  }
-
-  #chat-list li {
-    padding: 6px 10px;
-    font-size: 0.9rem;
-  }
-
-  .sidebar-footer {
-    flex-direction: row;
-    padding: 6px 10px;
-  }
-
-  .sidebar-footer button {
-    padding: 4px 6px;
-    font-size: 0.8rem;
   }
 
   .chat-main {
@@ -1063,12 +1149,6 @@ onMounted(() => {
 
   .input-container {
     width: 100%;
-  }
-
-  #chat-input {
-    width: 100%;
-    padding: 6px 10px;
-    font-size: 0.9rem;
   }
 
   .image-preview {
