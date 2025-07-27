@@ -189,13 +189,17 @@ const filteredProducts = computed(() => {
     );
   }
 
-  // Sort
+  // Sort by upload time (newest first) and then by name
   filtered = [...filtered].sort((a, b) => {
-    if (sortOption.value === 'Name A → Z') {
-      return a.title.localeCompare(b.title);
-    } else {
-      return b.title.localeCompare(a.title);
-    }
+    // First sort by creation date (newest first)
+    const dateA = a.createdAt?.toDate ? a.createdAt.toDate() : new Date(a.createdAt || 0);
+    const dateB = b.createdAt?.toDate ? b.createdAt.toDate() : new Date(b.createdAt || 0);
+    
+    if (dateA > dateB) return -1;
+    if (dateA < dateB) return 1;
+    
+    // If dates are equal, sort by name
+    return a.title.localeCompare(b.title);
   });
 
   // Pagination
@@ -256,8 +260,9 @@ const handleSearch = (query) => {
   currentPage.value = 1; // Reset to first page on search
 };
 
-const handleSort = (option) => {
-  sortOption.value = option;
+const handleSort = (sortData) => {
+  // The sorting is handled in the computed filteredProducts
+  console.log('Sort data:', sortData);
 };
 
 const handleFilter = () => {
@@ -291,6 +296,8 @@ const handleExport = () => {
   XLSX.utils.book_append_sheet(workbook, worksheet, 'Products');
   XLSX.writeFile(workbook, 'products.xlsx');
 };
+
+
 
 const toggleSelectAll = () => {
   if (selectAll.value) {

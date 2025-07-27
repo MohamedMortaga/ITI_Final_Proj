@@ -23,9 +23,11 @@
 
       <div class="flex items-center ml-2">
         <span class="text-gray-500 mr-1">Sort by:</span>
-        <select v-model="sortOption" @change="emit('update:sort', sortOption)">
-          <option>Name A → Z</option>
-          <option>Name Z → A</option>
+        <select v-model="sortOption" @change="handleSortChange">
+          <option value="createdAt-desc">Newest First</option>
+          <option value="createdAt-asc">Oldest First</option>
+          <option value="name-asc">Name A → Z</option>
+          <option value="name-desc">Name Z → A</option>
         </select>
       </div>
     </div>
@@ -43,5 +45,10 @@ const props = defineProps({
 const emit = defineEmits(['update:search', 'update:sort', 'filter', 'export'])
 
 const searchQuery = ref('')
-const sortOption = ref('Name A → Z')
+const sortOption = ref('createdAt-desc')
+
+const handleSortChange = () => {
+  const [field, order] = sortOption.value.split('-')
+  emit('update:sort', { field, order })
+}
 </script>

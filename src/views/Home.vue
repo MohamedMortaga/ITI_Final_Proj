@@ -133,7 +133,9 @@ export default {
     const loadCategories = async () => {
       const snapshot = await getDocs(collection(db, "categories"));
       categories.value = snapshot.docs
-        .map((doc) => doc.data().name)
+        .map((doc) => ({ id: doc.id, ...doc.data() }))
+        .filter((cat) => cat.status !== 'inactive') // Only show active categories
+        .map((cat) => cat.name)
         .sort((a, b) => a.localeCompare(b));
     };
 

@@ -409,5 +409,18 @@
   "hour": "ساعة",
   "hours": "ساعات",
   "minute": "دقيقة",
-  "minutes": "دقائق"
+  "minutes": "دقائق",
+  "contactMessages": "رسائل الاتصال",
+  "searchMessages": "البحث في الرسائل...",
+  "message": "الرسالة",
+  "userId": "معرف المستخدم",
+  "guest": "زائر",
+  "viewDetails": "عرض التفاصيل",
+  "noMessagesFound": "لم يتم العثور على رسائل",
+  "messageDetails": "تفاصيل الرسالة",
+  "close": "إغلاق",
+  "deleteMessageConfirm": "هل تريد حذف هذه الرسالة؟",
+  "messageDeleted": "تم حذف الرسالة بنجاح",
+  "fetchError": "خطأ في جلب الرسائل",
+  "deleteError": "خطأ في حذف الرسالة"
 }
