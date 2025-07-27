@@ -1,16 +1,24 @@
 <template>
-  <div class="min-h-screen" :style="{ backgroundColor: 'var(--Color-Surface-Surface-Primary)', color: 'var(--Color-Text-Text-Primary)' }">
+  <div
+    class="min-h-screen"
+    :style="{
+      backgroundColor: 'var(--Color-Surface-Surface-Primary)',
+      color: 'var(--Color-Text-Text-Primary)',
+    }"
+  >
     <!-- Breadcrumbs -->
     <div
       class="max-w-7xl mx-auto px-4 py-2 text-sm text-[var(--Color-Text-Text-Secondary)]"
     >
-      <span class="hover:text-[var(--Color-Text-Text-Brand)] cursor-pointer">{{ $t("home") }}</span>
-      <span class="mx-2">></span>
-      <span class="text-[var(--Color-Text-Text-Primary)]">{{
-        product?.title
+      <span class="hover:text-[var(--Color-Text-Text-Brand)] cursor-pointer">{{
+        $t("home")
       }}</span>
       <span class="mx-2">></span>
-      <span class="text-[var(--Color-Text-Text-Brand)]">{{ $t("rentConfirmation") }}</span>
+      <span class="text-[var(--Color-Text-Text-Primary)]">{{ product?.title }}</span>
+      <span class="mx-2">></span>
+      <span class="text-[var(--Color-Text-Text-Brand)]">{{
+        $t("rentConfirmation")
+      }}</span>
     </div>
 
     <div v-if="product" class="max-w-7xl mx-auto px-4 py-6">
@@ -18,40 +26,42 @@
         <!-- Left Column: Product Image and Info -->
         <div class="lg:col-span-2 space-y-6">
           <!-- Product Image Gallery -->
-          <div class="bg-[var(--Color-Surface-Surface-Tertiary)] rounded-xl border border-[var(--Color-Boarder-Border-Primary)] overflow-hidden">
+          <div
+            class="bg-[var(--Color-Surface-Surface-Tertiary)] rounded-xl border border-[var(--Color-Boarder-Border-Primary)] overflow-hidden"
+          >
             <div class="relative">
-        <img
-          :src="product.img || require('@/assets/logo.png')"
-          alt="Product Image"
+              <img
+                :src="product.img || require('@/assets/logo.png')"
+                alt="Product Image"
                 class="w-full h-96 object-cover"
-        />
+              />
               <!-- Navigation Arrows -->
-            <button
+              <button
                 class="absolute left-4 top-1/2 transform -translate-y-1/2 bg-white/80 hover:bg-white rounded-full p-2 shadow-lg"
-            >
+              >
                 <i class="fas fa-chevron-left text-gray-600"></i>
-            </button>
-            <button
+              </button>
+              <button
                 class="absolute right-4 top-1/2 transform -translate-y-1/2 bg-white/80 hover:bg-white rounded-full p-2 shadow-lg"
-            >
+              >
                 <i class="fas fa-chevron-right text-gray-600"></i>
-            </button>
+              </button>
               <!-- Pagination Dots -->
               <div
                 class="absolute bottom-4 left-1/2 transform -translate-x-1/2 flex space-x-2"
               >
                 <div class="w-2 h-2 bg-[var(--color-success-500)] rounded-full"></div>
                 <div class="w-2 h-2 bg-gray-300 rounded-full"></div>
+              </div>
+            </div>
           </div>
-        </div>
-      </div>
 
           <!-- Product Title and Action -->
-          <div class="bg-[var(--Color-Surface-Surface-Tertiary)] rounded-xl border border-[var(--Color-Boarder-Border-Primary)] p-6">
+          <div
+            class="bg-[var(--Color-Surface-Surface-Tertiary)] rounded-xl border border-[var(--Color-Boarder-Border-Primary)] p-6"
+          >
             <div class="flex items-center justify-between mb-4">
-              <h1
-                class="text-3xl font-bold text-[var(--Color-Text-Text-Primary)]"
-              >
+              <h1 class="text-3xl font-bold text-[var(--Color-Text-Text-Primary)]">
                 {{ product.title }}
               </h1>
               <button
@@ -75,23 +85,19 @@
           </div>
 
           <!-- Product Description -->
-          <h2
-            class="text-xl font-semibold text-[var(--Color-Text-Text-Primary)] mb-4"
-          >
+          <h2 class="text-xl font-semibold text-[var(--Color-Text-Text-Primary)] mb-4">
             {{ $t("description") }}
           </h2>
-          <div class="bg-[var(--Color-Surface-Surface-Tertiary)] rounded-xl border border-[var(--Color-Boarder-Border-Primary)] p-6">
-            <div
-              class="space-y-4 text-[var(--Color-Text-Text-Secondary)]"
-            >
+          <div
+            class="bg-[var(--Color-Surface-Surface-Tertiary)] rounded-xl border border-[var(--Color-Boarder-Border-Primary)] p-6"
+          >
+            <div class="space-y-4 text-[var(--Color-Text-Text-Secondary)]">
               <p>
                 {{ product.details }}
               </p>
 
               <div>
-                <h3
-                  class="font-semibold text-[var(--Color-Text-Text-Primary)] mb-2"
-                >
+                <h3 class="font-semibold text-[var(--Color-Text-Text-Primary)] mb-2">
                   {{ $t("inclusions") }}:
                 </h3>
                 <ul class="list-disc list-inside space-y-1">
@@ -101,10 +107,8 @@
                 </ul>
               </div>
 
-                            <div>
-                <h3
-                  class="font-semibold text-[var(--Color-Text-Text-Primary)] mb-2"
-          >
+              <div>
+                <h3 class="font-semibold text-[var(--Color-Text-Text-Primary)] mb-2">
                   {{ $t("usageAndCare") }}:
                 </h3>
                 <p class="mb-2">{{ $t("rentedOver15Times") }}</p>
@@ -127,37 +131,57 @@
           </div>
 
           <!-- About the Tool -->
-          <h2
-            class="text-xl font-semibold text-[var(--Color-Text-Text-Primary)] mb-4"
-          >
+          <h2 class="text-xl font-semibold text-[var(--Color-Text-Text-Primary)] mb-4">
             {{ $t("aboutTheTool") }}
           </h2>
-          <div class="bg-[var(--Color-Surface-Surface-Tertiary)] rounded-xl border border-[var(--Color-Boarder-Border-Primary)] p-6">
+          <div
+            class="bg-[var(--Color-Surface-Surface-Tertiary)] rounded-xl border border-[var(--Color-Boarder-Border-Primary)] p-6"
+          >
             <div class="space-y-3">
-                            <div class="flex justify-between py-2 border-b border-[var(--Color-Boarder-Border-Primary)]">
-                <span class="font-medium text-[var(--Color-Text-Text-Secondary)]">{{ $t("category") }}:</span>
+              <div
+                class="flex justify-between py-2 border-b border-[var(--Color-Boarder-Border-Primary)]"
+              >
+                <span class="font-medium text-[var(--Color-Text-Text-Secondary)]"
+                  >{{ $t("category") }}:</span
+                >
                 <span class="text-[var(--Color-Text-Text-Primary)]">{{
                   product.category || product.type
                 }}</span>
               </div>
-              <div class="flex justify-between py-2 border-b border-[var(--Color-Boarder-Border-Primary)]">
-                <span class="font-medium text-[var(--Color-Text-Text-Secondary)]">{{ $t("brand") }}:</span>
-                <span class="text-[var(--Color-Text-Text-Primary)]">{{ $t("bosch") }}</span>
+              <div
+                class="flex justify-between py-2 border-b border-[var(--Color-Boarder-Border-Primary)]"
+              >
+                <span class="font-medium text-[var(--Color-Text-Text-Secondary)]"
+                  >{{ $t("brand") }}:</span
+                >
+                <span class="text-[var(--Color-Text-Text-Primary)]">{{
+                  $t("bosch")
+                }}</span>
               </div>
-              <div class="flex justify-between py-2 border-b border-[var(--Color-Boarder-Border-Primary)]">
-                <span class="font-medium text-[var(--Color-Text-Text-Secondary)]">{{ $t("model") }}:</span>
+              <div
+                class="flex justify-between py-2 border-b border-[var(--Color-Boarder-Border-Primary)]"
+              >
+                <span class="font-medium text-[var(--Color-Text-Text-Secondary)]"
+                  >{{ $t("model") }}:</span
+                >
                 <span class="text-[var(--Color-Text-Text-Primary)]">{{
                   product.model || $t("gsr18v50Professional")
                 }}</span>
               </div>
-              <div class="flex justify-between py-2 border-b border-[var(--Color-Boarder-Border-Primary)]">
-                <span class="font-medium text-[var(--Color-Text-Text-Secondary)]">{{ $t("rentTimes") }}:</span>
+              <div
+                class="flex justify-between py-2 border-b border-[var(--Color-Boarder-Border-Primary)]"
+              >
+                <span class="font-medium text-[var(--Color-Text-Text-Secondary)]"
+                  >{{ $t("rentTimes") }}:</span
+                >
                 <span class="text-[var(--Color-Text-Text-Primary)]">15</span>
               </div>
-              <div class="flex justify-between py-2 border-b border-[var(--Color-Boarder-Border-Primary)]">
+              <div
+                class="flex justify-between py-2 border-b border-[var(--Color-Boarder-Border-Primary)]"
+              >
                 <span class="font-medium text-[var(--Color-Text-Text-Secondary)]"
                   >{{ $t("pricePerDay") }}:</span
-              >
+                >
                 <span class="text-[var(--Color-Text-Text-Brand)] font-bold"
                   >{{ product.price || "15" }} {{ $t("egp") }}</span
                 >
@@ -175,13 +199,14 @@
               }}
             </button>
           </div>
-
         </div>
 
         <!-- Right Column: Calendar, Owner Details, Reviews -->
         <div class="space-y-6">
           <!-- Availability Calendar -->
-          <div class="bg-[var(--Color-Surface-Surface-Tertiary)] rounded-xl border border-[var(--Color-Boarder-Border-Primary)] p-6">
+          <div
+            class="bg-[var(--Color-Surface-Surface-Tertiary)] rounded-xl border border-[var(--Color-Boarder-Border-Primary)] p-6"
+          >
             <div class="flex justify-between items-center mb-4">
               <button
                 @click="prevMonth"
@@ -190,9 +215,7 @@
               >
                 <i class="fas fa-chevron-left"></i>
               </button>
-              <h3
-                class="text-lg font-semibold text-[var(--Color-Text-Text-Primary)]"
-              >
+              <h3 class="text-lg font-semibold text-[var(--Color-Text-Text-Primary)]">
                 {{ currentMonthYear }}
               </h3>
               <button
@@ -201,7 +224,7 @@
               >
                 <i class="fas fa-chevron-right"></i>
               </button>
-        </div>
+            </div>
 
             <!-- Days of Week -->
             <div class="grid grid-cols-7 gap-1 mb-2">
@@ -212,7 +235,7 @@
               >
                 {{ day }}
               </span>
-      </div>
+            </div>
 
             <!-- Calendar Grid -->
             <div class="grid grid-cols-7 gap-1">
@@ -221,7 +244,9 @@
                 :key="day"
                 class="text-center p-2 text-sm cursor-pointer rounded-full hover:bg-[var(--Color-Text-Text-Brand)] hover:text-white transition-colors"
                 :class="{
-                  'bg-[var(--Color-Surface-Surface-Brand)] text-[var(--Color-Text-Text-Invert)]': isSelected(day),
+                  'bg-[var(--Color-Surface-Surface-Brand)] text-[var(--Color-Text-Text-Invert)]': isSelected(
+                    day
+                  ),
                   'bg-[var(--Color-Text-Text-Brand)] text-white':
                     isStart(day) || isEnd(day),
                   'text-gray-400 cursor-not-allowed': isPastDate(day),
@@ -241,15 +266,15 @@
             >
               {{ $t("resetDateSelection") }}
             </button>
-    </div>
+          </div>
 
-        <!-- Owner Details -->
-          <h3
-              class="text-lg font-semibold text-[var(--Color-Text-Text-Primary)] mb-4"
-          >
-              {{ $t("ownerDetails") }}
+          <!-- Owner Details -->
+          <h3 class="text-lg font-semibold text-[var(--Color-Text-Text-Primary)] mb-4">
+            {{ $t("ownerDetails") }}
           </h3>
-          <div class="bg-[var(--Color-Surface-Surface-Tertiary)] rounded-xl border border-[var(--Color-Boarder-Border-Primary)] p-6">
+          <div
+            class="bg-[var(--Color-Surface-Surface-Tertiary)] rounded-xl border border-[var(--Color-Boarder-Border-Primary)] p-6"
+          >
             <div class="mb-4">
               <div class="flex items-start gap-4 mb-2">
                 <img
@@ -259,32 +284,47 @@
                 />
                 <div>
                   <div class="flex items-center gap-2 mb-1">
-                    <p class="font-semibold text-[var(--Color-Text-Text-Primary)] text-lg">
+                    <p
+                      class="font-semibold text-[var(--Color-Text-Text-Primary)] text-lg"
+                    >
                       {{ booking.sellerName || $t("loading") }}
                     </p>
-                    <i class="fas fa-check-circle text-[var(--Color-Text-Text-Brand)] text-sm"></i>
+                    <i
+                      class="fas fa-check-circle text-[var(--Color-Text-Text-Brand)] text-sm"
+                    ></i>
                   </div>
                   <div class="flex items-center gap-2 mb-1">
-                    <span class="text-[var(--Color-Text-Text-Secondary)]">{{ ownerStats.rating }}</span>
+                    <span class="text-[var(--Color-Text-Text-Secondary)]">{{
+                      ownerStats.rating
+                    }}</span>
                     <span class="text-yellow-400 text-sm">★</span>
-                    <span class="text-[var(--Color-Text-Text-Secondary)] text-sm">({{ ownerStats.reviewCount }} review{{
-                      ownerStats.reviewCount !== 1 ? "s" : ""
-                    }})</span>
+                    <span class="text-[var(--Color-Text-Text-Secondary)] text-sm"
+                      >({{ ownerStats.reviewCount }} review{{
+                        ownerStats.reviewCount !== 1 ? "s" : ""
+                      }})</span
+                    >
                   </div>
                   <div class="flex items-center gap-2 mb-2">
-                    <i class="fas fa-map-marker-alt text-[var(--Color-Text-Text-Brand)] text-xs"></i>
-                    <span class="text-[var(--Color-Text-Text-Secondary)] text-sm">{{ product?.location || "Cairo" }}</span>
+                    <i
+                      class="fas fa-map-marker-alt text-[var(--Color-Text-Text-Brand)] text-xs"
+                    ></i>
+                    <span class="text-[var(--Color-Text-Text-Secondary)] text-sm">{{
+                      product?.location || "Cairo"
+                    }}</span>
                   </div>
                 </div>
               </div>
-                              <div class="flex items-center gap-8 text-sm text-[var(--Color-Text-Text-Secondary)]" style="margin-left: 5rem;">
-                  <span>
-                    {{ ownerStats.successfulRentals }} {{ $t("successfulRentals") }}
-                  </span>
-                  <span>
-                    {{ $t("memberSince") }} {{ ownerStats.memberSince || $t("july2025") }}
-                  </span>
-                </div>
+              <div
+                class="flex items-center gap-8 text-sm text-[var(--Color-Text-Text-Secondary)]"
+                style="margin-left: 5rem"
+              >
+                <span>
+                  {{ ownerStats.successfulRentals }} {{ $t("successfulRentals") }}
+                </span>
+                <span>
+                  {{ $t("memberSince") }} {{ ownerStats.memberSince || $t("july2025") }}
+                </span>
+              </div>
             </div>
             <div class="space-y-3">
               <button
@@ -299,11 +339,11 @@
               >
                 <i class="fas fa-envelope mr-2"></i>
                 {{ $t("sendMessage") }}
-                <span 
-                  v-if="unreadMessageCount > 0" 
+                <span
+                  v-if="unreadMessageCount > 0"
                   class="absolute -top-2 -right-2 bg-red-500 text-white text-xs rounded-full w-5 h-5 flex items-center justify-center"
                 >
-                  {{ unreadMessageCount > 9 ? '9+' : unreadMessageCount }}
+                  {{ unreadMessageCount > 9 ? "9+" : unreadMessageCount }}
                 </span>
               </button>
               <router-link
@@ -316,12 +356,12 @@
           </div>
 
           <!-- Tool's Reviews -->
-          <h3
-            class="text-lg font-semibold text-[var(--Color-Text-Text-Primary)] mb-4"
-          >
+          <h3 class="text-lg font-semibold text-[var(--Color-Text-Text-Primary)] mb-4">
             {{ $t("toolReviews") }}
           </h3>
-          <div class="bg-[var(--Color-Surface-Surface-Tertiary)] rounded-xl border border-[var(--Color-Boarder-Border-Primary)] p-6">
+          <div
+            class="bg-[var(--Color-Surface-Surface-Tertiary)] rounded-xl border border-[var(--Color-Boarder-Border-Primary)] p-6"
+          >
             <div class="space-y-4">
               <div
                 v-for="review in reviews.slice(0, 3)"
@@ -352,7 +392,7 @@
             </div>
           </div>
           <div class="space-y-2 mt-4">
-                          <button
+            <button
               @click="showReviewForm = true"
               class="w-full border border-[var(--Color-Text-Text-Brand)] text-[var(--Color-Text-Text-Brand)] py-2 rounded-lg hover:bg-[var(--Color-Text-Text-Brand)] hover:text-white transition-colors"
             >
@@ -362,16 +402,14 @@
               class="w-full border border-[var(--Color-Text-Text-Brand)] text-[var(--Color-Text-Text-Brand)] py-2 rounded-lg hover:bg-[var(--Color-Text-Text-Brand)] hover:text-white transition-colors"
             >
               {{ $t("viewAllReviews") }}
-              </button>
+            </button>
           </div>
         </div>
       </div>
 
       <!-- More from Owner Section -->
       <div class="flex items-center py-6">
-        <h2
-          class="text-xl font-semibold text-[var(--Color-Text-Text-Primary)]"
-        >
+        <h2 class="text-xl font-semibold text-[var(--Color-Text-Text-Primary)]">
           {{ $t("moreFrom") }} {{ booking.sellerName || $t("owner") }}
         </h2>
       </div>
@@ -397,7 +435,9 @@
                 class="flex items-center justify-between text-sm text-[var(--Color-Text-Text-Secondary)] mb-2"
               >
                 <span class="flex items-center gap-1">
-                  <i class="fas fa-map-marker-alt text-[var(--Color-Text-Text-Brand)]"></i>
+                  <i
+                    class="fas fa-map-marker-alt text-[var(--Color-Text-Text-Brand)]"
+                  ></i>
                   {{ item.location || $t("defaultLocation") }}
                 </span>
                 <span class="flex items-center gap-1">
@@ -421,7 +461,7 @@
               </button>
             </div>
           </div>
-          
+
           <!-- No products available message -->
           <div
             v-else
@@ -437,7 +477,7 @@
         >
           {{ showAllProducts ? $t("showLess") : $t("viewAllItems") }}
         </button>
-          </div>
+      </div>
     </div>
 
     <!-- Booking Form Modal -->
@@ -453,11 +493,9 @@
           class="sticky top-0 bg-[var(--Color-Surface-Surface-Tertiary)] border-b border-[var(--Color-Boarder-Border-Primary)] p-6"
         >
           <div class="flex justify-between items-center">
-                          <h2
-                class="text-2xl font-bold text-[var(--Color-Text-Text-Primary)]"
-      >
-                {{ $t("rentConfirmation") }}
-              </h2>
+            <h2 class="text-2xl font-bold text-[var(--Color-Text-Text-Primary)]">
+              {{ $t("rentConfirmation") }}
+            </h2>
             <button
               @click="showBookingForm = false"
               class="text-[var(--Color-Text-Text-Secondary)] hover:text-[var(--Color-Text-Text-Primary)] text-2xl font-bold"
@@ -483,64 +521,57 @@
 
             <!-- Right: Rental Details -->
             <div class="space-y-4">
-          <div>
-                <h3
-                  class="text-xl font-bold text-[var(--Color-Text-Text-Primary)] mb-2"
-                >
+              <div>
+                <h3 class="text-xl font-bold text-[var(--Color-Text-Text-Primary)] mb-2">
                   {{ product?.title }}
                 </h3>
                 <p class="text-2xl font-bold text-[var(--Color-Text-Text-Brand)] mb-4">
                   {{ $t("egp") }} {{ product?.price || 0 }}/{{ $t("perDay") }}
-            </p>
-          </div>
+                </p>
+              </div>
 
-                            <!-- Picked Dates -->
+              <!-- Picked Dates -->
               <div class="bg-[var(--Color-Surface-Surface-Secondary)] rounded-lg p-4">
-                <h4
-                  class="font-semibold text-[var(--Color-Text-Text-Primary)] mb-2"
-                >
+                <h4 class="font-semibold text-[var(--Color-Text-Text-Primary)] mb-2">
                   {{ $t("pickedDates") }}
                 </h4>
                 <div class="space-y-2">
-                                    <div class="flex justify-between">
-                    <span
-                      class="text-[var(--Color-Text-Text-Secondary)]"
+                  <div class="flex justify-between">
+                    <span class="text-[var(--Color-Text-Text-Secondary)]"
                       >{{ $t("from") }}:</span
                     >
                     <span class="font-medium">{{
-                      booking.startDate ? formatDate(booking.startDate) : $t("notSelected")
+                      booking.startDate
+                        ? formatDate(booking.startDate)
+                        : $t("notSelected")
                     }}</span>
-          </div>
+                  </div>
                   <div class="flex justify-between">
-                    <span
-                      class="text-[var(--Color-Text-Text-Secondary)]"
+                    <span class="text-[var(--Color-Text-Text-Secondary)]"
                       >{{ $t("to") }}:</span
-            >
+                    >
                     <span class="font-medium">{{
                       booking.endDate ? formatDate(booking.endDate) : $t("notSelected")
                     }}</span>
-          </div>
+                  </div>
                 </div>
               </div>
 
               <!-- Subtotal -->
               <div class="bg-[var(--Color-Surface-Surface-Secondary)] rounded-lg p-4">
                 <div class="flex justify-between items-center">
-                                    <span
-                    class="text-[var(--Color-Text-Text-Secondary)]"
+                  <span class="text-[var(--Color-Text-Text-Secondary)]"
                     >{{ $t("subtotal") }}:</span
                   >
                   <span class="text-xl font-bold text-[var(--Color-Text-Text-Brand)]">
                     {{ $t("egp") }} {{ calculateSubtotal() }}
                   </span>
-          </div>
-        <p
-                  class="text-sm text-[var(--Color-Text-Text-Secondary)] mt-1"
-            >
+                </div>
+                <p class="text-sm text-[var(--Color-Text-Text-Secondary)] mt-1">
                   ({{ $t("egp") }}{{ product?.price || 0 }} × {{ calculateDays() }}
                   {{ $t("perDay") }})
-            </p>
-          </div>
+                </p>
+              </div>
             </div>
           </div>
 
@@ -604,43 +635,43 @@
                 Please Login/Sign up to complete the rent process
               </p>
               <div class="space-y-3">
-            <button
+                <button
                   @click="router.push('/signup')"
                   class="w-full bg-[var(--color-success-500)] text-white py-3 px-6 rounded-lg font-semibold hover:bg-[var(--color-success-600)] transition-colors"
-            >
+                >
                   Sign up now!
-            </button>
+                </button>
                 <p
                   class="text-center text-sm text-[var(--color-gray-600)] dark:text-[var(--color-gray-400)]"
                 >
                   Already have an account?
-            <button
+                  <button
                     @click="router.push('/login')"
                     class="text-[var(--color-success-500)] hover:underline"
-            >
+                  >
                     Login
-            </button>
+                  </button>
                 </p>
-          </div>
+              </div>
             </div>
 
             <div v-else class="space-y-4">
               <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
-          <div>
-            <label
+                <div>
+                  <label
                     class="block text-sm font-medium text-[var(--color-gray-700)] dark:text-[var(--color-gray-300)] mb-2"
-            >
+                  >
                     Name
                   </label>
-            <input
+                  <input
                     v-model="booking.userName"
-              type="text"
+                    type="text"
                     class="w-full p-3 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-[var(--color-gray-800)] dark:text-[var(--color-gray-200)]"
                     :placeholder="auth.currentUser?.displayName || 'Enter your name'"
                   />
-          </div>
-          <div>
-            <label
+                </div>
+                <div>
+                  <label
                     class="block text-sm font-medium text-[var(--color-gray-700)] dark:text-[var(--color-gray-300)] mb-2"
                   >
                     Phone Number
@@ -652,22 +683,22 @@
                     placeholder="0102 219 4510"
                     maxlength="14"
                     @input="formatPhoneNumber"
-              required
+                    required
                   />
-          </div>
-          <div>
-            <label
+                </div>
+                <div>
+                  <label
                     class="block text-sm font-medium text-[var(--color-gray-700)] dark:text-[var(--color-gray-300)] mb-2"
-            >
+                  >
                     Email
                   </label>
-            <input
+                  <input
                     v-model="booking.userEmail"
                     type="email"
                     class="w-full p-3 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-[var(--color-gray-800)] dark:text-[var(--color-gray-200)]"
                     :placeholder="auth.currentUser?.email || 'Enter your email'"
                   />
-          </div>
+                </div>
               </div>
             </div>
           </div>
@@ -688,7 +719,7 @@
                   >Tool:</span
                 >
                 <span class="font-medium">{{ product?.title }}</span>
-          </div>
+              </div>
               <div
                 class="flex justify-between items-center border-b border-dashed border-gray-300 dark:border-gray-600 pb-2"
               >
@@ -699,21 +730,21 @@
                 <div class="flex items-center space-x-2">
                   <span class="font-medium">{{ booking.sellerName }}</span>
                   <i class="fas fa-check-circle text-[var(--color-success-500)]"></i>
-      </div>
-    </div>
-    <div
+                </div>
+              </div>
+              <div
                 class="flex justify-between items-center border-b border-dashed border-gray-300 dark:border-gray-600 pb-2"
-    >
+              >
                 <span
                   class="text-[var(--color-gray-600)] dark:text-[var(--color-gray-400)]"
                   >Rental Days:</span
-      >
+                >
                 <span class="font-medium">{{ calculateDays() }}</span>
               </div>
-        <div
+              <div
                 class="flex justify-between items-center border-b border-dashed border-gray-300 dark:border-gray-600 pb-2"
-        >
-            <span
+              >
+                <span
                   class="text-[var(--color-gray-600)] dark:text-[var(--color-gray-400)]"
                   >Daily Rate:</span
                 >
@@ -722,7 +753,7 @@
               <div
                 class="flex justify-between items-center border-b border-dashed border-gray-300 dark:border-gray-600 pb-2"
               >
-            <span
+                <span
                   class="text-[var(--color-gray-600)] dark:text-[var(--color-gray-400)]"
                   >Delivery Fee:</span
                 >
@@ -731,22 +762,22 @@
                 >
               </div>
               <div class="flex justify-between items-center pt-2">
-            <span
+                <span
                   class="text-lg font-bold text-[var(--color-gray-800)] dark:text-[var(--color-gray-200)]"
                   >Total amount:</span
-            >
+                >
                 <span class="text-xl font-bold text-[var(--color-success-500)]"
                   >{{ $t("egp") }} {{ booking.totalPrice.toFixed(2) }}</span
                 >
+              </div>
+            </div>
           </div>
-        </div>
-      </div>
 
           <!-- Action Buttons -->
           <div
             class="flex justify-end space-x-4 pt-6 border-t border-[var(--Color-Boarder-Border-Primary)]"
           >
-      <button
+            <button
               @click="showBookingForm = false"
               class="px-6 py-3 border border-[var(--Color-Boarder-Border-Primary)] text-[var(--Color-Text-Text-Primary)] rounded-lg hover:bg-[var(--Color-Surface-Surface-Secondary)] transition-colors"
             >
@@ -758,7 +789,7 @@
               class="px-8 py-3 bg-[var(--Color-Surface-Surface-Brand)] text-[var(--Color-Text-Text-Invert)] rounded-lg font-semibold hover:bg-[var(--Color-Text-Text-Brand)] hover:text-white disabled:bg-gray-400 disabled:cursor-not-allowed transition-colors"
             >
               Confirm
-      </button>
+            </button>
           </div>
         </div>
       </div>
@@ -778,17 +809,14 @@
         >
           ×
         </button>
-        <h2
-          class="text-xl font-bold text-[var(--Color-Text-Text-Brand)] mb-4"
-        >
+        <h2 class="text-xl font-bold text-[var(--Color-Text-Text-Brand)] mb-4">
           {{ $t("addAReview") }}
         </h2>
         <form @submit.prevent="submitReview" class="space-y-4">
           <div>
-            <label
-              class="block text-[var(--Color-Text-Text-Primary)]"
-              >{{ $t("review") }}</label
-            >
+            <label class="block text-[var(--Color-Text-Text-Primary)]">{{
+              $t("review")
+            }}</label>
             <textarea
               v-model="newReview.review"
               class="w-full p-2 rounded-lg bg-[var(--Color-Surface-Surface-Secondary)] border border-[var(--Color-Boarder-Border-Primary)]"
@@ -797,8 +825,7 @@
             ></textarea>
           </div>
           <div>
-            <label
-              class="block text-[var(--Color-Text-Text-Primary)]"
+            <label class="block text-[var(--Color-Text-Text-Primary)]"
               >{{ $t("rate") }} (1 - 5)</label
             >
             <input
@@ -869,7 +896,9 @@
         >
           <!-- Loading State -->
           <div v-if="chatLoading" class="flex justify-center items-center h-32">
-            <div class="animate-spin rounded-full h-8 w-8 border-b-2 border-[var(--color-success-500)]"></div>
+            <div
+              class="animate-spin rounded-full h-8 w-8 border-b-2 border-[var(--color-success-500)]"
+            ></div>
           </div>
 
           <!-- Error State -->
@@ -879,7 +908,10 @@
           </div>
 
           <!-- Messages -->
-          <div v-else-if="chatMessages.length === 0" class="text-center text-gray-500 p-8">
+          <div
+            v-else-if="chatMessages.length === 0"
+            class="text-center text-gray-500 p-8"
+          >
             <i class="fas fa-comments text-4xl mb-4 opacity-50"></i>
             <p>No messages yet. Start the conversation!</p>
           </div>
@@ -891,32 +923,45 @@
               class="flex"
               :class="isOwnMessage(message) ? 'justify-end' : 'justify-start'"
             >
-                             <div
-                 class="max-w-xs lg:max-w-md px-4 py-2 rounded-lg relative"
-                 :class="
-                   isOwnMessage(message)
-                     ? 'bg-[var(--Color-Surface-Surface-Brand)] text-[var(--Color-Text-Text-Invert)]'
-                     : 'bg-[var(--Color-Surface-Surface-Tertiary)] text-[var(--Color-Text-Text-Primary)]'
-                 "
-               >
-                 <div class="flex items-center gap-2 mb-1">
-                   <span class="text-xs opacity-75">{{ message.senderName }}</span>
-                   <span class="text-xs opacity-75">{{ formatChatTime(message.timestamp) }}</span>
-                   <!-- Read indicator for own messages -->
-                   <span v-if="isOwnMessage(message)" class="text-xs opacity-75">
-                     <i :class="message.read ? 'fas fa-check-double text-blue-300' : 'fas fa-check text-gray-300'"></i>
-                   </span>
-                   <!-- Unread indicator for other's messages -->
-                   <span v-else-if="!message.read" class="w-2 h-2 bg-red-500 rounded-full"></span>
-                 </div>
-                 <p class="text-sm">{{ message.content }}</p>
-               </div>
+              <div
+                class="max-w-xs lg:max-w-md px-4 py-2 rounded-lg relative"
+                :class="
+                  isOwnMessage(message)
+                    ? 'bg-[var(--Color-Surface-Surface-Brand)] text-[var(--Color-Text-Text-Invert)]'
+                    : 'bg-[var(--Color-Surface-Surface-Tertiary)] text-[var(--Color-Text-Text-Primary)]'
+                "
+              >
+                <div class="flex items-center gap-2 mb-1">
+                  <span class="text-xs opacity-75">{{ message.senderName }}</span>
+                  <span class="text-xs opacity-75">{{
+                    formatChatTime(message.timestamp)
+                  }}</span>
+                  <!-- Read indicator for own messages -->
+                  <span v-if="isOwnMessage(message)" class="text-xs opacity-75">
+                    <i
+                      :class="
+                        message.read
+                          ? 'fas fa-check-double text-blue-300'
+                          : 'fas fa-check text-gray-300'
+                      "
+                    ></i>
+                  </span>
+                  <!-- Unread indicator for other's messages -->
+                  <span
+                    v-else-if="!message.read"
+                    class="w-2 h-2 bg-red-500 rounded-full"
+                  ></span>
+                </div>
+                <p class="text-sm">{{ message.content }}</p>
+              </div>
             </div>
           </div>
         </div>
 
-                <!-- Chat Input -->
-        <div class="p-4 border-t border-[var(--Color-Boarder-Border-Primary)] bg-[var(--Color-Surface-Surface-Tertiary)]">
+        <!-- Chat Input -->
+        <div
+          class="p-4 border-t border-[var(--Color-Boarder-Border-Primary)] bg-[var(--Color-Surface-Surface-Tertiary)]"
+        >
           <form @submit.prevent="sendChatMessage" class="flex gap-2">
             <input
               v-model="newChatMessage"
@@ -926,15 +971,15 @@
               class="flex-1 px-4 py-2 border border-[var(--Color-Boarder-Border-Primary)] rounded-lg focus:outline-none focus:ring-2 focus:ring-[var(--Color-Text-Text-Brand)] bg-[var(--Color-Surface-Surface-Secondary)] text-[var(--Color-Text-Text-Primary)]"
               :disabled="!auth.currentUser"
             />
-      <button
+            <button
               type="submit"
               :disabled="!newChatMessage.trim() || !auth.currentUser"
               class="px-6 py-2 bg-[var(--Color-Surface-Surface-Brand)] text-[var(--Color-Text-Text-Invert)] rounded-lg hover:bg-[var(--Color-Text-Text-Brand)] hover:text-white disabled:bg-gray-400 disabled:cursor-not-allowed transition-colors"
-      >
+            >
               <i class="fas fa-paper-plane"></i>
-      </button>
+            </button>
           </form>
-    </div>
+        </div>
       </div>
     </div>
 
@@ -1018,23 +1063,22 @@ const newReview = ref({
   userName: "",
 });
 
-
 const today = ref(new Date());
 const currentDate = ref(new Date());
 const selectedDates = ref({ start: null, end: null });
 
 const currentMonthYear = computed(() => {
-  return currentDate.value.toLocaleString(locale.value === 'ar' ? 'ar-EG' : 'en-US', {
+  return currentDate.value.toLocaleString(locale.value === "ar" ? "ar-EG" : "en-US", {
     month: "long",
     year: "numeric",
   });
 });
 
 const weekDays = computed(() => {
-  if (locale.value === 'ar') {
-    return ['أح', 'إث', 'ثل', 'أر', 'خم', 'جم', 'سب'];
+  if (locale.value === "ar") {
+    return ["أح", "إث", "ثل", "أر", "خم", "جم", "سب"];
   } else {
-    return ['Mo', 'Tu', 'We', 'Th', 'Fr', 'Sa', 'Su'];
+    return ["Mo", "Tu", "We", "Th", "Fr", "Sa", "Su"];
   }
 });
 
@@ -1074,11 +1118,9 @@ const checkPendingBookings = async () => {
   try {
     // Only run if we have a valid product ID
     if (!route.params.id) {
-      console.log("No product ID available for booking check");
       return;
     }
-    
-    console.log("Checking pending bookings for product:", route.params.id);
+
     const bookingsRef = collection(db, "bookings");
     const q = query(
       bookingsRef,
@@ -1086,7 +1128,6 @@ const checkPendingBookings = async () => {
       where("status", "==", "pending")
     );
     const querySnapshot = await getDocs(q);
-    console.log("Found", querySnapshot.docs.length, "pending bookings");
 
     const now = new Date();
     const todayMidnight = new Date(now);
@@ -1097,28 +1138,22 @@ const checkPendingBookings = async () => {
 
     for (const docSnap of querySnapshot.docs) {
       const bookingData = docSnap.data();
-      
+
       // Check if endDate exists and is valid
       if (!bookingData.endDate) {
         console.warn("Booking missing endDate:", docSnap.id);
         continue;
       }
-      
+
       const endDate = new Date(bookingData.endDate);
-      
+
       // Check if the date is valid
       if (isNaN(endDate.getTime())) {
         console.warn("Invalid endDate for booking:", docSnap.id, bookingData.endDate);
         continue;
       }
-      
+
       endDate.setHours(0, 0, 0, 0); // Set to 12:00 AM of the end date
-      console.log(
-        "Booking end date (midnight):",
-        endDate,
-        "Today midnight:",
-        todayMidnight
-      );
 
       if (todayMidnight > endDate) {
         // End date (at midnight) has passed, update product status to free
@@ -1126,7 +1161,6 @@ const checkPendingBookings = async () => {
           const productRef = doc(db, "products", bookingData.productId);
           await updateDoc(productRef, { status: "free" });
           await updateDoc(doc(db, "bookings", docSnap.id), { status: "completed" });
-          console.log("Updated status to free for product:", bookingData.productId);
         } catch (updateError) {
           console.warn("Failed to update booking/product status:", updateError);
           // Continue with other bookings even if this one fails
@@ -1136,7 +1170,6 @@ const checkPendingBookings = async () => {
         if (!earliestEndDate || endDate < earliestEndDate) {
           earliestEndDate = endDate;
         }
-        console.log("Active pending booking found with end date:", endDate);
       }
     }
 
@@ -1144,7 +1177,6 @@ const checkPendingBookings = async () => {
     if (earliestEndDate) {
       pendingEndDate.value = earliestEndDate; // Store the earliest end date for remaining time calculation
     }
-    console.log("isBookingPending set to:", isBookingPending.value);
   } catch (error) {
     console.error("Error checking pending bookings:", error);
     // Don't show error to user for this background check, just log it
@@ -1270,39 +1302,35 @@ const loadOwnerStats = async (sellerId) => {
 
 const loadOwnerProducts = async (sellerId) => {
   try {
-    console.log("Loading owner products for sellerId:", sellerId);
     const productsRef = collection(db, "products");
-    
+
     // Try multiple queries to find owner's products
     let ownerProductsFound = [];
-    
+
     // Query 1: Look for products with userId field
     const q1 = query(productsRef, where("userId", "==", sellerId));
     const querySnapshot1 = await getDocs(q1);
-    console.log("Query 1 (userId) returned", querySnapshot1.docs.length, "documents");
-    
+
     if (!querySnapshot1.empty) {
       ownerProductsFound = querySnapshot1.docs;
     } else {
       // Query 2: Look for products with sellerId field
       const q2 = query(productsRef, where("sellerId", "==", sellerId));
       const querySnapshot2 = await getDocs(q2);
-      console.log("Query 2 (sellerId) returned", querySnapshot2.docs.length, "documents");
-      
+
       if (!querySnapshot2.empty) {
         ownerProductsFound = querySnapshot2.docs;
       } else {
         // Query 3: Look for products with ownerName field
         const q3 = query(productsRef, where("ownerName", "==", booking.value.sellerName));
         const querySnapshot3 = await getDocs(q3);
-        console.log("Query 3 (ownerName) returned", querySnapshot3.docs.length, "documents");
-        
+
         if (!querySnapshot3.empty) {
           ownerProductsFound = querySnapshot3.docs;
         }
       }
     }
-    
+
     // If we found owner products, use them
     if (ownerProductsFound.length > 0) {
       ownerProducts.value = ownerProductsFound
@@ -1318,10 +1346,9 @@ const loadOwnerProducts = async (sellerId) => {
         .filter((product) => product.id !== route.params.id);
     } else {
       // If no owner products found, get other products from the database
-      console.log("No owner products found, fetching other products from database");
       const allProductsQuery = query(productsRef, orderBy("timestamp", "desc"));
       const allProductsSnapshot = await getDocs(allProductsQuery);
-      
+
       ownerProducts.value = allProductsSnapshot.docs
         .map((doc) => ({
           id: doc.id,
@@ -1335,8 +1362,6 @@ const loadOwnerProducts = async (sellerId) => {
         .filter((product) => product.id !== route.params.id)
         .slice(0, 6); // Limit to 6 products
     }
-    
-    console.log("Final ownerProducts count:", ownerProducts.value.length);
   } catch (error) {
     console.error("Error loading owner products:", error);
     ownerProducts.value = [];
@@ -1849,8 +1874,6 @@ const navigateToProduct = (productId) => {
   }
 };
 
-
-
 const navigateToRentConfirmation = () => {
   if (!selectedDates.value.start || !selectedDates.value.end) {
     Swal.fire({
@@ -1890,11 +1913,15 @@ const remainingTime = computed(() => {
 
   // Always show hours and minutes, with days if applicable
   const totalHours = diffDays * 24 + diffHours;
-  
-  if (locale.value === 'ar') {
-    return `${totalHours} ${totalHours === 1 ? t("hour") : t("hours")}, ${diffMinutes} ${diffMinutes === 1 ? t("minute") : t("minutes")}`;
+
+  if (locale.value === "ar") {
+    return `${totalHours} ${totalHours === 1 ? t("hour") : t("hours")}, ${diffMinutes} ${
+      diffMinutes === 1 ? t("minute") : t("minutes")
+    }`;
   } else {
-    return `${totalHours} hour${totalHours !== 1 ? "s" : ""}, ${diffMinutes} minute${diffMinutes !== 1 ? "s" : ""}`;
+    return `${totalHours} hour${totalHours !== 1 ? "s" : ""}, ${diffMinutes} minute${
+      diffMinutes !== 1 ? "s" : ""
+    }`;
   }
 });
 
@@ -1929,7 +1956,7 @@ const sendMessage = () => {
   // Open chat modal
   showChatModal.value = true;
   initializeChat();
-  
+
   // Mark existing messages as read after a short delay
   setTimeout(() => {
     markMessagesAsRead();
@@ -1953,57 +1980,64 @@ const initializeChat = async () => {
     chatError.value = null;
 
     // Create a unique chat room ID between the two users
-    const chatRoomId = [auth.currentUser.uid, booking.value.sellerId].sort().join('_');
-    
+    const chatRoomId = [auth.currentUser.uid, booking.value.sellerId].sort().join("_");
+
     // First, ensure the chat room exists
     await createOrGetChatRoom(chatRoomId);
-    
+
     // Set up real-time listener for messages
-    const messagesRef = collection(db, 'user-chats', chatRoomId, 'messages');
-    const messagesQuery = query(messagesRef, orderBy('timestamp', 'asc'));
-    
-    chatUnsubscribe.value = onSnapshot(messagesQuery, (snapshot) => {
-      const messages = [];
-      snapshot.forEach((doc) => {
-        messages.push({
-          id: doc.id,
-          ...doc.data(),
-          timestamp: doc.data().timestamp?.toDate() || new Date()
+    const messagesRef = collection(db, "user-chats", chatRoomId, "messages");
+    const messagesQuery = query(messagesRef, orderBy("timestamp", "asc"));
+
+    chatUnsubscribe.value = onSnapshot(
+      messagesQuery,
+      (snapshot) => {
+        const messages = [];
+        snapshot.forEach((doc) => {
+          messages.push({
+            id: doc.id,
+            ...doc.data(),
+            timestamp: doc.data().timestamp?.toDate() || new Date(),
+          });
         });
-      });
-      
-      // Check for new messages from other user
-      const newMessages = snapshot.docChanges().filter(change => 
-        change.type === 'added' && 
-        change.doc.data().senderId !== auth.currentUser?.uid
-      );
-      
-      if (newMessages.length > 0 && !showChatModal.value) {
-        // Show notification for new messages when chat is not open
-        Swal.fire({
-          icon: "info",
-          title: "New Message",
-          text: `You have a new message from ${booking.value.sellerName}`,
-          confirmButtonText: "View",
-          showCancelButton: true,
-          cancelButtonText: "Later"
-        }).then((result) => {
-          if (result.isConfirmed) {
-            showChatModal.value = true;
-          }
-        });
+
+        // Check for new messages from other user
+        const newMessages = snapshot
+          .docChanges()
+          .filter(
+            (change) =>
+              change.type === "added" &&
+              change.doc.data().senderId !== auth.currentUser?.uid
+          );
+
+        if (newMessages.length > 0 && !showChatModal.value) {
+          // Show notification for new messages when chat is not open
+          Swal.fire({
+            icon: "info",
+            title: "New Message",
+            text: `You have a new message from ${booking.value.sellerName}`,
+            confirmButtonText: "View",
+            showCancelButton: true,
+            cancelButtonText: "Later",
+          }).then((result) => {
+            if (result.isConfirmed) {
+              showChatModal.value = true;
+            }
+          });
+        }
+
+        chatMessages.value = messages;
+      },
+      (error) => {
+        console.error("Error loading chat messages:", error);
+        chatError.value = "Failed to load messages";
       }
-      
-      chatMessages.value = messages;
-    }, (error) => {
-      console.error('Error loading chat messages:', error);
-      chatError.value = 'Failed to load messages';
-    });
+    );
 
     chatLoading.value = false;
   } catch (error) {
-    console.error('Error initializing chat:', error);
-    chatError.value = 'Failed to initialize chat';
+    console.error("Error initializing chat:", error);
+    chatError.value = "Failed to initialize chat";
     chatLoading.value = false;
   }
 };
@@ -2011,9 +2045,9 @@ const initializeChat = async () => {
 // Create or get chat room
 const createOrGetChatRoom = async (chatRoomId) => {
   try {
-    const chatRoomRef = doc(db, 'user-chats', chatRoomId);
+    const chatRoomRef = doc(db, "user-chats", chatRoomId);
     const chatRoomDoc = await getDoc(chatRoomRef);
-    
+
     if (!chatRoomDoc.exists()) {
       // Create new chat room
       await setDoc(chatRoomRef, {
@@ -2023,23 +2057,24 @@ const createOrGetChatRoom = async (chatRoomId) => {
         productId: route.params.id,
         productTitle: product.value.title,
         lastMessage: null,
-        lastMessageTime: null
+        lastMessageTime: null,
       });
     }
   } catch (error) {
-    console.error('Error creating/getting chat room:', error);
+    console.error("Error creating/getting chat room:", error);
   }
 };
 
 // Send a message to the product owner
 const sendChatMessage = async () => {
-  if (!newChatMessage.value.trim() || !auth.currentUser || !booking.value.sellerId) return;
+  if (!newChatMessage.value.trim() || !auth.currentUser || !booking.value.sellerId)
+    return;
 
   try {
-    const chatRoomId = [auth.currentUser.uid, booking.value.sellerId].sort().join('_');
-    const messagesRef = collection(db, 'user-chats', chatRoomId, 'messages');
-    const chatRoomRef = doc(db, 'user-chats', chatRoomId);
-    
+    const chatRoomId = [auth.currentUser.uid, booking.value.sellerId].sort().join("_");
+    const messagesRef = collection(db, "user-chats", chatRoomId, "messages");
+    const chatRoomRef = doc(db, "user-chats", chatRoomId);
+
     const messageData = {
       content: newChatMessage.value.trim(),
       senderId: auth.currentUser.uid,
@@ -2050,26 +2085,26 @@ const sendChatMessage = async () => {
       productId: route.params.id,
       productTitle: product.value.title,
       timestamp: serverTimestamp(),
-      read: false
+      read: false,
     };
 
     // Add message to messages collection
     await addDoc(messagesRef, messageData);
-    
+
     // Update chat room with last message info
     await updateDoc(chatRoomRef, {
       lastMessage: newChatMessage.value.trim(),
       lastMessageTime: serverTimestamp(),
-      updatedAt: serverTimestamp()
+      updatedAt: serverTimestamp(),
     });
-    
+
     newChatMessage.value = "";
 
     // Scroll to bottom after sending
     await nextTick();
     scrollChatToBottom();
   } catch (error) {
-    console.error('Error sending message:', error);
+    console.error("Error sending message:", error);
     Swal.fire({
       icon: "error",
       title: "Error",
@@ -2081,7 +2116,7 @@ const sendChatMessage = async () => {
 
 // Scroll chat to bottom
 const scrollChatToBottom = () => {
-  const chatContainer = document.getElementById('chat-messages-container');
+  const chatContainer = document.getElementById("chat-messages-container");
   if (chatContainer) {
     chatContainer.scrollTop = chatContainer.scrollHeight;
   }
@@ -2101,33 +2136,33 @@ const closeChatModal = () => {
 // Mark messages as read
 const markMessagesAsRead = async () => {
   if (!auth.currentUser || !booking.value.sellerId) return;
-  
+
   try {
-    const chatRoomId = [auth.currentUser.uid, booking.value.sellerId].sort().join('_');
-    const messagesRef = collection(db, 'user-chats', chatRoomId, 'messages');
-    
+    const chatRoomId = [auth.currentUser.uid, booking.value.sellerId].sort().join("_");
+    const messagesRef = collection(db, "user-chats", chatRoomId, "messages");
+
     // Get unread messages from other user
     const unreadMessages = chatMessages.value.filter(
-      message => message.senderId !== auth.currentUser.uid && !message.read
+      (message) => message.senderId !== auth.currentUser.uid && !message.read
     );
-    
+
     // Mark them as read
-    const updatePromises = unreadMessages.map(message => {
-      const messageRef = doc(db, 'user-chats', chatRoomId, 'messages', message.id);
+    const updatePromises = unreadMessages.map((message) => {
+      const messageRef = doc(db, "user-chats", chatRoomId, "messages", message.id);
       return updateDoc(messageRef, { read: true });
     });
-    
+
     await Promise.all(updatePromises);
   } catch (error) {
-    console.error('Error marking messages as read:', error);
+    console.error("Error marking messages as read:", error);
   }
 };
 
 // Format chat message time
 const formatChatTime = (timestamp) => {
-  if (!timestamp) return '';
+  if (!timestamp) return "";
   const date = new Date(timestamp);
-  return date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+  return date.toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" });
 };
 
 // Check if message is from current user
@@ -2139,7 +2174,7 @@ const isOwnMessage = (message) => {
 const unreadMessageCount = computed(() => {
   if (!auth.currentUser) return 0;
   return chatMessages.value.filter(
-    message => message.senderId !== auth.currentUser.uid && !message.read
+    (message) => message.senderId !== auth.currentUser.uid && !message.read
   ).length;
 });
 
@@ -2165,31 +2200,46 @@ const calculateSubtotal = () => {
 };
 
 // Watch for new chat messages and auto-scroll to bottom
-watch(chatMessages, () => {
-  nextTick(() => {
-    scrollChatToBottom();
-  });
-}, { deep: true });
+watch(
+  chatMessages,
+  () => {
+    nextTick(() => {
+      scrollChatToBottom();
+    });
+  },
+  { deep: true }
+);
 
 // Watch for seller information to initialize chat when available
-watch(() => booking.value.sellerId, (newSellerId) => {
-  if (newSellerId && auth.currentUser && auth.currentUser.uid !== newSellerId && !chatUnsubscribe.value) {
-    initializeChat();
+watch(
+  () => booking.value.sellerId,
+  (newSellerId) => {
+    if (
+      newSellerId &&
+      auth.currentUser &&
+      auth.currentUser.uid !== newSellerId &&
+      !chatUnsubscribe.value
+    ) {
+      initializeChat();
+    }
   }
-});
+);
 
 onMounted(() => {
   loadProduct();
   loadReviews();
   today.value = new Date();
   today.value.setHours(0, 0, 0, 0);
-  console.log("Auth state on mount:", auth.currentUser);
 
   // Initialize chat listener for notifications (if user is authenticated and not the owner)
-  if (auth.currentUser && booking.value.sellerId && auth.currentUser.uid !== booking.value.sellerId) {
+  if (
+    auth.currentUser &&
+    booking.value.sellerId &&
+    auth.currentUser.uid !== booking.value.sellerId
+  ) {
     initializeChat();
   }
-  
+
   // Cleanup function
   return () => {
     if (chatUnsubscribe.value) {

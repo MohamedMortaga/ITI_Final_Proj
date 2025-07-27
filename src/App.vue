@@ -61,10 +61,6 @@ function toggleChat() {
   isChatOpen.value = !isChatOpen.value;
 }
 
-function handleUserAction(action) {
-  console.log('User action:', action);
-}
-
 // Initialize real-time data on app mount
 onMounted(() => {
   initialize();

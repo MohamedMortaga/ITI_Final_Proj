@@ -122,7 +122,6 @@ const isCancelable = (startDateStr) => {
   const now = new Date();
   const diffMs = now - startDate;
   const hoursPassed = diffMs / (1000 * 60 * 60);
-  console.log(`startDate: ${startDate}, hoursPassed: ${hoursPassed}`);
   return hoursPassed > 10; // Show button only after 10 hours
 };
 

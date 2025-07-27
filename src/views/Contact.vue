@@ -248,7 +248,6 @@ export default {
 
       try {
         const user = auth.currentUser;
-        console.log("User:", user); // Debug: Check if user is authenticated
         const contactData = {
           name: form.value.name,
           email: form.value.email.toLowerCase(),
@@ -256,10 +255,8 @@ export default {
           userId: user ? user.uid : null,
           createdAt: serverTimestamp(),
         };
-        console.log("Contact Data:", contactData); // Debug: Log data before saving
 
         const docRef = await addDoc(collection(db, "contacts"), contactData);
-        console.log("Document written with ID: ", docRef.id); // Debug: Log document ID
 
         Swal.fire({
           icon: "success",

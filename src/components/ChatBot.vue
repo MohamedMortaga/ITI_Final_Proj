@@ -563,7 +563,6 @@ function updateSystemPrompt() {
     type: "text",
     timestamp: Date.now(),
   });
-  console.log("System prompt updated:", initialPrompt);
 }
 
 async function checkAndLogWarnings(response, chatId, timestamp) {
@@ -670,7 +669,6 @@ onMounted(() => {
           status: doc.data().status || "Unknown",
           totalPrice: doc.data().totalPrice || 0,
         }));
-      console.log("Current bookings for user:", userBookings.value);
       productsLoaded.value = true;
     },
     (error) => {

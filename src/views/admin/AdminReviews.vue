@@ -135,7 +135,6 @@ const updateProductsMap = () => {
 
 function enrich(review) {
     const prod = productsMap.value[review.productId] || {}
-    console.log('Product ID:', review.productId, '→ Title:', prod.title)
     return {
         ...review,
         productName: prod.title,
