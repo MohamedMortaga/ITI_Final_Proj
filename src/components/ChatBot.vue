@@ -143,7 +143,7 @@
 import { ref, computed, onMounted, nextTick, onUnmounted, watch } from "vue";
 import { useRoute } from "vue-router";
 import { getAuth, onAuthStateChanged } from "firebase/auth";
-import { collection, onSnapshot, doc } from "firebase/firestore";
+import { collection, onSnapshot, doc, setDoc } from "firebase/firestore";
 import { auth, db } from "@/firebase/config";
 
 const emit = defineEmits(["close", "user-action"]);
@@ -183,7 +183,14 @@ const productsLoaded = ref(false);
 
 const currentChatMessages = computed(() => {
   const chat = chats.value.find((c) => c.id === currentChatId.value);
-  return chat ? chat.messages.filter((msg) => msg.role !== "system") : [];
+  return chat
+    ? chat.messages.filter(
+        (msg) =>
+          msg.role !== "system" &&
+          !msg.content.includes("warnings:") &&
+          !msg.content.includes("isClean:")
+      )
+    : [];
 });
 
 function createNewChat() {
@@ -191,6 +198,7 @@ function createNewChat() {
   chats.value.push({ id: chatId, title: "New Chat", messages: [] });
   currentChatId.value = chatId;
   stagedImage.value = null;
+  updateSystemPrompt();
 }
 
 function updateChatTitle(chat) {
@@ -206,6 +214,7 @@ function switchChat(chatId) {
   currentChatId.value = chatId;
   stagedImage.value = null;
   scrollToBottom();
+  processExistingChats();
 }
 
 function closeChat(chatId) {
@@ -386,6 +395,7 @@ async function sendMessage() {
       type: "text",
       timestamp: Date.now(),
     });
+    checkAndLogWarnings(aiResponse, chat.id, timestamp);
     stagedImage.value = null;
     scrollToBottom();
     emit("user-action", { action: "image-upload", content: stagedImage.value });
@@ -432,6 +442,7 @@ async function sendMessage() {
       type: "text",
       timestamp: Date.now(),
     });
+    checkAndLogWarnings(aiResponse, chat.id, timestamp);
     stagedImage.value = null;
     scrollToBottom();
     emit("user-action", { action: "message", content: message });
@@ -472,14 +483,13 @@ function deleteStagedImage() {
   scrollToBottom();
 }
 
-// Function to update system prompt
 function updateSystemPrompt() {
   const chat = chats.value[0];
   if (!chat) return;
 
   const initialPrompt = `
     You are an AI assistant for a website with the following structure and features:
-    - If a user asks for products or a product, provide a list of products using the details provided below. Only list products from the provided list.
+    - If a user asks for products or a product, provide a list of travelling products and services using the details provided below. Only list products from the provided list.
     - Your role is to assist users navigating the site, answering questions about products, login/signup processes, contact information, and more.
     - Track user actions (e.g., navigation, message sending, image uploads) and provide context-aware responses.
     - If a user asks for help or performs an action, suggest assistance with a message around the chatbot icon.
@@ -556,12 +566,81 @@ function updateSystemPrompt() {
   console.log("System prompt updated:", initialPrompt);
 }
 
+async function checkAndLogWarnings(response, chatId, timestamp) {
+  const prompt = `Review the following response for potential illegal content such as phone numbers (e.g., patterns like XXX-XXX-XXXX or XXXXXXXXXX), email addresses, or the term 'illegal': ${response}. Return a JSON object with the following structure: { warnings: [{ messageId: string, content: string, issue: string, timestamp: number }], isClean: boolean }. Do not include any other text.`;
+  const aiResponse = await sendMessageToAI(prompt);
+  try {
+    const result = JSON.parse(aiResponse);
+    if (result.warnings && result.warnings.length > 0) {
+      result.warnings.forEach((warning) => {
+        setDoc(
+          doc(
+            db,
+            "warnings",
+            `warning_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`
+          ),
+          {
+            chatId: chatId,
+            userId: user.value?.uid || "anonymous",
+            messageId: warning.messageId || "unknown",
+            content: warning.content || "",
+            issue: warning.issue || "Unknown issue",
+            timestamp: warning.timestamp || timestamp,
+            detectedAt: new Date().toISOString(),
+          }
+        ).catch((error) => console.error("Error saving warning:", error));
+      });
+    }
+  } catch (error) {
+    console.error("Failed to parse AI response:", error);
+  }
+}
+
+async function processExistingChats() {
+  const chat = chats.value.find((c) => c.id === currentChatId.value);
+  if (!chat || chat.messages.length === 0) return;
+
+  const existingMessages = chat.messages
+    .filter((m) => m.type === "text")
+    .map((m) => ({ role: m.role, content: m.content }));
+  if (existingMessages.length > 0) {
+    const prompt = `Review the following messages for potential illegal content such as phone numbers (e.g., patterns like XXX-XXX-XXXX or XXXXXXXXXX), email addresses, or the term 'illegal': ${JSON.stringify(
+      existingMessages
+    )}. Return a JSON object with the following structure: { warnings: [{ messageId: string, content: string, issue: string, timestamp: number }], isClean: boolean }. Do not include any other text.`;
+    const response = await sendMessageToAI(prompt);
+    try {
+      const result = JSON.parse(response);
+      if (result.warnings && result.warnings.length > 0) {
+        result.warnings.forEach((warning) => {
+          setDoc(
+            doc(
+              db,
+              "warnings",
+              `warning_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`
+            ),
+            {
+              chatId: chat.id,
+              userId: user.value?.uid || "anonymous",
+              messageId: warning.messageId || "unknown",
+              content: warning.content || "",
+              issue: warning.issue || "Unknown issue",
+              timestamp: warning.timestamp || Date.now(),
+              detectedAt: new Date().toISOString(),
+            }
+          ).catch((error) => console.error("Error saving warning:", error));
+        });
+      }
+    } catch (error) {
+      console.error("Failed to parse AI response:", error);
+    }
+  }
+}
+
 onMounted(() => {
   if (chats.value.length === 0) {
     createNewChat();
   }
 
-  // Fetch products in real-time from Firestore
   const unsubscribeProducts = onSnapshot(
     collection(db, "products"),
     (querySnapshot) => {
@@ -579,7 +658,6 @@ onMounted(() => {
     }
   );
 
-  // Fetch bookings in real-time from Firestore
   const unsubscribeBookings = onSnapshot(
     collection(db, "bookings"),
     (querySnapshot) => {
@@ -600,12 +678,10 @@ onMounted(() => {
     }
   );
 
-  // Watch authentication state and fetch user balance dynamically
-  unsubscribe.value = onAuthStateChanged(auth, (currentUser) => {
+  const unsubscribeAuth = onAuthStateChanged(auth, (currentUser) => {
     user.value = currentUser;
     let unsubscribeUserBalance = null;
     if (currentUser) {
-      // Fetch user balance for the logged-in user
       unsubscribeUserBalance = onSnapshot(
         doc(db, "userbalance", currentUser.uid),
         (docSnap) => {
@@ -643,7 +719,7 @@ onMounted(() => {
             };
           }
           productsLoaded.value = true;
-          updateSystemPrompt(); // Update system prompt after balance is fetched
+          updateSystemPrompt();
         },
         (error) => {
           console.error("Error fetching user balance:", error);
@@ -660,11 +736,10 @@ onMounted(() => {
             username: null,
           };
           productsLoaded.value = true;
-          updateSystemPrompt(); // Update system prompt even on error
+          updateSystemPrompt();
         }
       );
     } else {
-      // Handle no user logged in
       userBalance.value = {
         balance: 0,
         email: "",
@@ -678,16 +753,14 @@ onMounted(() => {
         username: null,
       };
       productsLoaded.value = true;
-      updateSystemPrompt(); // Update system prompt for no user
+      updateSystemPrompt();
     }
 
-    // Clean up balance subscription when user changes
     onUnmounted(() => {
       if (unsubscribeUserBalance) unsubscribeUserBalance();
     });
   });
 
-  // Watch for changes in userBalance and update system prompt
   watch(
     () => [userBalance.value, productsLoaded.value, userBookings.value.length],
     () => {
@@ -1052,4 +1125,4 @@ onMounted(() => {
     padding: 3px 6px;
   }
 }
-</style> 
+</style>
