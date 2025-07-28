@@ -1,7 +1,7 @@
 <template>
   <div
     :dir="i18n.locale.value === 'ar' ? 'rtl' : 'ltr'"
-    class="min-h-screen flex items-center justify-center bg-[var(--Color-Surface-Surface-Primary)] text-[var(--Color-Text-Text-Primary)] px-[88px] overflow-y-hidden"
+    class="min-h-screen flex items-center justify-center bg-[var(--Color-Surface-Surface-Primary)] text-[var(--Color-Text-Text-Primary)] px-6 md:px-6 lg:px-[88px] overflow-y-hidden"
   >
     <div
       class="max-w-6xl w-full flex flex-col items-center justify-between xl:max-w-7xl 2xl:max-w-[1500px] bg-[var(--Color-Surface-Surface-Primary)]"
@@ -9,7 +9,7 @@
     >
       <!-- Form Section -->
       <div
-        class="w-full p-0 md:p-6 lg:w-1/2 lg:p-10 xl:p-12 bg-[var(--Color-Surface-Surface-Primary)] text-[var(--Color-Text-Text-Primary)]"
+        class="w-full p-6 md:p-6 lg:w-1/2 lg:p-10 xl:p-12 bg-[var(--Color-Surface-Surface-Primary)] text-[var(--Color-Text-Text-Primary)]"
         :class="i18n.locale.value === 'ar' ? 'lg:order-2' : 'lg:order-1'"
       >
         <form
@@ -26,13 +26,13 @@
             class="font-semibold mb-1 lg:text-base xl:text-lg text-[var(--Color-Text-Text-Secondary)]"
             :class="i18n.locale.value === 'ar' ? 'text-right' : 'text-left'"
           >
-            {{ $t("haveSomethingToShare") }}
+            {{ i18n.locale.value === 'ar' ? $t('haveSomethingToShare') : 'We are always happy to hear from you.' }}
           </p>
           <p
             class="text-[var(--Color-Text-Text-Secondary)] mb-6 lg:text-base xl:text-lg"
             :class="i18n.locale.value === 'ar' ? 'text-right' : 'text-left'"
           >
-            {{ $t("fillOutForm") }}
+            {{ i18n.locale.value === 'ar' ? $t('fillOutForm') : 'Please fill out the form below and our team will get back to you as soon as possible.' }}
           </p>
 
           <!-- Name -->
@@ -150,13 +150,12 @@
       {{ $t("otherWaysToContact") }}
     </p>
     <div
-      class="flex flex-col gap-10"
-      :class="i18n.locale.value === 'ar' ? 'md:flex-row-reverse' : 'md:flex-row'"
+      class="flex flex-col md:flex-row gap-6 md:gap-8 lg:gap-12 w-full max-w-3xl justify-center items-center"
       :style="i18n.locale.value === 'ar' ? 'direction: rtl' : 'direction: ltr'"
     >
-      <div class="flex flex-col items-center">
+      <div class="flex-1 min-w-[220px] max-w-xs flex flex-col items-center bg-transparent">
         <span
-          class="inline-flex items-center justify-center w-12 h-12 mb-2 rounded-full bg-[var(--Color-Surface-Surface-Primary)] border border-[var(--Color-Boarder-Border-Primary)]"
+          class="inline-flex items-center justify-center w-14 h-14 mb-2 rounded-full bg-[var(--Color-Surface-Surface-Primary)] border border-[var(--Color-Boarder-Border-Primary)]"
         >
           <img src="@/assets/Message.svg" alt="Email" class="w-6 h-6" />
         </span>
@@ -167,15 +166,15 @@
           {{ $t("emailAddress") }}
         </p>
         <p
-          class="font-bold text-[var(--Color-Text-Text-Brand)]"
+          class="font-bold text-[var(--Color-Text-Text-Brand)] break-all"
           :class="i18n.locale.value === 'ar' ? 'text-right' : 'text-left'"
         >
           support@example.com
         </p>
       </div>
-      <div class="flex flex-col items-center">
+      <div class="flex-1 min-w-[220px] max-w-xs flex flex-col items-center bg-transparent">
         <span
-          class="inline-flex items-center justify-center w-12 h-12 mb-2 rounded-full bg-[var(--Color-Surface-Surface-Primary)] border border-[var(--Color-Boarder-Border-Primary)]"
+          class="inline-flex items-center justify-center w-14 h-14 mb-2 rounded-full bg-[var(--Color-Surface-Surface-Primary)] border border-[var(--Color-Boarder-Border-Primary)]"
         >
           <img src="@/assets/Phone.svg" alt="Phone" class="w-6 h-6" />
         </span>
@@ -192,9 +191,9 @@
           +1 234 567 890
         </p>
       </div>
-      <div class="flex flex-col items-center">
+      <div class="flex-1 min-w-[220px] max-w-xs flex flex-col items-center bg-transparent">
         <span
-          class="inline-flex items-center justify-center w-12 h-12 mb-2 rounded-full bg-[var(--Color-Surface-Surface-Primary)] border border-[var(--Color-Boarder-Border-Primary)]"
+          class="inline-flex items-center justify-center w-14 h-14 mb-2 rounded-full bg-[var(--Color-Surface-Surface-Primary)] border border-[var(--Color-Boarder-Border-Primary)]"
         >
           <img src="@/assets/Pin_alt.svg" alt="Location" class="w-6 h-6" />
         </span>

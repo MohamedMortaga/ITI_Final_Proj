@@ -42,15 +42,27 @@
           <div class="hidden lg:flex items-center gap-4">
             <!-- Dark Mode Toggle -->
             <div class="flex items-center">
-              <input
-                type="checkbox"
-                class="custom-toggle"
-                id="checkbox"
-                v-model="isDarkMode"
-              />
-              <label for="checkbox" class="custom-toggle-label">
-                <span class="toggle-icon"></span>
-              </label>
+              <button
+                @click="isDarkMode = !isDarkMode"
+                class="relative w-16 h-9 flex items-center bg-gray-25 dark:bg-gray-600 rounded-full transition-colors focus:outline-none border-0"
+                :aria-pressed="isDarkMode ? 'true' : 'false'"
+                title="Toggle dark mode"
+                type="button"
+              >
+                <span
+                  class="absolute top-1 left-1 w-7 h-7 flex items-center justify-center rounded-full transition-all duration-300"
+                  :class="isDarkMode ? 'translate-x-7 bg-gray-400' : 'translate-x-0 bg-white'"
+                  style="transition: transform 0.3s cubic-bezier(.4,0,.2,1); border-radius: 50%;"
+                >
+                  <svg v-if="!isDarkMode" class="w-5 h-5" :style="'color: var(--Color-Text-Text-Brand);'" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <circle cx="12" cy="12" r="5" stroke-width="2" stroke="currentColor" fill="none" />
+                    <path stroke="currentColor" stroke-width="2" d="M12 1v2m0 18v2m11-11h-2M3 12H1m16.95 7.07l-1.41-1.41M6.34 6.34L4.93 4.93m12.02 0l-1.41 1.41M6.34 17.66l-1.41 1.41" />
+                  </svg>
+                  <svg v-else class="w-5 h-5" :style="'color: var(--Color-Text-Text-Brand);'" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke="currentColor" stroke-width="2" d="M21 12.79A9 9 0 1111.21 3a7 7 0 109.79 9.79z" />
+                  </svg>
+                </span>
+              </button>
             </div>
 
             <!-- Language Selector -->
@@ -91,50 +103,18 @@
               </div>
             </div>
 
-            <!-- User Profile Image with Dropdown -->
-            <div v-if="isAuthenticated" class="relative flex items-center">
+            <!-- User Profile Image (no dropdown) -->
+            <router-link
+              v-if="isAuthenticated"
+              to="/profile"
+              class="flex items-center"
+            >
               <img
                 :src="userProfileImage || '../../assets/default.png'"
                 alt="User Profile"
                 class="h-8 w-8 sm:h-10 sm:w-10 rounded-full cursor-pointer hover:opacity-80 transition-opacity"
-                @click="toggleDropdown"
               />
-              <div
-                v-if="showDropdown"
-                :class="[
-                  'absolute top-full mt-2 w-48 shadow-lg rounded-md z-10',
-                  currentLang === 'ar' ? 'left-0 right-auto text-right' : 'right-0',
-                ]"
-                style="background-color: var(--Color-Surface-Surface-Primary)"
-              >
-                <router-link
-                  to="/profile"
-                  class="block px-4 py-2 text-sm hover:bg-[var(--Color-Surface-Surface-Brand)] transition-colors"
-                  style="color: var(--Color-Text-Text-Primary)"
-                  @click="closeDropdown"
-                >
-                  {{ $t("profile") }}
-                </router-link>
-                <router-link
-                  to="/settings"
-                  class="block px-4 py-2 text-sm hover:bg-[var(--Color-Surface-Surface-Brand)] transition-colors"
-                  style="color: var(--Color-Text-Text-Primary)"
-                  @click="closeDropdown"
-                >
-                  {{ $t("settings") }}
-                </router-link>
-                <button
-                  @click="handleLogout"
-                  :class="[
-                    'block w-full px-4 py-2 text-sm hover:bg-[var(--Color-Surface-Surface-Brand)] transition-colors',
-                    currentLang === 'ar' ? 'text-right' : 'text-left',
-                  ]"
-                  style="color: var(--Color-Text-Text-Primary)"
-                >
-                  {{ $t("logout") }}
-                </button>
-              </div>
-            </div>
+            </router-link>
 
             <router-link
               v-if="!isAuthenticated"
@@ -171,17 +151,18 @@
       </div>
 
       <!-- Mobile menu -->
-      <DisclosurePanel class="lg:hidden">
-        <div class="pt-2 pb-3 space-y-1">
+      <DisclosurePanel class="lg:hidden" v-slot="{ close }">
+        <div class="pt-2 pb-3 space-y-1 ">
           <!-- Navigation links -->
           <router-link
             v-for="link in navLinks"
             :key="link.to"
             :to="link.to"
-            class="block px-3 py-2 rounded-md text-base font-medium hover:bg-[var(--Color-Surface-Surface-Brand)] transition-colors"
+            class="block px-3 py-2 rounded-md text-base font-medium transition-colors hover:bg-gray-100 dark:hover:bg-gray-700"
             :class="{
               'text-[var(--Color-Text-Text-Brand)] font-bold': $route.path === link.to,
             }"
+            @click="close()"
           >
             {{ $t(link.text) }}
           </router-link>
@@ -189,42 +170,14 @@
           <!-- Profile/Login (moved to mobile menu) -->
           <div v-if="isAuthenticated" class="relative px-3 py-2">
             <div class="flex items-center gap-2">
-              <img
-                :src="userProfileImage || '../../assets/default.png'"
-                alt="User Profile"
-                class="h-8 w-8 rounded-full cursor-pointer hover:opacity-80 transition-opacity"
-                @click="toggleDropdown"
-              />
+              <router-link to="/profile" @click="close()">
+                <img
+                  :src="userProfileImage || '../../assets/default.png'"
+                  alt="User Profile"
+                  class="h-8 w-8 rounded-full cursor-pointer hover:opacity-80 transition-opacity"
+                />
+              </router-link>
               <span class="text-base font-medium">{{ $t("profile") }}</span>
-            </div>
-            <div
-              v-if="showDropdown"
-              class="mt-2 w-full shadow-lg rounded-md z-10"
-              style="background-color: var(--Color-Surface-Surface-Primary)"
-            >
-              <router-link
-                to="/profile"
-                class="block px-4 py-2 text-sm hover:bg-[var(--Color-Surface-Surface-Brand)] transition-colors"
-                style="color: var(--Color-Text-Text-Primary)"
-                @click="closeDropdown"
-              >
-                {{ $t("profile") }}
-              </router-link>
-              <router-link
-                to="/settings"
-                class="block px-4 py-2 text-sm hover:bg-[var(--Color-Surface-Surface-Brand)] transition-colors"
-                style="color: var(--Color-Text-Text-Primary)"
-                @click="closeDropdown"
-              >
-                {{ $t("settings") }}
-              </router-link>
-              <button
-                @click="handleLogout"
-                class="block w-full text-left px-4 py-2 text-sm hover:bg-[var(--Color-Surface-Surface-Brand)] transition-colors"
-                style="color: var(--Color-Text-Text-Primary)"
-              >
-                {{ $t("logout") }}
-              </button>
             </div>
           </div>
 
@@ -232,21 +185,34 @@
             v-if="!isAuthenticated"
             to="/login"
             class="block px-3 py-2 rounded-md text-base font-medium bg-[var(--Color-Surface-Surface-Brand)] hover:bg-[var(--Colors-Primary-700)] text-[var(--Color-Text-Text-Invert)] transition-colors"
+            @click="close()"
           >
             {{ $t("login") }}
           </router-link>
 
           <!-- Dark Mode Toggle -->
           <div class="p-3 py-2">
-            <input
-              type="checkbox"
-              class="custom-toggle"
-              id="checkbox-mobile"
-              v-model="isDarkMode"
-            />
-            <label for="checkbox-mobile" class="custom-toggle-label ml-2">
-              <span class="toggle-icon"></span>
-            </label>
+            <button
+              @click="close(); isDarkMode = !isDarkMode"
+              class="relative w-16 h-9 flex items-center bg-gray-25 dark:bg-gray-600 rounded-full transition-colors focus:outline-none border-0"
+              :aria-pressed="isDarkMode ? 'true' : 'false'"
+              title="Toggle dark mode"
+              type="button"
+            >
+              <span
+                class="absolute top-1 left-1 w-7 h-7 flex items-center justify-center rounded-full transition-all duration-300"
+                :class="isDarkMode ? 'translate-x-7 bg-gray-400' : 'translate-x-0 bg-white'"
+                style="transition: transform 0.3s cubic-bezier(.4,0,.2,1); border-radius: 50%;"
+              >
+                <svg v-if="!isDarkMode" class="w-5 h-5" :style="'color: var(--Color-Text-Text-Brand);'" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <circle cx="12" cy="12" r="5" stroke-width="2" stroke="currentColor" fill="none" />
+                  <path stroke="currentColor" stroke-width="2" d="M12 1v2m0 18v2m11-11h-2M3 12H1m16.95 7.07l-1.41-1.41M6.34 6.34L4.93 4.93m12.02 0l-1.41 1.41M6.34 17.66l-1.41 1.41" />
+                </svg>
+                <svg v-else class="w-5 h-5" :style="'color: var(--Color-Text-Text-Brand);'" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke="currentColor" stroke-width="2" d="M21 12.79A9 9 0 1111.21 3a7 7 0 109.79 9.79z" />
+                </svg>
+              </span>
+            </button>
           </div>
 
           <!-- Language Selector -->
@@ -273,7 +239,7 @@
               <button
                 v-for="lang in languages"
                 :key="lang"
-                @click="changeLanguage(lang)"
+                @click="changeLanguage(lang); close(); showLanguageDropdown = false;"
                 class="block w-full text-left px-4 py-2 text-sm hover:bg-[var(--Color-Surface-Surface-Brand)] transition-colors"
                 style="color: var(--Color-Text-Text-Primary)"
               >
@@ -300,7 +266,6 @@ const route = useRoute();
 const isDarkMode = ref(false);
 const isAuthenticated = ref(false);
 const userProfileImage = ref("");
-const showDropdown = ref(false);
 const showLanguageDropdown = ref(false);
 const currentLang = ref(locale.value);
 const languages = ref(["en", "ar"]);
@@ -388,14 +353,6 @@ const handleLogout = async () => {
     });
     router.push("/home");
   }
-};
-
-const toggleDropdown = () => {
-  showDropdown.value = !showDropdown.value;
-};
-
-const closeDropdown = () => {
-  showDropdown.value = false;
 };
 
 // Handle scroll events
