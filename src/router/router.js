@@ -21,6 +21,7 @@ import RentalDashboard from '@/views/admin/RentalDashboard.vue';
 import UserRentals from '@/views/admin/UserRentals.vue';
 import AdminReviews from '@/views/admin/AdminReviews.vue';
 import ContactMessages from '@/views/admin/ContactMessages.vue';
+import Notifications from '@/views/admin/Notifications.vue';
 
 import Overview from '@/views/Overview.vue';
 import Features from '@/views/Features.vue';
@@ -79,6 +80,7 @@ const routes = [
   { path: '/admin/user/:userId/rentals', name: 'UserRentals', component: UserRentals, meta: { layout: 'admin', requiresAuth: true, requiresAdmin: true } },
   { path: '/admin/reviews', name: 'AdminReviews', component: AdminReviews, meta: { layout: 'admin', requiresAuth: true, requiresAdmin: true } },
   { path: '/admin/contact-messages', name: 'ContactMessages', component: ContactMessages, meta: { layout: 'admin', requiresAuth: true, requiresAdmin: true } },
+  { path: '/admin/notifications', name: 'Notifications', component: Notifications, meta: { layout: 'admin', requiresAuth: true, requiresAdmin: true } },
 
   { path: '/messages', name: 'Messages', component: Messages, meta: { requiresAuth: true } },
   { path: '/:pathMatch(.*)*', name: 'Error', component: Errorr, meta: { hideNavbar: true, requiresAuth: false } }

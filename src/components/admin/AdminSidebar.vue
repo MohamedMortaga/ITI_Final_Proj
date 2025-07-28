@@ -35,6 +35,7 @@ const navItems = [
   { path: '/rentals', label: 'View Rentals', icon: 'fas fa-calendar-alt' },
   { path: '/admin/reviews', label: 'Manage Reviews', icon: 'fas fa-star' },
   { path: '/admin/contact-messages', label: 'Contact Messages', icon: 'fas fa-envelope' },
+  { path: '/admin/notifications', label: 'Chat Data', icon: 'fas fa-comments' },
 ];
 </script>
 
