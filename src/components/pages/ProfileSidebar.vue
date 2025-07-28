@@ -11,7 +11,7 @@
             :to="item.route"
             class="flex items-center gap-3 px-4 py-2 rounded-full text-[var(--Color-Text-Text-Secondary)] transition"
             :class="{
-              'bg-[var(--Colors-Primary-25)] text-[var(--Color-Surface-Surface-Brand)] font-semibold': isActive(item.route),
+              'bg-[var(--Colors-Primary-25)] text-[#01B195] font-semibold': isActive(item.route),
               'hover:bg-[var(--Colors-Primary-25)] hover:text-[var(--Color-Surface-Surface-Brand)]': !isActive(item.route)
             }"
             @mouseenter="hoveredItem = item.name"
@@ -40,8 +40,8 @@
         :to="item.route"
         class="flex flex-col items-center justify-center px-1 py-1 rounded-lg text-[var(--Color-Text-Text-Secondary)] transition text-center min-w-0 flex-1"
         :class="{
-          'bg-[var(--Colors-Primary-25)] text-[var(--Color-Surface-Surface-Brand)]': isActive(item.route),
-          'hover:bg-[var(--Colors-Primary-25)] hover:text-[var(--Color-Surface-Surface-Brand)]': !isActive(item.route)
+          'text-[#01B195] font-semibold': isActive(item.route),
+          'hover:text-[var(--Color-Surface-Surface-Brand)]': !isActive(item.route)
         }"
         @mouseenter="hoveredItem = item.name"
         @mouseleave="hoveredItem = null"

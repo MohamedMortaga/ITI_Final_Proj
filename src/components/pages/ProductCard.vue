@@ -1,52 +1,56 @@
 <template>
   <div
     v-if="product"
-    class="bg-[var(--Color-Surface-Surface-Tertiary)] border border-[var(--Color-Boarder-Border-Primary)] rounded-xl shadow-sm flex flex-col transition hover:shadow-lg"
+    class="bg-[var(--Color-Surface-Surface-Tertiary)] border border-[var(--Color-Boarder-Border-Primary)] rounded-lg md:rounded-xl shadow-sm transition hover:shadow-lg h-32 md:h-auto"
     :class="{ 'dir-rtl': $i18n.locale === 'ar' }"
   >
-    <router-link :to="{ name: 'ProductDetails', params: { id: product.id || '' } }">
-      <img
-        :src="product.img || require('@/assets/test.png')"
-        alt="product image"
-        class="w-full h-40 object-cover rounded-t-xl"
-      />
-      <div class="p-4 flex flex-col flex-1">
-        <h2 class="pb-4 text-base font-bold text-[var(--Color-Text-Text-Brand)] truncate">
-          {{ product.title || "Untitled" }}
-        </h2>
-        <div
-          class="mt-2 flex items-center justify-between text-xs text-[var(--Color-Text-Text-Secondary)] mb-1 pb-2"
-          :class="{ 'flex-row-reverse': $i18n.locale === 'ar' }"
-          :dir="$i18n.locale === 'ar' ? 'rtl' : 'ltr'"
-        >
-          <div class="flex items-center">
-            <i class="fa-solid fa-location-dot mr-1"></i>
-            {{ product.location || $t("defaultLocation") }}
-          </div>
-          <div
-            class="flex items-center text-sm font-semibold text-[var(--Color-Text-Text-Primary)]"
-          >
-            <i class="fa-solid fa-star text-yellow-400 mr-1"></i>
+    <router-link :to="{ name: 'ProductDetails', params: { id: product.id || '' } }" class="flex flex-row md:flex-col h-full">
+      <!-- Product Image -->
+      <div class="w-1/3 md:w-full">
+        <img
+          :src="product.img || require('@/assets/test.png')"
+          alt="product image"
+          class="w-full h-full md:h-40 object-cover rounded-l-lg md:rounded-t-xl md:rounded-l-none"
+        />
+      </div>
+      
+      <!-- Product Details -->
+      <div class="p-3 md:p-4 flex flex-col flex-1 w-2/3 md:w-full">
+        <div class="flex justify-between items-start mb-1 md:mb-2">
+          <h2 class="text-sm md:text-base font-bold text-[var(--Color-Text-Text-Brand)] truncate flex-1 md:pb-4">
+            {{ product.title || "Untitled" }}
+          </h2>
+          <div class="flex items-center text-xs md:text-sm font-semibold text-[var(--Color-Text-Text-Primary)] ml-2">
+            <i class="fa-solid fa-star text-yellow-400 mr-1 text-xs"></i>
             <span>{{ product.rating || "0" }}</span>
           </div>
         </div>
-        <div
-          class="flex items-center justify-between h-full mb-2"
-          :class="{ 'flex-row-reverse': $i18n.locale === 'ar' }"
-          :dir="$i18n.locale === 'ar' ? 'rtl' : 'ltr'"
-        >
-          <div class="text-sm font-semibold text-[var(--Color-Text-Text-Primary)]">
+        
+        <div class="flex items-center text-xs md:text-xs text-[var(--Color-Text-Text-Secondary)] mb-2 md:mb-1 md:pb-2"
+             :class="{ 'flex-row-reverse': $i18n.locale === 'ar' }"
+             :dir="$i18n.locale === 'ar' ? 'rtl' : 'ltr'">
+          <div class="flex items-center">
+            <i class="fa-solid fa-location-dot mr-1 text-xs"></i>
+            {{ product.location || $t("defaultLocation") }}
+          </div>
+        </div>
+        
+        <div class="flex items-center justify-between mb-3 md:mb-2"
+             :class="{ 'flex-row-reverse': $i18n.locale === 'ar' }"
+             :dir="$i18n.locale === 'ar' ? 'rtl' : 'ltr'">
+          <div class="text-sm md:text-sm font-semibold text-[var(--Color-Text-Text-Primary)]">
             {{ $i18n.locale === "ar" ? "ج.م" : "EGP" }} {{ product.price || "0" }}
           </div>
-          <div class="text-sm font-semibold text-[var(--Color-Text-Text-Primary)]">
+          <div class="text-xs md:text-sm font-semibold text-[var(--Color-Text-Text-Primary)]">
             {{ $t("perDay") }}
           </div>
         </div>
-        <div class="mt-4">
+        
+        <div class="mt-auto md:mt-4">
           <button
             v-if="!isAuthenticated"
             @click="promptLogin"
-            class="w-full bg-[var(--Color-Surface-Surface-Brand)] text-[var(--Color-Text-Text-Invert)] px-4 py-2 font-semibold text-sm transition hover:bg-[var(--Color-Text-Text-Brand)] hover:text-white"
+            class="w-full bg-[var(--Color-Surface-Surface-Brand)] text-[var(--Color-Text-Text-Invert)] px-3 md:px-4 py-1.5 md:py-2 font-semibold text-xs md:text-sm transition hover:bg-[var(--Color-Text-Text-Brand)] hover:text-white rounded md:rounded-md"
             aria-label="Log in to rent this product"
           >
             {{ $t("rentItem") }}
@@ -54,7 +58,7 @@
           <router-link
             v-else
             :to="{ name: 'ProductDetails', params: { id: product.id || '' } }"
-            class="rounded-xl block w-full text-center bg-[var(--Color-Surface-Surface-Brand)] text-[var(--Color-Text-Text-Invert)] px-4 py-2 rounded font-semibold text-sm transition hover:bg-[var(--Color-Text-Text-Brand)] hover:text-white"
+            class="block w-full text-center bg-[var(--Color-Surface-Surface-Brand)] text-[var(--Color-Text-Text-Invert)] px-3 md:px-4 py-1.5 md:py-2 font-semibold text-xs md:text-sm transition hover:bg-[var(--Color-Text-Text-Brand)] hover:text-white rounded md:rounded-md"
             :aria-label="`View details for ${product.title || 'Untitled'}`"
           >
             {{ $t("rentItem") }}
