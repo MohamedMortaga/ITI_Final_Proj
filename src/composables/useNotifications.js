@@ -20,6 +20,61 @@ export const useNotifications = () => {
     }
   }
 
+  // Function to create notification from chat data
+  const createNotificationFromChatData = async (chatData) => {
+    try {
+      const notificationsRef = collection(db, 'notifications')
+      await addDoc(notificationsRef, {
+        chatId: chatData.chatId,
+        content: chatData.content,
+        detectedAt: chatData.detectedAt,
+        issue: chatData.issue,
+        messageId: chatData.messageId,
+        timestamp: chatData.timestamp,
+        userId: chatData.userId,
+        type: 'chat_issue',
+        title: `Issue Detected: ${chatData.issue}`,
+        message: `Detected ${chatData.issue} in chat message`,
+        read: false,
+        adminId: 'admin'
+      })
+      console.log('Chat notification created successfully')
+    } catch (error) {
+      console.error('Error creating chat notification:', error)
+    }
+  }
+
+  // Function to add the specific notification data provided by user
+  const addUserNotificationData = async () => {
+    const notificationData = {
+      chatId: "EBFh8ZMa1KWrZxJJgqKAC3URB1A2_anM57nMOkXb9X8N0fHQTm23bY763",
+      content: "01022194510\\",
+      detectedAt: "2025-07-27T20:02:02.759Z",
+      issue: "phone number",
+      messageId: "user-1",
+      timestamp: 1658971116,
+      userId: "anM57nMOkXb9X8N0fHQTm23bY763"
+    };
+
+    try {
+      const notificationsRef = collection(db, 'notifications')
+      const docRef = await addDoc(notificationsRef, {
+        ...notificationData,
+        type: 'chat_issue',
+        title: `Issue Detected: ${notificationData.issue}`,
+        message: `Detected ${notificationData.issue} in chat message`,
+        read: false,
+        adminId: 'admin',
+        createdAt: new Date().toISOString()
+      })
+      console.log('User notification data added successfully with ID:', docRef.id)
+      return docRef.id
+    } catch (error) {
+      console.error('Error adding user notification data:', error)
+      throw error
+    }
+  }
+
   // Predefined notification types
   const notifyNewBooking = async (userName, productTitle) => {
     await createNotification(
@@ -68,6 +123,8 @@ export const useNotifications = () => {
 
   return {
     createNotification,
+    createNotificationFromChatData,
+    addUserNotificationData,
     notifyNewBooking,
     notifyNewProduct,
     notifyNewUser,

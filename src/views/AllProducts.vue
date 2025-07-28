@@ -1,6 +1,6 @@
 <template>
   <div
-    class="min-h-screen flex flex-col px-6 lg:px-[88px]"
+    class="min-h-screen flex flex-col px-6 lg:px-[88px] overflow-x-hidden"
     :style="{
       backgroundColor: 'var(--Color-Surface-Surface-Primary)',
       color: 'var(--Color-Text-Text-Primary)',
@@ -9,9 +9,9 @@
     <!-- Search Bar -->
     <SearchBar v-model:searchQuery="searchQuery" />
 
-    <!-- Full-width divider that ignores parent padding -->
+    <!-- Full-width divider -->
     <div
-      class="border-t border-[var(--Color-Boarder-Border-Primary)] w-screen -ml-6 lg:-ml-[88px]"
+      class="border-t border-[var(--Color-Boarder-Border-Primary)] w-full"
     ></div>
 
     <!-- Category Buttons -->
@@ -22,7 +22,7 @@
     />
 
     <!-- Products Section -->
-    <div class="container mx-auto px-4 mt-8">
+    <div class="w-full max-w-full mt-8">
       <h2 class="text-xl font-bold text-[var(--Color-Text-Text-Brand)] mb-4">
         {{ $t("allProducts") }}
       </h2>
@@ -34,7 +34,7 @@
         {{ $t("noProductsFound") }}
       </div>
 
-      <div v-else class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+      <div v-else class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 lg:gap-6">
         <ProductCard
           v-for="product in filteredProducts"
           :key="product.id"
