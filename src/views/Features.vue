@@ -1,7 +1,7 @@
 <template>
   <div class="min-h-screen bg-[var(--Color-Surface-Surface-Primary)] text-[var(--Color-Text-Text-Primary)]">
     <!-- Header Section -->
-    <div class="bg-gradient-to-r from-[var(--Color-Surface-Surface-Brand)] to-[var(--Color-Text-Text-Brand)] text-[var(--Color-Text-Text-Invert)] py-16">
+    <div class="bg-gradient-to-r from-[var(--Color-Surface-Surface-Brand)] to-[var(--Color-Text-Text-Brand)] text-white py-16">
       <div class="container mx-auto px-6 lg:px-[88px] text-center">
         <h1 class="text-4xl lg:text-5xl font-bold mb-6">{{ $t('featuresTitle') }}</h1>
         <p class="text-xl lg:text-2xl max-w-3xl mx-auto">{{ $t('featuresSubtitle') }}</p>
@@ -140,14 +140,14 @@
               <p class="text-sm text-[var(--Color-Text-Text-Secondary)]">{{ $t('stripePaymentsDesc') }}</p>
             </div>
             <div class="text-center">
-              <i class="fab fa-twilio text-4xl text-[var(--Color-Surface-Surface-Brand)] mb-3"></i>
-              <h4 class="font-bold">{{ $t('twilioSMS') }}</h4>
-              <p class="text-sm text-[var(--Color-Text-Text-Secondary)]">{{ $t('twilioSMSDesc') }}</p>
+              <i class="fab fa-firebase text-4xl text-[var(--Color-Surface-Surface-Brand)] mb-3"></i>
+              <h4 class="font-bold">{{ $t('firebaseBackend') }}</h4>
+              <p class="text-sm text-[var(--Color-Text-Text-Secondary)]">{{ $t('firebaseBackendDesc') }}</p>
             </div>
             <div class="text-center">
-              <i class="fas fa-cloud text-4xl text-[var(--Color-Surface-Surface-Brand)] mb-3"></i>
-              <h4 class="font-bold">{{ $t('cloudStorage') }}</h4>
-              <p class="text-sm text-[var(--Color-Text-Text-Secondary)]">{{ $t('cloudStorageDesc') }}</p>
+              <i class="fas fa-robot text-4xl text-[var(--Color-Surface-Surface-Brand)] mb-3"></i>
+              <h4 class="font-bold">{{ $t('firebaseAI') }}</h4>
+              <p class="text-sm text-[var(--Color-Text-Text-Secondary)]">{{ $t('firebaseAIDesc') }}</p>
             </div>
           </div>
         </div>

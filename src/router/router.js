@@ -27,7 +27,6 @@ import Withdrawals from '@/views/admin/Withdrawals.vue';
 import Overview from '@/views/Overview.vue';
 import Features from '@/views/Features.vue';
 import Pricing from '@/views/Pricing.vue';
-import Careers from '@/views/Careers.vue';
 import Help from '@/views/Help.vue';
 import Privacy from '@/views/Privacy.vue';
 import Terms from '@/views/Terms.vue';
@@ -52,7 +51,6 @@ const routes = [
   { path: '/overview', name: 'Overview', component: Overview, meta: { requiresAuth: false } },
   { path: '/features', name: 'Features', component: Features, meta: { requiresAuth: false } },
   { path: '/pricing', name: 'Pricing', component: Pricing, meta: { requiresAuth: false } },
-  { path: '/careers', name: 'Careers', component: Careers, meta: { requiresAuth: false } },
   { path: '/help', name: 'Help', component: Help, meta: { requiresAuth: false } },
   { path: '/privacy', name: 'Privacy', component: Privacy, meta: { requiresAuth: false } },
   { path: '/terms', name: 'Terms', component: Terms, meta: { requiresAuth: false } },

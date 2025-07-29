@@ -24,11 +24,6 @@
                 $t('subscribe') }}</button>
           </div>
           <div class="flex items-center flex-wrap mt-4 text-xs text-[var(--Color-Text-Text-Secondary)] justify-around">
-            <div class="flex gap-2">
-              <router-link v-for="legal in legalLinks" :key="legal.text" :to="legal.href" class="hover:underline hover:text-[var(--Color-Text-Text-Brand)] transition">
-                {{ $t(legal.text) }}
-              </router-link>
-            </div>
             <div>
               © {{ new Date().getFullYear() }} {{ $t('rento') }} {{ $t('allRightsReserved') }}
             </div>
@@ -48,16 +43,8 @@ defineProps({
       { text: 'overview', href: '/overview' },
       { text: 'features', href: '/features' },
       { text: 'pricing', href: '/pricing' },
-      { text: 'careers', href: '/careers' },
-      { text: 'help', href: '/help' },
-      { text: 'privacy', href: '/privacy' }
-    ]
-  },
-  legalLinks: {
-    type: Array, default: () => [
       { text: 'terms', href: '/terms' },
-      { text: 'privacy', href: '/privacy' },
-      { text: 'cookies', href: '/cookies' }
+      { text: 'help', href: '/help' }
     ]
   }
 });

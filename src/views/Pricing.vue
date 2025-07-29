@@ -1,7 +1,7 @@
 <template>
   <div class="min-h-screen bg-[var(--Color-Surface-Surface-Primary)] text-[var(--Color-Text-Text-Primary)]">
     <!-- Header Section -->
-    <div class="bg-gradient-to-r from-[var(--Color-Surface-Surface-Brand)] to-[var(--Color-Text-Text-Brand)] text-[var(--Color-Text-Text-Invert)] py-16">
+    <div class="bg-gradient-to-r from-[var(--Color-Surface-Surface-Brand)] to-[var(--Color-Text-Text-Brand)] text-white py-16">
       <div class="container mx-auto px-6 lg:px-[88px] text-center">
         <h1 class="text-4xl lg:text-5xl font-bold mb-6">{{ $t('pricingTitle') }}</h1>
         <p class="text-xl lg:text-2xl max-w-3xl mx-auto">{{ $t('pricingSubtitle') }}</p>
@@ -128,26 +128,6 @@
                 <span>$72</span>
               </div>
             </div>
-          </div>
-        </div>
-      </section>
-
-      <!-- Additional Services -->
-      <section class="mb-16">
-        <h2 class="text-3xl font-bold text-[var(--Color-Text-Text-Brand)] mb-8 text-center">{{ $t('additionalServices') }}</h2>
-        <div class="grid md:grid-cols-2 gap-8">
-          <div class="bg-[var(--Color-Surface-Surface-Primary)] border border-[var(--Color-Boarder-Border-Primary)] rounded-xl p-6">
-            <h3 class="text-2xl font-bold text-[var(--Color-Text-Text-Brand)] mb-4">{{ $t('insurance') }}</h3>
-            <p class="text-[var(--Color-Text-Text-Secondary)] mb-4">{{ $t('insuranceDescription') }}</p>
-            <div class="text-2xl font-bold text-[var(--Color-Surface-Surface-Brand)]">5%</div>
-            <p class="text-sm text-[var(--Color-Text-Text-Secondary)]">{{ $t('insuranceRate') }}</p>
-          </div>
-          
-          <div class="bg-[var(--Color-Surface-Surface-Primary)] border border-[var(--Color-Boarder-Border-Primary)] rounded-xl p-6">
-            <h3 class="text-2xl font-bold text-[var(--Color-Text-Text-Brand)] mb-4">{{ $t('premiumListing') }}</h3>
-            <p class="text-[var(--Color-Text-Text-Secondary)] mb-4">{{ $t('premiumDescription') }}</p>
-            <div class="text-2xl font-bold text-[var(--Color-Surface-Surface-Brand)]">$5/month</div>
-            <p class="text-sm text-[var(--Color-Text-Text-Secondary)]">{{ $t('premiumRate') }}</p>
           </div>
         </div>
       </section>

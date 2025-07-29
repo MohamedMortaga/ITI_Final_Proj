@@ -4,7 +4,7 @@
   >
     <!-- Header Section -->
     <div
-      class="bg-gradient-to-r from-[var(--Color-Surface-Surface-Brand)] to-[var(--Color-Text-Text-Brand)] text-[var(--Color-Text-Text-Invert)] py-16"
+      class="bg-gradient-to-r from-[var(--Color-Surface-Surface-Brand)] to-[var(--Color-Text-Text-Brand)] text-white py-16"
     >
       <div class="container mx-auto px-6 lg:px-[88px] text-center">
         <h1 class="text-4xl lg:text-5xl font-bold mb-6">{{ $t("helpTitle") }}</h1>
@@ -23,7 +23,7 @@
         </h2>
         <div class="grid md:grid-cols-3 gap-8">
           <div
-            class="bg-[var(--Color-Surface-Surface-Primary)] border border-[var(--Color-Boarder-Border-Primary)] rounded-xl p-6 text-center"
+            class="bg-[var(--Color-Surface-Surface-Primary)] border border-[var(--Color-Boarder-Border-Primary)] rounded-xl p-6 text-center hover:shadow-lg transition-all duration-300 hover:border-[var(--Color-Surface-Surface-Brand)]"
           >
             <div
               class="w-16 h-16 bg-[var(--Color-Surface-Surface-Brand)] rounded-full flex items-center justify-center mx-auto mb-6"
@@ -34,15 +34,16 @@
             <p class="text-[var(--Color-Text-Text-Secondary)] mb-6">
               {{ $t("searchHelpDesc") }}
             </p>
-            <button
-              class="bg-[var(--Color-Surface-Surface-Brand)] text-[var(--Color-Text-Text-Invert)] px-6 py-2 rounded-lg hover:bg-[var(--Color-Text-Text-Brand)] transition"
+            <router-link
+              to="/all-products"
+              class="inline-block bg-[var(--Color-Surface-Surface-Brand)] text-[var(--Color-Text-Text-Invert)] px-6 py-2 rounded-lg hover:bg-[var(--Color-Text-Text-Brand)] hover:scale-105 transition-all duration-300 transform"
             >
               {{ $t("searchNow") }}
-            </button>
+            </router-link>
           </div>
 
           <div
-            class="bg-[var(--Color-Surface-Surface-Primary)] border border-[var(--Color-Boarder-Border-Primary)] rounded-xl p-6 text-center"
+            class="bg-[var(--Color-Surface-Surface-Primary)] border border-[var(--Color-Boarder-Border-Primary)] rounded-xl p-6 text-center hover:shadow-lg transition-all duration-300 hover:border-[var(--Color-Surface-Surface-Brand)]"
           >
             <div
               class="w-16 h-16 bg-[var(--Color-Surface-Surface-Brand)] rounded-full flex items-center justify-center mx-auto mb-6"
@@ -56,14 +57,15 @@
               {{ $t("liveChatDesc") }}
             </p>
             <button
-              class="bg-[var(--Color-Surface-Surface-Brand)] text-[var(--Color-Text-Text-Invert)] px-6 py-2 rounded-lg hover:bg-[var(--Color-Text-Text-Brand)] transition"
+              @click="openChatbot"
+              class="bg-[var(--Color-Surface-Surface-Brand)] text-[var(--Color-Text-Text-Invert)] px-6 py-2 rounded-lg hover:bg-[var(--Color-Text-Text-Brand)] hover:scale-105 transition-all duration-300 transform"
             >
               {{ $t("startChat") }}
             </button>
           </div>
 
           <div
-            class="bg-[var(--Color-Surface-Surface-Primary)] border border-[var(--Color-Boarder-Border-Primary)] rounded-xl p-6 text-center"
+            class="bg-[var(--Color-Surface-Surface-Primary)] border border-[var(--Color-Boarder-Border-Primary)] rounded-xl p-6 text-center hover:shadow-lg transition-all duration-300 hover:border-[var(--Color-Surface-Surface-Brand)]"
           >
             <div
               class="w-16 h-16 bg-[var(--Color-Surface-Surface-Brand)] rounded-full flex items-center justify-center mx-auto mb-6"
@@ -76,11 +78,12 @@
             <p class="text-[var(--Color-Text-Text-Secondary)] mb-6">
               {{ $t("emailSupportDesc") }}
             </p>
-            <button
-              class="bg-[var(--Color-Surface-Surface-Brand)] text-[var(--Color-Text-Text-Invert)] px-6 py-2 rounded-lg hover:bg-[var(--Color-Text-Text-Brand)] transition"
+            <router-link
+              to="/contact"
+              class="inline-block bg-[var(--Color-Surface-Surface-Brand)] text-[var(--Color-Text-Text-Invert)] px-6 py-2 rounded-lg hover:bg-[var(--Color-Text-Text-Brand)] hover:scale-105 transition-all duration-300 transform"
             >
               {{ $t("sendEmail") }}
-            </button>
+            </router-link>
           </div>
         </div>
       </section>
@@ -291,16 +294,29 @@
 
     <!-- Footer -->
     <AppFooter />
+    <ChatBot v-if="showChatbot" @close="showChatbot = false" />
   </div>
 </template>
 
 <script>
 import AppFooter from "../components/pages/AppFooter.vue";
+import ChatBot from "../components/ChatBot.vue";
 
 export default {
   name: "Help",
   components: {
     AppFooter,
+    ChatBot,
+  },
+  data() {
+    return {
+      showChatbot: false,
+    };
+  },
+  methods: {
+    openChatbot() {
+      this.showChatbot = true;
+    },
   },
 };
 </script>
