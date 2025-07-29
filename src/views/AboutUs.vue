@@ -277,11 +277,13 @@
         </div>
       </div>
     </div>
+    <AppFooter />
   </div>
 </template>
 
 <script setup>
 import handshakeImage from '@/assets/handshake-businessmen.jpg'
+import AppFooter from '../components/pages/AppFooter.vue';
 
 // Component logic can be added here if needed
 </script> 

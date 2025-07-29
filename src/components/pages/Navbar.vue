@@ -69,27 +69,119 @@
               </button>
             </div>
 
-            <!-- Language Selector -->
+            <!-- Language Dropdown (desktop): -->
             <div class="relative flex items-center">
               <button
-                @click="changeLanguage(currentLang === 'en' ? 'ar' : 'en')"
-                class="flex items-center p-2 rounded hover:text-[var(--Color-Text-Text-Brand)] transition-colors"
+                @mouseenter="isGlobeHovered = true"
+                @mouseleave="isGlobeHovered = false"
+                @click="showLanguageDropdown = !showLanguageDropdown"
+                class="flex items-center p-2 rounded text-[var(--Color-Text-Text-Primary)] transition-colors group"
                 title="Change Language"
               >
-                <!-- Globe Americas Icon -->
-                <i class="fa-solid fa-globe-americas text-lg"></i>
+                <span v-if="isDarkMode">
+                  <span v-if="isGlobeHovered">
+                    <!-- Brand Globe SVG -->
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" class="w-6 h-6">
+                      <circle cx="12" cy="12" r="8" stroke="#01B195" stroke-width="2"/>
+                      <ellipse cx="12" cy="12" rx="3" ry="8" stroke="#01B195" stroke-width="2"/>
+                      <path d="M4 12H20" stroke="#01B195" stroke-width="2" stroke-linecap="round"/>
+                    </svg>
+                  </span>
+                  <span v-else>
+                    <!-- Dark Globe SVG -->
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" class="w-6 h-6">
+                      <circle cx="12" cy="12" r="8" stroke="white" stroke-width="2"/>
+                      <ellipse cx="12" cy="12" rx="3" ry="8" stroke="white" stroke-width="2"/>
+                      <path d="M4 12H20" stroke="white" stroke-width="2" stroke-linecap="round"/>
+                    </svg>
+                  </span>
+                </span>
+                <span v-else>
+                  <span v-if="isGlobeHovered">
+                    <!-- Brand Globe SVG -->
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" class="w-6 h-6">
+                      <circle cx="12" cy="12" r="8" stroke="#01B195" stroke-width="2"/>
+                      <ellipse cx="12" cy="12" rx="3" ry="8" stroke="#01B195" stroke-width="2"/>
+                      <path d="M4 12H20" stroke="#01B195" stroke-width="2" stroke-linecap="round"/>
+                    </svg>
+                  </span>
+                  <span v-else>
+                    <!-- Default Globe SVG -->
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" class="w-6 h-6">
+                      <circle cx="12" cy="12" r="8" stroke="#33363F" stroke-width="2"/>
+                      <ellipse cx="12" cy="12" rx="3" ry="8" stroke="#33363F" stroke-width="2"/>
+                      <path d="M4 12H20" stroke="#33363F" stroke-width="2" stroke-linecap="round"/>
+                    </svg>
+                  </span>
+                </span>
+                <svg
+                  class="w-4 h-4 ml-1 transition-colors"
+                  :class="isDarkMode
+                    ? (isGlobeHovered ? 'text-[var(--Color-Surface-Surface-Brand)]' : 'text-white')
+                    : (isGlobeHovered ? 'text-[var(--Color-Surface-Surface-Brand)]' : 'text-[var(--Color-Text-Text-Primary)]')"
+                  fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+                </svg>
               </button>
+              <div
+                v-if="showLanguageDropdown"
+                class="absolute top-full right-0 mt-2 w-24 bg-[var(--Color-Surface-Surface-Primary)] border border-[var(--Color-Boarder-Border-Primary)] rounded-lg shadow-lg z-50"
+              >
+                <button
+                  v-for="lang in languages"
+                  :key="lang"
+                  @click="changeLanguage(lang); showLanguageDropdown = false;"
+                  class="block w-full text-left px-4 py-2 text-sm text-[var(--Color-Text-Text-Primary)] hover:bg-[var(--Color-Surface-Surface-Brand)] hover:text-[var(--Color-Text-Text-Invert)] transition"
+                >
+                  {{ languageLabels[lang] }}
+                </button>
+              </div>
             </div>
 
             <!-- Messages Icon -->
             <router-link
               to="/messages"
-              class="flex items-center p-2 rounded hover:text-[var(--Color-Text-Text-Brand)] transition-colors"
+              class="flex items-center p-2 rounded text-[var(--Color-Text-Text-Primary)] transition-colors"
               title="Messages"
+              @mouseenter.native="isChatHovered = true"
+              @mouseleave.native="isChatHovered = false"
             >
-              <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"></path>
-              </svg>
+              <span v-if="isDarkMode">
+                <span v-if="isChatHovered">
+                  <!-- Brand Chat SVG -->
+                  <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" class="w-6 h-6">
+                    <path d="M4 12C4 7.58172 7.58172 4 12 4V4C16.4183 4 20 7.58172 20 12V17.0909C20 17.9375 20 18.3608 19.8739 18.6989C19.6712 19.2425 19.2425 19.6712 18.6989 19.8739C18.3608 20 17.9375 20 17.0909 20H12C7.58172 20 4 16.4183 4 12V12Z" stroke="#01B195" stroke-width="2"/>
+                    <path d="M9 11L15 11" stroke="#01B195" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                    <path d="M12 15H15" stroke="#01B195" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                  </svg>
+                </span>
+                <span v-else>
+                  <!-- Dark Chat SVG -->
+                  <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" class="w-6 h-6">
+                    <path d="M4 12C4 7.58172 7.58172 4 12 4V4C16.4183 4 20 7.58172 20 12V17.0909C20 17.9375 20 18.3608 19.8739 18.6989C19.6712 19.2425 19.2425 19.6712 18.6989 19.8739C18.3608 20 17.9375 20 17.0909 20H12C7.58172 20 4 16.4183 4 12V12Z" stroke="white" stroke-width="2"/>
+                    <path d="M9 11L15 11" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                    <path d="M12 15H15" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                  </svg>
+                </span>
+              </span>
+              <span v-else>
+                <span v-if="isChatHovered">
+                  <!-- Brand Chat SVG -->
+                  <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" class="w-6 h-6">
+                    <path d="M4 12C4 7.58172 7.58172 4 12 4V4C16.4183 4 20 7.58172 20 12V17.0909C20 17.9375 20 18.3608 19.8739 18.6989C19.6712 19.2425 19.2425 19.6712 18.6989 19.8739C18.3608 20 17.9375 20 17.0909 20H12C7.58172 20 4 16.4183 4 12V12Z" stroke="#01B195" stroke-width="2"/>
+                    <path d="M9 11L15 11" stroke="#01B195" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                    <path d="M12 15H15" stroke="#01B195" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                  </svg>
+                </span>
+                <span v-else>
+                  <!-- Default Chat SVG -->
+                  <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" class="w-6 h-6">
+                    <path d="M4 12C4 7.58172 7.58172 4 12 4V4C16.4183 4 20 7.58172 20 12V17.0909C20 17.9375 20 18.3608 19.8739 18.6989C19.6712 19.2425 19.2425 19.6712 18.6989 19.8739C18.3608 20 17.9375 20 17.0909 20H12C7.58172 20 4 16.4183 4 12V12Z" stroke="#33363F" stroke-width="2"/>
+                    <path d="M9 11L15 11" stroke="#33363F" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                    <path d="M12 15H15" stroke="#33363F" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                  </svg>
+                </span>
+              </span>
             </router-link>
 
             <!-- User Profile Image (no dropdown) -->
@@ -249,6 +341,9 @@ const languages = ref(["en", "ar"]);
 const auth = getAuth();
 const router = useRouter();
 const isScrolled = ref(false);
+const showLanguageDropdown = ref(false);
+const isGlobeHovered = ref(false);
+const isChatHovered = ref(false);
 
 // Check if current page is home or browse tools
 const isHomePage = computed(() => {
@@ -332,6 +427,14 @@ const handleScroll = () => {
   isScrolled.value = window.scrollY > 10;
 };
 
+function handleClickOutsideDropdowns(event) {
+  const langDropdown = document.querySelectorAll('.relative .absolute')[1];
+  if (showLanguageDropdown.value && langDropdown && !langDropdown.contains(event.target) && !event.target.closest('[title="Change Language"]')) {
+    showLanguageDropdown.value = false;
+  }
+  // ... existing profile dropdown logic ...
+}
+
 onMounted(() => {
   initializeDarkMode();
   initializeAuth();
@@ -339,11 +442,13 @@ onMounted(() => {
 
   // Add scroll event listener
   window.addEventListener("scroll", handleScroll);
+  document.addEventListener('click', handleClickOutsideDropdowns);
 });
 
 // Clean up event listener
 onUnmounted(() => {
   window.removeEventListener("scroll", handleScroll);
+  document.removeEventListener('click', handleClickOutsideDropdowns);
 });
 
 watch(isDarkMode, (newValue) => {
