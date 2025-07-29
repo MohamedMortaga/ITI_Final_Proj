@@ -7,7 +7,10 @@
     }"
   >
     <!-- Search Bar -->
-    <SearchBar v-model:searchQuery="searchQuery" />
+    <SearchBar 
+      v-model:searchQuery="searchQuery" 
+      v-model:selectedLocation="selectedLocation"
+    />
 
     <!-- Full-width divider that ignores parent padding -->
     <div
@@ -102,6 +105,7 @@ export default {
     const { approvedProducts, webReviews } = useGlobalRealTime();
     const searchQuery = ref("");
     const selectedCategory = ref("");
+    const selectedLocation = ref("");
     const displayName = ref("");
     const isAuthenticated = ref(false);
     const categories = ref([]);
@@ -199,6 +203,11 @@ export default {
           (product) => product.category === selectedCategory.value
         );
       }
+      if (selectedLocation.value) {
+        filtered = filtered.filter(
+          (product) => product.location === selectedLocation.value
+        );
+      }
       if (searchQuery.value) {
         const query = searchQuery.value.toLowerCase();
         filtered = filtered.filter((product) =>
@@ -208,13 +217,14 @@ export default {
       return filtered;
     });
 
-    watch([approvedProducts, selectedCategory, searchQuery], () => {
+    watch([approvedProducts, selectedCategory, selectedLocation, searchQuery], () => {
       loadProductsWithRatings();
     });
 
     return {
       searchQuery,
       selectedCategory,
+      selectedLocation,
       filteredProducts,
       displayName,
       categories,

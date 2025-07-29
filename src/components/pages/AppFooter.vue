@@ -7,7 +7,13 @@
     <div class="px-6 lg:px-[88px]">
       <div class="container mx-auto px-4 py-10 flex flex-col md:flex-row md:justify-between gap-8">
         <div>
-          <div class="text-2xl font-bold text-[var(--Color-Text-Text-Brand)] mb-4">{{ $t('rento') }}</div>
+          <div class="flex items-center mb-4">
+            <img
+              :src="require('@/assets/logo/logo light .png')"
+              alt="Rento Logo"
+              class="h-10 w-auto"
+            />
+          </div>
           <div class="flex flex-wrap gap-4 text-sm text-[var(--Color-Text-Text-Primary)]">
             <router-link v-for="link in links" :key="link.text" :to="link.href" class="hover:underline hover:text-[var(--Color-Text-Text-Brand)] transition">
               {{ $t(link.text) }}

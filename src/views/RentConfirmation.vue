@@ -1,7 +1,12 @@
 <template>
   <div class="min-h-screen bg-[var(--color-gray-25)] dark:bg-[var(--color-gray-800)]">
     <!-- SearchBar Component -->
-    <SearchBar :searchQuery="searchQuery" @update:searchQuery="updateSearchQuery" />
+    <SearchBar 
+      :searchQuery="searchQuery" 
+      @update:searchQuery="updateSearchQuery"
+      :selectedLocation="selectedLocation"
+      @update:selectedLocation="updateSelectedLocation"
+    />
 
     <!-- Breadcrumbs -->
     <div class="max-w-7xl mx-auto px-4 py-4">
@@ -556,6 +561,7 @@ const route = useRoute();
 const router = useRouter();
 const product = ref(null);
 const searchQuery = ref("");
+const selectedLocation = ref("");
 const booking = ref({
   deliveryAddress: "30.0459°N, 31.2357°E",
   deliveryFee: 0,
@@ -585,6 +591,10 @@ const booking = ref({
 
 const updateSearchQuery = (value) => {
   searchQuery.value = value;
+};
+
+const updateSelectedLocation = (location) => {
+  selectedLocation.value = location;
 };
 
 const loadProduct = async () => {

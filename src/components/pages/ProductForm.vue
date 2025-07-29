@@ -55,6 +55,46 @@
         required
       />
     </div>
+    <!-- Location -->
+    <div class="mb-4">
+      <label class="block text-sm font-medium text-[var(--Color-Text-Text-Primary)] dark:text-[var(--Color-Text-Text-Primary)] mb-1 font-nunito">{{$t('selectLocation')}}</label>
+      <select
+        v-model="form.location"
+        class="w-full px-3 md:px-4 py-2 rounded-lg border border-[var(--Color-Boarder-Border-Primary)] dark:border-[var(--Color-Boarder-Border-Primary)] bg-[var(--Color-Surface-Surface-Primary)] dark:bg-[var(--Color-Surface-Surface-Primary)] text-[var(--Color-Text-Text-Secondary)] dark:text-[var(--Color-Text-Text-Secondary)] focus:outline-none focus:ring-2 focus:ring-[var(--Colors-Primary-500)] font-nunito"
+        required
+      >
+        <option disabled value="">{{$t('selectLocation')}}</option>
+        <option value="cairo">{{$t('cairo')}}</option>
+        <option value="alexandria">{{$t('alexandria')}}</option>
+        <option value="mansoura">{{$t('mansoura')}}</option>
+        <option value="giza">{{$t('giza')}}</option>
+        <option value="sharmElSheikh">{{$t('sharmElSheikh')}}</option>
+        <option value="hurghada">{{$t('hurghada')}}</option>
+        <option value="luxor">{{$t('luxor')}}</option>
+        <option value="aswan">{{$t('aswan')}}</option>
+        <option value="portSaid">{{$t('portSaid')}}</option>
+        <option value="suez">{{$t('suez')}}</option>
+        <option value="ismailia">{{$t('ismailia')}}</option>
+        <option value="beniSuef">{{$t('beniSuef')}}</option>
+        <option value="minya">{{$t('minya')}}</option>
+        <option value="assiut">{{$t('assiut')}}</option>
+        <option value="sohag">{{$t('sohag')}}</option>
+        <option value="qena">{{$t('qena')}}</option>
+        <option value="redSea">{{$t('redSea')}}</option>
+        <option value="newValley">{{$t('newValley')}}</option>
+        <option value="matruh">{{$t('matruh')}}</option>
+        <option value="northSinai">{{$t('northSinai')}}</option>
+        <option value="southSinai">{{$t('southSinai')}}</option>
+        <option value="beheira">{{$t('beheira')}}</option>
+        <option value="gharbiya">{{$t('gharbiya')}}</option>
+        <option value="kafrElSheikh">{{$t('kafrElSheikh')}}</option>
+        <option value="dakahlia">{{$t('dakahlia')}}</option>
+        <option value="sharqiya">{{$t('sharqiya')}}</option>
+        <option value="qalyubiya">{{$t('qalyubiya')}}</option>
+        <option value="monufiya">{{$t('monufiya')}}</option>
+        <option value="fayoum">{{$t('fayoum')}}</option>
+      </select>
+    </div>
     <!-- Net Profit -->
     <div class="mb-4">
       <label class="block text-sm font-medium text-[var(--Color-Text-Text-Primary)] dark:text-[var(--Color-Text-Text-Primary)] mb-1 font-nunito">{{$t('netProfit')}}</label>

@@ -19,7 +19,8 @@ const form = ref({
   price: "",
   details: "",
   image: null,
-  imagePath: ""
+  imagePath: "",
+  location: ""
 });
 const isEdit = ref(false);
 const editId = ref(null);
@@ -126,7 +127,7 @@ const submitForm = async () => {
       return;
     }
 
-    if (!form.value.title || !form.value.category || !form.value.price) {
+    if (!form.value.title || !form.value.category || !form.value.price || !form.value.location) {
       Swal.fire({ icon: "error", title: "Please fill all required fields." });
       return;
     }
@@ -143,6 +144,7 @@ const submitForm = async () => {
         details: form.value.details,
         img: form.value.image || "",
         imagePath: form.value.imagePath || "",
+        location: form.value.location,
         userId: currentUser .value.uid,
         netProfit: netProfit, // Include net profit in the update
       });
@@ -155,6 +157,7 @@ const submitForm = async () => {
         details: form.value.details,
         img: form.value.image || "",
         imagePath: form.value.imagePath || "",
+        location: form.value.location,
         userId: currentUser .value.uid,
         ownerName: currentUser .value.displayName || currentUser .value.email,
         createdAt: serverTimestamp(),
@@ -194,6 +197,7 @@ const editProduct = (product) => {
     details: product.details || "",
     image: product.img || "",
     imagePath: product.imagePath || "",
+    location: product.location || "",
   };
   isEdit.value = true;
   editId.value = product.id;
@@ -207,6 +211,7 @@ const resetForm = () => {
     details: "",
     image: null,
     imagePath: "",
+    location: "",
   };
   isEdit.value = false;
   editId.value = null;

@@ -31,7 +31,7 @@
              :dir="$i18n.locale === 'ar' ? 'rtl' : 'ltr'">
           <div class="flex items-center">
             <i class="fa-solid fa-location-dot mr-1 text-xs"></i>
-            {{ product.location || $t("defaultLocation") }}
+            {{ getLocationDisplay(product.location) }}
           </div>
         </div>
         
@@ -128,9 +128,27 @@ export default {
       }
     };
 
+    // Function to get the translated location display
+    const getLocationDisplay = (location) => {
+      if (!location) return t("defaultLocation");
+      
+      // Try to translate the location
+      const translationKey = location.toLowerCase().replace(/\s+/g, '');
+      const translatedLocation = t(translationKey);
+      
+      // If translation exists and is different from the key, use it
+      if (translatedLocation && translatedLocation !== translationKey) {
+        return translatedLocation;
+      }
+      
+      // Otherwise return the original location
+      return location;
+    };
+
     return {
       promptLogin,
       isProductOwner,
+      getLocationDisplay, // Expose the function to the template
     };
   },
 };

@@ -7,7 +7,10 @@
     }"
   >
     <!-- Search Bar -->
-    <SearchBar v-model:searchQuery="searchQuery" />
+    <SearchBar 
+      v-model:searchQuery="searchQuery" 
+      v-model:selectedLocation="selectedLocation"
+    />
 
     <!-- Full-width divider -->
     <div
@@ -26,6 +29,8 @@
       <h2 class="text-xl font-bold text-[var(--Color-Text-Text-Brand)] mb-4">
         {{ $t("allProducts") }}
       </h2>
+
+
 
       <div
         v-if="filteredProducts.length === 0"
@@ -80,6 +85,7 @@ export default {
 
     const searchQuery = ref("");
     const selectedCategory = ref("");
+    const selectedLocation = ref("");
     const isAuthenticated = ref(false);
     const categories = ref([]);
     const auth = getAuth();
@@ -133,27 +139,29 @@ export default {
     });
 
     // Filter products and add avg rating
- const filteredProducts = computed(() => {
-  if (!products.value) return [];
+    const filteredProducts = computed(() => {
+      if (!products.value) return [];
 
-  
-  let result = products.value.filter((p) => p.isApproved === true);
+      let result = products.value.filter((p) => p.isApproved === true);
 
-  if (selectedCategory.value) {
-    result = result.filter((p) => p.category === selectedCategory.value);
-  }
+      if (selectedCategory.value) {
+        result = result.filter((p) => p.category === selectedCategory.value);
+      }
 
-  if (searchQuery.value) {
-    const q = searchQuery.value.toLowerCase();
-    result = result.filter((p) => p.title?.toLowerCase().includes(q));
-  }
+      if (selectedLocation.value) {
+        result = result.filter((p) => p.location === selectedLocation.value);
+      }
 
-  return result.map((product) => ({
-    ...product,
-    rating: productRatings.value[product.id] || "0",
-  }));
-});
+      if (searchQuery.value) {
+        const q = searchQuery.value.toLowerCase();
+        result = result.filter((p) => p.title?.toLowerCase().includes(q));
+      }
 
+      return result.map((product) => ({
+        ...product,
+        rating: productRatings.value[product.id] || "0",
+      }));
+    });
 
     // On mount
     onMounted(() => {
@@ -166,6 +174,7 @@ export default {
     return {
       searchQuery,
       selectedCategory,
+      selectedLocation,
       filteredProducts,
       categories,
       isAuthenticated,

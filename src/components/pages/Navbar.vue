@@ -14,9 +14,13 @@
           <!-- Logo -->
           <router-link
             to="/"
-            class="text-2xl font-medium text-[var(--Color-Text-Text-Brand)] hover:text-[var(--Color-Text-Text-Brand)]"
+            class="flex items-center"
           >
-            {{ $t("rento") }}
+            <img
+              :src="require('@/assets/logo/logo light .png')"
+              alt="Rento Logo"
+              class="h-12 w-auto"
+            />
           </router-link>
 
           <!-- Main content (centered nav links) -->
@@ -68,40 +72,25 @@
             <!-- Language Selector -->
             <div class="relative flex items-center">
               <button
-                @click="toggleLanguageDropdown"
-                class="flex items-center gap-1 px-3 py-1 text-sm rounded hover:bg-[var(--Color-Surface-Surface-Secondary)] transition-colors"
+                @click="changeLanguage(currentLang === 'en' ? 'ar' : 'en')"
+                class="flex items-center p-2 rounded hover:text-[var(--Color-Text-Text-Brand)] transition-colors"
+                title="Change Language"
               >
-                <span>{{ currentLang.toUpperCase() }}</span>
-                <svg
-                  class="w-4 h-4"
-                  fill="none"
-                  stroke="currentColor"
-                  viewBox="0 0 24 24"
-                >
-                  <path
-                    stroke-linecap="round"
-                    stroke-linejoin="round"
-                    stroke-width="2"
-                    d="M19 9l-7 7-7-7"
-                  ></path>
-                </svg>
+                <!-- Globe Americas Icon -->
+                <i class="fa-solid fa-globe-americas text-lg"></i>
               </button>
-              <div
-                v-if="showLanguageDropdown"
-                class="absolute top-full mt-2 w-20 shadow-lg rounded-md z-10"
-                style="background-color: var(--Color-Surface-Surface-Primary)"
-              >
-                <button
-                  v-for="lang in languages"
-                  :key="lang"
-                  @click="changeLanguage(lang)"
-                  class="block w-full text-left px-4 py-2 text-sm hover:bg-[var(--Color-Surface-Surface-Brand)] transition-colors"
-                  style="color: var(--Color-Text-Text-Primary)"
-                >
-                  {{ languageLabels[lang] }}
-                </button>
-              </div>
             </div>
+
+            <!-- Messages Icon -->
+            <router-link
+              to="/messages"
+              class="flex items-center p-2 rounded hover:text-[var(--Color-Text-Text-Brand)] transition-colors"
+              title="Messages"
+            >
+              <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"></path>
+              </svg>
+            </router-link>
 
             <!-- User Profile Image (no dropdown) -->
             <router-link
@@ -218,35 +207,24 @@
           <!-- Language Selector -->
           <div class="relative px-3 py-2">
             <button
-              @click="toggleLanguageDropdown"
-              class="flex items-center gap-1 px-3 py-1 text-sm rounded hover:bg-[var(--Color-Surface-Surface-Secondary)] transition-colors"
+              @click="changeLanguage(currentLang === 'en' ? 'ar' : 'en')"
+              class="flex items-center p-2 rounded hover:text-[var(--Color-Text-Text-Brand)] transition-colors"
             >
-              <span>{{ currentLang.toUpperCase() }}</span>
-              <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                  stroke-width="2"
-                  d="M19 9l-7 7-7-7"
-                ></path>
-              </svg>
+              <i class="fa-solid fa-globe-americas text-lg"></i>
             </button>
-            <div
-              v-if="showLanguageDropdown"
-              class="mt-2 w-20 shadow-lg rounded-md z-10"
-              style="background-color: var(--Color-Surface-Surface-Primary)"
-            >
-              <button
-                v-for="lang in languages"
-                :key="lang"
-                @click="changeLanguage(lang); close(); showLanguageDropdown = false;"
-                class="block w-full text-left px-4 py-2 text-sm hover:bg-[var(--Color-Surface-Surface-Brand)] transition-colors"
-                style="color: var(--Color-Text-Text-Primary)"
-              >
-                {{ languageLabels[lang] }}
-              </button>
-            </div>
           </div>
+
+          <!-- Messages Icon (Mobile) -->
+          <router-link
+            to="/messages"
+            class="flex items-center gap-2 px-4 py-3 rounded-md text-base font-medium transition-colors hover:text-[var(--Color-Text-Text-Brand)]"
+            @click="close()"
+          >
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"></path>
+            </svg>
+            <span>{{ $t('messages') }}</span>
+          </router-link>
         </div>
       </DisclosurePanel>
     </Disclosure>
@@ -266,7 +244,6 @@ const route = useRoute();
 const isDarkMode = ref(false);
 const isAuthenticated = ref(false);
 const userProfileImage = ref("");
-const showLanguageDropdown = ref(false);
 const currentLang = ref(locale.value);
 const languages = ref(["en", "ar"]);
 const auth = getAuth();
@@ -301,16 +278,11 @@ const setDir = (lang) => {
   }
 };
 
-const toggleLanguageDropdown = () => {
-  showLanguageDropdown.value = !showLanguageDropdown.value;
-};
-
 const changeLanguage = (lang) => {
   locale.value = lang;
   currentLang.value = lang;
   localStorage.setItem("lang", lang);
   setDir(lang);
-  showLanguageDropdown.value = false;
 };
 
 const initializeDarkMode = () => {
