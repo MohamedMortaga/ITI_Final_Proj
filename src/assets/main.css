@@ -163,3 +163,10 @@ input[type="password"]::-webkit-clear-button {
 .bg-default {
   background-color: var(--bg-default);
 }
+
+/* Navbar transparency for AboutUs page */
+.navbar-transparent {
+  background: transparent !important;
+  border-bottom: none !important;
+  backdrop-filter: blur(10px);
+}

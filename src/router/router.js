@@ -40,9 +40,11 @@ import MyBalance from '@/views/Profile/MyBalance.vue';
 import Settings from '@/views/Profile/Settings.vue';
 import HelpCentre from '@/views/Profile/HelpCentre.vue';
 import Messages from '@/views/Messages.vue';
+import AboutUs from '@/views/AboutUs.vue';
 
 const routes = [
   { path: '/contact', name: 'Contact', component: Contact, meta: { requiresAuth: false } },
+  { path: '/about', name: 'AboutUs', component: AboutUs, meta: { requiresAuth: false } },
   { path: '/', redirect: '/home' },
   { path: '/signup', name: 'Signup', component: Signup, meta: { hideNavbar: true, requiresAuth: false } },
   { path: '/login', name: 'Login', component: Login, meta: { hideNavbar: true, requiresAuth: false } },
