@@ -3,6 +3,118 @@
     <!-- Top Bar with Filter Button -->
     <TopBar title="Rental Dashboard" searchPlaceholder="Search Rentals?" @update:search="handleSearch"
       @update:sort="handleSort" @filter="handleFilter" />
+    
+    <!-- Balance Summary Dashboard -->
+    <div class="bg-white rounded-xl shadow border mt-4 mb-6">
+      <div class="px-6 py-4 border-b">
+        <h2 class="text-xl font-semibold text-gray-800">Platform Balance Overview</h2>
+        <p class="text-sm text-gray-600 mt-1">Complete financial summary of all transactions</p>
+      </div>
+      
+      <div class="p-6">
+        <div v-if="loadingBalance" class="text-center py-8">
+          <svg class="animate-spin w-8 h-8 mx-auto mb-4 text-blue-600" fill="none" viewBox="0 0 24 24">
+            <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+            <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+          </svg>
+          <p class="text-gray-600">Loading balance information...</p>
+        </div>
+        
+        <div v-else class="grid grid-cols-1 md:grid-cols-6 gap-4">
+          <div class="bg-blue-50 border border-blue-200 rounded-lg p-4">
+            <h3 class="text-sm font-medium text-blue-800">Total Revenue</h3>
+            <p class="text-2xl font-bold text-blue-900">EGP {{ platformBalance.totalRevenue.toFixed(2) }}</p>
+            <p class="text-xs text-blue-600 mt-1">From all rentals</p>
+          </div>
+          
+          <div class="bg-orange-50 border border-orange-200 rounded-lg p-4">
+            <h3 class="text-sm font-medium text-orange-800">Service Fees</h3>
+            <p class="text-2xl font-bold text-orange-900">EGP {{ platformBalance.totalServiceFees.toFixed(2) }}</p>
+            <p class="text-xs text-orange-600 mt-1">Platform commission</p>
+          </div>
+          
+          <div class="bg-green-50 border border-green-200 rounded-lg p-4">
+            <h3 class="text-sm font-medium text-green-800">User Profits</h3>
+            <p class="text-2xl font-bold text-green-900">EGP {{ platformBalance.totalUserProfits.toFixed(2) }}</p>
+            <p class="text-xs text-green-600 mt-1">Paid to users</p>
+          </div>
+          
+          <div class="bg-purple-50 border border-purple-200 rounded-lg p-4">
+            <h3 class="text-sm font-medium text-purple-800">Total Withdrawn</h3>
+            <p class="text-2xl font-bold text-purple-900">EGP {{ platformBalance.totalWithdrawn.toFixed(2) }}</p>
+            <p class="text-xs text-purple-600 mt-1">By all users</p>
+          </div>
+          
+          <div class="bg-teal-50 border border-teal-200 rounded-lg p-4">
+            <h3 class="text-sm font-medium text-teal-800">Available Balance</h3>
+            <p class="text-2xl font-bold text-teal-900">EGP {{ platformBalance.availableBalance.toFixed(2) }}</p>
+            <p class="text-xs text-teal-600 mt-1">Remaining for users</p>
+          </div>
+          
+          <div class="bg-indigo-50 border border-indigo-200 rounded-lg p-4">
+            <h3 class="text-sm font-medium text-indigo-800">Active Rentals</h3>
+            <p class="text-2xl font-bold text-indigo-900">{{ platformBalance.activeRentals }}</p>
+            <p class="text-xs text-indigo-600 mt-1">Currently active</p>
+          </div>
+        </div>
+        
+        <!-- Detailed Balance Breakdown -->
+        <div class="mt-6 grid grid-cols-1 lg:grid-cols-2 gap-6">
+          <div class="bg-gray-50 rounded-lg p-4">
+            <h3 class="text-lg font-semibold text-gray-800 mb-3">Payment Data Breakdown</h3>
+            <div class="space-y-2 text-sm">
+              <div class="flex justify-between">
+                <span class="text-gray-600">Total Rental Revenue:</span>
+                <span class="font-medium">EGP {{ platformBalance.totalRevenue.toFixed(2) }}</span>
+              </div>
+              <div class="flex justify-between">
+                <span class="text-gray-600">Platform Service Fees:</span>
+                <span class="font-medium">EGP {{ platformBalance.totalServiceFees.toFixed(2) }}</span>
+              </div>
+              <div class="flex justify-between">
+                <span class="text-gray-600">User Profits (Before Withdrawals):</span>
+                <span class="font-medium">EGP {{ platformBalance.totalUserProfits.toFixed(2) }}</span>
+              </div>
+              <div class="flex justify-between">
+                <span class="text-gray-600">Total Withdrawn by Users:</span>
+                <span class="font-medium">EGP {{ platformBalance.totalWithdrawn.toFixed(2) }}</span>
+              </div>
+              <div class="flex justify-between border-t pt-2">
+                <span class="font-semibold text-gray-800">Available Balance (After Withdrawals):</span>
+                <span class="font-bold text-teal-600">EGP {{ platformBalance.availableBalance.toFixed(2) }}</span>
+              </div>
+            </div>
+          </div>
+          
+          <div class="bg-gray-50 rounded-lg p-4">
+            <h3 class="text-lg font-semibold text-gray-800 mb-3">User Balance Summary</h3>
+            <div class="space-y-2 text-sm">
+              <div class="flex justify-between">
+                <span class="text-gray-600">Total Users:</span>
+                <span class="font-medium">{{ users.length }}</span>
+              </div>
+              <div class="flex justify-between">
+                <span class="text-gray-600">Users with Balances:</span>
+                <span class="font-medium">{{ platformBalance.usersWithBalances }}</span>
+              </div>
+              <div class="flex justify-between">
+                <span class="text-gray-600">Average User Balance:</span>
+                <span class="font-medium">EGP {{ platformBalance.averageUserBalance.toFixed(2) }}</span>
+              </div>
+              <div class="flex justify-between">
+                <span class="text-gray-600">Pending Withdrawals:</span>
+                <span class="font-medium">{{ platformBalance.pendingWithdrawals }}</span>
+              </div>
+              <div class="flex justify-between border-t pt-2">
+                <span class="font-semibold text-gray-800">Total Available for Users:</span>
+                <span class="font-bold text-green-600">EGP {{ platformBalance.availableBalance.toFixed(2) }}</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    
     <!-- Rentals Table -->
     <div class="bg-white rounded-xl shadow border">
       <table class="min-w-full divide-y">
@@ -91,8 +203,8 @@
 
 <script setup>
 import TopBar from '@/components/admin/TopBar.vue';
-import { ref, computed, onMounted, onBeforeUnmount } from 'vue';
-import { updateDoc, deleteDoc, doc } from 'firebase/firestore';
+import { ref, computed, onMounted, onBeforeUnmount, watch } from 'vue';
+import { updateDoc, deleteDoc, doc, collection, getDocs, query, where } from 'firebase/firestore';
 import { db } from '@/firebase/config';
 import Swal from 'sweetalert2';
 import { useAdminRealTime } from '@/composables/useAdminRealTime';
@@ -107,6 +219,21 @@ const currentPage = ref(1);
 const itemsPerPage = 10;
 const statusDropdownId = ref(null);
 const statusOptions = ['pending', 'active', 'cancelled'];
+
+// Platform balance
+const platformBalance = ref({
+  totalRevenue: 0,
+  totalServiceFees: 0,
+  totalUserProfits: 0,
+  totalWithdrawn: 0,
+  availableBalance: 0,
+  activeRentals: 0,
+  usersWithBalances: 0,
+  averageUserBalance: 0,
+  pendingWithdrawals: 0
+});
+const loadingBalance = ref(false);
+const withdrawals = ref([]);
 
 // Computed property to enrich bookings with user data
 const rentals = computed(() => {
@@ -196,6 +323,91 @@ const handleFilter = () => {
   });
 };
 
+const loadWithdrawals = async () => {
+  try {
+    const withdrawalsRef = collection(db, 'withdrawalHistory');
+    const withdrawalsSnapshot = await getDocs(withdrawalsRef);
+    withdrawals.value = withdrawalsSnapshot.docs.map(doc => ({
+      id: doc.id,
+      ...doc.data()
+    }));
+  } catch (error) {
+    console.error('Error loading withdrawals:', error);
+  }
+};
+
+const calculatePlatformBalance = async () => {
+  try {
+    loadingBalance.value = true;
+    
+    // Calculate from rentals
+    let totalRevenue = 0;
+    let totalServiceFees = 0;
+    let totalUserProfits = 0;
+    let activeRentals = 0;
+    
+    bookings.value.forEach(rental => {
+      const price = Number(rental.productPrice || rental.totalPrice || 0);
+      const fee = Number(rental.deliveryFee || 0);
+      const profit = price - fee;
+      
+      totalRevenue += price;
+      totalServiceFees += fee;
+      totalUserProfits += profit;
+      
+      if (rental.status === 'active') {
+        activeRentals++;
+      }
+    });
+    
+    // Calculate from withdrawals
+    let totalWithdrawn = 0;
+    let pendingWithdrawals = 0;
+    
+    withdrawals.value.forEach(withdrawal => {
+      totalWithdrawn += parseFloat(withdrawal.amount) || 0;
+      if (withdrawal.status === 'pending') {
+        pendingWithdrawals++;
+      }
+    });
+    
+    // Calculate available balance
+    const availableBalance = totalUserProfits - totalWithdrawn;
+    
+    // Calculate user statistics
+    const usersWithBalances = users.value.filter(user => {
+      const userRentals = bookings.value.filter(booking => booking.userId === user.id);
+      const userProfit = userRentals.reduce((sum, rental) => {
+        const price = Number(rental.productPrice || rental.totalPrice || 0);
+        const fee = Number(rental.deliveryFee || 0);
+        return sum + (price - fee);
+      }, 0);
+      return userProfit > 0;
+    }).length;
+    
+    const averageUserBalance = usersWithBalances > 0 ? availableBalance / usersWithBalances : 0;
+    
+    platformBalance.value = {
+      totalRevenue,
+      totalServiceFees,
+      totalUserProfits,
+      totalWithdrawn,
+      availableBalance,
+      activeRentals,
+      usersWithBalances,
+      averageUserBalance,
+      pendingWithdrawals
+    };
+    
+    console.log('Platform balance calculated:', platformBalance.value);
+    
+  } catch (error) {
+    console.error('Error calculating platform balance:', error);
+  } finally {
+    loadingBalance.value = false;
+  }
+};
+
 function setStatusFilter(status) {
   filterStatus.value = status;
   currentPage.value = 1;
@@ -256,8 +468,15 @@ function handleClickOutside(event) {
 
 onMounted(() => {
   initializeRealTimeData();
+  loadWithdrawals();
+  calculatePlatformBalance();
   document.addEventListener('mousedown', handleClickOutside);
 });
+
+// Watch for changes in bookings, users, and withdrawals to update balance
+watch([bookings, users, withdrawals], () => {
+  calculatePlatformBalance();
+}, { deep: true });
 
 onBeforeUnmount(() => {
   cleanup();

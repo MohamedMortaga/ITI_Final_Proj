@@ -65,6 +65,7 @@
                 {{ product.title }}
               </h1>
               <button
+                v-if="!isProductOwner"
                 @click="navigateToRentConfirmation"
                 :disabled="product?.status === 'pending' || isBookingPending"
                 class="bg-[var(--Color-Surface-Surface-Brand)] text-[var(--Color-Text-Text-Invert)] py-3 px-6 rounded-lg font-semibold hover:bg-[var(--Color-Text-Text-Brand)] hover:text-white disabled:bg-gray-400 disabled:cursor-not-allowed transition-colors whitespace-nowrap"
@@ -75,6 +76,12 @@
                     : $t("rentThisTool")
                 }}
               </button>
+              <div
+                v-else
+                class="bg-gray-100 text-gray-600 py-3 px-6 rounded-lg font-semibold border border-gray-300"
+              >
+                {{ $t("ownProductMessage") }}
+              </div>
             </div>
             <p
               v-if="isBookingPending && remainingTime"
@@ -1885,6 +1892,17 @@ const navigateToRentConfirmation = () => {
     return;
   }
 
+  // Check if user is trying to book their own product
+  if (isProductOwner.value) {
+    Swal.fire({
+      icon: "warning",
+      title: t("cannotBookOwnProduct"),
+      text: t("cannotBookOwnProductMessage"),
+      confirmButtonText: "OK",
+    });
+    return;
+  }
+
   router.push({
     name: "RentConfirmation",
     params: { id: route.params.id },
@@ -1923,6 +1941,13 @@ const remainingTime = computed(() => {
       diffMinutes !== 1 ? "s" : ""
     }`;
   }
+});
+
+// Check if current user is the product owner
+const isProductOwner = computed(() => {
+  if (!auth.currentUser || !product.value) return false;
+  const productOwnerId = product.value.userId || product.value.sellerId;
+  return auth.currentUser.uid === productOwnerId;
 });
 
 const viewOwnerTools = () => {

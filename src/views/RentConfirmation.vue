@@ -599,6 +599,20 @@ const loadProduct = async () => {
       booking.value.sellerId = product.value.sellerId || product.value.userId;
       booking.value.productTitle = product.value.title;
       booking.value.productPrice = parseFloat(product.value.price) || 0;
+      
+      // Check if current user is the product owner
+      if (auth.currentUser && auth.currentUser.uid === booking.value.sellerId) {
+        Swal.fire({
+          icon: "warning",
+          title: t("cannotBookOwnProduct"),
+          text: t("cannotBookOwnProductMessage"),
+          confirmButtonText: "OK",
+        }).then(() => {
+          router.push("/all-products");
+        });
+        return;
+      }
+      
       await loadSellerDetails(booking.value.sellerId);
     } else {
       console.error("No such product!");
@@ -800,6 +814,17 @@ const submitBooking = async () => {
       icon: "warning",
       title: "Login Required",
       text: "Please log in to make a booking.",
+      confirmButtonText: "OK",
+    });
+    return;
+  }
+
+  // Check if user is trying to book their own product
+  if (auth.currentUser.uid === booking.value.sellerId) {
+    Swal.fire({
+      icon: "warning",
+      title: t("cannotBookOwnProduct"),
+      text: t("cannotBookOwnProductMessage"),
       confirmButtonText: "OK",
     });
     return;

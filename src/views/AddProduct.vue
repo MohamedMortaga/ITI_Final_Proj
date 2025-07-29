@@ -24,6 +24,24 @@
       </div>
     </div>
 
+    <!-- Pending Products Notice -->
+    <div
+      v-if="hasPendingProducts"
+      class="mb-6 p-4 bg-blue-50 border-l-4 border-blue-400 text-blue-700 rounded-lg shadow-sm"
+    >
+      <div class="flex items-center">
+        <i class="fas fa-clock mr-3 text-blue-500"></i>
+        <div>
+          <p class="text-sm font-medium">
+            {{ $t("pendingProductsNotice") }}
+          </p>
+          <p class="text-xs mt-1">
+            {{ $t("pendingProductsDescription") }}
+          </p>
+        </div>
+      </div>
+    </div>
+
     <!-- Search Bar -->
     <div class="mb-6 flex flex-col md:flex-row md:justify-between md:items-center gap-4">
       <p
@@ -111,6 +129,11 @@ const {
 
 const showForm = ref(false);
 const showApprovalAlert = ref(false);
+
+// Check if user has pending products
+const hasPendingProducts = computed(() => {
+  return products.value.some(product => product.isApproved !== true);
+});
 
 function handleCancelForm() {
   resetForm();

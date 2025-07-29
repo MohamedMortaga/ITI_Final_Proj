@@ -69,10 +69,8 @@ const loadProducts = async () => {
     if (!currentUser .value) throw new Error("No user is logged in.");
     const q = query(collection(db, "products"), where("userId", "==", currentUser .value.uid));
     const snapshot = await getDocs(q);
-    products.value = snapshot.docs.map((doc) => ({ ...doc.data(), id: doc.id }));
-    products.value = snapshot.docs
-  .map(doc => ({ id: doc.id, ...doc.data() }))
-  .filter(product => product.isApproved === true); 
+    // Show all products (both approved and pending) for the current user
+    products.value = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
 
   } catch (err) {
     Swal.fire({

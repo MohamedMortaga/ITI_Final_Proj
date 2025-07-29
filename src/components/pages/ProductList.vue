@@ -50,15 +50,15 @@
       <div>
         <span
           v-if="product.isApproved === true"
-          class="text-[var(--Colors-Success-500)] dark:text-[var(--Colors-Success-400)] font-semibold"
+          class="px-3 py-1 rounded-full text-xs font-semibold bg-green-100 text-green-700"
         >
           {{$t('approved') || 'Approved'}}
         </span>
         <span
           v-else
-          class="text-[var(--Colors-Warning-400)] dark:text-[var(--Colors-Warning-300)] font-semibold"
+          class="px-3 py-1 rounded-full text-xs font-semibold bg-yellow-100 text-yellow-700 animate-pulse"
         >
-          {{$t('pending') || 'Pending'}}
+          {{$t('pendingApproval') || 'Pending Approval'}}
         </span>
       </div>
       <!-- Actions -->
@@ -116,15 +116,15 @@
       <div>
         <span
           v-if="product.isApproved === true"
-          class="text-[var(--Colors-Success-500)] dark:text-[var(--Colors-Success-400)] font-semibold"
+          class="px-3 py-1 rounded-full text-xs font-semibold bg-green-100 text-green-700"
         >
           {{$t('approved') || 'Approved'}}
         </span>
         <span
           v-else
-          class="text-[var(--Colors-Warning-400)] dark:text-[var(--Colors-Warning-300)] font-semibold"
+          class="px-3 py-1 rounded-full text-xs font-semibold bg-yellow-100 text-yellow-700 animate-pulse"
         >
-          {{$t('pending') || 'Pending'}}
+          {{$t('pendingApproval') || 'Pending Approval'}}
         </span>
       </div>
       <!-- Uploaded -->
@@ -194,15 +194,15 @@
         <div class="mb-2">
           <span
             v-if="product.isApproved === true"
-            class="text-xs text-[var(--Colors-Success-500)] dark:text-[var(--Colors-Success-400)] font-semibold"
+            class="px-2 py-1 rounded-full text-xs font-semibold bg-green-100 text-green-700"
           >
             {{$t('approved') || 'Approved'}}
           </span>
           <span
             v-else
-            class="text-xs text-[var(--Colors-Warning-400)] dark:text-[var(--Colors-Warning-300)] font-semibold"
+            class="px-2 py-1 rounded-full text-xs font-semibold bg-yellow-100 text-yellow-700 animate-pulse"
           >
-            {{$t('pending') || 'Pending'}}
+            {{$t('pendingApproval') || 'Pending Approval'}}
           </span>
         </div>
       </div>

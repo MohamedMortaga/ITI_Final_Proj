@@ -55,6 +55,12 @@
           >
             {{ $t("rentItem") }}
           </button>
+          <div
+            v-else-if="isProductOwner()"
+            class="w-full bg-gray-100 text-gray-600 px-3 md:px-4 py-1.5 md:py-2 font-semibold text-xs md:text-sm rounded md:rounded-md border border-gray-300 text-center"
+          >
+            {{ $t("ownProductMessage") }}
+          </div>
           <router-link
             v-else
             :to="{ name: 'ProductDetails', params: { id: product.id || '' } }"
@@ -73,6 +79,7 @@
 import { useRouter } from "vue-router";
 import Swal from "sweetalert2";
 import { useI18n } from "vue-i18n"; // Import useI18n
+import { getAuth } from "firebase/auth";
 
 export default {
   props: {
@@ -90,6 +97,7 @@ export default {
   setup(props) {
     const router = useRouter();
     const { t } = useI18n(); // Destructure t for translations
+    const auth = getAuth();
 
     const promptLogin = () => {
       Swal.fire({
@@ -108,8 +116,21 @@ export default {
       });
     };
 
+    // Check if current user is the product owner
+    const isProductOwner = () => {
+      try {
+        if (!auth?.currentUser || !props.product) return false;
+        const productOwnerId = props.product.userId || props.product.sellerId;
+        return auth.currentUser.uid === productOwnerId;
+      } catch (error) {
+        console.warn('Error checking product ownership:', error);
+        return false;
+      }
+    };
+
     return {
       promptLogin,
+      isProductOwner,
     };
   },
 };
