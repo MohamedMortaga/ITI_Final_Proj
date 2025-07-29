@@ -75,6 +75,32 @@ export const useNotifications = () => {
     }
   }
 
+  // Function to add test warning data to warnings collection
+  const addWarningTestData = async () => {
+    const warningData = {
+      chatId: "EBFh8ZMa1KWrZxJJgqKAC3URB1A2_anM57nMOkXb9X8N0fHQTm23bY763",
+      content: "01022194510\\",
+      detectedAt: "2025-07-27T20:02:02.759Z",
+      issue: "phone number",
+      messageId: "user-1",
+      timestamp: 1658971116,
+      userId: "anM57nMOkXb9X8N0fHQTm23bY763"
+    };
+
+    try {
+      const warningsRef = collection(db, 'warnings')
+      const docRef = await addDoc(warningsRef, {
+        ...warningData,
+        createdAt: new Date().toISOString()
+      })
+      console.log('Warning test data added successfully with ID:', docRef.id)
+      return docRef.id
+    } catch (error) {
+      console.error('Error adding warning test data:', error)
+      throw error
+    }
+  }
+
   // Predefined notification types
   const notifyNewBooking = async (userName, productTitle) => {
     await createNotification(
@@ -125,6 +151,7 @@ export const useNotifications = () => {
     createNotification,
     createNotificationFromChatData,
     addUserNotificationData,
+    addWarningTestData,
     notifyNewBooking,
     notifyNewProduct,
     notifyNewUser,
