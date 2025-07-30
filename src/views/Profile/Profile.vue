@@ -1,7 +1,7 @@
 <template>
   <div class="flex min-h-screen bg-[var(--Color-Surface-Surface-Primary)] dark:bg-[var(--Color-Surface-Surface-Primary)]">
     <ProfileSidebar />
-    <div class="flex-1 p-8">
+    <div class="flex-1 p-2 sm:p-4 md:p-8">
       <router-view />
     </div>
   </div>
