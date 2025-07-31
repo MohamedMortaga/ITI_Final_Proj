@@ -72,13 +72,15 @@
             </button>
           </div>
         </div>
-        <p v-if="uploading1" class="text-sm text-[var(--Colors-Success-500)] mt-2 font-nunito flex items-center">
-          <svg class="animate-spin -ml-1 mr-2 h-4 w-4" fill="none" viewBox="0 0 24 24">
-            <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
-            <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
-          </svg>
-          {{$t('uploadingImage')}}
-        </p>
+        <div v-if="uploading1" class="mt-3 p-3 bg-[var(--Colors-Primary-50)] dark:bg-[var(--Colors-Primary-900)] rounded-lg border border-[var(--Colors-Primary-200)] dark:border-[var(--Colors-Primary-700)]">
+          <div class="flex items-center justify-center space-x-2">
+            <svg class="animate-spin h-5 w-5 text-[var(--Colors-Primary-500)]" fill="none" viewBox="0 0 24 24">
+              <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+              <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+            </svg>
+            <span class="text-sm font-medium text-[var(--Colors-Primary-600)] dark:text-[var(--Colors-Primary-400)] font-nunito">{{$t('uploadingImage')}}</span>
+          </div>
+        </div>
       </div>
 
       <!-- Image 2 -->
@@ -116,26 +118,31 @@
             </div>
           </div>
         </div>
-        <div v-if="form.image2" class="mt-3 relative">
-          <img :key="form.image2" :src="form.image2" :alt="$t('image2')" class="h-32 w-full object-cover rounded-lg border border-[var(--Color-Boarder-Border-Primary)] dark:border-[var(--Color-Boarder-Border-Primary)] shadow-sm" />
-          <button 
-            type="button" 
-            @click="$emit('removeImage', 2)"
-            class="absolute top-2 right-2 bg-red-500 hover:bg-red-600 text-white rounded-full p-1 transition-colors duration-200"
-            title="Remove image"
-          >
-            <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
-            </svg>
-          </button>
+        <div v-if="form.image2" class="mt-4 relative group">
+          <div class="relative overflow-hidden rounded-xl border border-[var(--Color-Boarder-Border-Primary)] dark:border-[var(--Color-Boarder-Border-Primary)] shadow-lg">
+            <img :key="form.image2" :src="form.image2" :alt="$t('image2')" class="h-40 w-full object-cover transition-transform duration-300 group-hover:scale-105" />
+            <div class="absolute inset-0 bg-black bg-opacity-0 group-hover:bg-opacity-20 transition-all duration-300"></div>
+            <button 
+              type="button" 
+              @click="$emit('removeImage', 2)"
+              class="absolute top-3 right-3 bg-red-500 hover:bg-red-600 text-white rounded-full p-2 transition-all duration-200 shadow-lg hover:shadow-xl opacity-0 group-hover:opacity-100"
+              title="Remove image"
+            >
+              <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+              </svg>
+            </button>
+          </div>
         </div>
-        <p v-if="uploading2" class="text-sm text-[var(--Colors-Success-500)] mt-2 font-nunito flex items-center">
-          <svg class="animate-spin -ml-1 mr-2 h-4 w-4" fill="none" viewBox="0 0 24 24">
-            <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
-            <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
-          </svg>
-          {{$t('uploadingImage')}}
-        </p>
+        <div v-if="uploading2" class="mt-3 p-3 bg-[var(--Colors-Primary-50)] dark:bg-[var(--Colors-Primary-900)] rounded-lg border border-[var(--Colors-Primary-200)] dark:border-[var(--Colors-Primary-700)]">
+          <div class="flex items-center justify-center space-x-2">
+            <svg class="animate-spin h-5 w-5 text-[var(--Colors-Primary-500)]" fill="none" viewBox="0 0 24 24">
+              <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+              <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+            </svg>
+            <span class="text-sm font-medium text-[var(--Colors-Primary-600)] dark:text-[var(--Colors-Primary-400)] font-nunito">{{$t('uploadingImage')}}</span>
+          </div>
+        </div>
       </div>
 
       <!-- Image 3 -->
@@ -173,26 +180,31 @@
             </div>
           </div>
         </div>
-        <div v-if="form.image3" class="mt-3 relative">
-          <img :key="form.image3" :src="form.image3" :alt="$t('image3')" class="h-32 w-full object-cover rounded-lg border border-[var(--Color-Boarder-Border-Primary)] dark:border-[var(--Color-Boarder-Border-Primary)] shadow-sm" />
-          <button 
-            type="button" 
-            @click="$emit('removeImage', 3)"
-            class="absolute top-2 right-2 bg-red-500 hover:bg-red-600 text-white rounded-full p-1 transition-colors duration-200"
-            title="Remove image"
-          >
-            <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
-            </svg>
-          </button>
+        <div v-if="form.image3" class="mt-4 relative group">
+          <div class="relative overflow-hidden rounded-xl border border-[var(--Color-Boarder-Border-Primary)] dark:border-[var(--Color-Boarder-Border-Primary)] shadow-lg">
+            <img :key="form.image3" :src="form.image3" :alt="$t('image3')" class="h-40 w-full object-cover transition-transform duration-300 group-hover:scale-105" />
+            <div class="absolute inset-0 bg-black bg-opacity-0 group-hover:bg-opacity-20 transition-all duration-300"></div>
+            <button 
+              type="button" 
+              @click="$emit('removeImage', 3)"
+              class="absolute top-3 right-3 bg-red-500 hover:bg-red-600 text-white rounded-full p-2 transition-all duration-200 shadow-lg hover:shadow-xl opacity-0 group-hover:opacity-100"
+              title="Remove image"
+            >
+              <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+              </svg>
+            </button>
+          </div>
         </div>
-        <p v-if="uploading3" class="text-sm text-[var(--Colors-Success-500)] mt-2 font-nunito flex items-center">
-          <svg class="animate-spin -ml-1 mr-2 h-4 w-4" fill="none" viewBox="0 0 24 24">
-            <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
-            <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
-          </svg>
-          {{$t('uploadingImage')}}
-        </p>
+        <div v-if="uploading3" class="mt-3 p-3 bg-[var(--Colors-Primary-50)] dark:bg-[var(--Colors-Primary-900)] rounded-lg border border-[var(--Colors-Primary-200)] dark:border-[var(--Colors-Primary-700)]">
+          <div class="flex items-center justify-center space-x-2">
+            <svg class="animate-spin h-5 w-5 text-[var(--Colors-Primary-500)]" fill="none" viewBox="0 0 24 24">
+              <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+              <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+            </svg>
+            <span class="text-sm font-medium text-[var(--Colors-Primary-600)] dark:text-[var(--Colors-Primary-400)] font-nunito">{{$t('uploadingImage')}}</span>
+          </div>
+        </div>
       </div>
     </div>
 
