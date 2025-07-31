@@ -71,17 +71,17 @@
           </div>
 
           <div class="space-y-4">
-            <div class="flex justify-between items-center py-2 border-b">
+            <div class="flex justify-between items-center py-2 border-b border-gray-50">
               <span class="font-medium text-gray-600">Category:</span>
               <span class="text-gray-800">{{ latestProduct.category || 'Not set' }}</span>
             </div>
             
-            <div class="flex justify-between items-center py-2 border-b">
+            <div class="flex justify-between items-center py-2 border-b border-gray-50">
               <span class="font-medium text-gray-600">Uploaded by:</span>
               <span class="text-gray-800">{{ latestProduct.ownerName || 'Unknown' }}</span>
             </div>
             
-            <div class="flex justify-between items-center py-2 border-b">
+            <div class="flex justify-between items-center py-2 border-b border-gray-50">
               <span class="font-medium text-gray-600">Status:</span>
               <span 
                 :class="latestProduct.isApproved ? 'text-green-600' : 'text-yellow-600'"
@@ -91,7 +91,7 @@
               </span>
             </div>
             
-            <div class="flex justify-between items-center py-2 border-b">
+            <div class="flex justify-between items-center py-2 border-b border-gray-50">
               <span class="font-medium text-gray-600">Upload Date:</span>
               <span class="text-gray-800">
                 {{ formatFullDate(latestProduct.createdAt) }}

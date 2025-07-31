@@ -9,8 +9,8 @@
     />
 
     <!-- User Balance Summary -->
-    <div class="bg-white rounded-xl shadow border mt-4">
-      <div class="px-6 py-4 border-b">
+    <div class="bg-white rounded-xl shadow border border-gray-50 mt-4">
+      <div class="px-6 py-4 border-b border-gray-50">
         <h2 class="text-xl font-semibold text-gray-800">User Balance Summary</h2>
         <p class="text-sm text-gray-600 mt-1">Complete financial overview for {{ userName }}</p>
       </div>
@@ -59,8 +59,8 @@
     </div>
 
     <!-- Add New Rental Section -->
-    <div class="bg-white rounded-xl shadow border mt-4">
-      <div class="px-6 py-4 border-b">
+    <div class="bg-white rounded-xl shadow border border-gray-50 mt-4">
+      <div class="px-6 py-4 border-b border-gray-50">
         <div class="flex justify-between items-center">
           <h2 class="text-xl font-semibold text-gray-800">User Rentals</h2>
         </div>
@@ -68,7 +68,7 @@
       </div>
       
       <!-- Rental Summary -->
-      <div class="bg-gray-50 p-4 rounded-lg mb-4">
+      <div class="bg-gray-25 p-4 rounded-lg mb-4">
         <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
           <div class="text-center">
             <div class="text-2xl font-bold text-blue-600">{{ filteredRentals.length }}</div>
@@ -97,7 +97,7 @@
       
       <!-- Rentals Table -->
       <div class="overflow-x-auto">
-        <table class="min-w-full divide-y">
+        <table class="min-w-full divide-y divide-gray-50">
           <thead>
             <tr>
               <th class="px-4 py-3">Product</th>
@@ -143,7 +143,7 @@
                 <select
                   v-model="rental.status"
                   @change="updateStatus(rental.id, rental.status)"
-                  class="px-2 py-1 text-sm border rounded"
+                  class="px-2 py-1 text-sm border border-gray-50 rounded"
                 >
                   <option value="pending">Pending</option>
                   <option value="active">Active</option>
@@ -167,8 +167,8 @@
     </div>
 
     <!-- Withdrawal History Section -->
-    <div class="bg-white rounded-xl shadow border mt-6">
-      <div class="px-6 py-4 border-b">
+    <div class="bg-white rounded-xl shadow border border-gray-50 mt-6">
+      <div class="px-6 py-4 border-b border-gray-50">
         <h2 class="text-xl font-semibold text-gray-800">Withdrawal History</h2>
         <p class="text-sm text-gray-600 mt-1">Track all withdrawal requests and transactions for this user</p>
       </div>
@@ -190,7 +190,7 @@
         </div>
         
         <div v-else class="space-y-4">
-          <div v-for="withdrawal in userWithdrawals" :key="withdrawal.id" class="bg-gray-50 border border-gray-200 rounded-lg p-4">
+          <div v-for="withdrawal in userWithdrawals" :key="withdrawal.id" class="bg-gray-50 border border-gray-50 rounded-lg p-4">
             <div class="flex justify-between items-start mb-3">
               <div class="flex-1">
                 <div class="flex items-center space-x-3 mb-2">

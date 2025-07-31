@@ -1,12 +1,10 @@
 <!-- src/components/AdminHeader.vue -->
 <template>
-  <header class="bg-white border-b border-gray-200 px-6 py-4 flex items-center justify-between shadow-sm">
+  <header class="bg-white border-b border-gray-50 px-6 py-4 flex items-center justify-between shadow-sm">
     <!-- Logo/Brand Section -->
     <div class="flex items-center space-x-4">
       <div class="flex items-center space-x-2">
-        <div class="w-8 h-8 bg-gradient-to-r from-teal-500 to-blue-600 rounded-lg flex items-center justify-center">
-          <i class="fas fa-shield-alt text-white text-sm"></i>
-        </div>
+        
         <span class="text-xl font-bold text-gray-800">Admin Panel</span>
       </div>
     </div>
@@ -24,16 +22,16 @@
           @blur="handleSearchBlur"
           type="text"
           placeholder="Search rentals, users, products, categories..."
-          class="block w-full pl-10 pr-4 py-2.5 border border-gray-300 rounded-lg bg-gray-25 hover:bg-gray-50 focus:bg-white focus:ring-2 focus:ring-teal-500 focus:border-teal-500 transition-all duration-200"
+          class="block w-full pl-10 pr-4 py-2.5 border border-gray-50 rounded-lg   focus:bg-white focus:ring-2 focus:ring-teal-500 focus:border-teal-500 transition-all duration-200"
         />
         
         <!-- Search Results Dropdown -->
         <div v-if="showSearchResults && searchResults.length > 0" 
-             class="absolute top-full left-0 right-0 mt-1 bg-white border border-gray-200 rounded-lg shadow-xl z-50 max-h-96 overflow-y-auto">
+             class="absolute top-full left-0 right-0 mt-1 bg-white border border-gray-50 rounded-lg shadow-xl z-50 max-h-96 overflow-y-auto">
           <div class="p-2">
             <div v-for="result in searchResults" :key="result.id" 
                  @click="handleResultClick(result)"
-                 class="p-3 hover:bg-gray-50 cursor-pointer rounded-lg transition-colors duration-150">
+                 class="p-3 cursor-pointer rounded-lg transition-colors duration-150">
               <div class="flex items-center gap-3">
                 <div class="w-10 h-10 rounded-full flex items-center justify-center"
                      :class="getResultBgColor(result.type)">
@@ -87,8 +85,8 @@
         
         <!-- Notifications Dropdown -->
         <div v-if="showNotifications" 
-             class="absolute right-0 top-full mt-2 w-80 bg-white border border-gray-200 rounded-lg shadow-xl z-50 max-h-96 overflow-y-auto">
-          <div class="p-4 border-b border-gray-200 bg-gray-50 rounded-t-lg">
+             class="absolute right-0 top-full mt-2 w-80 bg-white border border-gray-50 rounded-lg shadow-xl z-50 max-h-96 overflow-y-auto">
+          <div class="p-4 border-b border-gray-50 bg-gray-50 rounded-t-lg">
             <div class="flex items-center justify-between">
               <h3 class="font-semibold text-gray-900">Notifications</h3>
               <button @click="markAllAsRead" 
@@ -103,7 +101,7 @@
           </div>
           <div v-for="notification in notifications" :key="notification.id" 
                @click="handleNotificationClick(notification)"
-               class="p-4 hover:bg-gray-50 cursor-pointer border-b border-gray-100 last:border-b-0 transition-colors duration-150">
+               class="p-4 hover:bg-gray-50 cursor-pointer border-b border-gray-50 last:border-b-0 transition-colors duration-150">
             <div class="flex items-start gap-3">
               <div class="w-10 h-10 rounded-full flex items-center justify-center flex-shrink-0"
                    :class="getNotificationColor(notification.type)">
@@ -137,8 +135,8 @@
         
         <!-- Profile Dropdown -->
         <div v-if="showProfileMenu" 
-             class="absolute right-0 top-full mt-2 w-48 bg-white border border-gray-200 rounded-lg shadow-xl z-50">
-          <div class="p-4 border-b border-gray-200">
+             class="absolute right-0 top-full mt-2 w-48 bg-white border border-gray-50 rounded-lg shadow-xl z-50">
+          <div class="p-4 border-b border-gray-50">
             <div class="font-medium text-gray-900">{{ adminName }}</div>
             <div class="text-sm text-gray-500">{{ currentUser?.email }}</div>
           </div>

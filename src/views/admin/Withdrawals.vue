@@ -10,8 +10,8 @@
     />
 
     <!-- Withdrawals Table -->
-    <div class="bg-white rounded-xl shadow border mt-4">
-      <table class="min-w-full divide-y">
+          <div class="bg-white rounded-xl shadow border border-gray-50 mt-4">
+      <table class="min-w-full divide-y divide-gray-50">
         <thead>
           <tr>
             <th class="px-4 py-3">User</th>
@@ -59,7 +59,7 @@
               <select
                 v-model="withdrawal.status"
                 @change="updateStatus(withdrawal.id, withdrawal.status)"
-                class="px-2 py-1 text-sm border rounded"
+                class="px-2 py-1 text-sm border border-gray-50 rounded"
                 :disabled="withdrawal.status === 'completed'"
               >
                 <option value="pending">Pending</option>
@@ -164,10 +164,10 @@
           </div>
 
           <!-- Action Buttons -->
-          <div class="flex justify-end space-x-3 pt-4 border-t">
+          <div class="flex justify-end space-x-3 pt-4 border-t border-gray-50">
             <button
               @click="selectedWithdrawal = null"
-              class="px-4 py-2 text-gray-600 hover:text-gray-800 border border-gray-300 rounded-md hover:bg-gray-50"
+                              class="px-4 py-2 text-gray-600 hover:text-gray-800 border border-gray-50 rounded-md hover:bg-gray-50"
             >
               Close
             </button>

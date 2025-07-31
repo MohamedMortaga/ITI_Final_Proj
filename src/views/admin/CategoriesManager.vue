@@ -24,13 +24,13 @@
       <div
         v-for="cat in paginatedCategories"
         :key="cat.id"
-        class="bg-white rounded-xl shadow p-6 flex flex-col gap-4 hover:shadow-lg transition cursor-pointer border border-gray-200"
+        class="bg-white rounded-xl shadow p-6 flex flex-col gap-4 hover:shadow-lg transition cursor-pointer border border-gray-50"
       >
         <h3 class="text-xl font-semibold text-gray-900 select-none mb-2">{{ cat.name }}</h3>
         <div class="flex items-center gap-3 mt-auto">
           <span
             class="px-3 py-1 rounded-full text-xs font-semibold"
-            :class="cat.status === 'inactive' ? 'bg-red-50 text-red-500 border border-red-200' : 'bg-green-50 text-green-500 border border-green-200'"
+            :class="cat.status === 'inactive' ? 'bg-red-50 text-red-500 border border-gray-50' : 'bg-green-50 text-green-500 border border-gray-50'"
           >
             {{ cat.status === 'inactive' ? $t('inactive') : $t('active') }}
           </span>
@@ -66,7 +66,7 @@
           v-model="categoryForm.name"
           type="text"
           :placeholder="$t('enterCategoryName')"
-          class="w-full border rounded-md px-4 py-3 text-lg"
+                          class="w-full border border-gray-50 rounded-md px-4 py-3 text-lg"
         />
         <div class="flex justify-end gap-2">
           <button @click="closeModal" class="text-gray-500">{{$t('cancel')}}</button>

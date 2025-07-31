@@ -10,7 +10,7 @@
     />
 
     <!-- Products Table -->
-    <div class="bg-white rounded-xl shadow border">
+    <div class="bg-white rounded-xl shadow  border border-gray-50">
       <table class="min-w-full divide-y">
         <thead>
           <tr>
@@ -32,7 +32,7 @@
           <tr
             v-for="product in filteredProducts"
             :key="product.id"
-            class="hover:bg-gray-50"
+            class="hover:bg-gray-25"
           >
             <td class="px-4 py-3 text-center">
               <input type="checkbox" v-model="selectedProducts" :value="product.id" />
@@ -92,7 +92,7 @@
         </tbody>
       </table>
       <!-- Pagination -->
-      <div class="flex items-center justify-between px-4 py-3 border-t">
+              <div class="flex items-center justify-between px-4 py-3 border-t border-gray-50">
         <button
           class="text-gray-500 flex items-center"
           :disabled="currentPage === 1"

@@ -6,18 +6,18 @@
         <i class="fas fa-download mr-2"></i> Export
       </button>
 
-      <div class="relative">
+      <div class="relative ">
         <input
           type="text"
           :placeholder="searchPlaceholder"
-          class="border rounded-md px-3 py-2 w-64"
+          class="border border-gray-50 rounded-md px-3 py-2 w-64"
           v-model="searchQuery"
           @input="emit('update:search', searchQuery)"
         />
         <i class="fas fa-search absolute right-2 top-2 text-gray-400"></i>
       </div>
 
-      <button class="border px-3 py-2 rounded-md flex items-center" @click="emit('filter')">
+      <button class="border border-gray-50 px-3 py-2 rounded-md flex items-center" @click="emit('filter')">
         <i class="fas fa-filter mr-1"></i> Filter
       </button>
 

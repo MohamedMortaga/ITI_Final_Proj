@@ -64,14 +64,14 @@
     </div>
 
     <!-- Chat Data Table -->
-    <div v-if="!loading" class="bg-white rounded-xl shadow border">
-      <div class="p-6 border-b">
+          <div v-if="!loading" class="bg-white rounded-xl shadow border border-gray-50">
+      <div class="p-6 border-b border-gray-50">
         <h2 class="text-xl font-semibold text-gray-800">Chat Data Records</h2>
         <p class="text-sm text-gray-600 mt-1">Showing {{ paginatedData.length }} of {{ filteredData.length }} records</p>
       </div>
       
       <div class="overflow-x-auto">
-        <table class="w-full divide-y">
+        <table class="w-full divide-y divide-gray-50">
           <thead class="bg-gray-50">
             <tr>
               <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Username</th>
@@ -79,7 +79,7 @@
               <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Detected At</th>
             </tr>
           </thead>
-          <tbody class="bg-white divide-y divide-gray-200">
+          <tbody class="bg-white divide-y divide-gray-50">
             <tr v-for="data in paginatedData" :key="data.id" class="hover:bg-gray-50">
               <td class="px-4 py-4 text-sm text-gray-900">
                 {{ getUserDisplayName(data.userId) }}
@@ -108,7 +108,7 @@
       </div>
       
       <!-- Pagination -->
-      <div v-if="totalPages > 1" class="flex items-center justify-between px-6 py-3 border-t">
+      <div v-if="totalPages > 1" class="flex items-center justify-between px-6 py-3 border-t border-gray-50">
         <button class="text-gray-500 flex items-center" :disabled="currentPage === 1" @click="currentPage--">
           <i class="fas fa-chevron-left mr-1"></i> Previous
         </button>

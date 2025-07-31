@@ -11,7 +11,7 @@
 
     <!-- Statistics Cards -->
     <div class="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
-      <div class="bg-white rounded-xl shadow border p-6">
+      <div class="bg-white rounded-xl shadow border border-gray-50 p-6">
         <div class="flex items-center justify-between">
           <div>
             <p class="text-sm font-medium text-gray-600">{{ $t('totalVerifications') }}</p>
@@ -23,7 +23,7 @@
         </div>
       </div>
 
-      <div class="bg-white rounded-xl shadow border p-6">
+      <div class="bg-white rounded-xl shadow border border-gray-50 p-6">
         <div class="flex items-center justify-between">
           <div>
             <p class="text-sm font-medium text-gray-600">{{ $t('pendingVerifications') }}</p>
@@ -35,7 +35,7 @@
         </div>
       </div>
 
-      <div class="bg-white rounded-xl shadow border p-6">
+      <div class="bg-white rounded-xl shadow border border-gray-50 p-6">
         <div class="flex items-center justify-between">
           <div>
             <p class="text-sm font-medium text-gray-600">{{ $t('approvedVerifications') }}</p>
@@ -47,7 +47,7 @@
         </div>
       </div>
 
-      <div class="bg-white rounded-xl shadow border p-6">
+      <div class="bg-white rounded-xl shadow border border-gray-50 p-6">
         <div class="flex items-center justify-between">
           <div>
             <p class="text-sm font-medium text-gray-600">{{ $t('rejectedVerifications') }}</p>
@@ -61,8 +61,8 @@
     </div>
 
     <!-- Verifications Table -->
-    <div class="bg-white rounded-xl shadow border">
-      <table class="min-w-full divide-y">
+    <div class="bg-white rounded-xl shadow border border-gray-50">
+              <table class="min-w-full divide-y divide-gray-50">
         <thead>
           <tr>
             <th class="px-4 py-3">{{ $t('user') }}</th>
@@ -143,7 +143,7 @@
       </div>
       
       <!-- Pagination -->
-      <div v-if="totalPages > 1" class="flex items-center justify-between px-4 py-3 border-t">
+      <div v-if="totalPages > 1" class="flex items-center justify-between px-4 py-3 border-t border-gray-50">
         <button
           class="text-gray-500 flex items-center"
           :disabled="currentPage === 1"
@@ -184,14 +184,14 @@
           <textarea
             v-model="rejectionReason"
             rows="4"
-            class="w-full border rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-red-500"
+                            class="w-full border border-gray-50 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-red-500"
             :placeholder="$t('enterRejectionReason')"
           ></textarea>
         </div>
         <div class="flex justify-end gap-2">
           <button 
             @click="showRejectionModal = false" 
-            class="px-4 py-2 text-gray-500 hover:text-gray-700 border border-gray-300 rounded-md hover:bg-gray-50"
+                            class="px-4 py-2 text-gray-500 hover:text-gray-700 border border-gray-50 rounded-md hover:bg-gray-50"
           >
             {{ $t('cancel') }}
           </button>

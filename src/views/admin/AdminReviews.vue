@@ -8,7 +8,7 @@
             <div v-if="loadingWeb">Loading web reviews...</div>
             <div v-else class="grid gap-4">
                 <div v-for="review in webReviews.slice().reverse()" :key="review.id"
-                    class="bg-white  border rounded-lg p-4 shadow flex justify-between items-start">
+                    class="bg-white  border border-gray-50 rounded-lg p-4 shadow flex justify-between items-start">
                     <div class="flex gap-4">
                         <div v-if="review.userImage">
                             <img :src="review.userImage" alt="User Image" class="w-24 h-24 rounded-full object-cover" />
@@ -44,7 +44,7 @@
             <div v-if="loadingUser">Loading user reviews...</div>
             <div v-else class="grid gap-4">
                 <div v-for="review in userReviews.slice().reverse()" :key="review.id"
-                    class="bg-white  border rounded-lg p-4 shadow flex justify-between items-start">
+                    class="bg-white  border border-gray-50 rounded-lg p-4 shadow flex justify-between items-start">
                     <div class="flex gap-4">
                         <img v-if="review.img" :src="review.img" alt="Product" class="w-16 h-16 object-cover rounded" />
                         <div>
@@ -68,17 +68,17 @@
         </section>
 
         <!-- Form Add/Edit -->
-        <div class="border-t pt-6">
+        <div class="border-t border-gray-50 pt-6">
             <h2 class="text-lg font-semibold mb-4">{{ editing ? $t('edit') : $t('add') }} {{ $t('review') }}</h2>
             <form @submit.prevent="saveReview" class="grid gap-4 max-w-md">
-                <select v-model="form.collection" class="p-2 border rounded" required>
+                <select v-model="form.collection" class="p-2 border border-gray-50 rounded" required>
                     <option value="user-reviews">{{ $t('userReviewsAfterBooking') }}</option>
                     <option value="web-reviews">{{ $t('webReviewsWithoutBooking') }}</option>
                 </select>
                 <!-- <input v-model="form.productId" placeholder="Product ID" class="p-2 border rounded" required /> -->
-                <input v-model="form.userName" placeholder="User Name" class="p-2 border rounded" required />
-                <textarea v-model="form.review" placeholder="Review" class="p-2 border rounded" required></textarea>
-                <input v-model.number="form.rate" type="number" min="1" max="5" class="p-2 border rounded" required />
+                <input v-model="form.userName" placeholder="User Name" class="p-2 border border-gray-50 rounded" required />
+                <textarea v-model="form.review" placeholder="Review" class="p-2 border border-gray-50 rounded" required></textarea>
+                <input v-model.number="form.rate" type="number" min="1" max="5" class="p-2 border border-gray-50 rounded" required />
                 <div class="flex gap-4">
                     <button type="submit" class="bg-green-600 text-white px-4 py-2 rounded hover:bg-green-700">{{
                         editing ? $t('update') : $t('add') }}</button>

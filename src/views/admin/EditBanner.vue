@@ -8,7 +8,7 @@
       <div
         v-for="banner in banners"
         :key="banner.id"
-        class="border rounded-lg p-4 shadow-md relative"
+        class="border border-gray-50 rounded-lg p-4 shadow-md relative"
       >
         <img
           :src="banner.imageUrl"

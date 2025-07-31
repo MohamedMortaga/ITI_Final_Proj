@@ -5,8 +5,8 @@
       @update:sort="handleSort" @filter="handleFilter" />
     
     <!-- Balance Summary Dashboard -->
-    <div class="bg-white rounded-xl shadow border mt-4 mb-6">
-      <div class="px-6 py-4 border-b">
+          <div class="bg-white rounded-xl shadow border border-gray-50 mt-4 mb-6">
+      <div class="px-6 py-4 border-b border-gray-50">
         <h2 class="text-xl font-semibold text-gray-800">Platform Balance Overview</h2>
         <p class="text-sm text-gray-600 mt-1">Complete financial summary of all transactions</p>
       </div>
@@ -60,7 +60,7 @@
         
         <!-- Detailed Balance Breakdown -->
         <div class="mt-6 grid grid-cols-1 lg:grid-cols-2 gap-6">
-          <div class="bg-gray-50 rounded-lg p-4">
+          <div class="bg-gray-25 rounded-lg p-4">
             <h3 class="text-lg font-semibold text-gray-800 mb-3">Payment Data Breakdown</h3>
             <div class="space-y-2 text-sm">
               <div class="flex justify-between">
@@ -79,14 +79,14 @@
                 <span class="text-gray-600">Total Withdrawn by Users:</span>
                 <span class="font-medium">EGP {{ platformBalance.totalWithdrawn.toFixed(2) }}</span>
               </div>
-              <div class="flex justify-between border-t pt-2">
+              <div class="flex justify-between border-t border-gray-50 pt-2">
                 <span class="font-semibold text-gray-800">Available Balance (After Withdrawals):</span>
                 <span class="font-bold text-teal-600">EGP {{ platformBalance.availableBalance.toFixed(2) }}</span>
               </div>
             </div>
           </div>
           
-          <div class="bg-gray-50 rounded-lg p-4">
+          <div class="bg-gray-25 rounded-lg p-4">
             <h3 class="text-lg font-semibold text-gray-800 mb-3">User Balance Summary</h3>
             <div class="space-y-2 text-sm">
               <div class="flex justify-between">
@@ -105,7 +105,7 @@
                 <span class="text-gray-600">Pending Withdrawals:</span>
                 <span class="font-medium">{{ platformBalance.pendingWithdrawals }}</span>
               </div>
-              <div class="flex justify-between border-t pt-2">
+              <div class="flex justify-between border-t border-gray-50 pt-2">
                 <span class="font-semibold text-gray-800">Total Available for Users:</span>
                 <span class="font-bold text-green-600">EGP {{ platformBalance.availableBalance.toFixed(2) }}</span>
               </div>
@@ -116,8 +116,8 @@
     </div>
     
     <!-- Rentals Table -->
-    <div class="bg-white rounded-xl shadow border">
-      <table class="min-w-full divide-y">
+          <div class="bg-white rounded-xl shadow border border-gray-50">
+      <table class="min-w-full divide-y divide-gray-50">
         <thead>
           <tr>
             <th class="px-4 py-3">Product</th>
@@ -160,7 +160,7 @@
               ]" @click="openStatusDropdown(rental.id)">
                 {{ rental.status }}
               </span>
-              <div v-if="statusDropdownId === rental.id" class="absolute z-10 mt-2 bg-white border rounded shadow w-32">
+              <div v-if="statusDropdownId === rental.id" class="absolute z-10 mt-2 bg-white border border-gray-50 rounded shadow w-32">
                 <ul>
                   <li v-for="option in statusOptions" :key="option" @click="changeStatus(rental, option)"
                     class="px-4 py-2 hover:bg-gray-100 cursor-pointer">
@@ -182,7 +182,7 @@
         <p>No rentals found.</p>
       </div>
       <!-- Pagination -->
-      <div v-if="totalPages > 1" class="flex items-center justify-between px-4 py-3 border-t">
+      <div v-if="totalPages > 1" class="flex items-center justify-between px-4 py-3 border-t border-gray-50">
         <button class="text-gray-500 flex items-center" :disabled="currentPage === 1" @click="currentPage--">
           <i class="fas fa-chevron-left mr-1"></i> Previous
         </button>

@@ -10,8 +10,8 @@
     />
 
     <!-- Contact Messages Table -->
-    <div class="bg-white rounded-xl shadow border">
-      <table class="min-w-full divide-y">
+          <div class="bg-white rounded-xl shadow border border-gray-50">
+      <table class="min-w-full divide-y divide-gray-50">
         <thead>
           <tr>
             <th class="px-4 py-3">{{ $t('name') }}</th>
@@ -62,7 +62,7 @@
       </div>
       
       <!-- Pagination -->
-      <div v-if="totalPages > 1" class="flex items-center justify-between px-4 py-3 border-t">
+      <div v-if="totalPages > 1" class="flex items-center justify-between px-4 py-3 border-t border-gray-50">
         <button
           class="text-gray-500 flex items-center"
           :disabled="currentPage === 1"
@@ -128,7 +128,7 @@
         <div class="flex justify-end space-x-3 mt-6">
           <button
             @click="selectedMessage = null"
-            class="px-4 py-2 text-gray-600 border border-gray-300 rounded-md hover:bg-gray-50"
+                            class="px-4 py-2 text-gray-600 border border-gray-50 rounded-md hover:bg-gray-50"
           >
             {{ $t('close') }}
           </button>
