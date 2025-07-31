@@ -92,9 +92,11 @@
         :categories="categories"
         :isEdit="isEdit"
         :uploading="uploading"
+        :uploading1="uploading1"
+        :uploading2="uploading2"
+        :uploading3="uploading3"
         @submitForm="handleSubmit"
         @imageUpload="handleImageUpload"
-
         @cancelForm="handleCancelForm"
       />
     </div>
@@ -114,6 +116,9 @@ const {
   categories,
   isEdit,
   uploading,
+  uploading1,
+  uploading2,
+  uploading3,
   currentUser,
   searchQuery,
   selectedCategory,

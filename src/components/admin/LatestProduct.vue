@@ -23,9 +23,9 @@
         <div class="space-y-4">
           <div class="aspect-square bg-gray-100 rounded-lg overflow-hidden">
             <img
-              :src="latestProduct.img"
-              :alt="latestProduct.title"
-              class="w-full h-full object-cover"
+              :src="latestProduct.image1"
+              alt="Latest Product"
+              class="w-full h-32 object-cover rounded-lg"
             />
           </div>
           

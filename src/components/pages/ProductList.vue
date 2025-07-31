@@ -24,8 +24,8 @@
       <!-- Image -->
       <div class="flex-1 flex justify-center items-center">
         <img
-          v-if="product.img"
-          :src="product.img"
+          v-if="product.image1"
+          :src="product.image1"
           alt="Product Image"
           class="w-16 h-16 md:w-20 md:h-20 object-cover rounded"
         />
@@ -88,8 +88,8 @@
       <!-- Image -->
       <div>
         <img
-          v-if="product.img"
-          :src="product.img"
+          v-if="product.image1"
+          :src="product.image1"
           alt="Product Image"
           class="w-16 h-16 object-cover rounded"
         />
@@ -164,8 +164,8 @@
       <!-- Image -->
       <div class="flex-shrink-0 mr-3">
         <img
-          v-if="product.img"
-          :src="product.img"
+          v-if="product.image1"
+          :src="product.image1"
           alt="Product Image"
           class="w-16 h-16 object-cover rounded"
         />

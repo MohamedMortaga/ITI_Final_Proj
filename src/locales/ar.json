@@ -23,6 +23,14 @@
   "allRightsReserved": "جميع الحقوق محفوظة.",
   "all": "الكل",
   "image": "صورة",
+  "productImage": "صورة المنتج",
+  "productImages": "صور المنتج",
+  "upTo3Images": "حتى 3 صور",
+  "image1": "الصورة 1",
+  "image2": "الصورة 2",
+  "image3": "الصورة 3",
+  "required": "مطلوب",
+  "optional": "اختياري",
   "category": "الفئة",
   "price": "السعر",
   "details": "التفاصيل",
@@ -836,5 +844,9 @@
   "next": "التالي",
   "showing": "عرض",
   "of": "من",
-  "products": "المنتجات"
+  "products": "المنتجات",
+  "imageGallery": "معرض الصور",
+  "nextImage": "الصورة التالية",
+  "previousImage": "الصورة السابقة",
+  "imageOf": "صورة {0} من {1}"
 }

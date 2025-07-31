@@ -8,7 +8,7 @@
       <!-- Product Image -->
       <div class="w-1/3 md:w-full">
         <img
-          :src="product.img || require('@/assets/test.png')"
+          :src="product.image1 || require('@/assets/test.png')"
           alt="product image"
           class="w-full h-full md:h-40 object-cover rounded-l-lg md:rounded-t-xl md:rounded-l-none"
         />

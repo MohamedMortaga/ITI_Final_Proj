@@ -1,7 +1,7 @@
 // src/composables/useAdminProducts.js
 import { ref } from "vue";
 import {
-  collection, addDoc, deleteDoc, updateDoc, doc,
+  collection, addDoc, deleteDoc, updateDoc, doc, getDoc,
   query, where, getDocs, serverTimestamp
 } from "firebase/firestore";
 import {
@@ -18,8 +18,12 @@ const form = ref({
   category: "",
   price: "",
   details: "",
-  image: null,
-  imagePath: "",
+  image1: null,
+  image1Path: "",
+  image2: null,
+  image2Path: "",
+  image3: null,
+  image3Path: "",
   location: ""
 });
 const isEdit = ref(false);
@@ -28,6 +32,9 @@ const currentUser  = ref(null);
 const searchQuery = ref("");
 const selectedCategory = ref("");
 const uploading = ref(false);
+const uploading1 = ref(false);
+const uploading2 = ref(false);
+const uploading3 = ref(false);
 const allProducts = ref([])
 // Define the commission rate
 const commissionRate = 0.15;
@@ -93,16 +100,21 @@ onAuthStateChanged(auth, (user) => {
   }
 });
 
-const handleImageUpload = async (event) => {
+const handleImageUpload = async (event, imageNumber) => {
   const file = event.target.files[0];
   if (!file) return;
 
-  uploading.value = true;
+  // Set the appropriate uploading state
+  if (imageNumber === 1) uploading1.value = true;
+  else if (imageNumber === 2) uploading2.value = true;
+  else if (imageNumber === 3) uploading3.value = true;
 
   try {
     const reader = new FileReader();
     reader.onload = (e) => {
-      form.value.image = e.target.result;
+      if (imageNumber === 1) form.value.image1 = e.target.result;
+      else if (imageNumber === 2) form.value.image2 = e.target.result;
+      else if (imageNumber === 3) form.value.image3 = e.target.result;
     };
     reader.readAsDataURL(file);
 
@@ -111,12 +123,22 @@ const handleImageUpload = async (event) => {
     const snapshot = await uploadBytes(imageRef, file);
     const imageUrl = await getDownloadURL(snapshot.ref);
 
-    form.value.image = imageUrl;
-    form.value.imagePath = storagePath;
+    if (imageNumber === 1) {
+      form.value.image1 = imageUrl;
+      form.value.image1Path = storagePath;
+    } else if (imageNumber === 2) {
+      form.value.image2 = imageUrl;
+      form.value.image2Path = storagePath;
+    } else if (imageNumber === 3) {
+      form.value.image3 = imageUrl;
+      form.value.image3Path = storagePath;
+    }
   } catch (err) {
     Swal.fire({ icon: "error", title: "Image upload failed", text: err.message });
   } finally {
-    uploading.value = false;
+    if (imageNumber === 1) uploading1.value = false;
+    else if (imageNumber === 2) uploading2.value = false;
+    else if (imageNumber === 3) uploading3.value = false;
   }
 };
 
@@ -163,8 +185,8 @@ const submitForm = async () => {
       }
     }
 
-    if (!form.value.title || !form.value.category || !form.value.price || !form.value.location) {
-      Swal.fire({ icon: "error", title: "Please fill all required fields." });
+    if (!form.value.title || !form.value.category || !form.value.price || !form.value.location || !form.value.image1) {
+      Swal.fire({ icon: "error", title: "Please fill all required fields including at least one image." });
       return;
     }
 
@@ -178,8 +200,12 @@ const submitForm = async () => {
         category: form.value.category,
         price: Number(form.value.price),
         details: form.value.details,
-        img: form.value.image || "",
-        imagePath: form.value.imagePath || "",
+        image1: form.value.image1 || "",
+        image1Path: form.value.image1Path || "",
+        image2: form.value.image2 || "",
+        image2Path: form.value.image2Path || "",
+        image3: form.value.image3 || "",
+        image3Path: form.value.image3Path || "",
         location: form.value.location,
         userId: currentUser .value.uid,
         netProfit: netProfit, // Include net profit in the update
@@ -191,14 +217,18 @@ const submitForm = async () => {
         category: form.value.category,
         price: Number(form.value.price),
         details: form.value.details,
-        img: form.value.image || "",
-        imagePath: form.value.imagePath || "",
+        image1: form.value.image1 || "",
+        image1Path: form.value.image1Path || "",
+        image2: form.value.image2 || "",
+        image2Path: form.value.image2Path || "",
+        image3: form.value.image3 || "",
+        image3Path: form.value.image3Path || "",
         location: form.value.location,
         userId: currentUser .value.uid,
         ownerName: currentUser .value.displayName || currentUser .value.email,
         createdAt: serverTimestamp(),
         netProfit: netProfit, // Include net profit in the new product
-          isApproved: false
+        isApproved: false
       });
       Swal.fire({ icon: "success", title: "Added successfully", timer: 1500, showConfirmButton: false });
     }
@@ -213,10 +243,21 @@ const submitForm = async () => {
 const deleteProduct = async (id) => {
   try {
     const product = products.value.find((p) => p.id === id);
-    if (product.imagePath) {
-      const imageRef = storageRef(storage, product.imagePath);
-      await deleteObject(imageRef).catch((err) => console.warn("Failed to delete image:", err.message));
+    
+    // Delete all images from storage
+    if (product.image1Path) {
+      const imageRef = storageRef(storage, product.image1Path);
+      await deleteObject(imageRef).catch((err) => console.warn("Failed to delete image1:", err.message));
     }
+    if (product.image2Path) {
+      const imageRef = storageRef(storage, product.image2Path);
+      await deleteObject(imageRef).catch((err) => console.warn("Failed to delete image2:", err.message));
+    }
+    if (product.image3Path) {
+      const imageRef = storageRef(storage, product.image3Path);
+      await deleteObject(imageRef).catch((err) => console.warn("Failed to delete image3:", err.message));
+    }
+    
     await deleteDoc(doc(db, "products", id));
     Swal.fire({ icon: "success", title: "Deleted", timer: 1500, showConfirmButton: false });
     await loadProducts();
@@ -231,8 +272,12 @@ const editProduct = (product) => {
     category: product.category,
     price: product.price,
     details: product.details || "",
-    image: product.img || "",
-    imagePath: product.imagePath || "",
+    image1: product.image1 || "",
+    image1Path: product.image1Path || "",
+    image2: product.image2 || "",
+    image2Path: product.image2Path || "",
+    image3: product.image3 || "",
+    image3Path: product.image3Path || "",
     location: product.location || "",
   };
   isEdit.value = true;
@@ -245,39 +290,49 @@ const resetForm = () => {
     category: "",
     price: "",
     details: "",
-    image: null,
-    imagePath: "",
-    location: "",
+    image1: null,
+    image1Path: "",
+    image2: null,
+    image2Path: "",
+    image3: null,
+    image3Path: "",
+    location: ""
   };
   isEdit.value = false;
   editId.value = null;
+  uploading.value = false;
+  uploading1.value = false;
+  uploading2.value = false;
+  uploading3.value = false;
 };
 
 const highlightText = (text) => {
-  if (!searchQuery.value || !text) return text;
-  const query = searchQuery.value.replace(/[.*+?^${}()|[\\]\\\\]/g, "\\\\$&");
-  const regex = new RegExp(`(${query})`, "gi");
-  return text.replace(regex, '<span class=\"text-blue-600 dark:text-blue-400\">$1</span>');
+  if (!searchQuery.value) return text;
+  const regex = new RegExp(`(${searchQuery.value})`, 'gi');
+  return text.replace(regex, '<mark class="bg-yellow-200">$1</mark>');
 };
 
 export default function useAdminProducts() {
   return {
-    form,
     products,
     categories,
+    form,
     isEdit,
-    uploading,
-    currentUser ,
+    currentUser,
     searchQuery,
     selectedCategory,
+    uploading,
+    uploading1,
+    uploading2,
+    uploading3,
     loadProducts,
     loadCategories,
     submitForm,
     handleImageUpload,
     editProduct,
     deleteProduct,
+    resetForm,
     highlightText,
     disapproveProduct,
-    resetForm
   };
 }

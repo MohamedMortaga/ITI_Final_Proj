@@ -39,9 +39,9 @@
             </td>
             <td class="px-4 py-3">
               <img
-                :src="product.img"
-                alt="Product image"
-                class="h-10 w-10 object-cover rounded-full mx-auto"
+                :src="product.image1"
+                alt="Product Image"
+                class="w-16 h-16 object-cover rounded"
               />
             </td>
             <td class="px-4 py-3 font-medium">

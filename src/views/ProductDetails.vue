@@ -30,28 +30,61 @@
             class="bg-[var(--Color-Surface-Surface-Tertiary)] rounded-xl border border-[var(--Color-Boarder-Border-Primary)] overflow-hidden"
           >
             <div class="relative">
+              <!-- Main Image Display -->
               <img
-                :src="product.img || require('@/assets/logo.png')"
+                :src="currentImage || product.image1 || require('@/assets/logo.png')"
                 alt="Product Image"
                 class="w-full h-96 object-cover"
               />
+              
               <!-- Navigation Arrows -->
               <button
-                class="absolute left-4 top-1/2 transform -translate-y-1/2 bg-white/80 hover:bg-white rounded-full p-2 shadow-lg"
+                v-if="availableImages.length > 1"
+                @click="previousImage"
+                class="absolute left-4 top-1/2 transform -translate-y-1/2 bg-white/80 hover:bg-white rounded-full p-2 shadow-lg transition-all"
               >
                 <i class="fas fa-chevron-left text-gray-600"></i>
               </button>
               <button
-                class="absolute right-4 top-1/2 transform -translate-y-1/2 bg-white/80 hover:bg-white rounded-full p-2 shadow-lg"
+                v-if="availableImages.length > 1"
+                @click="nextImage"
+                class="absolute right-4 top-1/2 transform -translate-y-1/2 bg-white/80 hover:bg-white rounded-full p-2 shadow-lg transition-all"
               >
                 <i class="fas fa-chevron-right text-gray-600"></i>
               </button>
+              
               <!-- Pagination Dots -->
               <div
+                v-if="availableImages.length > 1"
                 class="absolute bottom-4 left-1/2 transform -translate-x-1/2 flex space-x-2"
               >
-                <div class="w-2 h-2 bg-[var(--color-success-500)] rounded-full"></div>
-                <div class="w-2 h-2 bg-gray-300 rounded-full"></div>
+                <div
+                  v-for="(image, index) in availableImages"
+                  :key="index"
+                  @click="currentImageIndex = index"
+                  class="w-2 h-2 rounded-full cursor-pointer transition-all"
+                  :class="index === currentImageIndex ? 'bg-[var(--color-success-500)]' : 'bg-gray-300'"
+                ></div>
+              </div>
+            </div>
+            
+            <!-- Thumbnail Navigation -->
+            <div
+              v-if="availableImages.length > 1"
+              class="flex justify-center space-x-2 p-4 bg-[var(--Color-Surface-Surface-Primary)]"
+            >
+              <div
+                v-for="(image, index) in availableImages"
+                :key="index"
+                @click="currentImageIndex = index"
+                class="w-16 h-16 rounded-lg overflow-hidden cursor-pointer border-2 transition-all"
+                :class="index === currentImageIndex ? 'border-[var(--color-success-500)]' : 'border-gray-300'"
+              >
+                <img
+                  :src="image"
+                  alt="Product thumbnail"
+                  class="w-full h-full object-cover"
+                />
               </div>
             </div>
           </div>
@@ -431,7 +464,7 @@
             class="bg-[var(--Color-Surface-Surface-Tertiary)] border border-[var(--Color-Boarder-Border-Primary)] rounded-xl overflow-hidden hover:border-[var(--Color-Text-Text-Brand)] transition-colors cursor-pointer"
           >
             <img
-              :src="item.img || require('@/assets/test.png')"
+              :src="item.image1 || item.img || require('@/assets/test.png')"
               alt="product image"
               class="w-full h-40 object-cover"
             />
@@ -1076,6 +1109,34 @@ const newReview = ref({
 
 const sellerVerificationStatus = ref(false);
 
+// Image Gallery functionality
+const currentImageIndex = ref(0);
+const availableImages = computed(() => {
+  const images = [];
+  if (product.value?.image1) images.push(product.value.image1);
+  if (product.value?.image2) images.push(product.value.image2);
+  if (product.value?.image3) images.push(product.value.image3);
+  return images;
+});
+
+const currentImage = computed(() => {
+  return availableImages.value[currentImageIndex.value] || product.value?.image1;
+});
+
+const nextImage = () => {
+  if (availableImages.value.length > 1) {
+    currentImageIndex.value = (currentImageIndex.value + 1) % availableImages.value.length;
+  }
+};
+
+const previousImage = () => {
+  if (availableImages.value.length > 1) {
+    currentImageIndex.value = currentImageIndex.value === 0 
+      ? availableImages.value.length - 1 
+      : currentImageIndex.value - 1;
+  }
+};
+
 // Function to get seller verification status
 const getSellerVerificationStatus = async (sellerId) => {
   try {
@@ -1232,6 +1293,10 @@ const loadProduct = async () => {
       booking.value.sellerId = product.value.sellerId || product.value.userId;
       booking.value.productTitle = product.value.title;
       booking.value.productPrice = parseFloat(product.value.price) || 0;
+      
+      // Reset image gallery to first image
+      currentImageIndex.value = 0;
+      
       await loadSellerDetails(booking.value.sellerId);
       await loadOwnerProducts(booking.value.sellerId);
       await loadSellerVerificationStatus(); // Load seller verification status

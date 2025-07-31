@@ -15,21 +15,187 @@
         required
       />
     </div>
-    <!-- Image Upload -->
+    
+    <!-- Image Uploads -->
     <div class="mb-4">
-      <label class="block text-sm font-medium text-[var(--Color-Text-Text-Primary)] dark:text-[var(--Color-Text-Text-Primary)] mb-1 font-nunito">{{$t('productImage')}}</label>
-      <input
-        type="file"
-        @change="$emit('imageUpload', $event)"
-        accept="image/*"
-        class="w-full px-3 md:px-4 py-2 rounded-lg border border-[var(--Color-Boarder-Border-Primary)] dark:border-[var(--Color-Boarder-Border-Primary)] bg-[var(--Color-Surface-Surface-Primary)] dark:bg-[var(--Color-Surface-Surface-Primary)] text-[var(--Color-Text-Text-Secondary)] dark:text-[var(--Color-Text-Text-Secondary)] focus:outline-none focus:ring-2 focus:ring-[var(--Colors-Primary-500)] font-nunito"
-      />
-      <div v-if="form.image" class="mt-3">
-        <img :key="form.image" :src="form.image" :alt="$t('productImage')" class="h-32 md:h-36 w-full object-cover rounded-lg border border-[var(--Color-Boarder-Border-Primary)] dark:border-[var(--Color-Boarder-Border-Primary)]" />
+      <label class="block text-sm font-medium text-[var(--Color-Text-Text-Primary)] dark:text-[var(--Color-Text-Text-Primary)] mb-3 font-nunito">{{$t('productImages')}} ({{$t('upTo3Images')}})</label>
+      
+      <!-- Image 1 -->
+      <div class="mb-4">
+        <label class="block text-xs text-[var(--Color-Text-Text-Secondary)] mb-2 font-nunito font-medium">{{$t('image1')}} ({{$t('required')}})</label>
+        <div class="relative">
+          <input
+            type="file"
+            @change="$emit('imageUpload', $event, 1)"
+            accept="image/*"
+            class="absolute inset-0 w-full h-full opacity-0 cursor-pointer z-10"
+            required
+          />
+          <div class="border-2 border-dashed border-[var(--Color-Boarder-Border-Primary)] dark:border-[var(--Color-Boarder-Border-Primary)] rounded-xl p-6 text-center hover:border-[var(--Colors-Primary-500)] hover:bg-[var(--Color-Surface-Surface-Secondary)] dark:hover:bg-[var(--Color-Surface-Surface-Secondary)] transition-all duration-300 bg-[var(--Color-Surface-Surface-Primary)] dark:bg-[var(--Color-Surface-Surface-Primary)] shadow-sm hover:shadow-md">
+            <div v-if="!form.image1" class="space-y-3">
+              <div class="mx-auto w-16 h-16 bg-[var(--Colors-Primary-100)] dark:bg-[var(--Colors-Primary-900)] rounded-full flex items-center justify-center">
+                <svg class="h-8 w-8 text-[var(--Colors-Primary-500)]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12"></path>
+                </svg>
+              </div>
+              <div>
+                <p class="text-sm font-medium text-[var(--Color-Text-Text-Primary)] dark:text-[var(--Color-Text-Text-Primary)] font-nunito">{{$t('clickToUpload') || 'Click to upload'}}</p>
+                <p class="text-xs text-[var(--Color-Text-Text-Secondary)] font-nunito mt-1">{{$t('orDragAndDrop') || 'or drag and drop'}}</p>
+              </div>
+            </div>
+            <div v-else class="space-y-3">
+              <div class="mx-auto w-16 h-16 bg-[var(--Colors-Success-100)] dark:bg-[var(--Colors-Success-900)] rounded-full flex items-center justify-center">
+                <svg class="h-8 w-8 text-[var(--Colors-Success-500)]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                </svg>
+              </div>
+              <div>
+                <p class="text-sm font-medium text-[var(--Colors-Success-500)] font-nunito">{{$t('imageUploaded') || 'Image uploaded'}}</p>
+                <p class="text-xs text-[var(--Color-Text-Text-Secondary)] font-nunito mt-1">{{$t('imageReady') || 'Image ready'}}</p>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div v-if="form.image1" class="mt-4 relative group">
+          <div class="relative overflow-hidden rounded-xl border border-[var(--Color-Boarder-Border-Primary)] dark:border-[var(--Color-Boarder-Border-Primary)] shadow-lg">
+            <img :key="form.image1" :src="form.image1" :alt="$t('image1')" class="h-40 w-full object-cover transition-transform duration-300 group-hover:scale-105" />
+            <div class="absolute inset-0 bg-black bg-opacity-0 group-hover:bg-opacity-20 transition-all duration-300"></div>
+            <button 
+              type="button" 
+              @click="$emit('removeImage', 1)"
+              class="absolute top-3 right-3 bg-red-500 hover:bg-red-600 text-white rounded-full p-2 transition-all duration-200 shadow-lg hover:shadow-xl opacity-0 group-hover:opacity-100"
+              title="Remove image"
+            >
+              <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+              </svg>
+            </button>
+          </div>
+        </div>
+        <p v-if="uploading1" class="text-sm text-[var(--Colors-Success-500)] mt-2 font-nunito flex items-center">
+          <svg class="animate-spin -ml-1 mr-2 h-4 w-4" fill="none" viewBox="0 0 24 24">
+            <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+            <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+          </svg>
+          {{$t('uploadingImage')}}
+        </p>
       </div>
-      <p v-else class="text-sm text-[var(--Colors-Error-400)] mt-2 dark:text-[var(--Colors-Error-300)] font-nunito">{{$t('noImageUploaded')}}</p>
-      <p v-if="uploading" class="text-sm text-[var(--Colors-Success-500)] mt-2 font-nunito">{{$t('uploadingImage')}}</p>
+
+      <!-- Image 2 -->
+      <div class="mb-4">
+        <label class="block text-xs text-[var(--Color-Text-Text-Secondary)] mb-2 font-nunito font-medium">{{$t('image2')}} ({{$t('optional')}})</label>
+        <div class="relative">
+          <input
+            type="file"
+            @change="$emit('imageUpload', $event, 2)"
+            accept="image/*"
+            class="absolute inset-0 w-full h-full opacity-0 cursor-pointer z-10"
+          />
+          <div class="border-2 border-dashed border-[var(--Color-Boarder-Border-Primary)] dark:border-[var(--Color-Boarder-Border-Primary)] rounded-xl p-6 text-center hover:border-[var(--Colors-Primary-500)] hover:bg-[var(--Color-Surface-Surface-Secondary)] dark:hover:bg-[var(--Color-Surface-Surface-Secondary)] transition-all duration-300 bg-[var(--Color-Surface-Surface-Primary)] dark:bg-[var(--Color-Surface-Surface-Primary)] shadow-sm hover:shadow-md">
+            <div v-if="!form.image2" class="space-y-3">
+              <div class="mx-auto w-16 h-16 bg-[var(--Colors-Primary-100)] dark:bg-[var(--Colors-Primary-900)] rounded-full flex items-center justify-center">
+                <svg class="h-8 w-8 text-[var(--Colors-Primary-500)]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12"></path>
+                </svg>
+              </div>
+              <div>
+                <p class="text-sm font-medium text-[var(--Color-Text-Text-Primary)] dark:text-[var(--Color-Text-Text-Primary)] font-nunito">{{$t('clickToUpload') || 'Click to upload'}}</p>
+                <p class="text-xs text-[var(--Color-Text-Text-Secondary)] font-nunito mt-1">{{$t('orDragAndDrop') || 'or drag and drop'}}</p>
+              </div>
+            </div>
+            <div v-else class="space-y-3">
+              <div class="mx-auto w-16 h-16 bg-[var(--Colors-Success-100)] dark:bg-[var(--Colors-Success-900)] rounded-full flex items-center justify-center">
+                <svg class="h-8 w-8 text-[var(--Colors-Success-500)]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                </svg>
+              </div>
+              <div>
+                <p class="text-sm font-medium text-[var(--Colors-Success-500)] font-nunito">{{$t('imageUploaded') || 'Image uploaded'}}</p>
+                <p class="text-xs text-[var(--Color-Text-Text-Secondary)] font-nunito mt-1">{{$t('imageReady') || 'Image ready'}}</p>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div v-if="form.image2" class="mt-3 relative">
+          <img :key="form.image2" :src="form.image2" :alt="$t('image2')" class="h-32 w-full object-cover rounded-lg border border-[var(--Color-Boarder-Border-Primary)] dark:border-[var(--Color-Boarder-Border-Primary)] shadow-sm" />
+          <button 
+            type="button" 
+            @click="$emit('removeImage', 2)"
+            class="absolute top-2 right-2 bg-red-500 hover:bg-red-600 text-white rounded-full p-1 transition-colors duration-200"
+            title="Remove image"
+          >
+            <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+            </svg>
+          </button>
+        </div>
+        <p v-if="uploading2" class="text-sm text-[var(--Colors-Success-500)] mt-2 font-nunito flex items-center">
+          <svg class="animate-spin -ml-1 mr-2 h-4 w-4" fill="none" viewBox="0 0 24 24">
+            <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+            <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+          </svg>
+          {{$t('uploadingImage')}}
+        </p>
+      </div>
+
+      <!-- Image 3 -->
+      <div class="mb-4">
+        <label class="block text-xs text-[var(--Color-Text-Text-Secondary)] mb-2 font-nunito font-medium">{{$t('image3')}} ({{$t('optional')}})</label>
+        <div class="relative">
+          <input
+            type="file"
+            @change="$emit('imageUpload', $event, 3)"
+            accept="image/*"
+            class="absolute inset-0 w-full h-full opacity-0 cursor-pointer z-10"
+          />
+          <div class="border-2 border-dashed border-[var(--Color-Boarder-Border-Primary)] dark:border-[var(--Color-Boarder-Border-Primary)] rounded-xl p-6 text-center hover:border-[var(--Colors-Primary-500)] hover:bg-[var(--Color-Surface-Surface-Secondary)] dark:hover:bg-[var(--Color-Surface-Surface-Secondary)] transition-all duration-300 bg-[var(--Color-Surface-Surface-Primary)] dark:bg-[var(--Color-Surface-Surface-Primary)] shadow-sm hover:shadow-md">
+            <div v-if="!form.image3" class="space-y-3">
+              <div class="mx-auto w-16 h-16 bg-[var(--Colors-Primary-100)] dark:bg-[var(--Colors-Primary-900)] rounded-full flex items-center justify-center">
+                <svg class="h-8 w-8 text-[var(--Colors-Primary-500)]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12"></path>
+                </svg>
+              </div>
+              <div>
+                <p class="text-sm font-medium text-[var(--Color-Text-Text-Primary)] dark:text-[var(--Color-Text-Text-Primary)] font-nunito">{{$t('clickToUpload') || 'Click to upload'}}</p>
+                <p class="text-xs text-[var(--Color-Text-Text-Secondary)] font-nunito mt-1">{{$t('orDragAndDrop') || 'or drag and drop'}}</p>
+              </div>
+            </div>
+            <div v-else class="space-y-3">
+              <div class="mx-auto w-16 h-16 bg-[var(--Colors-Success-100)] dark:bg-[var(--Colors-Success-900)] rounded-full flex items-center justify-center">
+                <svg class="h-8 w-8 text-[var(--Colors-Success-500)]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                </svg>
+              </div>
+              <div>
+                <p class="text-sm font-medium text-[var(--Colors-Success-500)] font-nunito">{{$t('imageUploaded') || 'Image uploaded'}}</p>
+                <p class="text-xs text-[var(--Color-Text-Text-Secondary)] font-nunito mt-1">{{$t('imageReady') || 'Image ready'}}</p>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div v-if="form.image3" class="mt-3 relative">
+          <img :key="form.image3" :src="form.image3" :alt="$t('image3')" class="h-32 w-full object-cover rounded-lg border border-[var(--Color-Boarder-Border-Primary)] dark:border-[var(--Color-Boarder-Border-Primary)] shadow-sm" />
+          <button 
+            type="button" 
+            @click="$emit('removeImage', 3)"
+            class="absolute top-2 right-2 bg-red-500 hover:bg-red-600 text-white rounded-full p-1 transition-colors duration-200"
+            title="Remove image"
+          >
+            <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+            </svg>
+          </button>
+        </div>
+        <p v-if="uploading3" class="text-sm text-[var(--Colors-Success-500)] mt-2 font-nunito flex items-center">
+          <svg class="animate-spin -ml-1 mr-2 h-4 w-4" fill="none" viewBox="0 0 24 24">
+            <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+            <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+          </svg>
+          {{$t('uploadingImage')}}
+        </p>
+      </div>
     </div>
+
     <!-- Category -->
     <div class="mb-4">
       <label class="block text-sm font-medium text-[var(--Color-Text-Text-Primary)] dark:text-[var(--Color-Text-Text-Primary)] mb-1 font-nunito">{{$t('selectCategory')}}</label>
@@ -136,11 +302,14 @@
 import { computed } from 'vue';
 
 // استخراج props
-const { form, categories, isEdit, uploading } = defineProps([
+const { form, categories, isEdit, uploading, uploading1, uploading2, uploading3 } = defineProps([
   'form',
   'categories',
   'isEdit',
-  'uploading'
+  'uploading',
+  'uploading1',
+  'uploading2',
+  'uploading3'
 ]);
 
 // ✅ عرفي العمولة قبل استخدامها
@@ -158,7 +327,7 @@ const netProfit = computed(() => {
 });
 
 // تعريف الإيفنتات
-defineEmits(['submitForm', 'imageUpload']);
+defineEmits(['submitForm', 'imageUpload', 'removeImage']);
 </script>
 
 
