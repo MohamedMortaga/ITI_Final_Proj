@@ -19,7 +19,7 @@
     </div>
 
     <!-- Image aligned to right -->
-    <div class="flex-1 flex justify-start">
+    <div class="flex-1 flex justify-end">
       <img src="@/assets/whyrento.jpg" alt="Why Rento" class="rounded-xl w-full max-w-md object-cover h-auto" />
     </div>
   </div>
