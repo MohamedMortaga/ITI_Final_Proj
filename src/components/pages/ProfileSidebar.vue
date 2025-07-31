@@ -76,6 +76,10 @@ import settingLineIcon from '@/assets/Setting_line.svg';
 import settingLineClickedIcon from '@/assets/clicked-profile-icons/Setting_line.svg';
 import walletAltIcon from '@/assets/Wallet_alt.svg';
 import walletAltClickedIcon from '@/assets/clicked-profile-icons/Wallet_alt.svg';
+import chieldCheckIcon from '@/assets/Profile-icons/Chield_check.svg';
+import chieldCheckClickedIcon from '@/assets/clicked-profile-icons/Chield_check.svg';
+import groupIcon from '@/assets/Profile-icons/Group.svg';
+import groupClickedIcon from '@/assets/clicked-profile-icons/Group.svg';
 
 export default {
   name: "ProfileSidebar",
@@ -110,15 +114,15 @@ export default {
         name: "contactDetails",
         label: "contactDetails",
         route: "/profile/contact-details",
-        icon: lineOutIcon,
-        clickedIcon: lineOutClickedIcon,
+        icon: groupIcon,
+        clickedIcon: groupClickedIcon,
       },
       {
         name: "idVerification",
         label: "idVerification",
         route: "/profile/id-verification",
-        icon: lineOutIcon,
-        clickedIcon: lineOutClickedIcon,
+        icon: chieldCheckIcon,
+        clickedIcon: chieldCheckClickedIcon,
       },
       {
         name: "balance",
@@ -126,13 +130,6 @@ export default {
         route: "/profile/balance",
         icon: walletAltIcon,
         clickedIcon: walletAltClickedIcon,
-      },
-      {
-        name: "settings",
-        label: "settings",
-        route: "/profile/settings",
-        icon: settingLineIcon,
-        clickedIcon: settingLineClickedIcon,
       },
     ];
 
@@ -163,15 +160,15 @@ export default {
         name: "contactDetails",
         label: "contactDetails",
         route: "/profile/contact-details",
-        icon: lineOutIcon,
-        clickedIcon: lineOutClickedIcon,
+        icon: groupIcon,
+        clickedIcon: groupClickedIcon,
       },
       {
         name: "idVerification",
         label: "idVerification",
         route: "/profile/id-verification",
-        icon: lineOutIcon,
-        clickedIcon: lineOutClickedIcon,
+        icon: chieldCheckIcon,
+        clickedIcon: chieldCheckClickedIcon,
       },
       {
         name: "balance",
@@ -179,13 +176,6 @@ export default {
         route: "/profile/balance",
         icon: walletAltIcon,
         clickedIcon: walletAltClickedIcon,
-      },
-      {
-        name: "settings",
-        label: "settings",
-        route: "/profile/settings",
-        icon: settingLineIcon,
-        clickedIcon: settingLineClickedIcon,
       },
     ];
 
@@ -211,8 +201,7 @@ export default {
         'myRentals': 'Rentals',
         'contactDetails': 'Contact',
         'idVerification': 'ID Verify',
-        'myBalance': 'Balance',
-        'settings': 'Settings'
+        'myBalance': 'Balance'
       };
       return mobileLabels[label] || this.$t(label);
     },

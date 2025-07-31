@@ -157,6 +157,36 @@
       </div>
     </div>
 
+    <!-- Account Actions Section -->
+    <div class="w-full mx-auto py-6 px-4">
+      <div class="w-full bg-[var(--Color-Surface-Surface-Primary)] dark:bg-[var(--Color-Surface-Surface-Primary)] rounded-xl border border-[var(--Color-Boarder-Border-Primary)] p-6">
+        <div class="flex items-center mb-4">
+          <h2 class="text-lg sm:text-xl font-semibold text-[var(--Color-Text-Text-Primary)]">
+            {{ $t('accountActions') }}
+          </h2>
+        </div>
+        
+        <div class="space-y-4">
+          <div class="p-3 sm:p-4 bg-gray-25 dark:bg-gray-600 rounded-lg">
+            <div class="flex items-center justify-between">
+              <div>
+                <h3 class="font-medium text-[var(--Color-Text-Text-Primary)] text-sm sm:text-base">
+                  {{ $t('logout') }}
+                </h3>
+              </div>
+              <button 
+                @click="handleLogout"
+                class="w-auto sm:w-auto px-4 sm:px-6 py-2 bg-[var(--Colors-Error-400)] text-white rounded-lg hover:bg-[var(--Colors-Error-500)] transition text-sm sm:text-base flex items-center gap-2"
+                :disabled="isLoggingOut"
+              >
+                <i class="fas fa-sign-out-alt text-sm"></i>
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
     <!-- Existing Product Section -->
     <div
       v-if="product"
@@ -174,6 +204,7 @@ import { useRoute, useRouter } from "vue-router";
 import { useI18n } from "vue-i18n";
 import { doc, getDoc, setDoc, updateDoc, serverTimestamp } from "firebase/firestore";
 import { auth, db } from "@/firebase/config";
+import { getAuth, signOut } from "firebase/auth";
 import Swal from "sweetalert2";
 import VerificationBadge from "@/components/VerificationBadge.vue";
 
@@ -181,6 +212,7 @@ const { t } = useI18n();
 const route = useRouter(); // Corrected: Should be useRoute
 const router = useRouter();
 const product = ref(null); // Placeholder for product data
+const isLoggingOut = ref(false);
 const userProfile = ref({
   displayName: "",
   imageUrl: "",
@@ -349,6 +381,41 @@ const sanitizeUrl = (url) => {
   // Remove potentially harmful characters and schemes
   return url.replace(/[<>"]/g, "").replace(/javascript:/gi, "");
 };
+
+const handleLogout = async () => {
+  try {
+    isLoggingOut.value = true
+    
+    const auth = getAuth()
+    await signOut(auth)
+    
+    // Show success message
+    Swal.fire({
+      position: "top-end",
+      icon: "success",
+      title: t("logoutSuccessful"),
+      showConfirmButton: false,
+      timer: 1500,
+    })
+    
+    // Redirect to home page
+    router.push("/home")
+  } catch (error) {
+    console.error('Logout error:', error)
+    
+    // Show error message
+    Swal.fire({
+      position: "top-end",
+      icon: "error",
+      title: t("logoutFailed"),
+      text: error.message || t("logoutError"),
+      showConfirmButton: false,
+      timer: 3000,
+    })
+  } finally {
+    isLoggingOut.value = false
+  }
+}
 
 onMounted(() => {
   // Wait for auth state to be resolved
