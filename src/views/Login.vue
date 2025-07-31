@@ -227,14 +227,9 @@ import {
   onAuthStateChanged,
   signOut,
 } from "firebase/auth";
-import {
-  getStorage,
-  ref as storageRef,
-  uploadBytes,
-  getDownloadURL,
-} from "firebase/storage";
 import { getFirestore, doc, setDoc, getDoc } from "firebase/firestore";
 import useLogin from "../composables/useLogin";
+import { useStorageUpload } from "@/composables/useStorage";
 import Swal from "sweetalert2";
 
 export default {
@@ -251,8 +246,10 @@ export default {
     const router = useRouter();
     const auth = getAuth();
     const i18n = useI18n();
-    const storage = getStorage();
     const db = getFirestore();
+    
+    // Initialize storage upload composable
+    const { uploadImage, url, error: uploadError, isPending } = useStorageUpload();
 
     onMounted(() => {
       const savedEmail = localStorage.getItem("rememberedEmail");
@@ -283,12 +280,19 @@ export default {
     const updateUserDoc = async (userCredential, defaultDisplayName) => {
       let imageUrl = userCredential.photoURL || "";
       if (userImage.value) {
-        const storageReference = storageRef(
-          storage,
-          `users/${userCredential.uid}/profile.jpg`
-        );
-        await uploadBytes(storageReference, userImage.value);
-        imageUrl = await getDownloadURL(storageReference);
+        try {
+          // Use enhanced upload function with retry logic
+          await uploadImage(userImage.value, `users/${userCredential.uid}`, 3);
+          
+          if (uploadError.value) {
+            throw new Error(uploadError.value);
+          }
+          
+          imageUrl = url.value;
+        } catch (err) {
+          console.error('Profile image upload error:', err);
+          // Continue without profile image if upload fails
+        }
       }
 
       // Fetch existing user document to preserve role

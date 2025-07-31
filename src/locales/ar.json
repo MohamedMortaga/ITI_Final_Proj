@@ -846,5 +846,6 @@
   "imageGallery": "معرض الصور",
   "nextImage": "الصورة التالية",
   "previousImage": "الصورة السابقة",
-  "imageOf": "صورة {0} من {1}"
+  "imageOf": "صورة {0} من {1}",
+  "notProvided": "غير متوفر"
 }

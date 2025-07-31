@@ -280,9 +280,9 @@
 
 <script setup>
 import { ref, onMounted, watch } from 'vue'
-import { storage, db } from '@/firebase/config'
-import { ref as storageRef, uploadBytes, getDownloadURL, deleteObject } from 'firebase/storage'
+import { db } from '@/firebase/config'
 import { doc, updateDoc, getDoc } from 'firebase/firestore'
+import { useStorageUpload } from '@/composables/useStorage'
 import Swal from 'sweetalert2'
 
 // Props
@@ -437,6 +437,9 @@ const clearSelection = () => {
   error.value = ''
 }
 
+// Initialize storage upload composable
+const { uploadMultipleImages, error: uploadError, isPending } = useStorageUpload()
+
 // Upload images to Firebase Storage
 const uploadImages = async () => {
   if (selectedFiles.value.length === 0) {
@@ -450,71 +453,82 @@ const uploadImages = async () => {
   successMessage.value = ''
   
   try {
-    const uploadPromises = selectedFiles.value.map(async (fileObj, index) => {
-      const file = fileObj.file
-      const fileName = `${Date.now()}_${file.name}`
-      const storagePath = `products/${props.productId}/${fileName}`
-      const imageRef = storageRef(storage, storagePath)
+    // Extract files from selectedFiles
+    const files = selectedFiles.value.map(fileObj => fileObj.file)
+    
+    // Use enhanced upload function with retry logic
+    const uploadResult = await uploadMultipleImages(files, `products/${props.productId}`, 3)
+    
+    if (uploadResult.successCount > 0) {
+      // Update Firestore document
+      const productRef = doc(db, 'products', props.productId)
+      const productDoc = await getDoc(productRef)
       
-      // Upload file
-      const snapshot = await uploadBytes(imageRef, file)
-      const downloadURL = await getDownloadURL(snapshot.ref)
-      
-      // Update progress
-      uploadProgress.value = ((index + 1) / selectedFiles.value.length) * 100
-      
-      return {
-        url: downloadURL,
-        path: storagePath
+      if (productDoc.exists()) {
+        const currentData = productDoc.data()
+        const currentImagePaths = currentData.imagePaths || []
+        const currentImages = currentData.images || []
+        
+        // Add new images
+        const newImagePaths = [...currentImagePaths, ...uploadResult.urls]
+        const newImages = [...currentImages, ...uploadResult.urls.map((url, index) => 
+          `products/${props.productId}/${Date.now()}_${index}`
+        )]
+        
+        // Set main image (img field) to the first image
+        const mainImage = newImagePaths[0] || ''
+        
+        await updateDoc(productRef, {
+          imagePaths: newImagePaths,
+          images: newImages,
+          img: mainImage
+        })
+        
+        // Update local state
+        currentImages.value = newImagePaths
+        selectedFiles.value = []
+        
+        successMessage.value = `Successfully uploaded ${uploadResult.successCount} image(s)`
+        
+        // Emit event
+        emit('imagesUpdated', {
+          imagePaths: newImagePaths,
+          images: newImages,
+          img: mainImage
+        })
+        
+        // Show success message
+        Swal.fire({
+          icon: 'success',
+          title: 'Upload Successful!',
+          text: `Successfully uploaded ${uploadResult.successCount} image(s)`,
+          timer: 2000,
+          showConfirmButton: false
+        })
       }
-    })
-    
-    const uploadedImages = await Promise.all(uploadPromises)
-    
-    // Update Firestore document
-    const productRef = doc(db, 'products', props.productId)
-    const productDoc = await getDoc(productRef)
-    
-    if (productDoc.exists()) {
-      const currentData = productDoc.data()
-      const currentImagePaths = currentData.imagePaths || []
-      const currentImages = currentData.images || []
-      
-      // Add new images
-      const newImagePaths = [...currentImagePaths, ...uploadedImages.map(img => img.url)]
-      const newImages = [...currentImages, ...uploadedImages.map(img => img.path)]
-      
-      // Set main image (img field) to the first image
-      const mainImage = newImagePaths[0] || ''
-      
-      await updateDoc(productRef, {
-        imagePaths: newImagePaths,
-        images: newImages,
-        img: mainImage
-      })
-      
-      // Update local state
-      currentImages.value = newImagePaths
-      selectedFiles.value = []
-      
-      successMessage.value = `Successfully uploaded ${uploadedImages.length} image(s)`
-      
-      // Emit event
-      emit('imagesUpdated', {
-        imagePaths: newImagePaths,
-        images: newImages,
-        img: mainImage
-      })
-      
-      // Show success message
-      Swal.fire({
-        icon: 'success',
-        title: 'Upload Successful!',
-        text: `Successfully uploaded ${uploadedImages.length} image(s)`,
-        timer: 2000,
-        showConfirmButton: false
-      })
     }
+    
+    // Handle partial uploads
+    if (uploadResult.errorCount > 0) {
+      if (uploadResult.successCount === 0) {
+        // All uploads failed
+        Swal.fire({
+          icon: 'error',
+          title: 'Upload Failed',
+          text: 'All uploads failed. Please check your files and try again.',
+          confirmButtonText: 'OK'
+        })
+      } else {
+        // Partial success
+        Swal.fire({
+          icon: 'warning',
+          title: 'Partial Upload',
+          text: `${uploadResult.successCount} files uploaded successfully, ${uploadResult.errorCount} failed.`,
+          confirmButtonText: 'OK'
+        })
+      }
+    }
+    
   } catch (err) {
     console.error('Error uploading images:', err)
     error.value = 'Failed to upload images. Please try again.'
@@ -522,7 +536,8 @@ const uploadImages = async () => {
     Swal.fire({
       icon: 'error',
       title: 'Upload Failed',
-      text: 'Failed to upload images. Please try again.'
+      text: 'Failed to upload images. Please try again.',
+      confirmButtonText: 'OK'
     })
   } finally {
     uploading.value = false

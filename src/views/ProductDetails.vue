@@ -34,8 +34,14 @@
               <img
                 :src="currentImage || product.image1 || require('@/assets/logo.png')"
                 alt="Product Image"
-                class="w-full h-96 object-cover"
+                class="w-full h-96 object-cover cursor-pointer hover:opacity-90 transition-opacity"
+                @click="openImageModal"
               />
+              
+              <!-- Zoom Icon Overlay -->
+              <div class="absolute top-4 right-4 bg-black bg-opacity-50 text-white rounded-full w-10 h-10 flex items-center justify-center">
+                <i class="fas fa-search-plus"></i>
+              </div>
               
               <!-- Navigation Arrows -->
               <button
@@ -135,38 +141,6 @@
               <p>
                 {{ product.details }}
               </p>
-
-              <div>
-                <h3 class="font-semibold text-[var(--Color-Text-Text-Primary)] mb-2">
-                  {{ $t("inclusions") }}:
-                </h3>
-                <ul class="list-disc list-inside space-y-1">
-                  <li>{{ $t("batteryIncluded") }}</li>
-                  <li>{{ $t("chargerIncluded") }}</li>
-                  <li>{{ $t("optionalDrillBits") }}</li>
-                </ul>
-              </div>
-
-              <div>
-                <h3 class="font-semibold text-[var(--Color-Text-Text-Primary)] mb-2">
-                  {{ $t("usageAndCare") }}:
-                </h3>
-                <p class="mb-2">{{ $t("rentedOver15Times") }}</p>
-                <ul class="list-disc list-inside space-y-1">
-                  <li>{{ $t("assemblingIkeaFurniture") }}</li>
-                  <li>{{ $t("wallMounting") }}</li>
-                  <li>{{ $t("minorDrilling") }}</li>
-                </ul>
-                <p class="mt-2">
-                  {{ $t("sanitizeToolAfterRental") }}
-                </p>
-                <p class="mt-2">
-                  {{ $t("perfectForShortTermUse") }}
-                </p>
-                <p class="mt-2">
-                  {{ $t("readyForPickupNasrCity") }}
-                </p>
-              </div>
             </div>
           </div>
 
@@ -744,6 +718,61 @@
             </div>
           </div>
 
+          <!-- Contact Details Section with Pricing -->
+          <div class="border-t border-gray-200 dark:border-gray-700 pt-6">
+            <h3
+              class="text-lg font-semibold text-[var(--color-gray-800)] dark:text-[var(--color-gray-200)] mb-4"
+            >
+              {{ $t("renterContactInfo") }}
+            </h3>
+            
+            <!-- Pricing Breakdown -->
+            <div class="space-y-3 mb-4">
+              <div class="flex justify-between items-center">
+                <span class="text-[var(--color-gray-600)] dark:text-[var(--color-gray-400)]">{{ $t("subtotal") }}:</span>
+                <span class="font-medium text-[var(--color-gray-800)] dark:text-[var(--color-gray-200)]">{{ $t("egp") }} {{ calculateSubtotal() }}</span>
+              </div>
+              <div class="flex justify-between items-center">
+                <span class="text-[var(--color-gray-600)] dark:text-[var(--color-gray-400)]">{{ $t("deliveryFee") }}:</span>
+                <span class="font-medium text-[var(--color-gray-800)] dark:text-[var(--color-gray-200)]">{{ $t("egp") }} {{ calculateDeliveryFee() }}</span>
+              </div>
+              <div class="flex justify-between items-center">
+                <span class="text-[var(--color-gray-600)] dark:text-[var(--color-gray-400)]">{{ $t("serviceFee") }}:</span>
+                <span class="font-medium text-[var(--color-gray-800)] dark:text-[var(--color-gray-200)]">{{ $t("egp") }} 5.00</span>
+              </div>
+              <div class="flex justify-between items-center pt-2 border-t border-gray-300 dark:border-gray-600">
+                <span class="text-lg font-bold text-[var(--color-gray-800)] dark:text-[var(--color-gray-200)]">{{ $t("total") }}:</span>
+                <span class="text-xl font-bold text-[var(--color-success-500)]">{{ $t("egp") }} {{ calculateTotal() }}</span>
+              </div>
+            </div>
+
+            <!-- Contact Information -->
+            <div class="space-y-3 pt-3 border-t border-gray-300 dark:border-gray-600">
+              <div class="flex items-center gap-2">
+                <i class="fas fa-user text-[var(--color-success-500)] w-4"></i>
+                <span class="text-sm text-[var(--color-gray-600)] dark:text-[var(--color-gray-400)]">{{ $t("name") }}:</span>
+                <span class="text-sm font-medium text-[var(--color-gray-800)] dark:text-[var(--color-gray-200)]">{{ booking.userName || $t("notProvided") }}</span>
+              </div>
+              <div class="flex items-center gap-2">
+                <i class="fas fa-phone text-[var(--color-success-500)] w-4"></i>
+                <span class="text-sm text-[var(--color-gray-600)] dark:text-[var(--color-gray-400)]">{{ $t("phone") }}:</span>
+                <span class="text-sm font-medium text-[var(--color-gray-800)] dark:text-[var(--color-gray-200)]">{{ booking.phoneNumber || $t("notProvided") }}</span>
+              </div>
+              <div class="flex items-center gap-2">
+                <i class="fas fa-envelope text-[var(--color-success-500)] w-4"></i>
+                <span class="text-sm text-[var(--color-gray-600)] dark:text-[var(--color-gray-400)]">{{ $t("email") }}:</span>
+                <span class="text-sm font-medium text-[var(--color-gray-800)] dark:text-[var(--color-gray-200)]">{{ booking.userEmail || $t("notProvided") }}</span>
+              </div>
+              <div class="flex items-center gap-2">
+                <i class="fas fa-map-marker-alt text-[var(--color-success-500)] w-4"></i>
+                <span class="text-sm text-[var(--color-gray-600)] dark:text-[var(--color-gray-400)]">{{ $t("deliveryMethod") }}:</span>
+                <span class="text-sm font-medium text-[var(--color-gray-800)] dark:text-[var(--color-gray-200)]">
+                  {{ booking.deliveryMethod === 'pickup' ? $t("pickupFromOwner") : $t("deliverToMyAddress") }}
+                </span>
+              </div>
+            </div>
+          </div>
+
           <!-- Summary Section -->
           <div class="border-t border-gray-200 dark:border-gray-700 pt-6">
             <h3
@@ -1022,6 +1051,104 @@
               <i class="fas fa-paper-plane"></i>
             </button>
           </form>
+        </div>
+      </div>
+    </div>
+
+    <!-- Image Zoom Modal -->
+    <div
+      v-if="showImageModal"
+      class="fixed inset-0 bg-black bg-opacity-90 flex items-center justify-center z-50 p-4"
+      @click="closeImageModal"
+    >
+      <div class="relative max-w-7xl max-h-full">
+        <!-- Close Button -->
+        <button
+          @click="closeImageModal"
+          class="absolute top-4 right-4 z-10 bg-black bg-opacity-50 text-white rounded-full w-10 h-10 flex items-center justify-center hover:bg-opacity-70 transition-all"
+        >
+          <i class="fas fa-times text-xl"></i>
+        </button>
+
+        <!-- Navigation Arrows -->
+        <button
+          v-if="availableImages.length > 1"
+          @click.stop="previousImage"
+          class="absolute left-4 top-1/2 transform -translate-y-1/2 z-10 bg-black bg-opacity-50 text-white rounded-full w-12 h-12 flex items-center justify-center hover:bg-opacity-70 transition-all"
+        >
+          <i class="fas fa-chevron-left text-xl"></i>
+        </button>
+        <button
+          v-if="availableImages.length > 1"
+          @click.stop="nextImage"
+          class="absolute right-4 top-1/2 transform -translate-y-1/2 z-10 bg-black bg-opacity-50 text-white rounded-full w-12 h-12 flex items-center justify-center hover:bg-opacity-70 transition-all"
+        >
+          <i class="fas fa-chevron-right text-xl"></i>
+        </button>
+
+        <!-- Zoom Controls -->
+        <div class="absolute top-4 left-4 z-10 flex gap-2">
+          <button
+            @click.stop="zoomIn"
+            class="bg-black bg-opacity-50 text-white rounded-full w-10 h-10 flex items-center justify-center hover:bg-opacity-70 transition-all"
+          >
+            <i class="fas fa-search-plus"></i>
+          </button>
+          <button
+            @click.stop="zoomOut"
+            class="bg-black bg-opacity-50 text-white rounded-full w-10 h-10 flex items-center justify-center hover:bg-opacity-70 transition-all"
+          >
+            <i class="fas fa-search-minus"></i>
+          </button>
+          <button
+            @click.stop="resetZoom"
+            class="bg-black bg-opacity-50 text-white rounded-full w-10 h-10 flex items-center justify-center hover:bg-opacity-70 transition-all"
+          >
+            <i class="fas fa-undo"></i>
+          </button>
+        </div>
+
+        <!-- Image Container -->
+        <div
+          class="relative overflow-hidden rounded-lg"
+          @mousedown="startPan"
+          @mousemove="pan"
+          @mouseup="stopPan"
+          @wheel="handleWheel"
+          @touchstart="startPan"
+          @touchmove="pan"
+          @touchend="stopPan"
+        >
+          <img
+            :src="currentImage || product?.image1 || require('@/assets/logo.png')"
+            alt="Product Image"
+            class="max-w-full max-h-[80vh] object-contain transition-transform duration-200"
+            :style="{
+              transform: `scale(${zoomLevel}) translate(${panX}px, ${panY}px)`,
+              cursor: isPanning ? 'grabbing' : 'grab'
+            }"
+            @click.stop
+          />
+        </div>
+
+        <!-- Thumbnail Navigation -->
+        <div
+          v-if="availableImages.length > 1"
+          class="absolute bottom-4 left-1/2 transform -translate-x-1/2 flex gap-2"
+        >
+          <div
+            v-for="(image, index) in availableImages"
+            :key="index"
+            @click.stop="currentImageIndex = index"
+            class="w-16 h-16 rounded-lg overflow-hidden cursor-pointer border-2 transition-all"
+            :class="index === currentImageIndex ? 'border-white' : 'border-gray-400'"
+          >
+            <img
+              :src="image"
+              alt="Product thumbnail"
+              class="w-full h-full object-cover"
+            />
+          </div>
         </div>
       </div>
     </div>
@@ -1829,7 +1956,7 @@ const submitBooking = async () => {
     await setDoc(doc(bookingsRef), {
       ...booking.value,
       productTitle: product.value.title,
-      productImage: product.value.img,
+      productImage: product.value.image1 || product.value.image2 || product.value.image3 || '',
       sellerName: booking.value.sellerName,
       // Add seller contact information
       sellerContactInfo: sellerContactInfo,
@@ -1888,7 +2015,7 @@ const verifyOTP = async () => {
     await setDoc(doc(bookingsRef), {
       ...booking.value,
       productTitle: product.value.title,
-      productImage: product.value.img,
+      productImage: product.value.image1 || product.value.image2 || product.value.image3 || '',
       sellerName: booking.value.sellerName,
     });
 
@@ -2004,7 +2131,7 @@ const navigateToProduct = (productId) => {
   }
 };
 
-const navigateToRentConfirmation = () => {
+const navigateToRentConfirmation = async () => {
   if (!selectedDates.value.start || !selectedDates.value.end) {
     Swal.fire({
       icon: "warning",
@@ -2024,6 +2151,52 @@ const navigateToRentConfirmation = () => {
       confirmButtonText: "OK",
     });
     return;
+  }
+
+  // Check if user is verified
+  if (auth.currentUser) {
+    try {
+      const userDocRef = doc(db, "users", auth.currentUser.uid);
+      const userDoc = await getDoc(userDocRef);
+      
+      if (!userDoc.exists()) {
+        Swal.fire({
+          icon: "error",
+          title: "User Not Found",
+          text: "Your user profile could not be found. Please contact support.",
+          confirmButtonText: "OK",
+        });
+        return;
+      }
+
+      const userData = userDoc.data();
+      
+      // Check if user is verified
+      if (!userData.isVerified) {
+        Swal.fire({
+          icon: "warning",
+          title: "ID Verification Required",
+          text: "You must verify your ID before renting tools. Please upload your ID card in your profile.",
+          confirmButtonText: "Go to ID Verification",
+          showCancelButton: true,
+          cancelButtonText: "Cancel",
+        }).then((result) => {
+          if (result.isConfirmed) {
+            router.push("/profile/id-verification");
+          }
+        });
+        return;
+      }
+    } catch (error) {
+      console.error("Error checking user verification:", error);
+      Swal.fire({
+        icon: "error",
+        title: "Error",
+        text: "Failed to verify user status. Please try again.",
+        confirmButtonText: "OK",
+      });
+      return;
+    }
   }
 
   router.push({
@@ -2347,6 +2520,85 @@ const calculateSubtotal = () => {
   return basePrice;
 };
 
+const calculateDeliveryFee = () => {
+  if (booking.value.deliveryMethod === 'pickup') {
+    return "0.00";
+  }
+  
+  if (booking.value.deliveryMethod === 'delivery') {
+    // Check if we have both renter and lender coordinates
+    if (booking.value.renterLat && booking.value.renterLng && 
+        booking.value.lenderLat && booking.value.lenderLng) {
+      
+      // Calculate real distance between renter and lender
+      const distance = calculateDistance(
+        booking.value.lenderLat, 
+        booking.value.lenderLng,
+        booking.value.renterLat, 
+        booking.value.renterLng
+      );
+      
+      // Base delivery fee
+      const baseFee = 25;
+      
+      // Distance-based fee (5 EGP per km, max 200 EGP)
+      const distanceFee = Math.min(distance * 5, 200);
+      
+      return (baseFee + distanceFee).toFixed(2);
+    }
+    
+    // Fallback: if coordinates not available, use address-based calculation
+    const address = booking.value.deliveryAddress || '';
+    if (address.trim() === '') {
+      return "0.00";
+    }
+    
+    const baseFee = 25;
+    let distanceFee = 0;
+    const addressLower = address.toLowerCase();
+    
+    if (addressLower.includes('cairo') || addressLower.includes('القاهرة')) {
+      distanceFee = 15;
+    } else if (addressLower.includes('giza') || addressLower.includes('الجيزة')) {
+      distanceFee = 25;
+    } else if (addressLower.includes('alexandria') || addressLower.includes('الإسكندرية')) {
+      distanceFee = 80;
+    } else if (addressLower.includes('sharm') || addressLower.includes('شرم')) {
+      distanceFee = 150;
+    } else if (addressLower.includes('hurghada') || addressLower.includes('الغردقة')) {
+      distanceFee = 120;
+    } else {
+      distanceFee = 35;
+    }
+    
+    return (baseFee + distanceFee).toFixed(2);
+  }
+  
+  return "0.00";
+};
+
+const calculateTotal = () => {
+  const subtotal = calculateSubtotal();
+  const deliveryFee = parseFloat(calculateDeliveryFee());
+  const serviceFee = 5; // Fixed service fee
+  const total = subtotal + deliveryFee + serviceFee;
+  return total.toFixed(2);
+};
+
+// Calculate distance between two points using Haversine formula
+const calculateDistance = (lat1, lon1, lat2, lon2) => {
+  const R = 6371; // Earth's radius in kilometers
+  const dLat = (lat2 - lat1) * Math.PI / 180;
+  const dLon = (lon2 - lon1) * Math.PI / 180;
+  const a = 
+    Math.sin(dLat/2) * Math.sin(dLat/2) +
+    Math.cos(lat1 * Math.PI / 180) * Math.cos(lat2 * Math.PI / 180) * 
+    Math.sin(dLon/2) * Math.sin(dLon/2);
+  const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
+  const distance = R * c; // Distance in kilometers
+  return distance;
+};
+
 // Watch for new chat messages and auto-scroll to bottom
 watch(
   chatMessages,
@@ -2388,11 +2640,133 @@ onMounted(() => {
     initializeChat();
   }
 
+  // Add keyboard event listener
+  document.addEventListener('keydown', handleKeydown);
+
   // Cleanup function
   return () => {
     if (chatUnsubscribe.value) {
       chatUnsubscribe.value();
     }
+    document.removeEventListener('keydown', handleKeydown);
   };
 });
+
+// Image Zoom Modal functionality
+const showImageModal = ref(false);
+const zoomLevel = ref(1);
+const panX = ref(0);
+const panY = ref(0);
+const isPanning = ref(false);
+const lastPanX = ref(0);
+const lastPanY = ref(0);
+
+// Open image modal
+const openImageModal = () => {
+  showImageModal.value = true;
+  resetZoom();
+};
+
+// Close image modal
+const closeImageModal = () => {
+  showImageModal.value = false;
+  resetZoom();
+};
+
+// Zoom functions
+const zoomIn = () => {
+  zoomLevel.value = Math.min(zoomLevel.value * 1.2, 5);
+};
+
+const zoomOut = () => {
+  zoomLevel.value = Math.max(zoomLevel.value / 1.2, 0.5);
+};
+
+const resetZoom = () => {
+  zoomLevel.value = 1;
+  panX.value = 0;
+  panY.value = 0;
+};
+
+// Pan functions
+const startPan = (event) => {
+  isPanning.value = true;
+  if (event.type === 'mousedown') {
+    lastPanX.value = event.clientX;
+    lastPanY.value = event.clientY;
+  } else if (event.type === 'touchstart') {
+    lastPanX.value = event.touches[0].clientX;
+    lastPanY.value = event.touches[0].clientY;
+  }
+};
+
+const pan = (event) => {
+  if (!isPanning.value) return;
+  
+  event.preventDefault();
+  
+  let currentX, currentY;
+  if (event.type === 'mousemove') {
+    currentX = event.clientX;
+    currentY = event.clientY;
+  } else if (event.type === 'touchmove') {
+    currentX = event.touches[0].clientX;
+    currentY = event.touches[0].clientY;
+  }
+  
+  const deltaX = currentX - lastPanX.value;
+  const deltaY = currentY - lastPanY.value;
+  
+  panX.value += deltaX;
+  panY.value += deltaY;
+  
+  lastPanX.value = currentX;
+  lastPanY.value = currentY;
+};
+
+const stopPan = () => {
+  isPanning.value = false;
+};
+
+// Mouse wheel zoom
+const handleWheel = (event) => {
+  event.preventDefault();
+  
+  if (event.deltaY < 0) {
+    zoomIn();
+  } else {
+    zoomOut();
+  }
+};
+
+// Keyboard event handling for modal
+const handleKeydown = (event) => {
+  if (!showImageModal.value) return;
+  
+  switch (event.key) {
+    case 'Escape':
+      closeImageModal();
+      break;
+    case 'ArrowLeft':
+      if (availableImages.value.length > 1) {
+        previousImage();
+      }
+      break;
+    case 'ArrowRight':
+      if (availableImages.value.length > 1) {
+        nextImage();
+      }
+      break;
+    case '+':
+    case '=':
+      zoomIn();
+      break;
+    case '-':
+      zoomOut();
+      break;
+    case '0':
+      resetZoom();
+      break;
+  }
+};
 </script>

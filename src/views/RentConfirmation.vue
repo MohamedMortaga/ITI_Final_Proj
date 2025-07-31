@@ -56,7 +56,7 @@
           <!-- Product Image -->
           <div class="lg:col-span-1">
             <img
-              :src="product?.img || require('@/assets/logo.png')"
+              :src="product?.image1 || product?.image2 || product?.image3 || require('@/assets/logo.png')"
               alt="Product Image"
               class="w-full h-64 object-cover"
             />
@@ -149,7 +149,7 @@
         <!-- Right Column: Personal Information -->
         <div class="space-y-6">
           <!-- Personal Information Section -->
-          <div class="bg-[var(--Color-Surface-Surface-Primary)] border border-[var(--Color-Boarder-Border-Primary)] rounded-xl p-6" style="height: 220px;">
+          <div class="bg-[var(--Color-Surface-Surface-Primary)] border border-[var(--Color-Boarder-Border-Primary)] rounded-xl p-6">
             <h2 class="text-xl font-semibold text-[var(--Color-Text-Text-Primary)] mb-4">
               {{ $t("personalInformation") }}
             </h2>
@@ -207,6 +207,59 @@
                   class="text-right bg-transparent border-none outline-none text-[var(--Color-Text-Text-Primary)] placeholder-[var(--Color-Text-Text-Secondary)]"
                   :placeholder="$t('emailPlaceholder')"
                 />
+              </div>
+            </div>
+          </div>
+
+          <!-- Contact Details Section with Pricing -->
+          <div class="bg-[var(--Color-Surface-Surface-Primary)] border border-[var(--Color-Boarder-Border-Primary)] rounded-xl p-6">
+            <h2 class="text-xl font-semibold text-[var(--Color-Text-Text-Primary)] mb-4">
+              {{ $t("renterContactInfo") }}
+            </h2>
+            
+            <!-- Pricing Breakdown -->
+            <div class="space-y-3 mb-4">
+              <div class="flex justify-between items-center">
+                <span class="text-[var(--Color-Text-Text-Secondary)]">{{ $t("subtotal") }}:</span>
+                <span class="font-medium text-[var(--Color-Text-Text-Primary)]">{{ $t("egp") }} {{ calculateSubtotal() }}</span>
+              </div>
+              <div class="flex justify-between items-center">
+                <span class="text-[var(--Color-Text-Text-Secondary)]">{{ $t("deliveryFee") }}:</span>
+                <span class="font-medium text-[var(--Color-Text-Text-Primary)]">{{ $t("egp") }} {{ calculateDeliveryFee() }}</span>
+              </div>
+              <div class="flex justify-between items-center">
+                <span class="text-[var(--Color-Text-Text-Secondary)]">{{ $t("serviceFee") }}:</span>
+                <span class="font-medium text-[var(--Color-Text-Text-Primary)]">{{ $t("egp") }} 5.00</span>
+              </div>
+              <div class="flex justify-between items-center pt-2 border-t border-[var(--Color-Boarder-Border-Primary)]">
+                <span class="text-lg font-bold text-[var(--Color-Text-Text-Primary)]">{{ $t("total") }}:</span>
+                <span class="text-xl font-bold text-[var(--Color-Text-Text-Brand)]">{{ $t("egp") }} {{ calculateTotal() }}</span>
+              </div>
+            </div>
+
+            <!-- Contact Information -->
+            <div class="space-y-3 pt-3 border-t border-[var(--Color-Boarder-Border-Primary)]">
+              <div class="flex items-center gap-2">
+                <i class="fas fa-user text-[var(--Color-Text-Text-Brand)] w-4"></i>
+                <span class="text-sm text-[var(--Color-Text-Text-Secondary)]">{{ $t("name") }}:</span>
+                <span class="text-sm font-medium text-[var(--Color-Text-Text-Primary)]">{{ booking.userName || $t("notProvided") }}</span>
+              </div>
+              <div class="flex items-center gap-2">
+                <i class="fas fa-phone text-[var(--Color-Text-Text-Brand)] w-4"></i>
+                <span class="text-sm text-[var(--Color-Text-Text-Secondary)]">{{ $t("phone") }}:</span>
+                <span class="text-sm font-medium text-[var(--Color-Text-Text-Primary)]">{{ booking.phoneNumber || $t("notProvided") }}</span>
+              </div>
+              <div class="flex items-center gap-2">
+                <i class="fas fa-envelope text-[var(--Color-Text-Text-Brand)] w-4"></i>
+                <span class="text-sm text-[var(--Color-Text-Text-Secondary)]">{{ $t("email") }}:</span>
+                <span class="text-sm font-medium text-[var(--Color-Text-Text-Primary)]">{{ booking.userEmail || $t("notProvided") }}</span>
+              </div>
+              <div class="flex items-center gap-2">
+                <i class="fas fa-map-marker-alt text-[var(--Color-Text-Text-Brand)] w-4"></i>
+                <span class="text-sm text-[var(--Color-Text-Text-Secondary)]">{{ $t("deliveryMethod") }}:</span>
+                <span class="text-sm font-medium text-[var(--Color-Text-Text-Primary)]">
+                  {{ booking.deliveryMethod === 'pickup' ? $t("pickupFromOwner") : $t("deliverToMyAddress") }}
+                </span>
               </div>
             </div>
           </div>
@@ -1425,27 +1478,6 @@ const createBooking = async () => {
     }
 
     const userData = userDoc.data();
-    
-    // Check if user is verified
-    if (!userData.isVerified) {
-      Swal.fire({
-        icon: "warning",
-        title: "ID Verification Required",
-        text: "You must verify your ID before making a booking. Please upload your ID card in your profile.",
-        confirmButtonText: "Go to ID Verification",
-        showCancelButton: true,
-        cancelButtonText: "Cancel",
-        background: 'var(--Color-Surface-Surface-Primary)',
-        color: 'var(--Color-Text-Text-Primary)',
-        confirmButtonColor: 'var(--Color-Surface-Surface-Brand)',
-        iconColor: '#f59e0b'
-      }).then((result) => {
-        if (result.isConfirmed) {
-          router.push("/profile/id-verification");
-        }
-      });
-      return;
-    }
 
     // Update product status to pending
     const productRef = doc(db, "products", booking.value.productId);
@@ -1483,7 +1515,7 @@ const createBooking = async () => {
     await setDoc(doc(bookingsRef), {
       ...booking.value,
       productTitle: product.value.title,
-      productImage: product.value.img,
+      productImage: product.value.image1 || product.value.image2 || product.value.image3 || '',
       sellerName: booking.value.sellerName,
       // Add seller contact information
       sellerContactInfo: sellerContactInfo,

@@ -4,10 +4,8 @@ import {
   collection, addDoc, deleteDoc, updateDoc, doc, getDoc,
   query, where, getDocs, serverTimestamp
 } from "firebase/firestore";
-import {
-  ref as storageRef, uploadBytes, getDownloadURL, deleteObject
-} from "firebase/storage";
-import { db, storage, auth } from "@/firebase/config";
+import { db, auth } from "@/firebase/config";
+import { useStorageUpload } from "@/composables/useStorage";
 import { onAuthStateChanged } from "firebase/auth";
 import Swal from "sweetalert2";
 
@@ -100,6 +98,9 @@ onAuthStateChanged(auth, (user) => {
   }
 });
 
+// Initialize storage upload composable
+const { uploadImage, url, error: uploadError, isPending } = useStorageUpload();
+
 const handleImageUpload = async (event, imageNumber) => {
   const file = event.target.files[0];
   if (!file) return;
@@ -118,10 +119,15 @@ const handleImageUpload = async (event, imageNumber) => {
     };
     reader.readAsDataURL(file);
 
+    // Use enhanced upload function with retry logic
+    await uploadImage(file, 'products', 3);
+
+    if (uploadError.value) {
+      throw new Error(uploadError.value);
+    }
+
+    const imageUrl = url.value;
     const storagePath = `products/${Date.now()}_${file.name}`;
-    const imageRef = storageRef(storage, storagePath);
-    const snapshot = await uploadBytes(imageRef, file);
-    const imageUrl = await getDownloadURL(snapshot.ref);
 
     if (imageNumber === 1) {
       form.value.image1 = imageUrl;
@@ -134,7 +140,13 @@ const handleImageUpload = async (event, imageNumber) => {
       form.value.image3Path = storagePath;
     }
   } catch (err) {
-    Swal.fire({ icon: "error", title: "Image upload failed", text: err.message });
+    console.error('Image upload error:', err);
+    Swal.fire({ 
+      icon: "error", 
+      title: "Image upload failed", 
+      text: err.message || "Failed to upload image. Please try again.",
+      confirmButtonText: "OK"
+    });
   } finally {
     if (imageNumber === 1) uploading1.value = false;
     else if (imageNumber === 2) uploading2.value = false;
@@ -149,41 +161,7 @@ const submitForm = async () => {
       return;
     }
 
-    // Check if user is verified (only for new products, not edits)
-    if (!isEdit.value) {
-      const userDocRef = doc(db, "users", currentUser.value.uid);
-      const userDoc = await getDoc(userDocRef);
-      
-      if (!userDoc.exists()) {
-        Swal.fire({
-          icon: "error",
-          title: "User Not Found",
-          text: "Your user profile could not be found. Please contact support.",
-          confirmButtonText: "OK"
-        });
-        return;
-      }
 
-      const userData = userDoc.data();
-      
-      // Check if user is verified
-      if (!userData.isVerified) {
-        Swal.fire({
-          icon: "warning",
-          title: "ID Verification Required",
-          text: "You must verify your ID before adding products. Please upload your ID card in your profile.",
-          confirmButtonText: "Go to ID Verification",
-          showCancelButton: true,
-          cancelButtonText: "Cancel"
-        }).then((result) => {
-          if (result.isConfirmed) {
-            // Navigate to ID verification page
-            window.location.href = "/profile/id-verification";
-          }
-        });
-        return;
-      }
-    }
 
     if (!form.value.title || !form.value.category || !form.value.price || !form.value.location || !form.value.image1) {
       Swal.fire({ icon: "error", title: "Please fill all required fields including at least one image." });

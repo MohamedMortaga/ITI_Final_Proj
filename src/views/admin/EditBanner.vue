@@ -34,18 +34,17 @@
 
 <script setup>
 import { ref, onMounted } from 'vue'
-import { db, storage } from '@/firebase/config'
+import { db } from '@/firebase/config'
 import {
   collection,
   getDocs,
   doc,
   updateDoc
 } from 'firebase/firestore'
-import {
-  ref as storageRef,
-  uploadBytes,
-  getDownloadURL
-} from 'firebase/storage'
+import { useStorageUpload } from '@/composables/useStorage'
+
+// Initialize storage upload composable
+const { uploadImage, url, error: uploadError, isPending } = useStorageUpload()
 
 // State
 const banners = ref([])
@@ -68,17 +67,25 @@ const uploadBannerImage = async (bannerId) => {
   const file = selectedFiles.value[bannerId]
   if (!file) return alert('Please select an image first.')
 
-  const filePath = `banners/${bannerId}-${file.name}`
-  const fileRef = storageRef(storage, filePath)
+  try {
+    // Use enhanced upload function with retry logic
+    await uploadImage(file, 'banners', 3)
+    
+    if (uploadError.value) {
+      throw new Error(uploadError.value)
+    }
+    
+    const downloadURL = url.value
 
-  await uploadBytes(fileRef, file)
-  const downloadURL = await getDownloadURL(fileRef)
+    const bannerDoc = doc(db, 'banners', bannerId)
+    await updateDoc(bannerDoc, { imageUrl: downloadURL })
 
-  const bannerDoc = doc(db, 'banners', bannerId)
-  await updateDoc(bannerDoc, { imageUrl: downloadURL })
-
-  alert('Image updated successfully!')
-  await fetchBanners() // Refresh the displayed list
+    alert('Image updated successfully!')
+    await fetchBanners() // Refresh the displayed list
+  } catch (err) {
+    console.error('Banner image upload error:', err)
+    alert('Failed to upload image. Please try again.')
+  }
 }
 
 // Initial fetch

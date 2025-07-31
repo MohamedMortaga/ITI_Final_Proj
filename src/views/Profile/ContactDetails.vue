@@ -76,11 +76,37 @@
             </span>
           </div>
 
-          <!-- Total Price -->
-          <div class="flex items-center gap-2">
-            <i class="fas fa-money-bill text-[var(--Color-Text-Text-Brand)] w-4"></i>
-            <span class="text-sm text-[var(--Color-Text-Text-Secondary)]">{{ $t("totalPrice") }}:</span>
-            <span class="text-sm font-medium text-[var(--Color-Text-Text-Primary)]">${{ booking.totalPrice }}</span>
+          <!-- Price Breakdown -->
+          <div class="space-y-2 mt-4 pt-3 border-t border-[var(--Color-Boarder-Border-Primary)]">
+            <!-- Subtotal -->
+            <div class="flex justify-between items-center">
+              <span class="text-sm text-[var(--Color-Text-Text-Secondary)]">{{ $t("subtotal") }}:</span>
+              <span class="text-sm font-medium text-[var(--Color-Text-Text-Primary)]">
+                {{ $t("egp") }} {{ calculateSubtotal(booking) }}
+              </span>
+            </div>
+            
+            <!-- Delivery Fee -->
+            <div class="flex justify-between items-center">
+              <span class="text-sm text-[var(--Color-Text-Text-Secondary)]">{{ $t("deliveryFee") }}:</span>
+              <span class="text-sm font-medium text-[var(--Color-Text-Text-Primary)]">
+                {{ $t("egp") }} {{ calculateDeliveryFee(booking) }}
+              </span>
+            </div>
+            
+            <!-- Service Fee -->
+            <div class="flex justify-between items-center">
+              <span class="text-sm text-[var(--Color-Text-Text-Secondary)]">{{ $t("serviceFee") }}:</span>
+              <span class="text-sm font-medium text-[var(--Color-Text-Text-Primary)]">{{ $t("egp") }} 5.00</span>
+            </div>
+            
+            <!-- Total -->
+            <div class="flex justify-between items-center pt-2 border-t border-[var(--Color-Boarder-Border-Primary)]">
+              <span class="text-sm font-bold text-[var(--Color-Text-Text-Primary)]">{{ $t("total") }}:</span>
+              <span class="text-sm font-bold text-[var(--Color-Text-Text-Brand)]">
+                {{ $t("egp") }} {{ getTotalPrice(booking) }}
+              </span>
+            </div>
           </div>
         </div>
 
@@ -128,7 +154,7 @@
 </template>
 
 <script setup>
-import { ref, computed, onMounted } from "vue";
+import { ref, computed, onMounted, watch } from "vue";
 import { useI18n } from "vue-i18n";
 import { useRouter } from "vue-router";
 import { db, auth } from "@/firebase/config";
@@ -146,6 +172,8 @@ const { bookings } = useGlobalRealTime();
 
 const userId = ref(null);
 const userVerificationStatuses = ref({});
+const productDetails = ref({}); // Cache for product details
+const calculatedPrices = ref({}); // Cache for calculated prices
 
 // Function to get user verification status
 const getUserVerificationStatus = async (userId) => {
@@ -159,6 +187,30 @@ const getUserVerificationStatus = async (userId) => {
   } catch (error) {
     console.error('Error fetching user verification status:', error);
     return false;
+  }
+};
+
+// Function to get product details
+const getProductDetails = async (productId) => {
+  if (!productId) return null;
+  
+  // Check if we already have the product details cached
+  if (productDetails.value[productId]) {
+    return productDetails.value[productId];
+  }
+  
+  try {
+    const productDoc = await getDoc(doc(db, 'products', productId));
+    if (productDoc.exists()) {
+      const productData = productDoc.data();
+      // Cache the product details
+      productDetails.value[productId] = productData;
+      return productData;
+    }
+    return null;
+  } catch (error) {
+    console.error('Error fetching product details:', error);
+    return null;
   }
 };
 
@@ -189,6 +241,22 @@ const bookingsWithContactInfo = computed(() => {
     sampleBooking: bookingsWithVerification[0] || null
   });
   
+  // Log sample booking fields for debugging
+  if (bookingsWithVerification[0]) {
+    const sample = bookingsWithVerification[0];
+    console.log('Sample booking fields:', {
+      id: sample.id,
+      startDate: sample.startDate,
+      endDate: sample.endDate,
+      productPrice: sample.productPrice,
+      price: sample.price,
+      dailyPrice: sample.dailyPrice,
+      totalPrice: sample.totalPrice,
+      deliveryMethod: sample.deliveryMethod,
+      productTitle: sample.productTitle
+    });
+  }
+  
   return bookingsWithVerification;
 });
 
@@ -202,6 +270,19 @@ const loadUserVerificationStatuses = async () => {
     if (!userVerificationStatuses.value[userId]) {
       const isVerified = await getUserVerificationStatus(userId);
       userVerificationStatuses.value[userId] = isVerified;
+    }
+  }
+};
+
+// Load product details for all bookings
+const loadProductDetails = async () => {
+  if (!bookings.value) return;
+  
+  const uniqueProductIds = [...new Set(bookings.value.map(booking => booking.productId).filter(Boolean))];
+  
+  for (const productId of uniqueProductIds) {
+    if (!productDetails.value[productId]) {
+      await getProductDetails(productId);
     }
   }
 };
@@ -227,6 +308,212 @@ const getStatusColor = (status) => {
     default:
       return 'text-gray-600';
   }
+};
+
+// Calculate subtotal for a booking (same as RentConfirmation)
+const calculateSubtotal = (booking) => {
+  console.log('calculateSubtotal called for booking:', booking.id);
+  
+  if (!booking.startDate || !booking.endDate) {
+    console.log('Missing dates, returning 0');
+    return 0;
+  }
+  const start = new Date(booking.startDate);
+  const end = new Date(booking.endDate);
+  const diffTime = Math.ceil((end - start) / (1000 * 60 * 60 * 24));
+  const days = diffTime + 1; // Include both start and end dates
+  
+  // Get price from booking data or product details
+  let pricePerDay = booking.productPrice || booking.price || booking.dailyPrice || 0;
+  
+  // If no price in booking data, try to get from cached product details
+  if (!pricePerDay || pricePerDay <= 0) {
+    if (booking.productId && productDetails.value[booking.productId]) {
+      pricePerDay = productDetails.value[booking.productId].price || 0;
+    }
+  }
+  
+  // If still no price, use default
+  if (!pricePerDay || pricePerDay <= 0) {
+    pricePerDay = 50; // Default price per day
+  }
+  
+  const subtotal = days * pricePerDay;
+  
+  console.log('Subtotal calculation:', {
+    startDate: booking.startDate,
+    endDate: booking.endDate,
+    days,
+    pricePerDay,
+    subtotal
+  });
+  
+  return subtotal;
+};
+
+// Calculate delivery fee for a booking (same as RentConfirmation)
+const calculateDeliveryFee = (booking) => {
+  console.log('calculateDeliveryFee called for booking:', booking.id, 'method:', booking.deliveryMethod);
+  
+  if (booking.deliveryMethod === 'pickup') {
+    console.log('Pickup method, returning 0');
+    return 0;
+  }
+  
+  if (booking.deliveryMethod === 'delivery') {
+    // Check if we have both renter and lender coordinates
+    if (booking.renterLat && booking.renterLng && 
+        booking.lenderLat && booking.lenderLng) {
+      
+      // Calculate real distance between renter and lender
+      const distance = calculateDistance(
+        booking.lenderLat, 
+        booking.lenderLng,
+        booking.renterLat, 
+        booking.renterLng
+      );
+      
+      // Base delivery fee
+      const baseFee = 25;
+      
+      // Distance-based fee (5 EGP per km, max 200 EGP)
+      const distanceFee = Math.min(distance * 5, 200);
+      const totalFee = baseFee + distanceFee;
+      
+      console.log('Delivery fee calculation (coordinates):', {
+        distance: distance.toFixed(2),
+        baseFee,
+        distanceFee,
+        totalFee
+      });
+      
+      return totalFee;
+    }
+    
+    // Fallback: if coordinates not available, use address-based calculation
+    const address = booking.deliveryAddress || '';
+    if (address.trim() === '') {
+      console.log('No delivery address, returning 0');
+      return 0;
+    }
+    
+    const baseFee = 25;
+    let distanceFee = 0;
+    const addressLower = address.toLowerCase();
+    
+    if (addressLower.includes('cairo') || addressLower.includes('القاهرة')) {
+      distanceFee = 15;
+    } else if (addressLower.includes('giza') || addressLower.includes('الجيزة')) {
+      distanceFee = 25;
+    } else if (addressLower.includes('alexandria') || addressLower.includes('الإسكندرية')) {
+      distanceFee = 80;
+    } else if (addressLower.includes('sharm') || addressLower.includes('شرم')) {
+      distanceFee = 150;
+    } else if (addressLower.includes('hurghada') || addressLower.includes('الغردقة')) {
+      distanceFee = 120;
+    } else {
+      distanceFee = 35;
+    }
+    
+    const totalFee = baseFee + distanceFee;
+    
+    console.log('Delivery fee calculation (address):', {
+      address,
+      baseFee,
+      distanceFee,
+      totalFee
+    });
+    
+    return totalFee;
+  }
+  
+  console.log('No delivery method or pickup, returning 0');
+  return 0;
+};
+
+// Calculate total price for a booking (same as RentConfirmation)
+const calculateTotalPrice = async (booking) => {
+  console.log('Calculating total price for booking:', booking);
+  
+  // If totalPrice is already calculated and stored, use it
+  if (booking.totalPrice && booking.totalPrice > 0) {
+    console.log('Using stored totalPrice:', booking.totalPrice);
+    return parseFloat(booking.totalPrice).toFixed(2);
+  }
+  
+  // Use the same calculation logic as RentConfirmation
+  const subtotal = calculateSubtotal(booking);
+  const deliveryFee = calculateDeliveryFee(booking);
+  const serviceFee = 5; // Fixed service fee (same as RentConfirmation)
+  const total = subtotal + deliveryFee + serviceFee;
+  
+  console.log('Final calculation:', { subtotal, deliveryFee, serviceFee, total });
+  
+  return total.toFixed(2);
+};
+
+// Synchronous function to get total price (with caching) - same as RentConfirmation
+const getTotalPrice = (booking) => {
+  console.log('getTotalPrice called for booking:', booking.id);
+  
+  // If we have a cached calculated price, use it
+  if (calculatedPrices.value[booking.id]) {
+    console.log('Using cached price:', calculatedPrices.value[booking.id]);
+    return calculatedPrices.value[booking.id];
+  }
+  
+  // If booking has a stored totalPrice, use it
+  if (booking.totalPrice && booking.totalPrice > 0) {
+    console.log('Using stored totalPrice:', booking.totalPrice);
+    return parseFloat(booking.totalPrice).toFixed(2);
+  }
+  
+  // Use the same calculation logic as RentConfirmation
+  const subtotal = calculateSubtotal(booking);
+  const deliveryFee = calculateDeliveryFee(booking);
+  const serviceFee = 5; // Fixed service fee (same as RentConfirmation)
+  const total = subtotal + deliveryFee + serviceFee;
+  const priceString = total.toFixed(2);
+  
+  console.log('Calculated price breakdown:', {
+    subtotal,
+    deliveryFee,
+    serviceFee,
+    total,
+    priceString
+  });
+  
+  // Cache the calculated price
+  calculatedPrices.value[booking.id] = priceString;
+  
+  // Trigger async calculation for more accurate price
+  calculateTotalPriceAsync(booking);
+  
+  return priceString;
+};
+
+// Async function to calculate more accurate price
+const calculateTotalPriceAsync = async (booking) => {
+  try {
+    const accuratePrice = await calculateTotalPrice(booking);
+    calculatedPrices.value[booking.id] = accuratePrice;
+  } catch (error) {
+    console.error('Error calculating accurate price:', error);
+  }
+};
+
+// Calculate distance between two points using Haversine formula
+const calculateDistance = (lat1, lon1, lat2, lon2) => {
+  const R = 6371; // Earth's radius in kilometers
+  const dLat = (lat2 - lat1) * Math.PI / 180;
+  const dLon = (lon2 - lon1) * Math.PI / 180;
+  const a = 
+    Math.sin(dLat/2) * Math.sin(dLat/2) +
+    Math.cos(lat1 * Math.PI / 180) * Math.cos(lat2 * Math.PI / 180) * 
+    Math.sin(dLon/2) * Math.sin(dLon/2);
+  const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
+  const distance = R * c; // Distance in kilometers
+  return distance;
 };
 
 // Copy contact information to clipboard
@@ -255,7 +542,7 @@ const copyAllContactInfo = (booking) => {
     `Email: ${booking.userEmail || ''}`,
     `Product: ${booking.productTitle || ''}`,
     `Rental Period: ${formatDate(booking.startDate)} - ${formatDate(booking.endDate)}`,
-    `Total Price: $${booking.totalPrice || ''}`,
+    `Total Price: ${t("egp")} ${getTotalPrice(booking)}`,
     `Delivery Method: ${booking.deliveryMethod || ''}`
   ].filter(line => line.split(': ')[1]).join('\n');
   
@@ -349,8 +636,6 @@ const messageUser = async (userId, userName, productId = null, productTitle = nu
         existingChatRoom = { id: doc.id, ...chatData };
       }
     });
-
-
 
     let chatRoomId;
 
@@ -507,12 +792,20 @@ const deleteContactDetails = async (bookingId) => {
   }
 };
 
+// Watch for bookings changes to load product details
+watch(bookings, async (newBookings) => {
+  if (newBookings && newBookings.length > 0 && userId.value) {
+    await loadProductDetails();
+  }
+}, { immediate: true });
+
 // Initialize user on mount
 onMounted(() => {
   onAuthStateChanged(auth, async (user) => {
     if (user) {
       userId.value = user.uid;
       await loadUserVerificationStatuses(); // Load verification statuses when user is logged in
+      await loadProductDetails(); // Load product details for accurate pricing
     }
   });
 });

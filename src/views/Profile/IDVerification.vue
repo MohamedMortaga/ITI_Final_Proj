@@ -97,15 +97,18 @@
 <script setup>
 import { ref, onMounted } from "vue";
 import { useI18n } from "vue-i18n";
-import { db, auth, storage } from "@/firebase/config";
+import { db, auth } from "@/firebase/config";
 import { onAuthStateChanged } from "firebase/auth";
 import { doc, setDoc, serverTimestamp, getDoc } from "firebase/firestore";
-import { ref as storageRef, uploadBytes, getDownloadURL } from "firebase/storage";
+import { useStorageUpload } from "@/composables/useStorage";
 import Swal from "sweetalert2";
 import { useNotifications } from "@/composables/useNotifications";
 
 const { t } = useI18n();
 const { notifyIDVerificationSubmitted } = useNotifications();
+
+// Initialize storage upload composable
+const { uploadImage, url, error: uploadError, isPending } = useStorageUpload();
 
 const userId = ref(null);
 const uploadingFront = ref(false);
@@ -134,15 +137,26 @@ const handleFrontImageUpload = async (event) => {
     };
     reader.readAsDataURL(file);
 
+    // Use enhanced upload function with retry logic
+    await uploadImage(file, `id-cards/${userId.value}/front`, 3);
+
+    if (uploadError.value) {
+      throw new Error(uploadError.value);
+    }
+
+    const imageUrl = url.value;
     const storagePath = `id-cards/${userId.value}/front/${Date.now()}_${file.name}`;
-    const imageRef = storageRef(storage, storagePath);
-    const snapshot = await uploadBytes(imageRef, file);
-    const imageUrl = await getDownloadURL(snapshot.ref);
 
     form.value.frontImage = imageUrl;
     form.value.frontImagePath = storagePath;
   } catch (err) {
-    Swal.fire({ icon: "error", title: "Front image upload failed", text: err.message });
+    console.error('Front image upload error:', err);
+    Swal.fire({ 
+      icon: "error", 
+      title: "Front image upload failed", 
+      text: err.message || "Failed to upload front image. Please try again.",
+      confirmButtonText: "OK"
+    });
   } finally {
     uploadingFront.value = false;
   }
@@ -162,15 +176,26 @@ const handleBackImageUpload = async (event) => {
     };
     reader.readAsDataURL(file);
 
+    // Use enhanced upload function with retry logic
+    await uploadImage(file, `id-cards/${userId.value}/back`, 3);
+
+    if (uploadError.value) {
+      throw new Error(uploadError.value);
+    }
+
+    const imageUrl = url.value;
     const storagePath = `id-cards/${userId.value}/back/${Date.now()}_${file.name}`;
-    const imageRef = storageRef(storage, storagePath);
-    const snapshot = await uploadBytes(imageRef, file);
-    const imageUrl = await getDownloadURL(snapshot.ref);
 
     form.value.backImage = imageUrl;
     form.value.backImagePath = storagePath;
   } catch (err) {
-    Swal.fire({ icon: "error", title: "Back image upload failed", text: err.message });
+    console.error('Back image upload error:', err);
+    Swal.fire({ 
+      icon: "error", 
+      title: "Back image upload failed", 
+      text: err.message || "Failed to upload back image. Please try again.",
+      confirmButtonText: "OK"
+    });
   } finally {
     uploadingBack.value = false;
   }
