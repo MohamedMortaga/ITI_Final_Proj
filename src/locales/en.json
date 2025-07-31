@@ -209,5 +209,10 @@
   "renterPhone": "Renter Phone",
   "renterEmail": "Renter Email",
   "totalPrice": "Total Price",
-  "status": "Status"
+  "status": "Status",
+  "previous": "Previous",
+  "next": "Next",
+  "showing": "Showing",
+  "of": "of",
+  "products": "products"
 }

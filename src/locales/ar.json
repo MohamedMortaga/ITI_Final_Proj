@@ -711,5 +711,10 @@
   "email": "البريد الإلكتروني",
   "furnitureAndDIY": "الأثاث وأدوات DIY",
   "diyTools": "أدوات DIY",
-  "enterYourAddress": "أدخل عنوانك..."
+  "enterYourAddress": "أدخل عنوانك...",
+  "previous": "السابق",
+  "next": "التالي",
+  "showing": "عرض",
+  "of": "من",
+  "products": "المنتجات"
 }
