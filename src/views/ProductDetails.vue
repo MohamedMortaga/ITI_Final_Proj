@@ -376,9 +376,10 @@
                 class="border-b border-[var(--Color-Boarder-Border-Primary)] pb-4 last:border-b-0"
               >
                 <div class="flex items-center gap-2 mb-2">
-                  <span class="font-medium text-[var(--Color-Text-Text-Primary)]">{{
-                    review.userName || review.rentUserId
-                  }}</span>
+                  <VerificationBadge 
+                    :userName="review.userName || review.rentUserId" 
+                    :isVerified="review.userVerificationStatus"
+                  />
                   <span class="text-yellow-400 text-sm">
                     {{
                       "★".repeat(Math.floor(review.rate)) +
@@ -735,8 +736,10 @@
                   >Owner:</span
                 >
                 <div class="flex items-center space-x-2">
-                  <span class="font-medium">{{ booking.sellerName }}</span>
-                  <i class="fas fa-check-circle text-[var(--color-success-500)]"></i>
+                  <VerificationBadge 
+                    :userName="booking.sellerName" 
+                    :isVerified="sellerVerificationStatus"
+                  />
                 </div>
               </div>
               <div
@@ -1019,6 +1022,7 @@ import {
 } from "firebase/firestore";
 import { db, auth } from "@/firebase/config";
 import Swal from "sweetalert2";
+import VerificationBadge from "@/components/VerificationBadge.vue";
 
 const { t, locale } = useI18n();
 const showAllProducts = ref(false);
@@ -1069,6 +1073,30 @@ const newReview = ref({
   rentUserId: "",
   userName: "",
 });
+
+const sellerVerificationStatus = ref(false);
+
+// Function to get seller verification status
+const getSellerVerificationStatus = async (sellerId) => {
+  try {
+    const userDoc = await getDoc(doc(db, 'users', sellerId));
+    if (userDoc.exists()) {
+      const userData = userDoc.data();
+      return userData.isVerified || false;
+    }
+    return false;
+  } catch (error) {
+    console.error('Error fetching seller verification status:', error);
+    return false;
+  }
+};
+
+// Load seller verification status when product loads
+const loadSellerVerificationStatus = async () => {
+  if (product.value?.userId) {
+    sellerVerificationStatus.value = await getSellerVerificationStatus(product.value.userId);
+  }
+};
 
 const today = ref(new Date());
 const currentDate = ref(new Date());
@@ -1206,6 +1234,7 @@ const loadProduct = async () => {
       booking.value.productPrice = parseFloat(product.value.price) || 0;
       await loadSellerDetails(booking.value.sellerId);
       await loadOwnerProducts(booking.value.sellerId);
+      await loadSellerVerificationStatus(); // Load seller verification status
       await checkPendingBookings(); // Immediate check on load
     } else {
       console.error("No such product!");
@@ -1386,9 +1415,12 @@ const loadReviews = () => {
           const userRef = doc(db, "users", reviewData.rentUserId);
           const userSnap = await getDoc(userRef);
           if (userSnap.exists()) {
-            reviewData.userName = userSnap.data().displayName || reviewData.rentUserId;
+            const userData = userSnap.data();
+            reviewData.userName = userData.displayName || reviewData.rentUserId;
+            reviewData.userVerificationStatus = userData.isVerified || false;
           } else {
             reviewData.userName = reviewData.rentUserId;
+            reviewData.userVerificationStatus = false;
           }
         }
         return reviewData;

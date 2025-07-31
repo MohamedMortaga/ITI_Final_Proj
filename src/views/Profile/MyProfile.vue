@@ -14,10 +14,24 @@
         <div class="flex flex-col justify-center items-center md:items-start py-[32px]">
           <h2 class="text-2xl font-bold mb-1">
             <span class="text-[var(--Color-Text-Text-Brand)]">{{ $t("welcome") }} </span>
-            <span class="text-[var(--Color-Text-Text-Primary)]">
-              {{ userProfile.displayName || $t("unknownUser") }}</span
-            >
+            <VerificationBadge 
+              :userName="userProfile.displayName || $t('unknownUser')" 
+              :isVerified="userProfile.isVerified" 
+            />
           </h2>
+          <!-- Verification Status -->
+          <div v-if="!userProfile.isVerified" class="flex items-center gap-2 mt-2">
+            <div class="flex items-center gap-1 bg-yellow-100 text-yellow-800 px-3 py-1 rounded-full text-sm font-medium">
+              <i class="fas fa-clock text-yellow-600"></i>
+              <span>{{ $t('notVerified') }}</span>
+            </div>
+            <router-link 
+              to="/profile/id-verification" 
+              class="text-blue-600 hover:text-blue-800 text-sm underline"
+            >
+              {{ $t('verifyNow') }}
+            </router-link>
+          </div>
         </div>
       </div>
       <div class="w-full bg-[var(--Color-Surface-Surface-Primary)] dark:bg-[var(--Color-Surface-Surface-Primary)] rounded-xl border border-[var(--Color-Boarder-Border-Primary)] p-8">
@@ -161,6 +175,7 @@ import { useI18n } from "vue-i18n";
 import { doc, getDoc, setDoc, updateDoc, serverTimestamp } from "firebase/firestore";
 import { auth, db } from "@/firebase/config";
 import Swal from "sweetalert2";
+import VerificationBadge from "@/components/VerificationBadge.vue";
 
 const { t } = useI18n();
 const route = useRouter(); // Corrected: Should be useRoute
@@ -175,6 +190,7 @@ const userProfile = ref({
   phone: "",
   city: "",
   district: "",
+  isVerified: false, // Added isVerified field
 });
 const showBookingForm = ref(false);
 
@@ -206,6 +222,7 @@ const loadUserProfile = async () => {
         phone: data.phone || "",
         city: data.city || "",
         district: data.district || "",
+        isVerified: data.isVerified || false, // Load isVerified
       };
     } else {
       // Initialize with default values if no document exists
@@ -218,6 +235,7 @@ const loadUserProfile = async () => {
         phone: "",
         city: "",
         district: "",
+        isVerified: false, // Initialize isVerified
       };
       await setDoc(userDocRef, {
         ...userProfile.value,
@@ -280,6 +298,7 @@ const saveProfile = async () => {
       phone: userProfile.value.phone,
       city: userProfile.value.city,
       district: userProfile.value.district,
+      isVerified: userProfile.value.isVerified, // Save isVerified
       timestamp: serverTimestamp(),
     };
 

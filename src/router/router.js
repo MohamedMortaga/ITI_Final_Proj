@@ -23,6 +23,7 @@ import AdminReviews from '@/views/admin/AdminReviews.vue';
 import ContactMessages from '@/views/admin/ContactMessages.vue';
 import Notifications from '@/views/admin/Notifications.vue';
 import Withdrawals from '@/views/admin/Withdrawals.vue';
+import IDVerifications from '@/views/admin/IDVerifications.vue';
 
 import Overview from '@/views/Overview.vue';
 import Features from '@/views/Features.vue';
@@ -39,6 +40,7 @@ import MyBalance from '@/views/Profile/MyBalance.vue';
 import Settings from '@/views/Profile/Settings.vue';
 import HelpCentre from '@/views/Profile/HelpCentre.vue';
 import ContactDetails from '@/views/Profile/ContactDetails.vue';
+import IDVerification from '@/views/Profile/IDVerification.vue';
 import Messages from '@/views/Messages.vue';
 import AboutUs from '@/views/AboutUs.vue';
 
@@ -72,7 +74,8 @@ const routes = [
       { path: 'balance', name: 'MyBalance', component: MyBalance, meta: { requiresAuth: true } },
       { path: 'settings', name: 'Settings', component: Settings, meta: { requiresAuth: true } },
       { path: 'help', name: 'HelpCentre', component: HelpCentre, meta: { requiresAuth: true } },
-      { path: 'contact-details', name: 'ContactDetails', component: ContactDetails, meta: { requiresAuth: true } }
+      { path: 'contact-details', name: 'ContactDetails', component: ContactDetails, meta: { requiresAuth: true } },
+      { path: 'id-verification', name: 'IDVerification', component: IDVerification, meta: { requiresAuth: true } }
     ]
   },
   // Admin routes
@@ -85,6 +88,7 @@ const routes = [
   { path: '/admin/contact-messages', name: 'ContactMessages', component: ContactMessages, meta: { layout: 'admin', requiresAuth: true, requiresAdmin: true } },
   { path: '/admin/notifications', name: 'Notifications', component: Notifications, meta: { layout: 'admin', requiresAuth: true, requiresAdmin: true } },
   { path: '/admin/withdrawals', name: 'Withdrawals', component: Withdrawals, meta: { layout: 'admin', requiresAuth: true, requiresAdmin: true } },
+  { path: '/admin/id-verifications', name: 'IDVerifications', component: IDVerifications, meta: { layout: 'admin', requiresAuth: true, requiresAdmin: true } },
 
   { path: '/messages', name: 'Messages', component: Messages, meta: { requiresAuth: true } },
   { path: '/:pathMatch(.*)*', name: 'Error', component: Errorr, meta: { hideNavbar: true, requiresAuth: false } }

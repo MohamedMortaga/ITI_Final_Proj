@@ -147,6 +147,33 @@ export const useNotifications = () => {
     )
   }
 
+  const notifyIDVerificationSubmitted = async (userName) => {
+    await createNotification(
+      'id_verification_submitted',
+      'New ID Verification Submitted',
+      `User ${userName} has submitted their ID card for verification`,
+      null
+    )
+  }
+
+  const notifyIDVerificationApproved = async (userName) => {
+    await createNotification(
+      'id_verification_approved',
+      'ID Verification Approved',
+      `ID verification for ${userName} has been approved`,
+      null
+    )
+  }
+
+  const notifyIDVerificationRejected = async (userName, reason) => {
+    await createNotification(
+      'id_verification_rejected',
+      'ID Verification Rejected',
+      `ID verification for ${userName} has been rejected. Reason: ${reason}`,
+      null
+    )
+  }
+
   return {
     createNotification,
     createNotificationFromChatData,
@@ -156,6 +183,9 @@ export const useNotifications = () => {
     notifyNewProduct,
     notifyNewUser,
     notifyBookingStatusChange,
-    notifyUserBlocked
+    notifyUserBlocked,
+    notifyIDVerificationSubmitted,
+    notifyIDVerificationApproved,
+    notifyIDVerificationRejected
   }
 } 

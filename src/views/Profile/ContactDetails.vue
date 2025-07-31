@@ -41,11 +41,14 @@
             {{ $t("renterContactInfo") }}
           </h4>
           
-          <!-- Renter Name -->
+          <!-- Renter Name with Verification Badge -->
           <div v-if="booking.userName" class="flex items-center gap-2">
             <i class="fas fa-user text-[var(--Color-Text-Text-Brand)] w-4"></i>
             <span class="text-sm text-[var(--Color-Text-Text-Secondary)]">{{ $t("name") }}:</span>
-            <span class="text-sm font-medium text-[var(--Color-Text-Text-Primary)]">{{ booking.userName }}</span>
+            <VerificationBadge 
+              :userName="booking.userName" 
+              :isVerified="booking.userVerificationStatus"
+            />
           </div>
 
           <!-- Renter Phone -->
@@ -131,8 +134,9 @@ import { useRouter } from "vue-router";
 import { db, auth } from "@/firebase/config";
 import { onAuthStateChanged } from "firebase/auth";
 import { useGlobalRealTime } from "@/composables/useGlobalRealTime";
-import { collection, addDoc, serverTimestamp, query, where, getDocs, updateDoc, doc } from "firebase/firestore";
+import { collection, addDoc, serverTimestamp, query, where, getDocs, updateDoc, doc, getDoc } from "firebase/firestore";
 import Swal from "sweetalert2";
+import VerificationBadge from "@/components/VerificationBadge.vue";
 
 const { t } = useI18n();
 const router = useRouter();
@@ -141,6 +145,22 @@ const router = useRouter();
 const { bookings } = useGlobalRealTime();
 
 const userId = ref(null);
+const userVerificationStatuses = ref({});
+
+// Function to get user verification status
+const getUserVerificationStatus = async (userId) => {
+  try {
+    const userDoc = await getDoc(doc(db, 'users', userId));
+    if (userDoc.exists()) {
+      const userData = userDoc.data();
+      return userData.isVerified || false;
+    }
+    return false;
+  } catch (error) {
+    console.error('Error fetching user verification status:', error);
+    return false;
+  }
+};
 
 // Computed property to filter bookings where current user is the seller
 const bookingsWithContactInfo = computed(() => {
@@ -153,6 +173,12 @@ const bookingsWithContactInfo = computed(() => {
   );
   const visibleBookings = bookingsWithRenterInfo.filter((booking) => booking.hiddenForSeller !== true);
   
+  // Add verification status to each booking
+  const bookingsWithVerification = visibleBookings.map(booking => ({
+    ...booking,
+    userVerificationStatus: userVerificationStatuses.value[booking.userId] || false
+  }));
+  
   // Debug logging
   console.log('ContactDetails Debug (Seller View):', {
     totalBookings: bookings.value?.length || 0,
@@ -160,11 +186,25 @@ const bookingsWithContactInfo = computed(() => {
     bookingsWithRenterInfo: bookingsWithRenterInfo.length,
     visibleBookings: visibleBookings.length,
     userId: userId.value,
-    sampleBooking: visibleBookings[0] || null
+    sampleBooking: bookingsWithVerification[0] || null
   });
   
-  return visibleBookings;
+  return bookingsWithVerification;
 });
+
+// Load verification statuses for all users in bookings
+const loadUserVerificationStatuses = async () => {
+  if (!bookings.value) return;
+  
+  const uniqueUserIds = [...new Set(bookings.value.map(booking => booking.userId).filter(Boolean))];
+  
+  for (const userId of uniqueUserIds) {
+    if (!userVerificationStatuses.value[userId]) {
+      const isVerified = await getUserVerificationStatus(userId);
+      userVerificationStatuses.value[userId] = isVerified;
+    }
+  }
+};
 
 // Format date
 const formatDate = (dateStr) => {
@@ -472,6 +512,7 @@ onMounted(() => {
   onAuthStateChanged(auth, async (user) => {
     if (user) {
       userId.value = user.uid;
+      await loadUserVerificationStatuses(); // Load verification statuses when user is logged in
     }
   });
 });

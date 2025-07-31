@@ -127,6 +127,42 @@ const submitForm = async () => {
       return;
     }
 
+    // Check if user is verified (only for new products, not edits)
+    if (!isEdit.value) {
+      const userDocRef = doc(db, "users", currentUser.value.uid);
+      const userDoc = await getDoc(userDocRef);
+      
+      if (!userDoc.exists()) {
+        Swal.fire({
+          icon: "error",
+          title: "User Not Found",
+          text: "Your user profile could not be found. Please contact support.",
+          confirmButtonText: "OK"
+        });
+        return;
+      }
+
+      const userData = userDoc.data();
+      
+      // Check if user is verified
+      if (!userData.isVerified) {
+        Swal.fire({
+          icon: "warning",
+          title: "ID Verification Required",
+          text: "You must verify your ID before adding products. Please upload your ID card in your profile.",
+          confirmButtonText: "Go to ID Verification",
+          showCancelButton: true,
+          cancelButtonText: "Cancel"
+        }).then((result) => {
+          if (result.isConfirmed) {
+            // Navigate to ID verification page
+            window.location.href = "/profile/id-verification";
+          }
+        });
+        return;
+      }
+    }
+
     if (!form.value.title || !form.value.category || !form.value.price || !form.value.location) {
       Swal.fire({ icon: "error", title: "Please fill all required fields." });
       return;

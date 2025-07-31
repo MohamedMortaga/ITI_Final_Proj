@@ -114,6 +114,13 @@ export default {
         clickedIcon: lineOutClickedIcon,
       },
       {
+        name: "idVerification",
+        label: "idVerification",
+        route: "/profile/id-verification",
+        icon: lineOutIcon,
+        clickedIcon: lineOutClickedIcon,
+      },
+      {
         name: "balance",
         label: "myBalance",
         route: "/profile/balance",
@@ -160,6 +167,13 @@ export default {
         clickedIcon: lineOutClickedIcon,
       },
       {
+        name: "idVerification",
+        label: "idVerification",
+        route: "/profile/id-verification",
+        icon: lineOutIcon,
+        clickedIcon: lineOutClickedIcon,
+      },
+      {
         name: "balance",
         label: "myBalance",
         route: "/profile/balance",
@@ -196,6 +210,7 @@ export default {
         'myListings': 'Listings',
         'myRentals': 'Rentals',
         'contactDetails': 'Contact',
+        'idVerification': 'ID Verify',
         'myBalance': 'Balance',
         'settings': 'Settings'
       };

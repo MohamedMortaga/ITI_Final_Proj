@@ -1406,6 +1406,47 @@ const submitBooking = async () => {
 };
 const createBooking = async () => {
   try {
+    // Check if user is verified
+    const userDocRef = doc(db, "users", auth.currentUser.uid);
+    const userDoc = await getDoc(userDocRef);
+    
+    if (!userDoc.exists()) {
+      Swal.fire({
+        icon: "error",
+        title: "User Not Found",
+        text: "Your user profile could not be found. Please contact support.",
+        confirmButtonText: "OK",
+        background: 'var(--Color-Surface-Surface-Primary)',
+        color: 'var(--Color-Text-Text-Primary)',
+        confirmButtonColor: 'var(--Color-Surface-Surface-Brand)',
+        iconColor: '#ef4444'
+      });
+      return;
+    }
+
+    const userData = userDoc.data();
+    
+    // Check if user is verified
+    if (!userData.isVerified) {
+      Swal.fire({
+        icon: "warning",
+        title: "ID Verification Required",
+        text: "You must verify your ID before making a booking. Please upload your ID card in your profile.",
+        confirmButtonText: "Go to ID Verification",
+        showCancelButton: true,
+        cancelButtonText: "Cancel",
+        background: 'var(--Color-Surface-Surface-Primary)',
+        color: 'var(--Color-Text-Text-Primary)',
+        confirmButtonColor: 'var(--Color-Surface-Surface-Brand)',
+        iconColor: '#f59e0b'
+      }).then((result) => {
+        if (result.isConfirmed) {
+          router.push("/profile/id-verification");
+        }
+      });
+      return;
+    }
+
     // Update product status to pending
     const productRef = doc(db, "products", booking.value.productId);
     await updateDoc(productRef, { status: "pending" });
