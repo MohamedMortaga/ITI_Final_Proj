@@ -1410,6 +1410,30 @@ const createBooking = async () => {
     const productRef = doc(db, "products", booking.value.productId);
     await updateDoc(productRef, { status: "pending" });
 
+    // Get seller contact details
+    let sellerContactInfo = {};
+    try {
+      const sellerDocRef = doc(db, "users", booking.value.sellerId);
+      const sellerDocSnap = await getDoc(sellerDocRef);
+      if (sellerDocSnap.exists()) {
+        const sellerData = sellerDocSnap.data();
+        sellerContactInfo = {
+          sellerPhone: sellerData.phoneNumber || sellerData.phone || "",
+          sellerEmail: sellerData.email || "",
+          sellerAddress: sellerData.address || product.value.location || "Cairo, Egypt",
+          sellerName: sellerData.displayName || booking.value.sellerName,
+        };
+      }
+    } catch (error) {
+      console.error("Error loading seller contact info:", error);
+      sellerContactInfo = {
+        sellerPhone: "",
+        sellerEmail: "",
+        sellerAddress: product.value.location || "Cairo, Egypt",
+        sellerName: booking.value.sellerName,
+      };
+    }
+
     // Create booking
     booking.value.userId = auth.currentUser.uid;
     booking.value.timestamp = serverTimestamp();
@@ -1420,6 +1444,9 @@ const createBooking = async () => {
       productTitle: product.value.title,
       productImage: product.value.img,
       sellerName: booking.value.sellerName,
+      // Add seller contact information
+      sellerContactInfo: sellerContactInfo,
+      contactDetailsSent: true,
     });
 
     Swal.fire({
@@ -1451,6 +1478,27 @@ const createBooking = async () => {
 };
 
 
+
+// Watch for changes in dates and delivery method to update total price
+watch(
+  [
+    () => booking.value.startDate,
+    () => booking.value.endDate,
+    () => booking.value.deliveryMethod,
+    () => booking.value.deliveryAddress
+  ],
+  () => {
+    if (booking.value.startDate && booking.value.endDate) {
+      // Calculate and update the total price in the booking object
+      const total = parseFloat(calculateTotal());
+      booking.value.totalPrice = total;
+      booking.value.deliveryFee = parseFloat(calculateDeliveryFee());
+    } else {
+      booking.value.totalPrice = 0;
+      booking.value.deliveryFee = 0;
+    }
+  }
+);
 
 // Watch for modal opening to initialize map
 watch(showAddressModal, (newValue) => {

@@ -57,6 +57,25 @@ checkPasswordOnRouteChange();
 // Initialize global real-time store
 const { initialize, cleanup } = useGlobalRealTime();
 
+// Toast notification system
+const toast = ref(null);
+const toastMessage = ref("");
+const toastType = ref("success");
+
+const showToast = (message, type = "success") => {
+  toastMessage.value = message;
+  toastType.value = type;
+  toast.value = true;
+  setTimeout(() => {
+    toast.value = false;
+  }, 3000);
+};
+
+// Listen for toast events
+const handleToastEvent = (event) => {
+  showToast(event.detail.message, event.detail.type);
+};
+
 function toggleChat() {
   isChatOpen.value = !isChatOpen.value;
 }
@@ -64,11 +83,15 @@ function toggleChat() {
 // Initialize real-time data on app mount
 onMounted(() => {
   initialize();
+  // Add event listener for toast notifications
+  window.addEventListener('show-toast', handleToastEvent);
 });
 
 // Cleanup on app unmount
 onBeforeUnmount(() => {
   cleanup();
+  // Remove event listener
+  window.removeEventListener('show-toast', handleToastEvent);
 });
 </script>
 
@@ -114,6 +137,31 @@ onBeforeUnmount(() => {
       </svg>
     </button>
     <ChatBot v-if="isChatOpen" @close="toggleChat" @user-action="handleUserAction" />
+    
+    <!-- Toast Notification -->
+    <div
+      v-if="toast"
+      class="fixed top-4 right-4 z-[2001] p-4 rounded-lg shadow-lg transition-all duration-300"
+      :class="{
+        'bg-green-500 text-white': toastType === 'success',
+        'bg-red-500 text-white': toastType === 'error',
+        'bg-yellow-500 text-white': toastType === 'warning',
+        'bg-blue-500 text-white': toastType === 'info'
+      }"
+    >
+      <div class="flex items-center gap-2">
+        <i
+          :class="{
+            'fas fa-check-circle': toastType === 'success',
+            'fas fa-exclamation-circle': toastType === 'error',
+            'fas fa-exclamation-triangle': toastType === 'warning',
+            'fas fa-info-circle': toastType === 'info'
+          }"
+        ></i>
+        <span>{{ toastMessage }}</span>
+      </div>
+    </div>
+    
     <div v-if="showPasswordModal" class="modal">
       <div class="modal-content">
         <h2>Enter Admin Password</h2>

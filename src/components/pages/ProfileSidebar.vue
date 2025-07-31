@@ -107,6 +107,13 @@ export default {
         clickedIcon: lineOutClickedIcon,
       },
       {
+        name: "contactDetails",
+        label: "contactDetails",
+        route: "/profile/contact-details",
+        icon: lineOutIcon,
+        clickedIcon: lineOutClickedIcon,
+      },
+      {
         name: "balance",
         label: "myBalance",
         route: "/profile/balance",
@@ -146,6 +153,13 @@ export default {
         clickedIcon: lineOutClickedIcon,
       },
       {
+        name: "contactDetails",
+        label: "contactDetails",
+        route: "/profile/contact-details",
+        icon: lineOutIcon,
+        clickedIcon: lineOutClickedIcon,
+      },
+      {
         name: "balance",
         label: "myBalance",
         route: "/profile/balance",
@@ -181,6 +195,7 @@ export default {
         'myProfile': 'Profile',
         'myListings': 'Listings',
         'myRentals': 'Rentals',
+        'contactDetails': 'Contact',
         'myBalance': 'Balance',
         'settings': 'Settings'
       };

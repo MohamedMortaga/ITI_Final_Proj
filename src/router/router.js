@@ -38,6 +38,7 @@ import MyRentals from '@/views/Profile/MyRentals.vue';
 import MyBalance from '@/views/Profile/MyBalance.vue';
 import Settings from '@/views/Profile/Settings.vue';
 import HelpCentre from '@/views/Profile/HelpCentre.vue';
+import ContactDetails from '@/views/Profile/ContactDetails.vue';
 import Messages from '@/views/Messages.vue';
 import AboutUs from '@/views/AboutUs.vue';
 
@@ -70,7 +71,8 @@ const routes = [
       { path: 'rentals', name: 'MyRentals', component: MyRentals, meta: { requiresAuth: true } },
       { path: 'balance', name: 'MyBalance', component: MyBalance, meta: { requiresAuth: true } },
       { path: 'settings', name: 'Settings', component: Settings, meta: { requiresAuth: true } },
-      { path: 'help', name: 'HelpCentre', component: HelpCentre, meta: { requiresAuth: true } }
+      { path: 'help', name: 'HelpCentre', component: HelpCentre, meta: { requiresAuth: true } },
+      { path: 'contact-details', name: 'ContactDetails', component: ContactDetails, meta: { requiresAuth: true } }
     ]
   },
   // Admin routes

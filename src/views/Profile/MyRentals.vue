@@ -44,6 +44,8 @@
           </span>
         </p>
 
+
+
         <!-- Cancel Button (after 10 hours from startDate and not expired) -->
         <button
           v-if="
@@ -78,10 +80,13 @@
 
 <script setup>
 import { ref, computed, onMounted } from "vue";
+import { useI18n } from "vue-i18n";
 import { db, auth } from "@/firebase/config";
 import { onAuthStateChanged } from "firebase/auth";
 import { updateDoc, doc, getDoc, setDoc } from "firebase/firestore";
 import { useGlobalRealTime } from "@/composables/useGlobalRealTime";
+
+const { t } = useI18n();
 
 // Initialize real-time data
 const { bookings } = useGlobalRealTime();
@@ -178,6 +183,8 @@ const hideBooking = async (id) => {
     console.error("Error hiding booking:", error);
   }
 };
+
+
 
 // Initialize user on mount
 onMounted(() => {

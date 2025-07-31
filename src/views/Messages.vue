@@ -918,10 +918,81 @@ watch(() => selectedConversation.value, async (newConversation) => {
   }
 });
 
+// Watch for conversations to load and auto-select stored conversation
+watch(() => conversations.value, (newConversations) => {
+  if (newConversations.length > 0) {
+    const storedConversation = localStorage.getItem('selectedConversation');
+    if (storedConversation) {
+      try {
+        const conversationInfo = JSON.parse(storedConversation);
+        const now = Date.now();
+        const timeDiff = now - conversationInfo.timestamp;
+        
+        // Only auto-select if the conversation was created within the last 5 seconds
+        if (timeDiff < 5000) {
+          const targetConversation = newConversations.find(
+            conv => conv.id === conversationInfo.id
+          );
+          if (targetConversation && !selectedConversation.value) {
+            selectConversation(targetConversation);
+            console.log('Auto-selected conversation from watch:', targetConversation);
+            localStorage.removeItem('selectedConversation');
+          }
+        } else {
+          localStorage.removeItem('selectedConversation');
+        }
+      } catch (error) {
+        console.error('Error parsing stored conversation in watch:', error);
+        localStorage.removeItem('selectedConversation');
+      }
+    }
+  }
+});
+
 // Lifecycle
 onMounted(() => {
   if (auth.currentUser) {
     loadConversations();
+  }
+  
+  // Check for stored conversation selection
+  const storedConversation = localStorage.getItem('selectedConversation');
+  if (storedConversation) {
+    try {
+      const conversationInfo = JSON.parse(storedConversation);
+      const now = Date.now();
+      const timeDiff = now - conversationInfo.timestamp;
+      
+      // Only auto-select if the conversation was created within the last 5 seconds
+      if (timeDiff < 5000) {
+        // Wait for conversations to load, then select the stored conversation
+        const checkAndSelectConversation = () => {
+          if (conversations.value.length > 0) {
+            const targetConversation = conversations.value.find(
+              conv => conv.id === conversationInfo.id
+            );
+            if (targetConversation) {
+              selectConversation(targetConversation);
+              console.log('Auto-selected conversation:', targetConversation);
+            }
+            // Clear the stored conversation
+            localStorage.removeItem('selectedConversation');
+          } else {
+            // If conversations haven't loaded yet, try again in 500ms
+            setTimeout(checkAndSelectConversation, 500);
+          }
+        };
+        
+        // Start checking after a short delay to allow conversations to load
+        setTimeout(checkAndSelectConversation, 1000);
+      } else {
+        // Clear old stored conversation
+        localStorage.removeItem('selectedConversation');
+      }
+    } catch (error) {
+      console.error('Error parsing stored conversation:', error);
+      localStorage.removeItem('selectedConversation');
+    }
   }
   
   // Mark messages as read when window gains focus

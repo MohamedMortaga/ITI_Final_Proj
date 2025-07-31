@@ -1696,11 +1696,35 @@ const submitBooking = async () => {
       booking.value.deliveryMethod === "delivery" ? basePrice * 0.02 : 0;
     booking.value.totalPrice = basePrice + booking.value.deliveryFee;
 
+    // Get seller contact details
+    let sellerContactInfo = {};
+    try {
+      const sellerDocRef = doc(db, "users", booking.value.sellerId);
+      const sellerDocSnap = await getDoc(sellerDocRef);
+      if (sellerDocSnap.exists()) {
+        const sellerData = sellerDocSnap.data();
+        sellerContactInfo = {
+          sellerPhone: sellerData.phoneNumber || sellerData.phone || "",
+          sellerEmail: sellerData.email || "",
+          sellerAddress: sellerData.address || product.value.location || "Cairo, Egypt",
+          sellerName: sellerData.displayName || booking.value.sellerName,
+        };
+      }
+    } catch (error) {
+      console.error("Error loading seller contact info:", error);
+      sellerContactInfo = {
+        sellerPhone: "",
+        sellerEmail: "",
+        sellerAddress: product.value.location || "Cairo, Egypt",
+        sellerName: booking.value.sellerName,
+      };
+    }
+
     // Update product status to pending
     const productRef = doc(db, "products", booking.value.productId);
     await updateDoc(productRef, { status: "pending" });
 
-    // Create booking
+    // Create booking with seller contact information
     booking.value.userId = auth.currentUser.uid;
     booking.value.timestamp = serverTimestamp();
 
@@ -1710,6 +1734,9 @@ const submitBooking = async () => {
       productTitle: product.value.title,
       productImage: product.value.img,
       sellerName: booking.value.sellerName,
+      // Add seller contact information
+      sellerContactInfo: sellerContactInfo,
+      contactDetailsSent: true,
     });
 
     showBookingForm.value = false;
@@ -1722,9 +1749,8 @@ const submitBooking = async () => {
 
     Swal.fire({
       icon: "success",
-      title: "Booking Confirmed!",
-      text:
-        "Your rental has been successfully confirmed. You will receive a confirmation email shortly.",
+      title: t("bookingConfirmed"),
+      text: t("contactDetailsAvailable"),
       confirmButtonText: "OK",
     });
     await checkPendingBookings(); // Re-check to ensure consistency
@@ -1753,7 +1779,7 @@ const verifyOTP = async () => {
 
     const start = new Date(booking.value.startDate);
     const end = new Date(booking.value.endDate);
-    const diffTime = Math.ceil((end - start) / (1000 * 60 * 60 * 24));
+    const diffTime = Math.ceil((end - start) / (1000 * 60 * 60 * 24)) + 1;
     const basePrice = diffTime * booking.value.productPrice;
     booking.value.deliveryFee =
       booking.value.deliveryMethod === "delivery" ? basePrice * 0.02 : 0;

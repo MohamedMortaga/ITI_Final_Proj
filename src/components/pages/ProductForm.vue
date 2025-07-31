@@ -6,11 +6,11 @@
     </h2>
     <!-- Title -->
     <div class="mb-4">
-      <label class="block text-sm font-medium text-[var(--Color-Text-Text-Primary)] dark:text-[var(--Color-Text-Text-Primary)] mb-1 font-nunito">{{$t('productTitlePlaceholder')}}</label>
+      <label class="block text-sm font-medium text-[var(--Color-Text-Text-Primary)] dark:text-[var(--Color-Text-Text-Primary)] mb-1 font-nunito">{{$t('productTitle')}}</label>
       <input
         v-model="form.title"
         type="text"
-        :placeholder="$t('productTitlePlaceholder')"
+        :placeholder="$t('productTitle')"
         class="w-full px-3 md:px-4 py-2 rounded-lg text-[var(--Color-Text-Text-Secondary)] dark:text-[var(--Color-Text-Text-Secondary)] border border-[var(--Color-Boarder-Border-Primary)] dark:border-[var(--Color-Boarder-Border-Primary)] bg-[var(--Color-Surface-Surface-Primary)] dark:bg-[var(--Color-Surface-Surface-Primary)] focus:outline-none focus:ring-2 focus:ring-[var(--Colors-Primary-500)] font-nunito"
         required
       />

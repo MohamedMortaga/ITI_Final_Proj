@@ -4,7 +4,7 @@
     <div>
       <div class="hidden lg:grid grid-cols-8 gap-8 px-6 py-3 bg-[var(--Color-Surface-Surface-Primary)] dark:bg-[var(--Color-Surface-Surface-Primary)] rounded-xl font-semibold text-[var(--Color-Text-Text-Primary)] text-base">
         <div>{{$t('image') || 'Image'}}</div>
-        <div>{{$t('productTitlePlaceholder')}}</div>
+        <div>{{$t('productTitle')}}</div>
         <div>{{$t('category') || 'Category'}}</div>
         <div>{{$t('price')}}</div>
         <!-- <div>{{$t('details')}}</div> -->

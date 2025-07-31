@@ -94,6 +94,7 @@
         :uploading="uploading"
         @submitForm="handleSubmit"
         @imageUpload="handleImageUpload"
+
         @cancelForm="handleCancelForm"
       />
     </div>
@@ -162,6 +163,8 @@ function editProductHandler(product) {
   editProduct(product);
   showForm.value = true;
 }
+
+
 
 onMounted(() => {
   loadProducts();
