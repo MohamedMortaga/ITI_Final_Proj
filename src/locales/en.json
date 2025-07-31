@@ -562,6 +562,6 @@
   "contactInformation": "Contact Information",
   "contactText1": "If you have questions about these terms, please contact us.",
   "contactText2": "Email: legal@rento.com",
-  "contactText3": "Address: 123 Main Street, City, Country"
-
+  "contactText3": "Address: 123 Main Street, City, Country",
+  "notProvided": "Not provided"
 }
