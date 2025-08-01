@@ -1,38 +1,38 @@
 <template>
-    <div class="p-6 max-w-6xl mx-auto">
-        <h1 class="text-2xl font-bold mb-6">{{ $t('manageCustomerReviews') }}</h1>
+    <div class="p-6 max-w-6xl mx-auto bg-default">
+        <h1 class="text-2xl font-bold mb-6 text-default">{{ $t('manageCustomerReviews') }}</h1>
 
         <!-- WEB REVIEWS (After Booking) - NOW FIRST -->
         <section class="mb-12">
-            <h2 class="text-xl font-semibold text-blue-700 mb-4">{{ $t('reviewsAfterBooking') }}</h2>
-            <div v-if="loadingWeb">Loading web reviews...</div>
+            <h2 class="text-xl font-semibold text-default mb-4">{{ $t('reviewsAfterBooking') }}</h2>
+            <div v-if="loadingWeb" class="text-default">Loading web reviews...</div>
             <div v-else class="grid gap-4">
                 <div v-for="review in webReviews.slice().reverse()" :key="review.id"
-                    class="bg-white  border border-gray-50 rounded-lg p-4 shadow flex justify-between items-start">
+                    class="bg-default border border-gray-200 rounded-lg p-4 shadow-sm hover:shadow-md transition-shadow duration-200">
                     <div class="flex gap-4">
-                        <div v-if="review.userImage">
-                            <img :src="review.userImage" alt="User Image" class="w-24 h-24 rounded-full object-cover" />
+                        <div v-if="review.userImage" class="flex-shrink-0">
+                            <img :src="review.userImage" alt="User Image" class="w-16 h-16 rounded-full object-cover border-2 border-gray-200" />
                         </div>
 
-                        <div>
-                            <!-- <p class="font-semibold text-gray-800 dark:text-gray-200">
-                                {{ review.productName }} (ID: {{ review.productId }})
-                            </p> -->
-                            <!-- <p class="text-sm text-gray-500">
-                                Name: {{ productsMap[review.productId]?.title || 'Unknown Product' }}
-
-                            </p> -->
-                            <p class="text-sm text-gray-700 dark:text-gray-300">{{ review.review }}</p>
-                            <p class="text-yellow-500 mt-1">{{ $t('rating') }}: {{ review.rate }} ★</p>
-                            <p class="text-xs text-gray-500 mt-1">{{ $t('by') }}: {{ review.userName }}</p>
-                            <p class="text-xs text-gray-400">{{ $t('at') }}: {{ formatDate(review.timestamp) }}</p>
+                        <div class="flex-1">
+                            <p class="text-sm text-default mb-2">{{ review.review }}</p>
+                            <div class="flex items-center gap-4 text-sm">
+                                <span class="text-yellow-500 font-medium">{{ $t('rating') }}: {{ review.rate }} ★</span>
+                                <span class="text-gray-500">{{ $t('by') }}: {{ review.userName }}</span>
+                                <span class="text-gray-400">{{ $t('at') }}: {{ formatDate(review.timestamp) }}</span>
+                            </div>
                         </div>
-                    </div>
-                    <div class="flex flex-col gap-2 items-end">
-                        <button @click="startEdit(review, 'web-reviews')"
-                            class="bg-blue-500 text-white px-3 py-1 rounded hover:bg-blue-600">{{ $t('edit') }}</button>
-                        <button @click="deleteReview(review.id, 'web-reviews')"
-                            class="bg-red-500 text-white px-3 py-1 rounded hover:bg-red-600">{{ $t('delete') }}</button>
+                        
+                        <div class="flex flex-col gap-2 items-end">
+                            <button @click="startEdit(review, 'web-reviews')"
+                                class="bg-primary-500 text-white px-4 py-2 rounded-md hover:bg-primary-600 transition-colors duration-200">
+                                <i class="fas fa-edit mr-2"></i>{{ $t('edit') }}
+                            </button>
+                            <button @click="deleteReview(review.id, 'web-reviews')"
+                                class="bg-red-500 text-white px-4 py-2 rounded-md hover:bg-red-600 transition-colors duration-200">
+                                <i class="fas fa-trash mr-2"></i>{{ $t('delete') }}
+                            </button>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -40,62 +40,91 @@
 
         <!-- USER REVIEWS (Without Booking) - NOW SECOND -->
         <section class="mb-12">
-            <h2 class="text-xl font-semibold text-green-700 mb-4">{{ $t('webReviewsWithoutBooking') }}</h2>
-            <div v-if="loadingUser">Loading user reviews...</div>
+            <h2 class="text-xl font-semibold text-default mb-4">{{ $t('webReviewsWithoutBooking') }}</h2>
+            <div v-if="loadingUser" class="text-default">Loading user reviews...</div>
             <div v-else class="grid gap-4">
                 <div v-for="review in userReviews.slice().reverse()" :key="review.id"
-                    class="bg-white  border border-gray-50 rounded-lg p-4 shadow flex justify-between items-start">
+                    class="bg-default border border-gray-200 rounded-lg p-4 shadow-sm hover:shadow-md transition-shadow duration-200">
                     <div class="flex gap-4">
-                        <img v-if="review.img" :src="review.img" alt="Product" class="w-16 h-16 object-cover rounded" />
-                        <div>
-                            <p class="font-semibold text-gray-800 dark:text-gray-200">
-                                {{ review.productName }}
-                            </p>
-                            <p class="text-sm text-gray-700 dark:text-gray-300">{{ review.review }}</p>
-                            <p class="text-yellow-500 mt-1">{{ $t('rating') }}: {{ review.rate }} ★</p>
-                            <p class="text-xs text-gray-500 mt-1">{{ $t('by') }}: {{ review.userName }}</p>
-                            <p class="text-xs text-gray-400">{{ $t('at') }}: {{ formatDate(review.timestamp) }}</p>
+                        <div class="flex-1">
+                            <p class="font-semibold text-default mb-1">{{ review.productName }}</p>
+                            <p class="text-sm text-default mb-2">{{ review.review }}</p>
+                            <div class="flex items-center gap-4 text-sm">
+                                <span class="text-yellow-500 font-medium">{{ $t('rating') }}: {{ review.rate }} ★</span>
+                                <span class="text-gray-500">{{ $t('by') }}: {{ review.userName }}</span>
+                                <span class="text-gray-400">{{ $t('at') }}: {{ formatDate(review.timestamp) }}</span>
+                            </div>
                         </div>
-                    </div>
-                    <div class="flex flex-col gap-2 items-end">
-                        <button @click="startEdit(review, 'user-reviews')"
-                            class="bg-blue-500 text-white px-3 py-1 rounded hover:bg-blue-600">{{ $t('edit') }}</button>
-                        <button @click="deleteReview(review.id, 'user-reviews')"
-                            class="bg-red-500 text-white px-3 py-1 rounded hover:bg-red-600">{{ $t('delete') }}</button>
+                        
+                        <div class="flex flex-col gap-2 items-end">
+                            <button @click="startEdit(review, 'user-reviews')"
+                                class="bg-primary-500 text-white px-4 py-2 rounded-md hover:bg-primary-600 transition-colors duration-200">
+                                <i class="fas fa-edit mr-2"></i>{{ $t('edit') }}
+                            </button>
+                            <button @click="deleteReview(review.id, 'user-reviews')"
+                                class="bg-red-500 text-white px-4 py-2 rounded-md hover:bg-red-600 transition-colors duration-200">
+                                <i class="fas fa-trash mr-2"></i>{{ $t('delete') }}
+                            </button>
+                        </div>
                     </div>
                 </div>
             </div>
         </section>
 
-        <!-- Form Add/Edit -->
-        <div class="border-t border-gray-50 pt-6">
-            <h2 class="text-lg font-semibold mb-4">{{ editing ? $t('edit') : $t('add') }} {{ $t('review') }}</h2>
-            <form @submit.prevent="saveReview" class="grid gap-4 max-w-md">
-                <select v-model="form.collection" class="p-2 border border-gray-50 rounded" required>
-                    <option value="user-reviews">{{ $t('userReviewsAfterBooking') }}</option>
-                    <option value="web-reviews">{{ $t('webReviewsWithoutBooking') }}</option>
-                </select>
-                <!-- <input v-model="form.productId" placeholder="Product ID" class="p-2 border rounded" required /> -->
-                <input v-model="form.userName" placeholder="User Name" class="p-2 border border-gray-50 rounded" required />
-                <textarea v-model="form.review" placeholder="Review" class="p-2 border border-gray-50 rounded" required></textarea>
-                <input v-model.number="form.rate" type="number" min="1" max="5" class="p-2 border border-gray-50 rounded" required />
-                <div class="flex gap-4">
-                    <button type="submit" class="bg-green-600 text-white px-4 py-2 rounded hover:bg-green-700">{{
-                        editing ? $t('update') : $t('add') }}</button>
-                    <button type="button" @click="resetForm" v-if="editing"
-                        class="bg-gray-400 px-4 py-2 rounded text-white">{{ $t('cancel') }}</button>
-                </div>
-            </form>
+        <!-- Edit Form -->
+        <div v-if="editing" class="border-t border-gray-200 pt-6 mt-8">
+            <div class="bg-default border border-gray-200 rounded-lg p-6 shadow-sm">
+                <h2 class="text-lg font-semibold mb-4 text-default">{{ $t('edit') }} {{ $t('review') }}</h2>
+                <form @submit.prevent="saveReview" class="grid gap-4 max-w-md">
+                    <div>
+                        <label class="block text-sm font-medium text-default mb-2">{{ $t('userName') }}</label>
+                        <input v-model="form.userName" 
+                               placeholder="User Name" 
+                               class="w-full p-3 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-default text-default" 
+                               required />
+                    </div>
+                    
+                    <div>
+                        <label class="block text-sm font-medium text-default mb-2">{{ $t('review') }}</label>
+                        <textarea v-model="form.review" 
+                                  placeholder="Review" 
+                                  rows="4"
+                                  class="w-full p-3 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-default text-default resize-none" 
+                                  required></textarea>
+                    </div>
+                    
+                    <div>
+                        <label class="block text-sm font-medium text-default mb-2">{{ $t('rating') }}</label>
+                        <input v-model.number="form.rate" 
+                               type="number" 
+                               min="1" 
+                               max="5" 
+                               class="w-full p-3 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-default text-default" 
+                               required />
+                    </div>
+                    
+                    <div class="flex gap-4">
+                                                 <button type="submit" 
+                                 class="bg-primary-500 text-white px-6 py-3 rounded-md hover:bg-primary-600 transition-colors duration-200 font-medium">
+                             <i class="fas fa-save mr-2"></i>{{ $t('update') }}
+                         </button>
+                        <button type="button" 
+                                @click="resetForm"
+                                class="bg-gray-400 text-white px-6 py-3 rounded-md hover:bg-gray-500 transition-colors duration-200 font-medium">
+                            <i class="fas fa-times mr-2"></i>{{ $t('cancel') }}
+                        </button>
+                    </div>
+                </form>
+            </div>
         </div>
     </div>
 </template>
 
 
 <script setup>
-import { ref, onMounted , computed } from 'vue'
+import { ref, onMounted, computed } from 'vue'
 import {
     getDoc,
-    addDoc,
     deleteDoc,
     doc,
     updateDoc,
@@ -142,22 +171,6 @@ function enrich(review) {
     }
 }
 
-
-
-async function fetchUserReviews() {
-    loadingUser.value = true
-    const snap = await getDocs(collection(db, 'user-reviews'))
-    userReviews.value = snap.docs.map(d => enrich({ id: d.id, ...d.data() }))
-    loadingUser.value = false
-}
-
-async function fetchWebReviews() {
-    loadingWeb.value = true
-    const snap = await getDocs(collection(db, 'web-reviews'))
-    webReviews.value = snap.docs.map(d => enrich({ id: d.id, ...d.data() }))
-    loadingWeb.value = false
-}
-
 async function saveReview() {
     const data = {
         productId: form.value.productId,
@@ -166,14 +179,11 @@ async function saveReview() {
         userName: form.value.userName,
         timestamp: new Date(),
     }
+    
     if (editing.value) {
         await updateDoc(doc(db, form.value.collection, editingId.value), data)
-    } else {
-        await addDoc(collection(db, form.value.collection), data)
+        resetForm()
     }
-    resetForm()
-    fetchUserReviews()
-    fetchWebReviews()
 }
 
 function startEdit(review, source) {
@@ -185,8 +195,6 @@ function startEdit(review, source) {
 async function deleteReview(id, source) {
     if (confirm('Delete this review?')) {
         await deleteDoc(doc(db, source, id))
-        fetchUserReviews()
-        fetchWebReviews()
     }
 }
 
@@ -226,5 +234,5 @@ onMounted(async () => {
 </script>
 
 <style scoped>
-/* Custom styles */
+/* Using main.css variables and styles */
 </style>
