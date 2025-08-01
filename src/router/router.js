@@ -24,6 +24,7 @@ import ContactMessages from '@/views/admin/ContactMessages.vue';
 import Notifications from '@/views/admin/Notifications.vue';
 import Withdrawals from '@/views/admin/Withdrawals.vue';
 import IDVerifications from '@/views/admin/IDVerifications.vue';
+import AdminManagement from '@/views/admin/AdminManagement.vue';
 
 import Overview from '@/views/Overview.vue';
 import Features from '@/views/Features.vue';
@@ -36,6 +37,7 @@ import Profile from '@/views/Profile/Profile.vue';
 import MyProfile from '@/views/Profile/MyProfile.vue';
 import MyListings from '@/views/Profile/MyListings.vue';
 import MyRentals from '@/views/Profile/MyRentals.vue';
+import MyRentedProducts from '@/views/Profile/MyRentedProducts.vue';
 import MyBalance from '@/views/Profile/MyBalance.vue';
 import ContactDetails from '@/views/Profile/ContactDetails.vue';
 import IDVerification from '@/views/Profile/IDVerification.vue';
@@ -69,6 +71,7 @@ const routes = [
       { path: '', name: 'MyProfile', component: MyProfile, meta: { requiresAuth: true } },
       { path: 'listings', name: 'MyListings', component: MyListings, meta: { requiresAuth: true } },
       { path: 'rentals', name: 'MyRentals', component: MyRentals, meta: { requiresAuth: true } },
+      { path: 'rented-products', name: 'MyRentedProducts', component: MyRentedProducts, meta: { requiresAuth: true } },
       { path: 'balance', name: 'MyBalance', component: MyBalance, meta: { requiresAuth: true } },
 
       { path: 'contact-details', name: 'ContactDetails', component: ContactDetails, meta: { requiresAuth: true } },
@@ -86,6 +89,7 @@ const routes = [
   { path: '/admin/notifications', name: 'Notifications', component: Notifications, meta: { layout: 'admin', requiresAuth: true, requiresAdmin: true } },
   { path: '/admin/withdrawals', name: 'Withdrawals', component: Withdrawals, meta: { layout: 'admin', requiresAuth: true, requiresAdmin: true } },
   { path: '/admin/id-verifications', name: 'IDVerifications', component: IDVerifications, meta: { layout: 'admin', requiresAuth: true, requiresAdmin: true } },
+  { path: '/admin/management', name: 'AdminManagement', component: AdminManagement, meta: { layout: 'admin', requiresAuth: true, requiresAdmin: true } },
 
   { path: '/messages', name: 'Messages', component: Messages, meta: { requiresAuth: true } },
   { path: '/:pathMatch(.*)*', name: 'Error', component: Errorr, meta: { hideNavbar: true, requiresAuth: false } }
@@ -158,10 +162,17 @@ router.beforeEach(async (to, from, next) => {
 
     // Handle admin role requirement
     if (to.meta.requiresAdmin && user) {
+      // Temporarily allow access to admin management for all authenticated users
+      if (to.name === 'AdminManagement') {
+        // Allow access to admin management page for setup
+        next();
+        return;
+      }
+      
       const userDoc = await getDoc(doc(db, "users", user.uid));
       if (userDoc.exists()) {
         const role = userDoc.data().role;
-        if (role !== "admin") {
+        if (role !== "admin" && role !== "superAdmin") {
           Swal.fire({
             icon: 'warning',
             title: 'Access Denied',

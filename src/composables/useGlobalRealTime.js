@@ -233,9 +233,21 @@ class GlobalRealTimeStore {
   // Get computed properties for filtered data
   getComputedData() {
     return {
-      approvedProducts: computed(() => 
-        this.data.products.value.filter(product => product.isApproved === true)
-      ),
+      approvedProducts: computed(() => {
+        // Get all approved products
+        const approvedProducts = this.data.products.value.filter(product => product.isApproved === true);
+        
+        // Get active bookings to filter out products currently being rented
+        const activeBookings = this.data.bookings.value.filter(booking => 
+          booking.status === 'active'
+        );
+        
+        // Create a set of product IDs that are currently being rented
+        const rentedProductIds = new Set(activeBookings.map(booking => booking.productId));
+        
+        // Filter out products that are currently being rented
+        return approvedProducts.filter(product => !rentedProductIds.has(product.id));
+      }),
       pendingProducts: computed(() => 
         this.data.products.value.filter(product => product.isApproved === false)
       ),

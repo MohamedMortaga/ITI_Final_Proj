@@ -90,6 +90,13 @@ export default {
 
     const menuItems = [
       {
+        name: "rented-products",
+        label: "My Rented Products",
+        route: "/profile/rented-products",
+        icon: boxAltIcon,
+        clickedIcon: boxAltClickedIcon,
+      },
+      {
         name: "profile",
         label: "myProfile",
         route: "/profile",
@@ -135,6 +142,13 @@ export default {
 
     // Mobile menu items (same as desktop, excluding help centre)
     const mobileMenuItems = [
+      {
+        name: "rented-products",
+        label: "My Rented Products",
+        route: "/profile/rented-products",
+        icon: boxAltIcon,
+        clickedIcon: boxAltClickedIcon,
+      },
       {
         name: "profile",
         label: "myProfile",
@@ -199,6 +213,7 @@ export default {
         'myProfile': 'Profile',
         'myListings': 'Listings',
         'myRentals': 'Rentals',
+        'My Rented Products': 'Rented',
         'contactDetails': 'Contact',
         'idVerification': 'ID Verify',
         'myBalance': 'Balance'

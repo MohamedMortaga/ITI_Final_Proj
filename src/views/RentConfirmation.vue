@@ -1520,6 +1520,12 @@ const createBooking = async () => {
       // Add seller contact information
       sellerContactInfo: sellerContactInfo,
       contactDetailsSent: true,
+      // Add initial status history
+      statusHistory: [{
+        status: 'pending',
+        timestamp: serverTimestamp(),
+        updatedBy: 'system'
+      }]
     });
 
     Swal.fire({

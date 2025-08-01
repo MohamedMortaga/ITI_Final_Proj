@@ -112,6 +112,124 @@
 
         <!-- Action Buttons -->
         <div class="mt-4 pt-3 border-t border-[var(--Color-Boarder-Border-Primary)]">
+          <!-- Rental Status Management Section -->
+          <div class="mb-4">
+            <h4 class="font-semibold text-[var(--Color-Text-Text-Primary)] text-sm mb-3">
+              {{ $t("rentalStatusManagement") }}
+            </h4>
+            
+            <!-- Current Status Display -->
+            <div class="flex items-center gap-2 mb-3">
+              <span class="text-sm text-[var(--Color-Text-Text-Secondary)]">{{ $t("currentStatus") }}:</span>
+              <span class="font-medium px-2 py-1 rounded text-xs" :class="getStatusColor(booking.status)">
+                {{ $t(booking.status) }}
+              </span>
+            </div>
+            
+            <!-- Status Update Buttons -->
+            <div class="flex gap-2 flex-wrap">
+              <!-- Seller can set to Active when handing over item -->
+              <button
+                v-if="isCurrentUserSeller(booking) && booking.status === 'pending'"
+                @click="updateRentalStatusWithUI(booking.id, 'active', 'seller', $t)"
+                class="bg-green-500 text-white px-3 py-2 rounded-lg text-xs font-medium hover:bg-green-600 transform hover:scale-105 transition-all duration-200 shadow-lg flex items-center gap-1"
+                title="Mark as Active when handing over the item"
+              >
+                <i class="fas fa-check"></i>
+                {{ $t("setActive") }}
+              </button>
+              
+              <!-- Renter can confirm Active when receiving item -->
+              <button
+                v-if="isCurrentUserRenter(booking) && booking.status === 'pending'"
+                @click="updateRentalStatusWithUI(booking.id, 'active', 'renter', $t)"
+                class="bg-blue-500 text-white px-3 py-2 rounded-lg text-xs font-medium hover:bg-blue-600 transform hover:scale-105 transition-all duration-200 shadow-lg flex items-center gap-1"
+                title="Confirm Active when receiving the item"
+              >
+                <i class="fas fa-check-double"></i>
+                {{ $t("confirmActive") }}
+              </button>
+              
+              <!-- Completion Confirmation Buttons -->
+              <button
+                v-if="booking.status === 'active' && isCurrentUserSeller(booking)"
+                @click="updateRentalStatusWithUI(booking.id, 'completed', 'seller', $t)"
+                class="bg-purple-500 text-white px-3 py-2 rounded-lg text-xs font-medium hover:bg-purple-600 transform hover:scale-105 transition-all duration-200 shadow-lg flex items-center gap-1"
+                title="Confirm completion as seller"
+              >
+                <i class="fas fa-check-circle"></i>
+                {{ $t("confirmCompletion") }}
+              </button>
+              
+              <button
+                v-if="booking.status === 'active' && isCurrentUserRenter(booking)"
+                @click="updateRentalStatusWithUI(booking.id, 'completed', 'renter', $t)"
+                class="bg-purple-500 text-white px-3 py-2 rounded-lg text-xs font-medium hover:bg-purple-600 transform hover:scale-105 transition-all duration-200 shadow-lg flex items-center gap-1"
+                title="Confirm completion as renter"
+              >
+                <i class="fas fa-check-circle"></i>
+                {{ $t("confirmCompletion") }}
+              </button>
+              
+              <!-- Both can reject the rental -->
+              <button
+                v-if="booking.status === 'pending'"
+                @click="updateRentalStatusWithUI(booking.id, 'rejected', isCurrentUserSeller(booking) ? 'seller' : 'renter', $t)"
+                class="bg-red-500 text-white px-3 py-2 rounded-lg text-xs font-medium hover:bg-red-600 transform hover:scale-105 transition-all duration-200 shadow-lg flex items-center gap-1"
+                title="Reject this rental"
+              >
+                <i class="fas fa-times"></i>
+                {{ $t("rejectRental") }}
+              </button>
+              
+              <!-- Reset to Pending if needed -->
+              <button
+                v-if="booking.status === 'rejected'"
+                @click="updateRentalStatusWithUI(booking.id, 'pending', isCurrentUserSeller(booking) ? 'seller' : 'renter', $t)"
+                class="bg-yellow-500 text-white px-3 py-2 rounded-lg text-xs font-medium hover:bg-yellow-600 transform hover:scale-105 transition-all duration-200 shadow-lg flex items-center gap-1"
+                title="Reset to Pending status"
+              >
+                <i class="fas fa-undo"></i>
+                {{ $t("resetToPending") }}
+              </button>
+            </div>
+            
+            <!-- Dual Confirmation Status Display -->
+            <div v-if="booking.status === 'active' && (booking.sellerConfirmed || booking.renterConfirmed)" class="mt-3 pt-3 border-t border-[var(--Color-Boarder-Border-Primary)]">
+              <h5 class="text-xs font-medium text-[var(--Color-Text-Text-Secondary)] mb-2">{{ $t("completionConfirmation") }}:</h5>
+              <div class="space-y-2">
+                <div class="flex items-center gap-2 text-xs">
+                  <i class="fas fa-user-tie text-blue-500"></i>
+                  <span class="text-[var(--Color-Text-Text-Secondary)]">{{ $t("seller") }}:</span>
+                  <span v-if="booking.sellerConfirmed" class="text-green-600 font-medium">{{ $t("confirmed") }}</span>
+                  <span v-else class="text-gray-500">{{ $t("pending") }}</span>
+                </div>
+                <div class="flex items-center gap-2 text-xs">
+                  <i class="fas fa-user text-blue-500"></i>
+                  <span class="text-[var(--Color-Text-Text-Secondary)]">{{ $t("renter") }}:</span>
+                  <span v-if="booking.renterConfirmed" class="text-green-600 font-medium">{{ $t("confirmed") }}</span>
+                  <span v-else class="text-gray-500">{{ $t("pending") }}</span>
+                </div>
+                <div v-if="booking.fullyCompleted" class="flex items-center gap-2 text-xs">
+                  <i class="fas fa-check-circle text-green-500"></i>
+                  <span class="text-green-600 font-medium">{{ $t("rentalCompleted") }}</span>
+                </div>
+              </div>
+            </div>
+            
+            <!-- Status History -->
+            <div v-if="booking.statusHistory && booking.statusHistory.length > 0" class="mt-3 pt-3 border-t border-[var(--Color-Boarder-Border-Primary)]">
+              <h5 class="text-xs font-medium text-[var(--Color-Text-Text-Secondary)] mb-2">{{ $t("statusHistory") }}:</h5>
+              <div class="space-y-1">
+                <div v-for="(history, index) in booking.statusHistory.slice(-3)" :key="index" class="flex items-center gap-2 text-xs">
+                  <span class="text-[var(--Color-Text-Text-Secondary)]">{{ formatDate(history.timestamp) }}:</span>
+                  <span class="font-medium" :class="getStatusColor(history.status)">{{ $t(history.status) }}</span>
+                  <span class="text-[var(--Color-Text-Text-Secondary)]">({{ history.updatedBy }})</span>
+                </div>
+              </div>
+            </div>
+          </div>
+          
           <div class="flex gap-2">
             <button
               @click="messageUser(booking.userId, booking.userName, booking.productId, booking.productTitle)"
@@ -160,6 +278,7 @@ import { useRouter } from "vue-router";
 import { db, auth } from "@/firebase/config";
 import { onAuthStateChanged } from "firebase/auth";
 import { useGlobalRealTime } from "@/composables/useGlobalRealTime";
+import { useRentalStatus } from "@/composables/useRentalStatus";
 import { collection, addDoc, serverTimestamp, query, where, getDocs, updateDoc, doc, getDoc } from "firebase/firestore";
 import Swal from "sweetalert2";
 import VerificationBadge from "@/components/VerificationBadge.vue";
@@ -169,6 +288,9 @@ const router = useRouter();
 
 // Initialize real-time data
 const { bookings } = useGlobalRealTime();
+
+// Initialize rental status composable
+const { updateRentalStatusWithUI } = useRentalStatus();
 
 const userId = ref(null);
 const userVerificationStatuses = ref({});
@@ -221,7 +343,7 @@ const bookingsWithContactInfo = computed(() => {
   // Filter bookings where current user is the seller (owner)
   const sellerBookings = bookings.value.filter((booking) => booking.sellerId === userId.value);
   const bookingsWithRenterInfo = sellerBookings.filter((booking) => 
-    booking.userName && booking.phoneNumber && ['pending', 'active', 'completed'].includes(booking.status)
+    booking.userName && booking.phoneNumber && ['pending', 'active', 'completed', 'rejected'].includes(booking.status)
   );
   const visibleBookings = bookingsWithRenterInfo.filter((booking) => booking.hiddenForSeller !== true);
   
@@ -304,6 +426,8 @@ const getStatusColor = (status) => {
     case 'completed':
       return 'text-blue-600';
     case 'cancelled':
+      return 'text-red-600';
+    case 'rejected':
       return 'text-red-600';
     default:
       return 'text-gray-600';
@@ -790,6 +914,309 @@ const deleteContactDetails = async (bookingId) => {
       confirmButtonText: 'OK'
     });
   }
+};
+
+// Validate booking data
+const validateBookingData = (bookingData, currentUserId) => {
+  const errors = [];
+  
+  if (!bookingData) {
+    errors.push('Booking data is missing');
+    return errors;
+  }
+  
+  if (!bookingData.sellerId && !bookingData.userId) {
+    errors.push('Booking does not have valid user information');
+  }
+  
+  if (!bookingData.status) {
+    errors.push('Booking status is missing');
+  }
+  
+  if (!bookingData.sellerId && !bookingData.userId) {
+    errors.push('Booking does not have valid user information');
+  }
+  
+  // Check if current user is involved in this booking
+  const isSeller = bookingData.sellerId === currentUserId;
+  const isRenter = bookingData.userId === currentUserId;
+  
+  if (!isSeller && !isRenter) {
+    errors.push('You do not have permission to update this booking');
+  }
+  
+  return errors;
+};
+
+// Check Firebase connectivity
+const checkFirebaseConnectivity = async () => {
+  try {
+    // Try to read a document to test connectivity
+    const testDoc = doc(db, 'bookings', 'test-connection');
+    await getDoc(testDoc);
+    return true;
+  } catch (error) {
+    console.error('Firebase connectivity test failed:', error);
+    return false;
+  }
+};
+
+// Update rental status function with retry mechanism
+const updateRentalStatus = async (bookingId, newStatus, updatedBy, retryCount = 0) => {
+  const maxRetries = 3;
+  
+  try {
+    // Check if user is authenticated
+    if (!auth.currentUser) {
+      Swal.fire({
+        icon: 'error',
+        title: 'Authentication Required',
+        text: 'Please log in to update rental status.',
+        confirmButtonText: 'OK'
+      });
+      return;
+    }
+
+    // Validate input parameters
+    if (!bookingId || !newStatus || !updatedBy) {
+      console.error('Invalid parameters:', { bookingId, newStatus, updatedBy });
+      Swal.fire({
+        icon: 'error',
+        title: 'Invalid Parameters',
+        text: 'Missing required information for status update.',
+        confirmButtonText: 'OK'
+      });
+      return;
+    }
+
+    // Check network connectivity
+    if (!navigator.onLine) {
+      Swal.fire({
+        icon: 'error',
+        title: 'No Internet Connection',
+        text: 'Please check your internet connection and try again.',
+        confirmButtonText: 'OK'
+      });
+      return;
+    }
+
+    // Check Firebase connectivity on first attempt
+    if (retryCount === 0) {
+      const isFirebaseConnected = await checkFirebaseConnectivity();
+      if (!isFirebaseConnected) {
+        Swal.fire({
+          icon: 'error',
+          title: 'Service Unavailable',
+          text: 'Unable to connect to the service. Please try again later.',
+          confirmButtonText: 'OK'
+        });
+        return;
+      }
+    }
+
+    // Show confirmation dialog (only on first attempt)
+    if (retryCount === 0) {
+      const result = await Swal.fire({
+        title: 'Confirm Status Change?',
+        text: `Are you sure you want to change the status to "${t(newStatus)}"? This action cannot be undone.`,
+        icon: 'question',
+        showCancelButton: true,
+        confirmButtonText: 'Yes, Change Status',
+        cancelButtonText: 'Cancel',
+        confirmButtonColor: '#3085d6',
+        cancelButtonColor: '#d33',
+        reverseButtons: true
+      });
+
+      if (!result.isConfirmed) {
+        return;
+      }
+    }
+
+    // Show loading state
+    const loadingText = retryCount > 0 ? `Retrying... (Attempt ${retryCount + 1}/${maxRetries + 1})` : `Changing status to ${t(newStatus)}`;
+    Swal.fire({
+      title: retryCount > 0 ? 'Retrying Update...' : 'Updating...',
+      text: loadingText,
+      allowOutsideClick: false,
+      allowEscapeKey: false,
+      showConfirmButton: false,
+      didOpen: () => {
+        Swal.showLoading();
+      }
+    });
+
+    // Get the current booking document
+    const bookingDoc = doc(db, "bookings", bookingId);
+    
+    // First, check if the document exists
+    const bookingSnap = await getDoc(bookingDoc);
+
+    if (!bookingSnap.exists()) {
+      Swal.close();
+      Swal.fire({
+        icon: 'error',
+        title: 'Booking Not Found',
+        text: 'The booking you are trying to update does not exist.',
+        confirmButtonText: 'OK'
+      });
+      return;
+    }
+
+    const bookingData = bookingSnap.data();
+    const currentUserId = auth.currentUser.uid;
+
+    // Validate booking data
+    const validationErrors = validateBookingData(bookingData, currentUserId);
+    if (validationErrors.length > 0) {
+      Swal.close();
+      Swal.fire({
+        icon: 'error',
+        title: 'Invalid Booking Data',
+        text: validationErrors.join('. '),
+        confirmButtonText: 'OK'
+      });
+      return;
+    }
+
+    // Check if user has permission to update this booking
+    const isSeller = bookingData.sellerId === currentUserId;
+    const isRenter = bookingData.userId === currentUserId;
+
+    if (!isSeller && !isRenter) {
+      Swal.close();
+      Swal.fire({
+        icon: 'error',
+        title: 'Permission Denied',
+        text: 'You do not have permission to update this rental status.',
+        confirmButtonText: 'OK'
+      });
+      return;
+    }
+
+    // Validate status transition
+    const currentStatus = bookingData.status;
+    const validTransitions = {
+      'pending': ['active', 'rejected'],
+      'active': ['completed'],
+      'rejected': ['pending'],
+      'completed': []
+    };
+
+    if (!validTransitions[currentStatus]?.includes(newStatus)) {
+      Swal.close();
+      Swal.fire({
+        icon: 'error',
+        title: 'Invalid Status Transition',
+        text: `Cannot change status from "${t(currentStatus)}" to "${t(newStatus)}".`,
+        confirmButtonText: 'OK'
+      });
+      return;
+    }
+
+    // Add new status to history with more detailed information
+    const newStatusHistory = [...bookingData.statusHistory || [], {
+      status: newStatus,
+      timestamp: serverTimestamp(),
+      updatedBy: updatedBy,
+      updatedByUserId: currentUserId,
+      previousStatus: currentStatus,
+      reason: `Status changed from ${currentStatus} to ${newStatus}`,
+      retryCount: retryCount
+    }];
+
+    // Prepare update data
+    const updateData = {
+      status: newStatus,
+      statusHistory: newStatusHistory,
+      lastUpdated: serverTimestamp(),
+      lastUpdatedBy: currentUserId
+    };
+
+    // Update the booking document
+    await updateDoc(bookingDoc, updateData);
+
+    // Close loading dialog
+    Swal.close();
+    
+    // Show success message
+    Swal.fire({
+      icon: 'success',
+      title: 'Status Updated Successfully',
+      text: `Rental status changed to ${t(newStatus)}`,
+      timer: 2000,
+      showConfirmButton: false,
+      position: 'top-end'
+    });
+
+  } catch (error) {
+    console.error('Error updating rental status:', error);
+    console.error('Error details:', {
+      code: error.code,
+      message: error.message,
+      stack: error.stack,
+      retryCount,
+      bookingId,
+      newStatus,
+      updatedBy
+    });
+    
+    // Close loading dialog
+    Swal.close();
+    
+    // Handle retry logic for network-related errors
+    if (retryCount < maxRetries && (
+      error.code === 'unavailable' || 
+      error.code === 'deadline-exceeded' ||
+      error.message?.includes('network') ||
+      error.message?.includes('timeout')
+    )) {
+      console.log(`Retrying update (attempt ${retryCount + 1}/${maxRetries})`);
+      
+      // Wait before retrying (exponential backoff)
+      const delay = Math.pow(2, retryCount) * 1000;
+      await new Promise(resolve => setTimeout(resolve, delay));
+      
+      // Retry the update
+      return updateRentalStatus(bookingId, newStatus, updatedBy, retryCount + 1);
+    }
+    
+    // Provide more specific error messages based on error type
+    let errorMessage = 'Failed to update rental status. Please try again.';
+    
+    if (error.code === 'permission-denied') {
+      errorMessage = 'Permission denied. You may not have the right to update this rental.';
+    } else if (error.code === 'unavailable') {
+      errorMessage = 'Service temporarily unavailable. Please check your internet connection and try again.';
+    } else if (error.code === 'unauthenticated') {
+      errorMessage = 'Please log in again to update rental status.';
+    } else if (error.code === 'not-found') {
+      errorMessage = 'The booking was not found. It may have been deleted.';
+    } else if (error.code === 'already-exists') {
+      errorMessage = 'This status update has already been applied.';
+    } else if (error.code === 'deadline-exceeded') {
+      errorMessage = 'Request timed out. Please check your internet connection and try again.';
+    } else if (error.message) {
+      errorMessage = `Error: ${error.message}`;
+    }
+    
+    Swal.fire({
+      icon: 'error',
+      title: 'Update Failed',
+      text: errorMessage,
+      confirmButtonText: 'OK'
+    });
+  }
+};
+
+// Helper to check if current user is the seller
+const isCurrentUserSeller = (booking) => {
+  return booking.sellerId === userId.value;
+};
+
+// Helper to check if current user is the renter
+const isCurrentUserRenter = (booking) => {
+  return booking.userId === userId.value;
 };
 
 // Watch for bookings changes to load product details

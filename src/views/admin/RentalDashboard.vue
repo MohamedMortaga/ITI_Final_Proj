@@ -156,7 +156,8 @@
                 'font-semibold px-2 py-1 rounded text-xs cursor-pointer select-none',
                 rental.status === 'active' ? 'bg-green-100 text-green-700' :
                   rental.status === 'pending' ? 'bg-yellow-100 text-yellow-700' :
-                    rental.status === 'cancelled' ? 'bg-red-100 text-red-700' : ''
+                    rental.status === 'cancelled' ? 'bg-red-100 text-red-700' :
+                      rental.status === 'rejected' ? 'bg-red-100 text-red-700' : ''
               ]" @click="openStatusDropdown(rental.id)">
                 {{ rental.status }}
               </span>
@@ -218,7 +219,7 @@ const filterStatus = ref('');
 const currentPage = ref(1);
 const itemsPerPage = 10;
 const statusDropdownId = ref(null);
-const statusOptions = ['pending', 'active', 'cancelled'];
+const statusOptions = ['pending', 'active', 'cancelled', 'rejected'];
 
 // Platform balance
 const platformBalance = ref({
@@ -311,6 +312,7 @@ const handleFilter = () => {
       pending: 'Pending',
       active: 'Active',
       cancelled: 'Cancelled',
+      rejected: 'Rejected',
     },
     inputPlaceholder: 'Select status',
     showCancelButton: true,

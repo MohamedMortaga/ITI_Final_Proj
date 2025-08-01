@@ -38,6 +38,7 @@ const navItems = [
   { path: '/admin/withdrawals', label: 'Withdrawals', icon: 'fas fa-money-bill-wave' },
   { path: '/admin/contact-messages', label: 'Contact Messages', icon: 'fas fa-envelope' },
   { path: '/admin/notifications', label: 'Chat Data', icon: 'fas fa-comments' },
+  { path: '/admin/management', label: 'Admin Management', icon: 'fas fa-user-shield' },
 ];
 </script>
 

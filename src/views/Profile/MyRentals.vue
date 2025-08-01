@@ -46,11 +46,109 @@
 
 
 
+        <!-- Rental Status Management Section -->
+        <div class="mt-4 pt-3 border-t border-[var(--Color-Boarder-Border-Primary)]">
+          <h4 class="font-semibold text-[var(--Color-Text-Text-Primary)] text-sm mb-3">
+            {{ $t("rentalStatusManagement") }}
+          </h4>
+          
+          <!-- Current Status Display -->
+          <div class="flex items-center gap-2 mb-3">
+            <span class="text-sm text-[var(--Color-Text-Text-Secondary)]">{{ $t("currentStatus") }}:</span>
+            <span class="font-medium px-2 py-1 rounded text-xs" :class="getStatusColor(product.status)">
+              {{ $t(product.status) }}
+            </span>
+          </div>
+          
+          <!-- Status Update Buttons -->
+          <div class="flex gap-2 flex-wrap">
+            <!-- Renter can confirm Active when receiving item -->
+            <button
+              v-if="product.status === 'pending'"
+              @click="updateRentalStatus(product.id, 'active', 'renter')"
+              class="bg-blue-500 text-white px-3 py-2 rounded-lg text-xs font-medium hover:bg-blue-600 transform hover:scale-105 transition-all duration-200 shadow-lg flex items-center gap-1"
+              title="Confirm Active when receiving the item"
+            >
+              <i class="fas fa-check-double"></i>
+              {{ $t("confirmReceived") }}
+            </button>
+            
+            <!-- Renter can confirm completion -->
+            <button
+              v-if="product.status === 'active'"
+              @click="updateRentalStatus(product.id, 'completed', 'renter')"
+              class="bg-purple-500 text-white px-3 py-2 rounded-lg text-xs font-medium hover:bg-purple-600 transform hover:scale-105 transition-all duration-200 shadow-lg flex items-center gap-1"
+              title="Confirm completion as renter"
+            >
+              <i class="fas fa-check-circle"></i>
+              {{ $t("confirmCompletion") }}
+            </button>
+            
+            <!-- Renter can reject the rental -->
+            <button
+              v-if="product.status === 'pending'"
+              @click="updateRentalStatus(product.id, 'rejected', 'renter')"
+              class="bg-red-500 text-white px-3 py-2 rounded-lg text-xs font-medium hover:bg-red-600 transform hover:scale-105 transition-all duration-200 shadow-lg flex items-center gap-1"
+              title="Reject this rental"
+            >
+              <i class="fas fa-times"></i>
+              {{ $t("rejectRental") }}
+            </button>
+            
+            <!-- Reset to Pending if needed -->
+            <button
+              v-if="product.status === 'rejected'"
+              @click="updateRentalStatus(product.id, 'pending', 'renter')"
+              class="bg-yellow-500 text-white px-3 py-2 rounded-lg text-xs font-medium hover:bg-yellow-600 transform hover:scale-105 transition-all duration-200 shadow-lg flex items-center gap-1"
+              title="Reset to Pending status"
+            >
+              <i class="fas fa-undo"></i>
+              {{ $t("resetToPending") }}
+            </button>
+          </div>
+          
+                      <!-- Dual Confirmation Status Display -->
+            <div v-if="product.status === 'active' && (product.sellerConfirmed || product.renterConfirmed)" class="mt-3 pt-3 border-t border-[var(--Color-Boarder-Border-Primary)]">
+              <h5 class="text-xs font-medium text-[var(--Color-Text-Text-Secondary)] mb-2">{{ $t("completionConfirmation") }}:</h5>
+              <div class="space-y-2">
+                <div class="flex items-center gap-2 text-xs">
+                  <i class="fas fa-user-tie text-blue-500"></i>
+                  <span class="text-[var(--Color-Text-Text-Secondary)]">{{ $t("seller") }}:</span>
+                  <span v-if="product.sellerConfirmed" class="text-green-600 font-medium">{{ $t("confirmed") }}</span>
+                  <span v-else class="text-gray-500">{{ $t("pending") }}</span>
+                </div>
+                <div class="flex items-center gap-2 text-xs">
+                  <i class="fas fa-user text-blue-500"></i>
+                  <span class="text-[var(--Color-Text-Text-Secondary)]">{{ $t("renter") }}:</span>
+                  <span v-if="product.renterConfirmed" class="text-green-600 font-medium">{{ $t("confirmed") }}</span>
+                  <span v-else class="text-gray-500">{{ $t("pending") }}</span>
+                </div>
+                <div v-if="product.fullyCompleted" class="flex items-center gap-2 text-xs">
+                  <i class="fas fa-check-circle text-green-500"></i>
+                  <span class="text-green-600 font-medium">{{ $t("rentalCompleted") }}</span>
+                </div>
+              </div>
+            </div>
+            
+            <!-- Status History -->
+            <div v-if="product.statusHistory && product.statusHistory.length > 0" class="mt-3 pt-3 border-t border-[var(--Color-Boarder-Border-Primary)]">
+              <h5 class="text-xs font-medium text-[var(--Color-Text-Text-Secondary)] mb-2">{{ $t("statusHistory") }}:</h5>
+              <div class="space-y-1">
+                <div v-for="(history, index) in product.statusHistory.slice(-3)" :key="index" class="flex items-center gap-2 text-xs">
+                  <span class="text-[var(--Color-Text-Text-Secondary)]">{{ formatDate(history.timestamp) }}:</span>
+                  <span class="font-medium" :class="getStatusColor(history.status)">{{ $t(history.status) }}</span>
+                  <span class="text-[var(--Color-Text-Text-Secondary)]">({{ history.updatedBy }})</span>
+                </div>
+              </div>
+            </div>
+        </div>
+
         <!-- Cancel Button (after 10 hours from startDate and not expired) -->
         <button
           v-if="
             isCancelable(product.startDate) &&
-            getRemainingTime(product.endDate) !== 'Expired'
+            getRemainingTime(product.endDate) !== 'Expired' &&
+            product.status === 'pending'
           "
           @click="
             cancelBooking(
@@ -85,11 +183,16 @@ import { db, auth } from "@/firebase/config";
 import { onAuthStateChanged } from "firebase/auth";
 import { updateDoc, doc, getDoc, setDoc } from "firebase/firestore";
 import { useGlobalRealTime } from "@/composables/useGlobalRealTime";
+import { useRentalStatus } from "@/composables/useRentalStatus";
+import Swal from "sweetalert2";
 
 const { t } = useI18n();
 
 // Initialize real-time data
 const { bookings } = useGlobalRealTime();
+
+// Initialize rental status composable
+const { updateRentalStatusWithUI } = useRentalStatus();
 
 const searchQuery = ref("");
 const userId = ref(null);
@@ -173,6 +276,104 @@ const cancelBooking = async (id, productPrice, startDateStr, endDateStr) => {
   }
 };
 
+// Function to return product to available for rent
+const returnProductToAvailable = async (bookingId, productId) => {
+  try {
+    // Show confirmation dialog
+    const result = await Swal.fire({
+      title: 'Return Product to Available?',
+      text: 'Are you sure you want to return this product to available for rent? This will mark the rental as completed.',
+      icon: 'question',
+      showCancelButton: true,
+      confirmButtonText: 'Yes, Return to Available',
+      cancelButtonText: 'Cancel',
+      confirmButtonColor: '#3085d6',
+      cancelButtonColor: '#d33',
+      reverseButtons: true
+    });
+
+    if (!result.isConfirmed) {
+      return;
+    }
+
+    // Show loading state
+    Swal.fire({
+      title: 'Processing...',
+      text: 'Returning product to available status',
+      allowOutsideClick: false,
+      allowEscapeKey: false,
+      showConfirmButton: false,
+      didOpen: () => {
+        Swal.showLoading();
+      }
+    });
+
+    // Update booking status to completed
+    await updateDoc(doc(db, "bookings", bookingId), {
+      status: "completed",
+      lastUpdated: new Date()
+    });
+
+    // Update product status to free (available for rent)
+    if (productId) {
+      await updateDoc(doc(db, "products", productId), {
+        status: "free"
+      });
+    }
+
+    // Close loading dialog
+    Swal.close();
+    
+    // Show success message
+    Swal.fire({
+      icon: 'success',
+      title: 'Product Returned Successfully',
+      text: 'The product is now available for rent again.',
+      timer: 2000,
+      showConfirmButton: false,
+      position: 'top-end'
+    });
+
+  } catch (error) {
+    console.error('Error returning product to available:', error);
+    Swal.close(); // Close loading dialog
+    Swal.fire({
+      icon: 'error',
+      title: 'Error',
+      text: 'Failed to return product to available. Please try again.',
+      confirmButtonText: 'OK'
+    });
+  }
+};
+
+// Helper functions for rental status management
+const getStatusColor = (status) => {
+  switch (status) {
+    case 'pending':
+      return 'text-yellow-600';
+    case 'active':
+      return 'text-green-600';
+    case 'completed':
+      return 'text-blue-600';
+    case 'cancelled':
+      return 'text-red-600';
+    case 'rejected':
+      return 'text-red-600';
+    default:
+      return 'text-gray-600';
+  }
+};
+
+const formatDate = (dateStr) => {
+  if (!dateStr) return "";
+  const date = new Date(dateStr);
+  return date.toLocaleDateString();
+};
+
+const updateRentalStatus = async (bookingId, newStatus, updatedBy) => {
+  return await updateRentalStatusWithUI(bookingId, newStatus, updatedBy, t);
+};
+
 const hideBooking = async (id) => {
   try {
     await updateDoc(doc(db, "bookings", id), {
@@ -183,6 +384,7 @@ const hideBooking = async (id) => {
     console.error("Error hiding booking:", error);
   }
 };
+
 
 
 
