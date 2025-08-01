@@ -2,11 +2,11 @@
   <div class="min-h-screen bg-[var(--Color-Surface-Surface-Primary)]">
     <!-- Navbar Component -->
     <Navbar />
-    
+
     <!-- SearchBar Component -->
     <div class="max-w-7xl mx-auto px-4">
-      <SearchBar 
-        :searchQuery="searchQuery" 
+      <SearchBar
+        :searchQuery="searchQuery"
         :selectedLocation="selectedLocation"
         @update:searchQuery="searchQuery = $event"
         @update:selectedLocation="selectedLocation = $event"
@@ -44,47 +44,77 @@
           {{ product?.title }}
         </router-link>
         <span class="mx-2">></span>
-        <span class="text-[var(--Color-Text-Text-Brand)]">{{ $t("rentConfirmation") }}</span>
+        <span class="text-[var(--Color-Text-Text-Brand)]">{{
+          $t("rentConfirmation")
+        }}</span>
       </nav>
     </div>
 
     <!-- Main Content -->
     <div class="max-w-7xl mx-auto px-4 py-2">
       <!-- Product Card with Image and Details - Full Width -->
-      <div class="bg-[var(--Color-Surface-Surface-Primary)] border border-[var(--Color-Boarder-Border-Primary)] rounded-xl overflow-hidden mb-8">
+      <div
+        class="bg-[var(--Color-Surface-Surface-Primary)] border border-[var(--Color-Boarder-Border-Primary)] rounded-xl overflow-hidden mb-8"
+      >
         <div class="grid grid-cols-1 lg:grid-cols-2">
           <!-- Product Image -->
           <div class="lg:col-span-1">
             <img
-              :src="product?.image1 || product?.image2 || product?.image3 || require('@/assets/logo.png')"
+              :src="
+                product?.image1 ||
+                product?.image2 ||
+                product?.image3 ||
+                require('@/assets/logo.png')
+              "
               alt="Product Image"
               class="w-full h-64 object-cover"
             />
           </div>
-          
+
           <!-- Product Details Table -->
           <div class="lg:col-span-1 p-6 flex items-center">
             <div class="w-full space-y-4">
               <div class="text-2xl font-bold text-[var(--Color-Text-Text-Primary)]">
                 {{ product?.title }} {{ $t("availableForRent") }}
               </div>
-              
+
               <div class="space-y-6">
                 <div class="flex justify-between">
-                  <span class="text-[var(--Color-Text-Text-Secondary)]">{{ $t("price") }}</span>
-                  <span class="font-medium text-[var(--Color-Text-Text-Primary)]">{{ $t("egp") }} {{ product?.price || 0 }}/{{ $t("perDay") }}</span>
+                  <span class="text-[var(--Color-Text-Text-Secondary)]">{{
+                    $t("price")
+                  }}</span>
+                  <span class="font-medium text-[var(--Color-Text-Text-Primary)]"
+                    >{{ $t("egp") }} {{ product?.price || 0 }}/{{ $t("perDay") }}</span
+                  >
                 </div>
-                
+
                 <div class="flex justify-between">
-                  <span class="text-[var(--Color-Text-Text-Secondary)]">{{ $t("pickedDates") }}</span>
+                  <span class="text-[var(--Color-Text-Text-Secondary)]">{{
+                    $t("pickedDates")
+                  }}</span>
                   <span class="font-medium text-[var(--Color-Text-Text-Primary)]">
-                    {{ $t("from") }}: {{ booking.startDate ? formatDate(booking.startDate) : $t("notSelected") }} {{ $t("to") }}: {{ booking.endDate ? formatDate(booking.endDate) : $t("notSelected") }}
+                    {{ $t("from") }}:
+                    {{
+                      booking.startDate
+                        ? formatDate(booking.startDate)
+                        : $t("notSelected")
+                    }}
+                    {{ $t("to") }}:
+                    {{
+                      booking.endDate ? formatDate(booking.endDate) : $t("notSelected")
+                    }}
                   </span>
                 </div>
-                
+
                 <div class="flex justify-between">
-                  <span class="text-[var(--Color-Text-Text-Secondary)]">{{ $t("subtotal") }}</span>
-                  <span class="font-medium text-[var(--Color-Text-Text-Primary)]">{{ $t("egp") }} {{ calculateSubtotal() }} ({{ $t("egp") }}{{ product?.price || 0 }}×{{ calculateDays() }}{{ $t("days") }})</span>
+                  <span class="text-[var(--Color-Text-Text-Secondary)]">{{
+                    $t("subtotal")
+                  }}</span>
+                  <span class="font-medium text-[var(--Color-Text-Text-Primary)]"
+                    >{{ $t("egp") }} {{ calculateSubtotal() }} ({{ $t("egp")
+                    }}{{ product?.price || 0 }}×{{ calculateDays()
+                    }}{{ $t("days") }})</span
+                  >
                 </div>
               </div>
             </div>
@@ -97,7 +127,10 @@
         <!-- Left Column: Delivery Method -->
         <div class="space-y-6">
           <!-- Delivery Method Section -->
-          <div class="bg-[var(--Color-Surface-Surface-Primary)] border border-[var(--Color-Boarder-Border-Primary)] rounded-xl p-6" style="height: 220px;">
+          <div
+            class="bg-[var(--Color-Surface-Surface-Primary)] border border-[var(--Color-Boarder-Border-Primary)] rounded-xl p-6"
+            style="height: 220px"
+          >
             <h2 class="text-xl font-semibold text-[var(--Color-Text-Text-Primary)] mb-4">
               {{ $t("deliveryMethod") }}
             </h2>
@@ -109,7 +142,9 @@
                   value="pickup"
                   class="text-[var(--Color-Text-Text-Brand)] focus:ring-[var(--Color-Text-Text-Brand)]"
                 />
-                <span class="text-[var(--Color-Text-Text-Primary)]">{{ $t("pickupFromOwner") }}</span>
+                <span class="text-[var(--Color-Text-Text-Primary)]">{{
+                  $t("pickupFromOwner")
+                }}</span>
               </label>
               <label class="flex items-center space-x-3 cursor-pointer">
                 <input
@@ -118,7 +153,9 @@
                   value="delivery"
                   class="text-[var(--Color-Text-Text-Brand)] focus:ring-[var(--Color-Text-Text-Brand)]"
                 />
-                <span class="text-[var(--Color-Text-Text-Primary)]">{{ $t("deliverToMyAddress") }}</span>
+                <span class="text-[var(--Color-Text-Text-Primary)]">{{
+                  $t("deliverToMyAddress")
+                }}</span>
               </label>
             </div>
 
@@ -136,9 +173,24 @@
                   type="button"
                   class="px-4 py-3 bg-[var(--Color-Text-Text-Brand)] text-[var(--Color-Text-Text-Invert)] rounded-lg hover:bg-[var(--Color-Text-Text-Brand)] hover:opacity-90 transition-colors"
                 >
-                  <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"></path>
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"></path>
+                  <svg
+                    class="w-5 h-5"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                  >
+                    <path
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                      stroke-width="2"
+                      d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"
+                    ></path>
+                    <path
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                      stroke-width="2"
+                      d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"
+                    ></path>
                   </svg>
                 </button>
               </div>
@@ -149,12 +201,17 @@
         <!-- Right Column: Personal Information -->
         <div class="space-y-6">
           <!-- Personal Information Section -->
-          <div class="bg-[var(--Color-Surface-Surface-Primary)] border border-[var(--Color-Boarder-Border-Primary)] rounded-xl p-6">
+          <div
+            class="bg-[var(--Color-Surface-Surface-Primary)] border border-[var(--Color-Boarder-Border-Primary)] rounded-xl p-6"
+          >
             <h2 class="text-xl font-semibold text-[var(--Color-Text-Text-Primary)] mb-4">
               {{ $t("personalInformation") }}
             </h2>
 
-            <div v-if="!auth.currentUser" class="bg-[var(--Color-Surface-Surface-Secondary)] border border-[var(--Color-Boarder-Border-Primary)] rounded-lg p-6">
+            <div
+              v-if="!auth.currentUser"
+              class="bg-[var(--Color-Surface-Surface-Secondary)] border border-[var(--Color-Boarder-Border-Primary)] rounded-lg p-6"
+            >
               <p class="text-[var(--Color-Text-Text-Primary)] mb-4 text-lg">
                 {{ $t("pleaseLoginToCompleteRent") }}
               </p>
@@ -178,8 +235,12 @@
             </div>
 
             <div v-else class="space-y-3">
-              <div class="flex justify-between items-center border-b border-[var(--Color-Boarder-Border-Primary)] pb-2">
-                <span class="text-[var(--Color-Text-Text-Secondary)]">{{ $t("name") }}</span>
+              <div
+                class="flex justify-between items-center border-b border-[var(--Color-Boarder-Border-Primary)] pb-2"
+              >
+                <span class="text-[var(--Color-Text-Text-Secondary)]">{{
+                  $t("name")
+                }}</span>
                 <input
                   v-model="booking.userName"
                   type="text"
@@ -187,8 +248,12 @@
                   :placeholder="$t('johnDoe')"
                 />
               </div>
-              <div class="flex justify-between items-center border-b border-[var(--Color-Boarder-Border-Primary)] pb-2">
-                <span class="text-[var(--Color-Text-Text-Secondary)]">{{ $t("phone") }}</span>
+              <div
+                class="flex justify-between items-center border-b border-[var(--Color-Boarder-Border-Primary)] pb-2"
+              >
+                <span class="text-[var(--Color-Text-Text-Secondary)]">{{
+                  $t("phone")
+                }}</span>
                 <input
                   v-model="booking.phoneNumber"
                   type="tel"
@@ -200,7 +265,9 @@
                 />
               </div>
               <div class="flex justify-between items-center">
-                <span class="text-[var(--Color-Text-Text-Secondary)]">{{ $t("email") }}</span>
+                <span class="text-[var(--Color-Text-Text-Secondary)]">{{
+                  $t("email")
+                }}</span>
                 <input
                   v-model="booking.userEmail"
                   type="email"
@@ -212,53 +279,95 @@
           </div>
 
           <!-- Contact Details Section with Pricing -->
-          <div class="bg-[var(--Color-Surface-Surface-Primary)] border border-[var(--Color-Boarder-Border-Primary)] rounded-xl p-6">
+          <div
+            class="bg-[var(--Color-Surface-Surface-Primary)] border border-[var(--Color-Boarder-Border-Primary)] rounded-xl p-6"
+          >
             <h2 class="text-xl font-semibold text-[var(--Color-Text-Text-Primary)] mb-4">
               {{ $t("renterContactInfo") }}
             </h2>
-            
+
             <!-- Pricing Breakdown -->
             <div class="space-y-3 mb-4">
               <div class="flex justify-between items-center">
-                <span class="text-[var(--Color-Text-Text-Secondary)]">{{ $t("subtotal") }}:</span>
-                <span class="font-medium text-[var(--Color-Text-Text-Primary)]">{{ $t("egp") }} {{ calculateSubtotal() }}</span>
+                <span class="text-[var(--Color-Text-Text-Secondary)]"
+                  >{{ $t("subtotal") }}:</span
+                >
+                <span class="font-medium text-[var(--Color-Text-Text-Primary)]"
+                  >{{ $t("egp") }} {{ calculateSubtotal() }}</span
+                >
               </div>
               <div class="flex justify-between items-center">
-                <span class="text-[var(--Color-Text-Text-Secondary)]">{{ $t("deliveryFee") }}:</span>
-                <span class="font-medium text-[var(--Color-Text-Text-Primary)]">{{ $t("egp") }} {{ calculateDeliveryFee() }}</span>
+                <span class="text-[var(--Color-Text-Text-Secondary)]"
+                  >{{ $t("deliveryFee") }}:</span
+                >
+                <span class="font-medium text-[var(--Color-Text-Text-Primary)]"
+                  >{{ $t("egp") }} {{ calculateDeliveryFee() }}</span
+                >
               </div>
               <div class="flex justify-between items-center">
-                <span class="text-[var(--Color-Text-Text-Secondary)]">{{ $t("serviceFee") }}:</span>
-                <span class="font-medium text-[var(--Color-Text-Text-Primary)]">{{ $t("egp") }} 5.00</span>
+                <span class="text-[var(--Color-Text-Text-Secondary)]"
+                  >{{ $t("serviceFee") }}:</span
+                >
+                <span class="font-medium text-[var(--Color-Text-Text-Primary)]"
+                  >{{ $t("egp") }} {{ calculateServiceFee() }}</span
+                >
               </div>
-              <div class="flex justify-between items-center pt-2 border-t border-[var(--Color-Boarder-Border-Primary)]">
-                <span class="text-lg font-bold text-[var(--Color-Text-Text-Primary)]">{{ $t("total") }}:</span>
-                <span class="text-xl font-bold text-[var(--Color-Text-Text-Brand)]">{{ $t("egp") }} {{ calculateTotal() }}</span>
+              <div
+                class="flex justify-between items-center pt-2 border-t border-[var(--Color-Boarder-Border-Primary)]"
+              >
+                <span class="text-lg font-bold text-[var(--Color-Text-Text-Primary)]"
+                  >{{ $t("total") }}:</span
+                >
+                <span class="text-xl font-bold text-[var(--Color-Text-Text-Brand)]"
+                  >{{ $t("egp") }} {{ calculateTotal() }}</span
+                >
               </div>
             </div>
 
             <!-- Contact Information -->
-            <div class="space-y-3 pt-3 border-t border-[var(--Color-Boarder-Border-Primary)]">
+            <div
+              class="space-y-3 pt-3 border-t border-[var(--Color-Boarder-Border-Primary)]"
+            >
               <div class="flex items-center gap-2">
                 <i class="fas fa-user text-[var(--Color-Text-Text-Brand)] w-4"></i>
-                <span class="text-sm text-[var(--Color-Text-Text-Secondary)]">{{ $t("name") }}:</span>
-                <span class="text-sm font-medium text-[var(--Color-Text-Text-Primary)]">{{ booking.userName || $t("notProvided") }}</span>
+                <span class="text-sm text-[var(--Color-Text-Text-Secondary)]"
+                  >{{ $t("name") }}:</span
+                >
+                <span class="text-sm font-medium text-[var(--Color-Text-Text-Primary)]">{{
+                  booking.userName || $t("notProvided")
+                }}</span>
               </div>
               <div class="flex items-center gap-2">
                 <i class="fas fa-phone text-[var(--Color-Text-Text-Brand)] w-4"></i>
-                <span class="text-sm text-[var(--Color-Text-Text-Secondary)]">{{ $t("phone") }}:</span>
-                <span class="text-sm font-medium text-[var(--Color-Text-Text-Primary)]">{{ booking.phoneNumber || $t("notProvided") }}</span>
+                <span class="text-sm text-[var(--Color-Text-Text-Secondary)]"
+                  >{{ $t("phone") }}:</span
+                >
+                <span class="text-sm font-medium text-[var(--Color-Text-Text-Primary)]">{{
+                  booking.phoneNumber || $t("notProvided")
+                }}</span>
               </div>
               <div class="flex items-center gap-2">
                 <i class="fas fa-envelope text-[var(--Color-Text-Text-Brand)] w-4"></i>
-                <span class="text-sm text-[var(--Color-Text-Text-Secondary)]">{{ $t("email") }}:</span>
-                <span class="text-sm font-medium text-[var(--Color-Text-Text-Primary)]">{{ booking.userEmail || $t("notProvided") }}</span>
+                <span class="text-sm text-[var(--Color-Text-Text-Secondary)]"
+                  >{{ $t("email") }}:</span
+                >
+                <span class="text-sm font-medium text-[var(--Color-Text-Text-Primary)]">{{
+                  booking.userEmail || $t("notProvided")
+                }}</span>
               </div>
               <div class="flex items-center gap-2">
-                <i class="fas fa-map-marker-alt text-[var(--Color-Text-Text-Brand)] w-4"></i>
-                <span class="text-sm text-[var(--Color-Text-Text-Secondary)]">{{ $t("deliveryMethod") }}:</span>
+                <i
+                  class="fas fa-map-marker-alt text-[var(--Color-Text-Text-Brand)] w-4"
+                ></i>
+                <span class="text-sm text-[var(--Color-Text-Text-Secondary)]"
+                  >{{ $t("deliveryMethod") }}:</span
+                >
                 <span class="text-sm font-medium text-[var(--Color-Text-Text-Primary)]">
-                  {{ booking.deliveryMethod === 'pickup' ? $t("pickupFromOwner") : $t("deliverToMyAddress") }}
+                  {{
+                    booking.deliveryMethod === "pickup"
+                      ? $t("pickupFromOwner")
+                      : $t("deliverToMyAddress")
+                  }}
                 </span>
               </div>
             </div>
@@ -267,13 +376,17 @@
       </div>
 
       <!-- Payment Method Section - Full Width -->
-      <div class="mt-8 bg-[var(--Color-Surface-Surface-Primary)] border border-[var(--Color-Boarder-Border-Primary)] rounded-xl p-6">
+      <div
+        class="mt-8 bg-[var(--Color-Surface-Surface-Primary)] border border-[var(--Color-Boarder-Border-Primary)] rounded-xl p-6"
+      >
         <h2 class="text-xl font-semibold text-[var(--Color-Text-Text-Primary)] mb-4">
           {{ $t("paymentMethod") }}
         </h2>
         <div class="space-y-4">
           <div class="space-y-3">
-            <label class="flex items-center space-x-4 cursor-pointer p-3 rounded-lg border border-[var(--Color-Boarder-Border-Primary)] hover:bg-[var(--Color-Surface-Surface-Primary)] transition-colors">
+            <label
+              class="flex items-center space-x-4 cursor-pointer p-3 rounded-lg border border-[var(--Color-Boarder-Border-Primary)] hover:bg-[var(--Color-Surface-Surface-Primary)] transition-colors"
+            >
               <input
                 type="radio"
                 v-model="booking.paymentMethod"
@@ -281,12 +394,20 @@
                 class="text-[var(--Color-Text-Text-Brand)] focus:ring-[var(--Color-Text-Text-Brand)]"
               />
               <div class="flex items-center space-x-3">
-                <img src="@/assets/6963703.png" alt="Credit Card" class="w-6 h-6 object-contain flex-shrink-0" />
-                <span class="text-[var(--Color-Text-Text-Primary)] font-medium">{{ $t("creditCard") }}</span>
+                <img
+                  src="@/assets/6963703.png"
+                  alt="Credit Card"
+                  class="w-6 h-6 object-contain flex-shrink-0"
+                />
+                <span class="text-[var(--Color-Text-Text-Primary)] font-medium">{{
+                  $t("creditCard")
+                }}</span>
               </div>
             </label>
-            
-            <label class="flex items-center space-x-4 cursor-pointer p-3 rounded-lg border border-[var(--Color-Boarder-Border-Primary)] hover:bg-[var(--Color-Surface-Surface-Primary)] transition-colors">
+
+            <label
+              class="flex items-center space-x-4 cursor-pointer p-3 rounded-lg border border-[var(--Color-Boarder-Border-Primary)] hover:bg-[var(--Color-Surface-Surface-Primary)] transition-colors"
+            >
               <input
                 type="radio"
                 v-model="booking.paymentMethod"
@@ -294,12 +415,20 @@
                 class="text-[var(--Color-Text-Text-Brand)] focus:ring-[var(--Color-Text-Text-Brand)]"
               />
               <div class="flex items-center space-x-3">
-                <img src="@/assets/vodafone-logo-2017-1024x768.png" alt="Vodafone Cash" class="w-6 h-6 object-contain flex-shrink-0" />
-                <span class="text-[var(--Color-Text-Text-Primary)] font-medium">{{ $t("vodafoneCash") }}</span>
+                <img
+                  src="@/assets/vodafone-logo-2017-1024x768.png"
+                  alt="Vodafone Cash"
+                  class="w-6 h-6 object-contain flex-shrink-0"
+                />
+                <span class="text-[var(--Color-Text-Text-Primary)] font-medium">{{
+                  $t("vodafoneCash")
+                }}</span>
               </div>
             </label>
-            
-            <label class="flex items-center space-x-4 cursor-pointer p-3 rounded-lg border border-[var(--Color-Boarder-Border-Primary)] hover:bg-[var(--Color-Surface-Surface-Primary)] transition-colors">
+
+            <label
+              class="flex items-center space-x-4 cursor-pointer p-3 rounded-lg border border-[var(--Color-Boarder-Border-Primary)] hover:bg-[var(--Color-Surface-Surface-Primary)] transition-colors"
+            >
               <input
                 type="radio"
                 v-model="booking.paymentMethod"
@@ -307,8 +436,14 @@
                 class="text-[var(--Color-Text-Text-Brand)] focus:ring-[var(--Color-Text-Text-Brand)]"
               />
               <div class="flex items-center space-x-3">
-                <img src="@/assets/Etisalat-Logo.png" alt="Etisalat" class="w-6 h-6 object-contain flex-shrink-0" />
-                <span class="text-[var(--Color-Text-Text-Primary)] font-medium">{{ $t("etisalatWallet") }}</span>
+                <img
+                  src="@/assets/Etisalat-Logo.png"
+                  alt="Etisalat"
+                  class="w-6 h-6 object-contain flex-shrink-0"
+                />
+                <span class="text-[var(--Color-Text-Text-Primary)] font-medium">{{
+                  $t("etisalatWallet")
+                }}</span>
               </div>
             </label>
           </div>
@@ -320,9 +455,7 @@
         v-if="showOTPForm"
         class="mt-8 bg-[var(--Color-Surface-Surface-Primary)] border border-[var(--Color-Boarder-Border-Primary)] rounded-xl p-6"
       >
-        <h2
-          class="text-xl font-semibold text-[var(--Color-Text-Text-Primary)] mb-4"
-        >
+        <h2 class="text-xl font-semibold text-[var(--Color-Text-Text-Primary)] mb-4">
           {{ $t("verifyPayment") }}
         </h2>
         <div class="space-y-4">
@@ -340,9 +473,7 @@
               placeholder="123456"
               pattern="[0-9]{6}"
             />
-            <p
-              class="text-sm text-[var(--Color-Text-Text-Secondary)] mt-2"
-            >
+            <p class="text-sm text-[var(--Color-Text-Text-Secondary)] mt-2">
               {{ $t("otpSentTo") }} {{ booking.phoneNumber }}
             </p>
           </div>
@@ -364,31 +495,66 @@
       </div>
 
       <!-- Summary Section -->
-      <div class="mt-8 bg-[var(--Color-Surface-Surface-Primary)] border border-[var(--Color-Boarder-Border-Primary)] rounded-xl p-6">
+      <div
+        class="mt-8 bg-[var(--Color-Surface-Surface-Primary)] border border-[var(--Color-Boarder-Border-Primary)] rounded-xl p-6"
+      >
         <h2 class="text-xl font-semibold text-[var(--Color-Text-Text-Primary)] mb-4">
           {{ $t("summary") }}
         </h2>
-        <div class="bg-[var(--Color-Surface-Surface-Primary)] border border-[var(--Color-Boarder-Border-Primary)] rounded-lg p-6 space-y-4">
-          <div class="flex justify-between items-center border-b border-dashed border-[var(--Color-Boarder-Border-Primary)] pb-3">
-            <span class="text-[var(--Color-Text-Text-Secondary)]">{{ $t("subtotal") }}:</span>
-            <span class="font-medium text-[var(--Color-Text-Text-Primary)]">{{ $t("egp") }} {{ calculateSubtotal() }}</span>
+        <div
+          class="bg-[var(--Color-Surface-Surface-Primary)] border border-[var(--Color-Boarder-Border-Primary)] rounded-lg p-6 space-y-4"
+        >
+          <div
+            class="flex justify-between items-center border-b border-dashed border-[var(--Color-Boarder-Border-Primary)] pb-3"
+          >
+            <span class="text-[var(--Color-Text-Text-Secondary)]"
+              >{{ $t("subtotal") }}:</span
+            >
+            <span class="font-medium text-[var(--Color-Text-Text-Primary)]"
+              >{{ $t("egp") }} {{ calculateSubtotal() }}</span
+            >
           </div>
-          <div class="flex justify-between items-center border-b border-dashed border-[var(--Color-Boarder-Border-Primary)] pb-3">
-            <span class="text-[var(--Color-Text-Text-Secondary)]">{{ $t("deliveryFee") }}:</span>
+          <div
+            class="flex justify-between items-center border-b border-dashed border-[var(--Color-Boarder-Border-Primary)] pb-3"
+          >
+            <span class="text-[var(--Color-Text-Text-Secondary)]"
+              >{{ $t("deliveryFee") }}:</span
+            >
             <span class="font-medium text-[var(--Color-Text-Text-Primary)]">
               {{ $t("egp") }} {{ calculateDeliveryFee() }}
-              <span v-if="booking.renterLat && booking.lenderLat" class="text-xs text-[var(--Color-Text-Text-Secondary)] ml-2">
-                ({{ calculateDistance(booking.lenderLat, booking.lenderLng, booking.renterLat, booking.renterLng).toFixed(1) }} km)
+              <span
+                v-if="booking.renterLat && booking.lenderLat"
+                class="text-xs text-[var(--Color-Text-Text-Secondary)] ml-2"
+              >
+                ({{
+                  calculateDistance(
+                    booking.lenderLat,
+                    booking.lenderLng,
+                    booking.renterLat,
+                    booking.renterLng
+                  ).toFixed(1)
+                }}
+                km)
               </span>
             </span>
           </div>
-          <div class="flex justify-between items-center border-b border-dashed border-[var(--Color-Boarder-Border-Primary)] pb-3">
-            <span class="text-[var(--Color-Text-Text-Secondary)]">{{ $t("serviceFee") }}:</span>
-            <span class="font-medium text-[var(--Color-Text-Text-Primary)]">{{ $t("egp") }} 5.00</span>
+          <div
+            class="flex justify-between items-center border-b border-dashed border-[var(--Color-Boarder-Border-Primary)] pb-3"
+          >
+            <span class="text-[var(--Color-Text-Text-Secondary)]"
+              >{{ $t("serviceFee") }}:</span
+            >
+            <span class="font-medium text-[var(--Color-Text-Text-Primary)]"
+              >{{ $t("egp") }} {{ calculateServiceFee() }}</span
+            >
           </div>
           <div class="flex justify-between items-center pt-3">
-            <span class="text-xl font-bold text-[var(--Color-Text-Text-Primary)]">{{ $t("total") }}:</span>
-            <span class="text-2xl font-bold text-[var(--Color-Text-Text-Brand)]">{{ $t("egp") }} {{ calculateTotal() }}</span>
+            <span class="text-xl font-bold text-[var(--Color-Text-Text-Primary)]"
+              >{{ $t("total") }}:</span
+            >
+            <span class="text-2xl font-bold text-[var(--Color-Text-Text-Brand)]"
+              >{{ $t("egp") }} {{ calculateTotal() }}</span
+            >
           </div>
         </div>
 
@@ -409,17 +575,31 @@
     <AppFooter />
 
     <!-- Address Selection Modal -->
-    <div v-if="showAddressModal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
-      <div class="bg-[var(--Color-Surface-Surface-Primary)] border border-[var(--Color-Boarder-Border-Primary)] rounded-xl shadow-xl w-full max-w-2xl max-h-[85vh] overflow-hidden">
+    <div
+      v-if="showAddressModal"
+      class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4"
+    >
+      <div
+        class="bg-[var(--Color-Surface-Surface-Primary)] border border-[var(--Color-Boarder-Border-Primary)] rounded-xl shadow-xl w-full max-w-2xl max-h-[85vh] overflow-hidden"
+      >
         <!-- Modal Header -->
-        <div class="flex justify-between items-center p-4 border-b border-[var(--Color-Boarder-Border-Primary)]">
-          <h3 class="text-lg font-semibold text-[var(--Color-Text-Text-Primary)]">{{ $t("selectDeliveryAddress") }}</h3>
+        <div
+          class="flex justify-between items-center p-4 border-b border-[var(--Color-Boarder-Border-Primary)]"
+        >
+          <h3 class="text-lg font-semibold text-[var(--Color-Text-Text-Primary)]">
+            {{ $t("selectDeliveryAddress") }}
+          </h3>
           <button
             @click="showAddressModal = false"
             class="text-[var(--Color-Text-Text-Secondary)] hover:text-[var(--Color-Text-Text-Primary)] transition-colors p-1 rounded-lg hover:bg-[var(--Color-Surface-Surface-Secondary)]"
           >
             <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M6 18L18 6M6 6l12 12"
+              ></path>
             </svg>
           </button>
         </div>
@@ -428,7 +608,9 @@
         <div class="p-4 space-y-3">
           <!-- Address Entry -->
           <div>
-            <label class="block text-sm font-medium text-[var(--Color-Text-Text-Secondary)] mb-1">
+            <label
+              class="block text-sm font-medium text-[var(--Color-Text-Text-Secondary)] mb-1"
+            >
               {{ $t("address") }}
             </label>
             <input
@@ -443,26 +625,48 @@
           <!-- Location Selection -->
           <div>
             <div class="flex justify-between items-center mb-2">
-              <label class="block text-sm font-medium text-[var(--Color-Text-Text-Secondary)]">
+              <label
+                class="block text-sm font-medium text-[var(--Color-Text-Text-Secondary)]"
+              >
                 {{ $t("locationSelection") }}
               </label>
               <button
                 @click="getCurrentLocation"
                 class="inline-flex items-center px-2 py-1 text-xs bg-[var(--Color-Surface-Surface-Brand)] text-[var(--Color-Text-Text-Invert)] rounded-lg hover:bg-[var(--Color-Surface-Surface-Brand)] hover:opacity-90 transition-all duration-200 font-medium"
               >
-                <svg class="w-3 h-3 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"></path>
-                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"></path>
+                <svg
+                  class="w-3 h-3 mr-1"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    stroke-width="2"
+                    d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"
+                  ></path>
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    stroke-width="2"
+                    d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"
+                  ></path>
                 </svg>
                 {{ $t("useMyLocation") }}
               </button>
             </div>
-            <div id="map" class="w-full h-48 rounded-lg border border-[var(--Color-Boarder-Border-Primary)] bg-[var(--Color-Surface-Surface-Secondary)]"></div>
+            <div
+              id="map"
+              class="w-full h-48 rounded-lg border border-[var(--Color-Boarder-Border-Primary)] bg-[var(--Color-Surface-Surface-Secondary)]"
+            ></div>
           </div>
 
           <!-- Address Suggestions -->
           <div v-if="addressSuggestions.length > 0">
-            <label class="block text-sm font-medium text-[var(--Color-Text-Text-Secondary)] mb-1">
+            <label
+              class="block text-sm font-medium text-[var(--Color-Text-Text-Secondary)] mb-1"
+            >
               {{ $t("addressSuggestions") }}
             </label>
             <div class="space-y-1 max-h-24 overflow-y-auto">
@@ -472,7 +676,9 @@
                 @click="selectAddress(suggestion)"
                 class="w-full text-left p-2 rounded-lg border border-[var(--Color-Boarder-Border-Primary)] bg-[var(--Color-Surface-Surface-Primary)] hover:bg-[var(--Color-Surface-Surface-Secondary)] hover:border-[var(--Color-Text-Text-Brand)] transition-all duration-200 group"
               >
-                <div class="text-sm text-[var(--Color-Text-Text-Primary)] font-medium group-hover:text-[var(--Color-Text-Text-Brand)] transition-colors">
+                <div
+                  class="text-sm text-[var(--Color-Text-Text-Primary)] font-medium group-hover:text-[var(--Color-Text-Text-Brand)] transition-colors"
+                >
                   {{ suggestion.display_name }}
                 </div>
                 <div class="text-xs text-[var(--Color-Text-Text-Secondary)] mt-0.5">
@@ -483,21 +689,42 @@
           </div>
 
           <!-- Selected Address Display -->
-          <div v-if="selectedAddress" class="bg-[var(--Color-Surface-Surface-Primary)] border border-[var(--Color-Text-Text-Brand)] rounded-lg p-3">
+          <div
+            v-if="selectedAddress"
+            class="bg-[var(--Color-Surface-Surface-Primary)] border border-[var(--Color-Text-Text-Brand)] rounded-lg p-3"
+          >
             <div class="flex items-start space-x-2">
-              <svg class="w-4 h-4 text-[var(--Color-Text-Text-Brand)] mt-0.5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+              <svg
+                class="w-4 h-4 text-[var(--Color-Text-Text-Brand)] mt-0.5 flex-shrink-0"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="M5 13l4 4L19 7"
+                ></path>
               </svg>
               <div>
-                <div class="text-xs font-medium text-[var(--Color-Text-Text-Secondary)] mb-0.5">{{ $t("selectedAddress") }}:</div>
-                <div class="text-sm text-[var(--Color-Text-Text-Primary)]">{{ selectedAddress }}</div>
+                <div
+                  class="text-xs font-medium text-[var(--Color-Text-Text-Secondary)] mb-0.5"
+                >
+                  {{ $t("selectedAddress") }}:
+                </div>
+                <div class="text-sm text-[var(--Color-Text-Text-Primary)]">
+                  {{ selectedAddress }}
+                </div>
               </div>
             </div>
           </div>
         </div>
 
         <!-- Modal Footer -->
-        <div class="flex space-x-3 p-4 border-t border-[var(--Color-Boarder-Border-Primary)] bg-[var(--Color-Surface-Surface-Primary)]">
+        <div
+          class="flex space-x-3 p-4 border-t border-[var(--Color-Boarder-Border-Primary)] bg-[var(--Color-Surface-Surface-Primary)]"
+        >
           <button
             @click="showAddressModal = false"
             class="flex-1 px-4 py-2 border border-[var(--Color-Boarder-Border-Primary)] text-[var(--Color-Text-Text-Primary)] bg-[var(--Color-Surface-Surface-Secondary)] rounded-lg hover:bg-[var(--Color-Surface-Surface-Primary)] transition-all duration-200 font-medium"
@@ -537,7 +764,6 @@ import {
 import { db, auth } from "@/firebase/config";
 import Swal from "sweetalert2";
 
-
 const { t } = useI18n();
 const route = useRoute();
 const router = useRouter();
@@ -575,21 +801,18 @@ const booking = ref({
   productPrice: 0,
   userName: "",
   userEmail: "",
-  paymentMethod: "vodafone_cash", // Default payment method
+  paymentMethod: "vodafone_cash",
   phoneNumber: "",
   cardNumber: "",
   expiryDate: "",
   cvv: "",
   cardHolderName: "",
   otp: "",
-  // Location coordinates
   renterLat: null,
   renterLng: null,
   lenderLat: null,
   lenderLng: null,
 });
-
-
 
 const loadProduct = async () => {
   try {
@@ -603,24 +826,23 @@ const loadProduct = async () => {
       booking.value.sellerId = product.value.sellerId || product.value.userId;
       booking.value.productTitle = product.value.title;
       booking.value.productPrice = parseFloat(product.value.price) || 0;
-      
-      // Check if current user is the product owner
+
       if (auth.currentUser && auth.currentUser.uid === booking.value.sellerId) {
         Swal.fire({
           icon: "warning",
           title: t("cannotBookOwnProduct"),
           text: t("cannotBookOwnProductMessage"),
           confirmButtonText: "OK",
-          background: 'var(--Color-Surface-Surface-Primary)',
-          color: 'var(--Color-Text-Text-Primary)',
-          confirmButtonColor: 'var(--Color-Surface-Surface-Brand)',
-          iconColor: '#f59e0b'
+          background: "var(--Color-Surface-Surface-Primary)",
+          color: "var(--Color-Text-Text-Primary)",
+          confirmButtonColor: "var(--Color-Surface-Surface-Brand)",
+          iconColor: "#f59e0b",
         }).then(() => {
           router.push("/all-products");
         });
         return;
       }
-      
+
       await loadSellerDetails(booking.value.sellerId);
     } else {
       console.error("No such product!");
@@ -629,10 +851,10 @@ const loadProduct = async () => {
         title: "Error",
         text: "Product not found.",
         confirmButtonText: "OK",
-        background: 'var(--Color-Surface-Surface-Primary)',
-        color: 'var(--Color-Text-Text-Primary)',
-        confirmButtonColor: 'var(--Color-Surface-Surface-Brand)',
-        iconColor: '#ef4444'
+        background: "var(--Color-Surface-Surface-Primary)",
+        color: "var(--Color-Text-Text-Primary)",
+        confirmButtonColor: "var(--Color-Surface-Surface-Brand)",
+        iconColor: "#ef4444",
       });
       router.push("/home");
     }
@@ -643,10 +865,10 @@ const loadProduct = async () => {
       title: "Error",
       text: `Failed to load product: ${error.message}`,
       confirmButtonText: "OK",
-      background: 'var(--Color-Surface-Surface-Primary)',
-      color: 'var(--Color-Text-Text-Primary)',
-      confirmButtonColor: 'var(--Color-Surface-Surface-Brand)',
-      iconColor: '#ef4444'
+      background: "var(--Color-Surface-Surface-Primary)",
+      color: "var(--Color-Text-Text-Primary)",
+      confirmButtonColor: "var(--Color-Surface-Surface-Brand)",
+      iconColor: "#ef4444",
     });
   }
 };
@@ -660,23 +882,20 @@ const loadSellerDetails = async (sellerId) => {
       const sellerData = userDocSnap.data();
       booking.value.sellerName = sellerData.displayName || "Unknown Seller";
       booking.value.sellerImage = sellerData.imageUrl || "https://via.placeholder.com/40";
-      
-      // Get seller's location (if available in user profile)
+
       if (sellerData.latitude && sellerData.longitude) {
         booking.value.lenderLat = sellerData.latitude;
         booking.value.lenderLng = sellerData.longitude;
-        console.log('Seller location found:', sellerData.latitude, sellerData.longitude);
+        console.log("Seller location found:", sellerData.latitude, sellerData.longitude);
       } else {
-        // Default to Cairo center if seller location not available
         booking.value.lenderLat = 30.0444;
         booking.value.lenderLng = 31.2357;
-        console.log('Using default seller location (Cairo center)');
+        console.log("Using default seller location (Cairo center)");
       }
     } else {
       console.error("No such user!");
       booking.value.sellerName = "Unknown Seller";
       booking.value.sellerImage = "https://via.placeholder.com/40";
-      // Default to Cairo center
       booking.value.lenderLat = 30.0444;
       booking.value.lenderLng = 31.2357;
     }
@@ -684,7 +903,6 @@ const loadSellerDetails = async (sellerId) => {
     console.error("Error loading seller details:", error);
     booking.value.sellerName = "Unknown Seller";
     booking.value.sellerImage = "https://via.placeholder.com/40";
-    // Default to Cairo center
     booking.value.lenderLat = 30.0444;
     booking.value.lenderLng = 31.2357;
   }
@@ -698,7 +916,6 @@ const loadUserDetails = async () => {
 
       if (userDocSnap.exists()) {
         const userData = userDocSnap.data();
-        // Auto-populate personal information from user account
         booking.value.userName = userData.displayName || userData.name || "";
         booking.value.userEmail = userData.email || auth.currentUser.email || "";
         booking.value.phoneNumber = userData.phoneNumber || userData.phone || "";
@@ -727,7 +944,7 @@ const calculateDays = () => {
   const start = new Date(booking.value.startDate);
   const end = new Date(booking.value.endDate);
   const diffTime = Math.ceil((end - start) / (1000 * 60 * 60 * 24));
-  const days = diffTime + 1; // Include both start and end dates
+  const days = diffTime + 1;
   return days;
 };
 
@@ -738,89 +955,99 @@ const calculateSubtotal = () => {
   const start = new Date(booking.value.startDate);
   const end = new Date(booking.value.endDate);
   const diffTime = Math.ceil((end - start) / (1000 * 60 * 60 * 24));
-  const days = diffTime + 1; // Include both start and end dates
+  const days = diffTime + 1;
   const pricePerDay = booking.value.productPrice || 0;
   const subtotal = days * pricePerDay;
   return subtotal;
 };
 
-// Calculate distance between two points using Haversine formula
 const calculateDistance = (lat1, lon1, lat2, lon2) => {
-  const R = 6371; // Earth's radius in kilometers
-  const dLat = (lat2 - lat1) * Math.PI / 180;
-  const dLon = (lon2 - lon1) * Math.PI / 180;
-  const a = 
-    Math.sin(dLat/2) * Math.sin(dLat/2) +
-    Math.cos(lat1 * Math.PI / 180) * Math.cos(lat2 * Math.PI / 180) * 
-    Math.sin(dLon/2) * Math.sin(dLon/2);
-  const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
-  const distance = R * c; // Distance in kilometers
+  const R = 6371;
+  const dLat = ((lat2 - lat1) * Math.PI) / 180;
+  const dLon = ((lon2 - lon1) * Math.PI) / 180;
+  const a =
+    Math.sin(dLat / 2) * Math.sin(dLat / 2) +
+    Math.cos((lat1 * Math.PI) / 180) *
+      Math.cos((lat2 * Math.PI) / 180) *
+      Math.sin(dLon / 2) *
+      Math.sin(dLon / 2);
+  const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+  const distance = R * c;
   return distance;
 };
 
 const calculateDeliveryFee = () => {
-  if (booking.value.deliveryMethod === 'pickup') {
+  if (booking.value.deliveryMethod === "pickup") {
     return "0.00";
   }
-  
-  if (booking.value.deliveryMethod === 'delivery') {
-    // Check if we have both renter and lender coordinates
-    if (booking.value.renterLat && booking.value.renterLng && 
-        booking.value.lenderLat && booking.value.lenderLng) {
-      
-      // Calculate real distance between renter and lender
+
+  if (booking.value.deliveryMethod === "delivery") {
+    if (
+      booking.value.renterLat &&
+      booking.value.renterLng &&
+      booking.value.lenderLat &&
+      booking.value.lenderLng
+    ) {
       const distance = calculateDistance(
-        booking.value.lenderLat, 
+        booking.value.lenderLat,
         booking.value.lenderLng,
-        booking.value.renterLat, 
+        booking.value.renterLat,
         booking.value.renterLng
       );
-      
-      // Base delivery fee
       const baseFee = 25;
-      
-      // Distance-based fee (5 EGP per km, max 200 EGP)
       const distanceFee = Math.min(distance * 5, 200);
-      
-      console.log(`Distance: ${distance.toFixed(2)} km, Fee: ${(baseFee + distanceFee).toFixed(2)} EGP`);
-      
+      console.log(
+        `Distance: ${distance.toFixed(2)} km, Fee: ${(baseFee + distanceFee).toFixed(
+          2
+        )} EGP`
+      );
       return (baseFee + distanceFee).toFixed(2);
     }
-    
-    // Fallback: if coordinates not available, use address-based calculation
-    const address = booking.value.deliveryAddress || '';
-    if (address.trim() === '') {
+
+    const address = booking.value.deliveryAddress || "";
+    if (address.trim() === "") {
       return "0.00";
     }
-    
+
     const baseFee = 25;
     let distanceFee = 0;
     const addressLower = address.toLowerCase();
-    
-    if (addressLower.includes('cairo') || addressLower.includes('القاهرة')) {
+
+    if (addressLower.includes("cairo") || addressLower.includes("القاهرة")) {
       distanceFee = 15;
-    } else if (addressLower.includes('giza') || addressLower.includes('الجيزة')) {
+    } else if (addressLower.includes("giza") || addressLower.includes("الجيزة")) {
       distanceFee = 25;
-    } else if (addressLower.includes('alexandria') || addressLower.includes('الإسكندرية')) {
+    } else if (
+      addressLower.includes("alexandria") ||
+      addressLower.includes("الإسكندرية")
+    ) {
       distanceFee = 80;
-    } else if (addressLower.includes('sharm') || addressLower.includes('شرم')) {
+    } else if (addressLower.includes("sharm") || addressLower.includes("شرم")) {
       distanceFee = 150;
-    } else if (addressLower.includes('hurghada') || addressLower.includes('الغردقة')) {
+    } else if (addressLower.includes("hurghada") || addressLower.includes("الغردقة")) {
       distanceFee = 120;
     } else {
       distanceFee = 35;
     }
-    
+
     return (baseFee + distanceFee).toFixed(2);
   }
-  
+
   return "0.00";
+};
+
+const calculateServiceFee = () => {
+  const subtotal = calculateSubtotal();
+  const deliveryFee = parseFloat(calculateDeliveryFee());
+  const baseTotal = subtotal + deliveryFee;
+  const serviceFee = baseTotal * 0.1; // 10% of (subtotal + delivery fee)
+  return serviceFee.toFixed(2);
 };
 
 const calculateTotal = () => {
   const subtotal = calculateSubtotal();
   const deliveryFee = parseFloat(calculateDeliveryFee());
-  const serviceFee = 5; // Fixed service fee
+  const serviceFee = parseFloat(calculateServiceFee());
   const total = subtotal + deliveryFee + serviceFee;
   return total.toFixed(2);
 };
@@ -839,16 +1066,16 @@ const formatPhoneNumber = (event) => {
   let formatted = "";
 
   if (value.length > 3 && !value.startsWith("010") && !value.startsWith("011")) {
-    value = ""; // Reset if it doesn't start with 010 or 011
+    value = "";
     Swal.fire({
       icon: "warning",
       title: "Invalid Phone Number",
       text: "Please enter a valid phone number starting with 010 or 011.",
       confirmButtonText: "OK",
-      background: 'var(--Color-Surface-Surface-Primary)',
-      color: 'var(--Color-Text-Text-Primary)',
-      confirmButtonColor: 'var(--Color-Surface-Surface-Brand)',
-      iconColor: '#f59e0b'
+      background: "var(--Color-Surface-Surface-Primary)",
+      color: "var(--Color-Text-Text-Primary)",
+      confirmButtonColor: "var(--Color-Surface-Surface-Brand)",
+      iconColor: "#f59e0b",
     });
   }
 
@@ -914,10 +1141,6 @@ const formatOtp = (event) => {
   event.target.value = input;
 };
 
-
-
-
-
 const confirmAddress = () => {
   if (selectedAddress.value) {
     booking.value.deliveryAddress = selectedAddress.value;
@@ -928,91 +1151,82 @@ const confirmAddress = () => {
   }
 };
 
-// Map initialization function
 const initializeMap = () => {
   return new Promise((resolve, reject) => {
     try {
-      // Wait for DOM to be ready
       nextTick(() => {
-        // Check if Leaflet is available
-        if (typeof L === 'undefined') {
-          console.warn('Leaflet not loaded');
-          reject(new Error('Leaflet not loaded'));
+        if (typeof L === "undefined") {
+          console.warn("Leaflet not loaded");
+          reject(new Error("Leaflet not loaded"));
           return;
         }
-        
-        // Check if map container exists
-        const mapContainer = document.getElementById('map');
+
+        const mapContainer = document.getElementById("map");
         if (!mapContainer) {
-          console.warn('Map container not found');
-          reject(new Error('Map container not found'));
+          console.warn("Map container not found");
+          reject(new Error("Map container not found"));
           return;
         }
-        
+
         if (mapInitialized.value) {
           resolve();
           return;
         }
-        
-        // Fix Leaflet marker icon issue
+
         delete L.Icon.Default.prototype._getIconUrl;
         L.Icon.Default.mergeOptions({
-          iconRetinaUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.7.1/images/marker-icon-2x.png',
-          iconUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.7.1/images/marker-icon.png',
-          shadowUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.7.1/images/marker-shadow.png',
+          iconRetinaUrl:
+            "https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.7.1/images/marker-icon-2x.png",
+          iconUrl:
+            "https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.7.1/images/marker-icon.png",
+          shadowUrl:
+            "https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.7.1/images/marker-shadow.png",
         });
-        
-        // Initialize map centered on Cairo, Egypt
-        map.value = L.map('map').setView([30.0444, 31.2357], 10);
-        
-        // Add OpenStreetMap tiles
-        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-          attribution: '© OpenStreetMap contributors'
+
+        map.value = L.map("map").setView([30.0444, 31.2357], 10);
+
+        L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
+          attribution: "© OpenStreetMap contributors",
         }).addTo(map.value);
-        
-        // Add a default marker
+
         marker.value = L.marker([30.0444, 31.2357]).addTo(map.value);
-        
-        // Handle map clicks to place marker
-        map.value.on('click', (e) => {
+
+        map.value.on("click", (e) => {
           const { lat, lng } = e.latlng;
-          
-          // Remove existing marker
+
           if (marker.value && map.value) {
             try {
               map.value.removeLayer(marker.value);
             } catch (error) {
-              console.warn('Error removing marker:', error);
+              console.warn("Error removing marker:", error);
             }
           }
-          
-          // Add new marker
+
           if (map.value) {
             marker.value = L.marker([lat, lng]).addTo(map.value);
-            
-            // Reverse geocode to get address
             reverseGeocode(lat, lng);
           }
         });
-        
+
         mapInitialized.value = true;
         resolve();
       });
     } catch (error) {
-      console.error('Error initializing map:', error);
+      console.error("Error initializing map:", error);
       reject(error);
     }
   });
 };
 
-// Location functions
 const getLocationFromAddress = async (address) => {
   try {
     const response = await fetch(
-      `https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(address)}&countrycodes=eg&limit=1`
+      `https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(
+        address
+      )}&countrycodes=eg&limit=1`
     );
     const data = await response.json();
-    
+
     if (data.length > 0) {
       const location = data[0];
       booking.value.renterLat = parseFloat(location.lat);
@@ -1021,7 +1235,7 @@ const getLocationFromAddress = async (address) => {
     }
     return false;
   } catch (error) {
-    console.error('Error getting location from address:', error);
+    console.error("Error getting location from address:", error);
     return false;
   }
 };
@@ -1032,36 +1246,32 @@ const reverseGeocode = async (lat, lng) => {
       `https://nominatim.openstreetmap.org/reverse?format=json&lat=${lat}&lon=${lng}&zoom=18&addressdetails=1&accept-language=en`
     );
     const data = await response.json();
-    
-    // Store renter coordinates
+
     booking.value.renterLat = lat;
     booking.value.renterLng = lng;
-    
+
     if (data.display_name) {
       selectedAddress.value = data.display_name;
       addressSearch.value = data.display_name;
-      
-      // Show a brief notification about the address accuracy
+
       if (data.address) {
         const addressParts = [];
         if (data.address.house_number) addressParts.push(data.address.house_number);
         if (data.address.road) addressParts.push(data.address.road);
         if (data.address.suburb) addressParts.push(data.address.suburb);
         if (data.address.city) addressParts.push(data.address.city);
-        
+
         if (addressParts.length > 0) {
-          console.log('Reverse geocoded address:', data.display_name);
-          console.log('Address components:', addressParts);
+          console.log("Reverse geocoded address:", data.display_name);
+          console.log("Address components:", addressParts);
         }
       }
     } else {
-      // If no address found, show coordinates as fallback
       selectedAddress.value = `${lat.toFixed(6)}, ${lng.toFixed(6)}`;
       addressSearch.value = `${lat.toFixed(6)}, ${lng.toFixed(6)}`;
     }
   } catch (error) {
-    console.error('Error reverse geocoding:', error);
-    // Fallback to coordinates
+    console.error("Error reverse geocoding:", error);
     selectedAddress.value = `${lat.toFixed(6)}, ${lng.toFixed(6)}`;
     addressSearch.value = `${lat.toFixed(6)}, ${lng.toFixed(6)}`;
   }
@@ -1072,33 +1282,34 @@ const searchAddress = async () => {
     addressSuggestions.value = [];
     return;
   }
-  
+
   try {
     const response = await fetch(
-      `https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(addressSearch.value)}&countrycodes=eg&limit=5`
+      `https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(
+        addressSearch.value
+      )}&countrycodes=eg&limit=5`
     );
     const data = await response.json();
-    
-    addressSuggestions.value = data.map(item => ({
+
+    addressSuggestions.value = data.map((item) => ({
       display_name: item.display_name,
       lat: parseFloat(item.lat),
-      lon: parseFloat(item.lon)
+      lon: parseFloat(item.lon),
     }));
   } catch (error) {
-    console.error('Error searching addresses:', error);
-    // Fallback to sample data
+    console.error("Error searching addresses:", error);
     const sampleAddresses = [
       "123 Main Street, Cairo, Egypt",
       "456 Nile Corniche, Cairo, Egypt",
       "789 Zamalek, Cairo, Egypt",
       "321 Heliopolis, Cairo, Egypt",
-      "654 Maadi, Cairo, Egypt"
+      "654 Maadi, Cairo, Egypt",
     ];
-    
-    addressSuggestions.value = sampleAddresses.map(address => ({
+
+    addressSuggestions.value = sampleAddresses.map((address) => ({
       display_name: address,
       lat: 30.0444,
-      lon: 31.2357
+      lon: 31.2357,
     }));
   }
 };
@@ -1106,22 +1317,20 @@ const searchAddress = async () => {
 const selectAddress = (addressData) => {
   selectedAddress.value = addressData.display_name;
   addressSearch.value = addressData.display_name;
-  
-  // Store renter coordinates
+
   booking.value.renterLat = addressData.lat;
   booking.value.renterLng = addressData.lon;
-  
-  // Update map marker
+
   if (map.value && marker.value) {
     try {
       map.value.removeLayer(marker.value);
       marker.value = L.marker([addressData.lat, addressData.lon]).addTo(map.value);
       map.value.setView([addressData.lat, addressData.lon], 15);
     } catch (error) {
-      console.warn('Error updating map marker:', error);
+      console.warn("Error updating map marker:", error);
     }
   }
-  
+
   addressSuggestions.value = [];
 };
 
@@ -1134,39 +1343,33 @@ const getCurrentLocation = () => {
   navigator.geolocation.getCurrentPosition(
     (position) => {
       const { latitude, longitude } = position.coords;
-      
-      // Store renter coordinates
+
       booking.value.renterLat = latitude;
       booking.value.renterLng = longitude;
-      
-      // Update map to user's location
+
       if (map.value) {
         try {
           map.value.setView([latitude, longitude], 16);
-          
-          // Remove existing marker
+
           if (marker.value) {
             map.value.removeLayer(marker.value);
           }
-          
-          // Add new marker at user's location
+
           marker.value = L.marker([latitude, longitude]).addTo(map.value);
         } catch (error) {
-          console.warn('Error updating map:', error);
+          console.warn("Error updating map:", error);
         }
       }
-      
-      // Get address from coordinates
+
       reverseGeocode(latitude, longitude);
-      
-      // No popup - location is set silently
     },
     (error) => {
       let errorMessage = "Unable to get your location.";
-      
+
       switch (error.code) {
         case error.PERMISSION_DENIED:
-          errorMessage = "Location access was denied. Please allow location access in your browser settings.";
+          errorMessage =
+            "Location access was denied. Please allow location access in your browser settings.";
           break;
         case error.POSITION_UNAVAILABLE:
           errorMessage = "Location information is unavailable. Please try again.";
@@ -1175,48 +1378,45 @@ const getCurrentLocation = () => {
           errorMessage = "Location request timed out. Please try again.";
           break;
       }
-      
+
       console.warn(errorMessage);
     },
     {
       enableHighAccuracy: true,
       timeout: 15000,
-      maximumAge: 30000
+      maximumAge: 30000,
     }
   );
 };
 
 const clearLocation = () => {
   if (map.value) {
-    // Remove marker
     if (marker.value) {
       map.value.removeLayer(marker.value);
       marker.value = null;
     }
-    
-    // Remove accuracy circle if it exists
+
     map.value.eachLayer((layer) => {
       if (layer instanceof L.Circle) {
         map.value.removeLayer(layer);
       }
     });
-    
-    // Reset to default view (Cairo)
+
     map.value.setView([30.0444, 31.2357], 10);
-    
-    // Clear selected address
+
     selectedAddress.value = "";
     addressSearch.value = "";
-    
+
     Swal.fire({
       icon: "info",
       title: "Location Cleared",
-      text: "The location has been cleared. You can now manually select a location on the map or search for an address.",
+      text:
+        "The location has been cleared. You can now manually select a location on the map or search for an address.",
       confirmButtonText: "OK",
-      background: 'var(--Color-Surface-Surface-Primary)',
-      color: 'var(--Color-Text-Text-Primary)',
-      confirmButtonColor: 'var(--Color-Surface-Surface-Brand)',
-      iconColor: '#3b82f6'
+      background: "var(--Color-Surface-Surface-Primary)",
+      color: "var(--Color-Text-Text-Primary)",
+      confirmButtonColor: "var(--Color-Surface-Surface-Brand)",
+      iconColor: "#3b82f6",
     });
   }
 };
@@ -1265,23 +1465,16 @@ const showLocationHelp = () => {
       </div>
     `,
     confirmButtonText: "Got it",
-    background: 'var(--Color-Surface-Surface-Primary)',
-    color: 'var(--Color-Text-Text-Primary)',
-    confirmButtonColor: 'var(--Color-Surface-Surface-Brand)',
-    iconColor: '#3b82f6'
+    background: "var(--Color-Surface-Surface-Primary)",
+    color: "var(--Color-Text-Text-Primary)",
+    confirmButtonColor: "var(--Color-Surface-Surface-Brand)",
+    iconColor: "#3b82f6",
   });
 };
 
+onMounted(() => {});
 
-
-// Clean up map on component unmount
-onMounted(() => {
-  // Component mounted
-});
-
-onUnmounted(() => {
-  // Component unmounted
-});
+onUnmounted(() => {});
 
 const verifyOTP = async () => {
   if (booking.value.otp.length !== 6) {
@@ -1295,19 +1488,17 @@ const verifyOTP = async () => {
   }
 
   try {
-    // Simulate OTP verification (replace with actual backend call in production)
     console.log("OTP verified successfully!");
     Swal.fire({
       icon: "success",
       title: "Payment Verified!",
       text: "Your payment has been successfully verified.",
       confirmButtonText: "OK",
-      background: 'var(--Color-Surface-Surface-Primary)',
-      color: 'var(--Color-Text-Text-Primary)',
-      confirmButtonColor: 'var(--Color-Surface-Surface-Brand)',
-      iconColor: '#10b981'
+      background: "var(--Color-Surface-Surface-Primary)",
+      color: "var(--Color-Text-Text-Primary)",
+      confirmButtonColor: "var(--Color-Surface-Surface-Brand)",
+      iconColor: "#10b981",
     });
-    // Directly call createBooking instead of submitBooking
     await createBooking();
   } catch (error) {
     console.error("Error verifying OTP:", error);
@@ -1316,10 +1507,10 @@ const verifyOTP = async () => {
       title: "Error",
       text: `Failed to verify OTP: ${error.message}`,
       confirmButtonText: "OK",
-      background: 'var(--Color-Surface-Surface-Primary)',
-      color: 'var(--Color-Text-Text-Primary)',
-      confirmButtonColor: 'var(--Color-Surface-Surface-Brand)',
-      iconColor: '#ef4444'
+      background: "var(--Color-Surface-Surface-Primary)",
+      color: "var(--Color-Text-Text-Primary)",
+      confirmButtonColor: "var(--Color-Surface-Surface-Brand)",
+      iconColor: "#ef4444",
     });
   }
 };
@@ -1331,25 +1522,24 @@ const submitBooking = async () => {
       title: "Login Required",
       text: "Please log in to make a booking.",
       confirmButtonText: "OK",
-      background: 'var(--Color-Surface-Surface-Primary)',
-      color: 'var(--Color-Text-Text-Primary)',
-      confirmButtonColor: 'var(--Color-Surface-Surface-Brand)',
-      iconColor: '#f59e0b'
+      background: "var(--Color-Surface-Surface-Primary)",
+      color: "var(--Color-Text-Text-Primary)",
+      confirmButtonColor: "var(--Color-Surface-Surface-Brand)",
+      iconColor: "#f59e0b",
     });
     return;
   }
 
-  // Check if user is trying to book their own product
   if (auth.currentUser.uid === booking.value.sellerId) {
     Swal.fire({
       icon: "warning",
       title: t("cannotBookOwnProduct"),
       text: t("cannotBookOwnProductMessage"),
       confirmButtonText: "OK",
-      background: 'var(--Color-Surface-Surface-Primary)',
-      color: 'var(--Color-Text-Text-Primary)',
-      confirmButtonColor: 'var(--Color-Surface-Surface-Brand)',
-      iconColor: '#f59e0b'
+      background: "var(--Color-Surface-Surface-Primary)",
+      color: "var(--Color-Text-Text-Primary)",
+      confirmButtonColor: "var(--Color-Surface-Surface-Brand)",
+      iconColor: "#f59e0b",
     });
     return;
   }
@@ -1361,15 +1551,14 @@ const submitBooking = async () => {
         title: "Missing Dates",
         text: "Please select both start and end dates.",
         confirmButtonText: "OK",
-        background: 'var(--Color-Surface-Surface-Primary)',
-        color: 'var(--Color-Text-Text-Primary)',
-        confirmButtonColor: 'var(--Color-Surface-Surface-Brand)',
-        iconColor: '#f59e0b'
+        background: "var(--Color-Surface-Surface-Primary)",
+        color: "var(--Color-Text-Text-Primary)",
+        confirmButtonColor: "var(--Color-Surface-Surface-Brand)",
+        iconColor: "#f59e0b",
       });
       return;
     }
 
-    // Validate personal information
     if (
       !booking.value.userName ||
       !booking.value.phoneNumber ||
@@ -1380,15 +1569,14 @@ const submitBooking = async () => {
         title: "Missing Information",
         text: "Please fill in all personal information fields.",
         confirmButtonText: "OK",
-        background: 'var(--Color-Surface-Surface-Primary)',
-        color: 'var(--Color-Text-Text-Primary)',
-        confirmButtonColor: 'var(--Color-Surface-Surface-Brand)',
-        iconColor: '#f59e0b'
+        background: "var(--Color-Surface-Surface-Primary)",
+        color: "var(--Color-Text-Text-Primary)",
+        confirmButtonColor: "var(--Color-Surface-Surface-Brand)",
+        iconColor: "#f59e0b",
       });
       return;
     }
 
-    // Validate payment method and details
     if (booking.value.paymentMethod === "credit_card") {
       if (
         !booking.value.cardNumber ||
@@ -1401,14 +1589,13 @@ const submitBooking = async () => {
           title: "Missing Payment Details",
           text: "Please fill in all credit card details.",
           confirmButtonText: "OK",
-          background: 'var(--Color-Surface-Surface-Primary)',
-          color: 'var(--Color-Text-Text-Primary)',
-          confirmButtonColor: 'var(--Color-Surface-Surface-Brand)',
-          iconColor: '#f59e0b'
+          background: "var(--Color-Surface-Surface-Primary)",
+          color: "var(--Color-Text-Text-Primary)",
+          confirmButtonColor: "var(--Color-Surface-Surface-Brand)",
+          iconColor: "#f59e0b",
         });
         return;
       }
-      // For credit card, proceed directly to booking
       await createBooking();
     } else if (
       ["vodafone_cash", "etisalat_wallet"].includes(booking.value.paymentMethod)
@@ -1419,26 +1606,24 @@ const submitBooking = async () => {
           title: "Missing Phone Number",
           text: "Please enter your phone number for mobile payment.",
           confirmButtonText: "OK",
-          background: 'var(--Color-Surface-Surface-Primary)',
-          color: 'var(--Color-Text-Text-Primary)',
-          confirmButtonColor: 'var(--Color-Surface-Surface-Brand)',
-          iconColor: '#f59e0b'
+          background: "var(--Color-Surface-Surface-Primary)",
+          color: "var(--Color-Text-Text-Primary)",
+          confirmButtonColor: "var(--Color-Surface-Surface-Brand)",
+          iconColor: "#f59e0b",
         });
         return;
       }
-      // Show OTP form for mobile payments
       showOTPForm.value = true;
       Swal.fire({
         icon: "info",
         title: "OTP Sent",
         text: `An OTP has been sent to ${booking.value.phoneNumber}. Please verify to complete the booking.`,
         confirmButtonText: "OK",
-        background: 'var(--Color-Surface-Surface-Primary)',
-        color: 'var(--Color-Text-Text-Primary)',
-        confirmButtonColor: 'var(--Color-Surface-Surface-Brand)',
-        iconColor: '#3b82f6'
+        background: "var(--Color-Surface-Surface-Primary)",
+        color: "var(--Color-Text-Text-Primary)",
+        confirmButtonColor: "var(--Color-Surface-Surface-Brand)",
+        iconColor: "#3b82f6",
       });
-      // Auto-fill OTP after 2 seconds for demo (remove in production)
       setTimeout(() => {
         booking.value.otp = "123456";
       }, 2000);
@@ -1450,40 +1635,38 @@ const submitBooking = async () => {
       title: "Error",
       text: `Failed to process booking: ${error.message}`,
       confirmButtonText: "OK",
-      background: 'var(--Color-Surface-Surface-Primary)',
-      color: 'var(--Color-Text-Text-Primary)',
-      confirmButtonColor: 'var(--Color-Surface-Surface-Brand)',
-      iconColor: '#ef4444'
+      background: "var(--Color-Surface-Surface-Primary)",
+      color: "var(--Color-Text-Text-Primary)",
+      confirmButtonColor: "var(--Color-Surface-Surface-Brand)",
+      iconColor: "#ef4444",
     });
   }
 };
+
 const createBooking = async () => {
   try {
-    // Check if user is verified
     const userDocRef = doc(db, "users", auth.currentUser.uid);
     const userDoc = await getDoc(userDocRef);
-    
+
     if (!userDoc.exists()) {
       Swal.fire({
         icon: "error",
         title: "User Not Found",
         text: "Your user profile could not be found. Please contact support.",
         confirmButtonText: "OK",
-        background: 'var(--Color-Surface-Surface-Primary)',
-        color: 'var(--Color-Text-Text-Primary)',
-        confirmButtonColor: 'var(--Color-Surface-Surface-Brand)',
-        iconColor: '#ef4444'
+        background: "var(--Color-Surface-Surface-Primary)",
+        color: "var(--Color-Text-Text-Primary)",
+        confirmButtonColor: "var(--Color-Surface-Surface-Brand)",
+        iconColor: "#ef4444",
       });
       return;
     }
 
     const userData = userDoc.data();
 
-    // Update product status to pending
     const productRef = doc(db, "products", booking.value.productId);
     await updateDoc(productRef, { status: "pending" });
 
-    // Get seller contact details
     let sellerContactInfo = {};
     try {
       const sellerDocRef = doc(db, "users", booking.value.sellerId);
@@ -1507,7 +1690,6 @@ const createBooking = async () => {
       };
     }
 
-    // Create booking
     booking.value.userId = auth.currentUser.uid;
     booking.value.timestamp = serverTimestamp();
 
@@ -1515,17 +1697,18 @@ const createBooking = async () => {
     await setDoc(doc(bookingsRef), {
       ...booking.value,
       productTitle: product.value.title,
-      productImage: product.value.image1 || product.value.image2 || product.value.image3 || '',
+      productImage:
+        product.value.image1 || product.value.image2 || product.value.image3 || "",
       sellerName: booking.value.sellerName,
-      // Add seller contact information
       sellerContactInfo: sellerContactInfo,
       contactDetailsSent: true,
-      // Add initial status history
-      statusHistory: [{
-        status: 'pending',
-        timestamp: serverTimestamp(),
-        updatedBy: 'system'
-      }]
+      statusHistory: [
+        {
+          status: "pending",
+          timestamp: serverTimestamp(),
+          updatedBy: "system",
+        },
+      ],
     });
 
     Swal.fire({
@@ -1534,10 +1717,10 @@ const createBooking = async () => {
       text:
         "Your rental has been successfully confirmed. You will receive a confirmation email shortly.",
       confirmButtonText: "OK",
-      background: 'var(--Color-Surface-Surface-Primary)',
-      color: 'var(--Color-Text-Text-Primary)',
-      confirmButtonColor: 'var(--Color-Surface-Surface-Brand)',
-      iconColor: '#10b981'
+      background: "var(--Color-Surface-Surface-Primary)",
+      color: "var(--Color-Text-Text-Primary)",
+      confirmButtonColor: "var(--Color-Surface-Surface-Brand)",
+      iconColor: "#10b981",
     }).then(() => {
       router.push("/home");
     });
@@ -1548,27 +1731,23 @@ const createBooking = async () => {
       title: "Error",
       text: `Failed to create booking: ${error.message}`,
       confirmButtonText: "OK",
-      background: 'var(--Color-Surface-Surface-Primary)',
-      color: 'var(--Color-Text-Text-Primary)',
-      confirmButtonColor: 'var(--Color-Surface-Surface-Brand)',
-      iconColor: '#ef4444'
+      background: "var(--Color-Surface-Surface-Primary)",
+      color: "var(--Color-Text-Text-Primary)",
+      confirmButtonColor: "var(--Color-Surface-Surface-Brand)",
+      iconColor: "#ef4444",
     });
   }
 };
 
-
-
-// Watch for changes in dates and delivery method to update total price
 watch(
   [
     () => booking.value.startDate,
     () => booking.value.endDate,
     () => booking.value.deliveryMethod,
-    () => booking.value.deliveryAddress
+    () => booking.value.deliveryAddress,
   ],
   () => {
     if (booking.value.startDate && booking.value.endDate) {
-      // Calculate and update the total price in the booking object
       const total = parseFloat(calculateTotal());
       booking.value.totalPrice = total;
       booking.value.deliveryFee = parseFloat(calculateDeliveryFee());
@@ -1579,24 +1758,21 @@ watch(
   }
 );
 
-// Watch for modal opening to initialize map
 watch(showAddressModal, (newValue) => {
   if (newValue) {
-    // Initialize map after modal opens
     setTimeout(() => {
       if (showAddressModal.value) {
-        initializeMap().catch(error => {
-          console.error('Error initializing map:', error);
+        initializeMap().catch((error) => {
+          console.error("Error initializing map:", error);
         });
       }
     }, 100);
   } else {
-    // Clean up map when modal closes
     if (map.value) {
       try {
         map.value.remove();
       } catch (error) {
-        console.warn('Error removing map:', error);
+        console.warn("Error removing map:", error);
       }
       map.value = null;
       marker.value = null;
@@ -1607,9 +1783,8 @@ watch(showAddressModal, (newValue) => {
 
 onMounted(() => {
   loadProduct();
-  loadUserDetails(); // Load user details to auto-populate personal information
+  loadUserDetails();
 
-  // Get dates from route query parameters
   if (route.query.startDate) {
     booking.value.startDate = route.query.startDate;
   }
