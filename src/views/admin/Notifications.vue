@@ -1,10 +1,13 @@
 <template>
   <div class="min-h-screen p-8">
     <!-- Top Bar -->
-    <TopBar title="Chat Data Display" searchPlaceholder="Search data?" @update:search="handleSearch"
-      @update:sort="handleSort" @filter="handleFilter" />
-    
-
+    <TopBar
+      title="Chat Data Display"
+      searchPlaceholder="Search data?"
+      @update:search="handleSearch"
+      @update:sort="handleSort"
+      @filter="handleFilter"
+    />
 
     <!-- Loading State -->
     <div v-if="loading" class="text-center py-8">
@@ -13,7 +16,7 @@
     </div>
 
     <!-- Data Stats -->
-    <div v-else class="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
+    <div v-else class="grid grid-cols-1 md:grid-cols-5 gap-6 mb-8">
       <div class="bg-white rounded-xl shadow p-6">
         <div class="flex items-center">
           <div class="p-3 rounded-full bg-blue-100">
@@ -25,7 +28,7 @@
           </div>
         </div>
       </div>
-      
+
       <div class="bg-white rounded-xl shadow p-6">
         <div class="flex items-center">
           <div class="p-3 rounded-full bg-green-100">
@@ -37,7 +40,7 @@
           </div>
         </div>
       </div>
-      
+
       <div class="bg-white rounded-xl shadow p-6">
         <div class="flex items-center">
           <div class="p-3 rounded-full bg-yellow-100">
@@ -49,7 +52,7 @@
           </div>
         </div>
       </div>
-      
+
       <div class="bg-white rounded-xl shadow p-6">
         <div class="flex items-center">
           <div class="p-3 rounded-full bg-red-100">
@@ -61,22 +64,60 @@
           </div>
         </div>
       </div>
+
+      <div class="bg-white rounded-xl shadow p-6">
+        <div class="flex items-center">
+          <div class="p-3 rounded-full bg-purple-100">
+            <i class="fas fa-ban text-purple-600 text-xl"></i>
+          </div>
+          <div class="ml-4">
+            <p class="text-sm font-medium text-gray-600">Profanity</p>
+            <p class="text-2xl font-bold text-gray-900">{{ profanityCount }}</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="bg-white rounded-xl shadow p-6">
+        <div class="flex items-center">
+          <div class="p-3 rounded-full bg-orange-100">
+            <i class="fas fa-shield-alt text-orange-600 text-xl"></i>
+          </div>
+          <div class="ml-4">
+            <p class="text-sm font-medium text-gray-600">Sensitive Info</p>
+            <p class="text-2xl font-bold text-gray-900">{{ sensitiveInfoCount }}</p>
+          </div>
+        </div>
+      </div>
     </div>
 
     <!-- Chat Data Table -->
-          <div v-if="!loading" class="bg-white rounded-xl shadow border border-gray-50">
+    <div v-if="!loading" class="bg-white rounded-xl shadow border border-gray-50">
       <div class="p-6 border-b border-gray-50">
         <h2 class="text-xl font-semibold text-gray-800">Chat Data Records</h2>
-        <p class="text-sm text-gray-600 mt-1">Showing {{ paginatedData.length }} of {{ filteredData.length }} records</p>
+        <p class="text-sm text-gray-600 mt-1">
+          Showing {{ paginatedData.length }} of {{ filteredData.length }} records
+        </p>
       </div>
-      
+
       <div class="overflow-x-auto">
         <table class="w-full divide-y divide-gray-50">
           <thead class="bg-gray-50">
             <tr>
-              <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Username</th>
-              <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Issue</th>
-              <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Detected At</th>
+              <th
+                class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+              >
+                Username
+              </th>
+              <th
+                class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+              >
+                Issue
+              </th>
+              <th
+                class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+              >
+                Detected At
+              </th>
             </tr>
           </thead>
           <tbody class="bg-white divide-y divide-gray-50">
@@ -85,65 +126,114 @@
                 {{ getUserDisplayName(data.userId) }}
               </td>
               <td class="px-4 py-4">
-                <span :class="[
-                  'inline-flex px-2 py-1 text-xs font-semibold rounded-full',
-                  data.issue === 'phone number' ? 'bg-red-100 text-red-800' :
-                  data.issue === 'email' ? 'bg-yellow-100 text-yellow-800' :
-                  'bg-gray-100 text-gray-800'
-                ]">
-                  {{ data.issue || 'Unknown' }}
+                <span
+                  :class="[
+                    'inline-flex px-2 py-1 text-xs font-semibold rounded-full',
+                    data.issue === 'phone number'
+                      ? 'bg-red-100 text-red-800'
+                      : data.issue === 'email'
+                      ? 'bg-yellow-100 text-yellow-800'
+                      : data.issue === 'profanity'
+                      ? 'bg-purple-100 text-purple-800'
+                      : data.issue === 'sensitive info'
+                      ? 'bg-orange-100 text-orange-800'
+                      : 'bg-gray-100 text-gray-800',
+                  ]"
+                >
+                  {{ data.issue || "Unknown" }}
                 </span>
               </td>
-              <td class="px-4 py-4 text-xs text-gray-500">{{ formatDate(data.detectedAt || data.timestamp) }}</td>
+              <td class="px-4 py-4 text-xs text-gray-500">
+                {{ formatDate(data.detectedAt || data.timestamp) }}
+              </td>
             </tr>
           </tbody>
         </table>
       </div>
-      
+
       <!-- No Data Fallback -->
-      <div v-if="!paginatedData.length && !loading" class="text-gray-600 mt-8 text-center py-8">
+      <div
+        v-if="!paginatedData.length && !loading"
+        class="text-gray-600 mt-8 text-center py-8"
+      >
         <i class="fas fa-comments text-4xl text-gray-300 mb-4"></i>
         <p class="text-lg font-medium mb-2">No chat data found</p>
         <p class="text-sm text-gray-500">Try adding test data or check your filters</p>
       </div>
-      
+
       <!-- Pagination -->
-      <div v-if="totalPages > 1" class="flex items-center justify-between px-6 py-3 border-t border-gray-50">
-        <button class="text-gray-500 flex items-center" :disabled="currentPage === 1" @click="currentPage--">
+      <div
+        v-if="totalPages > 1"
+        class="flex items-center justify-between px-6 py-3 border-t border-gray-50"
+      >
+        <button
+          class="text-gray-500 flex items-center"
+          :disabled="currentPage === 1"
+          @click="currentPage--"
+        >
           <i class="fas fa-chevron-left mr-1"></i> Previous
         </button>
         <div class="flex items-center space-x-2">
-          <button v-for="page in totalPages" :key="page" class="w-8 h-8 rounded"
-            :class="{ 'bg-teal-500 text-white': currentPage === page, 'hover:bg-gray-200 text-gray-700': currentPage !== page }"
-            @click="currentPage = page">
+          <button
+            v-for="page in totalPages"
+            :key="page"
+            class="w-8 h-8 rounded"
+            :class="{
+              'bg-teal-500 text-white': currentPage === page,
+              'hover:bg-gray-200 text-gray-700': currentPage !== page,
+            }"
+            @click="currentPage = page"
+          >
             {{ page }}
           </button>
         </div>
-        <button class="text-gray-500 flex items-center" :disabled="currentPage === totalPages" @click="currentPage++">
+        <button
+          class="text-gray-500 flex items-center"
+          :disabled="currentPage === totalPages"
+          @click="currentPage++"
+        >
           Next <i class="fas fa-chevron-right ml-1"></i>
         </button>
       </div>
     </div>
   </div>
 </template>
-
 <script setup>
-import TopBar from '@/components/admin/TopBar.vue';
-import { ref, computed, onMounted, onBeforeUnmount } from 'vue';
-import { collection, addDoc, deleteDoc, doc, onSnapshot, query, orderBy, limit, getDoc, where } from 'firebase/firestore';
-import { db } from '@/firebase/config';
-import Swal from 'sweetalert2';
-import { useNotifications } from '@/composables/useNotifications';
+import TopBar from "@/components/admin/TopBar.vue";
+import { ref, computed, onMounted, onBeforeUnmount } from "vue";
+import {
+  collection,
+  addDoc,
+  deleteDoc,
+  doc,
+  onSnapshot,
+  query,
+  orderBy,
+  limit,
+  getDoc,
+  where,
+} from "firebase/firestore";
+import { db } from "@/firebase/config";
+import Swal from "sweetalert2";
+import { useNotifications } from "@/composables/useNotifications";
+
+// Profanity and sensitive info filters
+const profanityWords = ["damn", "hell", "ass", "bitch", "fuck"]; // Expand as needed
+const sensitiveInfoPatterns = [
+  /\b\d{16}\b/g, // Credit card number (16 digits)
+  /\b\d{3}-\d{2}-\d{4}\b/g, // SSN (XXX-XX-XXXX)
+  /\b\d{3}-\d{3}-\d{4}\b/g, // Phone number (XXX-XXX-XXXX)
+];
 
 // Initialize notifications composable
-const { } = useNotifications();
+const {} = useNotifications();
 
 // Reactive data
 const chatData = ref([]);
 const users = ref({}); // Store user data by userId
-const searchQuery = ref('');
-const sortOption = ref('Newest First');
-const filterStatus = ref('');
+const searchQuery = ref("");
+const sortOption = ref("Newest First");
+const filterStatus = ref("");
 const currentPage = ref(1);
 const itemsPerPage = 10;
 const loading = ref(false);
@@ -151,33 +241,36 @@ const loading = ref(false);
 // Computed properties
 const filteredData = computed(() => {
   let filtered = chatData.value;
-  
+
   // Filter by search query
   if (searchQuery.value) {
     const query = searchQuery.value.toLowerCase();
-    filtered = filtered.filter(data =>
-      getUserDisplayName(data.userId).toLowerCase().includes(query) ||
-      (data.issue || '').toLowerCase().includes(query)
+    filtered = filtered.filter(
+      (data) =>
+        getUserDisplayName(data.userId).toLowerCase().includes(query) ||
+        (data.issue || "").toLowerCase().includes(query) ||
+        (data.message || "").toLowerCase().includes(query)
     );
   }
-  
+
   // Filter by issue type
-  if (filterStatus.value) {
-    filtered = filtered.filter(data => data.issue === filterStatus.value);
-  } else {
-    // Only show phone number and email issues, filter out others
-    filtered = filtered.filter(data => data.issue === 'phone number' || data.issue === 'email');
+  if (filterStatus.value && filterStatus.value !== "all") {
+    filtered = filtered.filter((data) => data.issue === filterStatus.value);
   }
-  
+
   // Sort data
   filtered = [...filtered].sort((a, b) => {
-    if (sortOption.value === 'Newest First') {
-      return new Date(b.detectedAt || b.timestamp) - new Date(a.detectedAt || a.timestamp);
+    if (sortOption.value === "Newest First") {
+      return (
+        new Date(b.detectedAt || b.timestamp) - new Date(a.detectedAt || a.timestamp)
+      );
     } else {
-      return new Date(a.detectedAt || a.timestamp) - new Date(b.detectedAt || b.timestamp);
+      return (
+        new Date(a.detectedAt || a.timestamp) - new Date(b.detectedAt || b.timestamp)
+      );
     }
   });
-  
+
   return filtered;
 });
 
@@ -191,28 +284,36 @@ const paginatedData = computed(() => {
 });
 
 const uniqueUsersCount = computed(() => {
-  const uniqueUsers = new Set(chatData.value.map(n => n.userId));
+  const uniqueUsers = new Set(chatData.value.map((n) => n.userId));
   return uniqueUsers.size;
 });
 
 const issuesCount = computed(() => {
-  return chatData.value.length;
+  return chatData.value.filter((n) => n.issue && n.issue !== "No issue found").length;
 });
 
 const phoneNumbersCount = computed(() => {
-  return chatData.value.filter(n => n.issue === 'phone number').length;
+  return chatData.value.filter((n) => n.issue === "phone number").length;
+});
+
+const profanityCount = computed(() => {
+  return chatData.value.filter((n) => n.issue === "profanity").length;
+});
+
+const sensitiveInfoCount = computed(() => {
+  return chatData.value.filter((n) => n.issue === "sensitive info").length;
 });
 
 // Methods
 const formatDate = (dateStr) => {
-  if (!dateStr) return '';
+  if (!dateStr) return "";
   const date = new Date(dateStr);
-  return date.toLocaleDateString('en-US', {
-    year: 'numeric',
-    month: 'long',
-    day: 'numeric',
-    hour: '2-digit',
-    minute: '2-digit'
+  return date.toLocaleDateString("en-US", {
+    year: "numeric",
+    month: "long",
+    day: "numeric",
+    hour: "2-digit",
+    minute: "2-digit",
   });
 };
 
@@ -220,32 +321,32 @@ const getUserInfo = async (userId) => {
   if (users.value[userId]) {
     return users.value[userId];
   }
-  
+
   try {
-    const userDoc = await getDoc(doc(db, 'users', userId));
+    const userDoc = await getDoc(doc(db, "users", userId));
     if (userDoc.exists()) {
       const userData = userDoc.data();
       users.value[userId] = userData;
       return userData;
     }
   } catch (error) {
-    console.error('Error fetching user info:', error);
+    console.error("Error fetching user info:", error);
   }
-  
+
   return null;
 };
 
 const getUserDisplayName = (userId) => {
-  if (!userId) return 'Unknown User';
-  
+  if (!userId) return "Unknown User";
+
   const user = users.value[userId];
   if (user) {
-    return user.displayName || user.email || user.name || 'Unknown User';
+    return user.displayName || user.email || user.name || "Unknown User";
   }
-  
+
   // If user data is not loaded yet, trigger loading
   getUserInfo(userId);
-  return 'Loading...';
+  return "Loading...";
 };
 
 const handleSearch = (query) => {
@@ -260,24 +361,25 @@ const handleSort = (option) => {
 
 const handleFilter = () => {
   Swal.fire({
-    title: 'Filter by Issue Type',
-    input: 'select',
+    title: "Filter by Issue Type",
+    input: "select",
     inputOptions: {
-      'phone number': 'Phone Number',
-      'email': 'Email'
+      all: "All",
+      "phone number": "Phone Number",
+      email: "Email",
+      profanity: "Profanity",
+      "sensitive info": "Sensitive Info",
     },
-    inputPlaceholder: 'Select issue type',
+    inputPlaceholder: "Select issue type",
     showCancelButton: true,
-    confirmButtonText: 'Apply',
-  }).then(result => {
+    confirmButtonText: "Apply",
+  }).then((result) => {
     if (result.isConfirmed) {
-      filterStatus.value = result.value || '';
+      filterStatus.value = result.value || "";
       currentPage.value = 1;
     }
   });
 };
-
-
 
 // Initialize real-time listeners
 let unsubscribeData = null;
@@ -285,26 +387,48 @@ let unsubscribeData = null;
 const initializeRealTimeData = () => {
   // Listen to warnings collection
   const dataQuery = query(
-    collection(db, 'warnings'),
-    orderBy('timestamp', 'desc'),
+    collection(db, "warnings"),
+    orderBy("timestamp", "desc"),
     limit(100)
   );
-  
-  unsubscribeData = onSnapshot(dataQuery, (snapshot) => {
-    chatData.value = snapshot.docs.map(doc => ({
-      id: doc.id,
-      ...doc.data()
-    }));
-    
-    // Fetch user info for new data
-    chatData.value.forEach(async (data) => {
-      if (!users.value[data.userId]) {
-        await getUserInfo(data.userId);
-      }
-    });
-  }, (error) => {
-    console.error('Error listening to warnings data:', error);
-  });
+
+  unsubscribeData = onSnapshot(
+    dataQuery,
+    (snapshot) => {
+      chatData.value = snapshot.docs.map((doc) => {
+        const data = { id: doc.id, ...doc.data() };
+        // Check for profanity in the message if not already flagged
+        if (data.message && !data.issue) {
+          const messageLower = data.message.toLowerCase();
+          const hasProfanity = profanityWords.some((word) => messageLower.includes(word));
+          if (hasProfanity) {
+            data.issue = "profanity";
+          }
+        }
+        // Check for sensitive information if not already flagged
+        if (data.message && !data.issue) {
+          const message = data.message;
+          const hasSensitiveInfo = sensitiveInfoPatterns.some((pattern) =>
+            pattern.test(message)
+          );
+          if (hasSensitiveInfo) {
+            data.issue = "sensitive info";
+          }
+        }
+        return data;
+      });
+
+      // Fetch user info for new data
+      chatData.value.forEach(async (data) => {
+        if (!users.value[data.userId]) {
+          await getUserInfo(data.userId);
+        }
+      });
+    },
+    (error) => {
+      console.error("Error listening to warnings data:", error);
+    }
+  );
 };
 
 // Lifecycle
@@ -317,4 +441,4 @@ onBeforeUnmount(() => {
     unsubscribeData();
   }
 });
-</script> 
+</script>
