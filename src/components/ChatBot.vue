@@ -196,6 +196,7 @@ import { auth, db } from "@/firebase/config";
 const emit = defineEmits(["close", "user-action"]);
 
 const API_KEY = "fw_3ZeTAgD3p68MjXVtTt9zPWVd";
+const WARNING_API_KEY = "fw_3ZdivUwF8dngrBe4C6g8E3i2";
 const API_URL = "https://api.fireworks.ai/inference/v1/chat/completions";
 const MODEL_NAME = "accounts/fireworks/models/llama-v3p1-8b-instruct";
 const IMAGE_API_URL =
@@ -290,7 +291,7 @@ function scrollToBottom() {
   });
 }
 
-async function sendMessageToAI(message, imageUrl = null) {
+async function sendMessageToAI(message, imageUrl = null, apiKey = API_KEY) {
   try {
     let allMessages = [];
     const currentChat = chats.value.find((c) => c.id === currentChatId.value);
@@ -318,7 +319,7 @@ async function sendMessageToAI(message, imageUrl = null) {
     const response = await fetch(API_URL, {
       method: "POST",
       headers: {
-        Authorization: `Bearer ${API_KEY}`,
+        Authorization: `Bearer ${apiKey}`,
         "Content-Type": "application/json",
       },
       body: JSON.stringify(payload),
@@ -617,7 +618,7 @@ function updateSystemPrompt() {
 
 async function checkAndLogWarnings(response, chatId, timestamp) {
   const prompt = `Review the following response for potential illegal content such as phone numbers (e.g., patterns like XXX-XXX-XXXX or XXXXXXXXXX), email addresses, or the term 'illegal': ${response}. Return a JSON object with the following structure: { warnings: [{ messageId: string, content: string, issue: string, timestamp: number }], isClean: boolean }. Do not include any other text.`;
-  const aiResponse = await sendMessageToAI(prompt);
+  const aiResponse = await sendMessageToAI(prompt, null, WARNING_API_KEY);
   try {
     const result = JSON.parse(aiResponse);
     if (result.warnings && result.warnings.length > 0) {
@@ -664,13 +665,13 @@ async function processExistingChats(chatId) {
     .sort((a, b) => b.timestamp - a.timestamp)[0];
 
   if (lastMessage) {
-    const prompt = `Review the following message for potential illegal content such as phone numbers (e.g., patterns like XXX-XXX-XXXX or XXXXXXXXXX), or the term 'illegal Do not include any other text.'): ${JSON.stringify(
+    const prompt = `Review the following message for potential illegal content such as phone numbers (e.g., patterns like XXX-XXX-XXXX or XXXXXXXXXX), email addresses, or the term 'illegal': ${JSON.stringify(
       {
         role: lastMessage.role,
         content: lastMessage.content,
       }
-    )}. Return a JSON object with the following structure: { warnings: [{ messageId: string, content: string, issue: string, timestamp: number  }], isClean: boolean }. Do not include any other text.`;
-    const response = await sendMessageToAI(prompt);
+    )}. Return a JSON object with the following structure: { warnings: [{ messageId: string, content: string, issue: string, timestamp: number }], isClean: boolean }. Do not include any other text.`;
+    const response = await sendMessageToAI(prompt, null, WARNING_API_KEY);
     try {
       const result = JSON.parse(response);
       if (result.warnings && result.warnings.length > 0) {
@@ -710,17 +711,11 @@ async function processExistingChats(chatId) {
 }
 
 async function processAllChatsInBackground() {
-  if (isProcessing.value) return;
-  isProcessing.value = true;
-  try {
-    for (const chat of chats.value) {
-      if (!chat.isBackgroundProcessed && chat.id !== currentChatId.value) {
-        await processExistingChats(chat.id);
-        await new Promise((resolve) => setTimeout(resolve, 100));
-      }
+  for (const chat of chats.value) {
+    if (!chat.isBackgroundProcessed && chat.id !== currentChatId.value) {
+      await processExistingChats(chat.id);
+      await new Promise((resolve) => setTimeout(resolve, 100));
     }
-  } finally {
-    isProcessing.value = false;
   }
 }
 
