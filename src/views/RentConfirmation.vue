@@ -832,7 +832,7 @@ const loadProduct = async () => {
           icon: "warning",
           title: t("cannotBookOwnProduct"),
           text: t("cannotBookOwnProductMessage"),
-          confirmButtonText: "OK",
+          confirmButtonText: t("ok"),
           background: "var(--Color-Surface-Surface-Primary)",
           color: "var(--Color-Text-Text-Primary)",
           confirmButtonColor: "var(--Color-Surface-Surface-Brand)",
@@ -848,9 +848,9 @@ const loadProduct = async () => {
       console.error("No such product!");
       Swal.fire({
         icon: "error",
-        title: "Error",
-        text: "Product not found.",
-        confirmButtonText: "OK",
+        title: t("productNotFound"),
+        text: t("productNotFoundMessage"),
+        confirmButtonText: t("ok"),
         background: "var(--Color-Surface-Surface-Primary)",
         color: "var(--Color-Text-Text-Primary)",
         confirmButtonColor: "var(--Color-Surface-Surface-Brand)",
@@ -862,9 +862,9 @@ const loadProduct = async () => {
     console.error("Error loading product:", error);
     Swal.fire({
       icon: "error",
-      title: "Error",
-      text: `Failed to load product: ${error.message}`,
-      confirmButtonText: "OK",
+      title: t("failedToLoadProduct"),
+      text: t("failedToLoadProduct", [error.message]),
+      confirmButtonText: t("ok"),
       background: "var(--Color-Surface-Surface-Primary)",
       color: "var(--Color-Text-Text-Primary)",
       confirmButtonColor: "var(--Color-Surface-Surface-Brand)",
@@ -1069,9 +1069,9 @@ const formatPhoneNumber = (event) => {
     value = "";
     Swal.fire({
       icon: "warning",
-      title: "Invalid Phone Number",
-      text: "Please enter a valid phone number starting with 010 or 011.",
-      confirmButtonText: "OK",
+      title: t("invalidPhoneNumber"),
+      text: t("invalidPhoneNumberMessage"),
+      confirmButtonText: t("ok"),
       background: "var(--Color-Surface-Surface-Primary)",
       color: "var(--Color-Text-Text-Primary)",
       confirmButtonColor: "var(--Color-Surface-Surface-Brand)",
@@ -1364,22 +1364,31 @@ const getCurrentLocation = () => {
       reverseGeocode(latitude, longitude);
     },
     (error) => {
-      let errorMessage = "Unable to get your location.";
+      let errorMessage = t("unableToGetLocation");
 
       switch (error.code) {
         case error.PERMISSION_DENIED:
-          errorMessage =
-            "Location access was denied. Please allow location access in your browser settings.";
+          errorMessage = t("locationAccessDenied");
           break;
         case error.POSITION_UNAVAILABLE:
-          errorMessage = "Location information is unavailable. Please try again.";
+          errorMessage = t("locationUnavailable");
           break;
         case error.TIMEOUT:
-          errorMessage = "Location request timed out. Please try again.";
+          errorMessage = t("locationTimeout");
           break;
       }
 
       console.warn(errorMessage);
+      Swal.fire({
+        icon: "warning",
+        title: t("locationError"),
+        text: errorMessage,
+        confirmButtonText: t("ok"),
+        background: "var(--Color-Surface-Surface-Primary)",
+        color: "var(--Color-Text-Text-Primary)",
+        confirmButtonColor: "var(--Color-Surface-Surface-Brand)",
+        iconColor: "#f59e0b",
+      });
     },
     {
       enableHighAccuracy: true,
@@ -1409,10 +1418,9 @@ const clearLocation = () => {
 
     Swal.fire({
       icon: "info",
-      title: "Location Cleared",
-      text:
-        "The location has been cleared. You can now manually select a location on the map or search for an address.",
-      confirmButtonText: "OK",
+      title: t("locationCleared"),
+      text: t("locationClearedMessage"),
+      confirmButtonText: t("ok"),
       background: "var(--Color-Surface-Surface-Primary)",
       color: "var(--Color-Text-Text-Primary)",
       confirmButtonColor: "var(--Color-Surface-Surface-Brand)",
@@ -1424,47 +1432,47 @@ const clearLocation = () => {
 const showLocationHelp = () => {
   Swal.fire({
     icon: "info",
-    title: "Location Accuracy Help",
+    title: t("locationAccuracyHelp"),
     html: `
       <div class="text-left">
-        <p class="mb-3">If your location is not accurate, here are some solutions:</p>
+        <p class="mb-3">${t("locationAccuracyHelpMessage")}</p>
         
         <div class="space-y-3">
           <div class="bg-blue-50 p-3 rounded-lg">
-            <h4 class="font-medium text-blue-800 mb-1">🔍 Manual Location Selection</h4>
-            <p class="text-sm text-blue-700">Click anywhere on the map to set your exact location</p>
+            <h4 class="font-medium text-blue-800 mb-1">${t(
+              "manualLocationSelection"
+            )}</h4>
+            <p class="text-sm text-blue-700">${t("manualLocationSelectionMessage")}</p>
           </div>
           
           <div class="bg-green-50 p-3 rounded-lg">
-            <h4 class="font-medium text-green-800 mb-1">📝 Search for Address</h4>
-            <p class="text-sm text-green-700">Use the search bar above to find your exact address</p>
+            <h4 class="font-medium text-green-800 mb-1">${t("searchForAddress")}</h4>
+            <p class="text-sm text-green-700">${t("searchForAddressMessage")}</p>
           </div>
           
           <div class="bg-yellow-50 p-3 rounded-lg">
-            <h4 class="font-medium text-yellow-800 mb-1">📱 Improve GPS Accuracy</h4>
+            <h4 class="font-medium text-yellow-800 mb-1">${t("improveGPSAccuracy")}</h4>
             <ul class="text-sm text-yellow-700 list-disc list-inside">
-              <li>Go outside or near a window</li>
-              <li>Wait 10-30 seconds for GPS to lock</li>
-              <li>Enable high accuracy mode on your device</li>
-              <li>Try on a mobile device (better GPS)</li>
+              ${t("improveGPSAccuracyMessages")
+                .map((msg) => `<li>${msg}</li>`)
+                .join("")}
             </ul>
           </div>
           
           <div class="bg-purple-50 p-3 rounded-lg">
-            <h4 class="font-medium text-purple-800 mb-1">🌐 Browser Issues</h4>
+            <h4 class="font-medium text-purple-800 mb-1">${t("browserIssues")}</h4>
             <ul class="text-sm text-purple-700 list-disc list-inside">
-              <li>Allow location access when prompted</li>
-              <li>Try refreshing the page</li>
-              <li>Check browser location settings</li>
-              <li>Try a different browser</li>
+              ${t("browserIssuesMessages")
+                .map((msg) => `<li>${msg}</li>`)
+                .join("")}
             </ul>
           </div>
         </div>
         
-        <p class="mt-3 text-sm text-gray-600">The most reliable method is to manually click on the map or search for your address.</p>
+        <p class="mt-3 text-sm text-gray-600">${t("locationAccuracyFinalNote")}</p>
       </div>
     `,
-    confirmButtonText: "Got it",
+    confirmButtonText: t("gotIt"),
     background: "var(--Color-Surface-Surface-Primary)",
     color: "var(--Color-Text-Text-Primary)",
     confirmButtonColor: "var(--Color-Surface-Surface-Brand)",
@@ -1480,9 +1488,13 @@ const verifyOTP = async () => {
   if (booking.value.otp.length !== 6) {
     Swal.fire({
       icon: "warning",
-      title: "Invalid OTP",
-      text: "Please enter a 6-digit OTP.",
-      confirmButtonText: "OK",
+      title: t("invalidOTP"),
+      text: t("invalidOTPMessage"),
+      confirmButtonText: t("ok"),
+      background: "var(--Color-Surface-Surface-Primary)",
+      color: "var(--Color-Text-Text-Primary)",
+      confirmButtonColor: "var(--Color-Surface-Surface-Brand)",
+      iconColor: "#f59e0b",
     });
     return;
   }
@@ -1491,9 +1503,9 @@ const verifyOTP = async () => {
     console.log("OTP verified successfully!");
     Swal.fire({
       icon: "success",
-      title: "Payment Verified!",
-      text: "Your payment has been successfully verified.",
-      confirmButtonText: "OK",
+      title: t("paymentVerified"),
+      text: t("paymentVerifiedMessage"),
+      confirmButtonText: t("ok"),
       background: "var(--Color-Surface-Surface-Primary)",
       color: "var(--Color-Text-Text-Primary)",
       confirmButtonColor: "var(--Color-Surface-Surface-Brand)",
@@ -1504,9 +1516,9 @@ const verifyOTP = async () => {
     console.error("Error verifying OTP:", error);
     Swal.fire({
       icon: "error",
-      title: "Error",
-      text: `Failed to verify OTP: ${error.message}`,
-      confirmButtonText: "OK",
+      title: t("failedToVerifyOTP"),
+      text: t("failedToVerifyOTP", [error.message]),
+      confirmButtonText: t("ok"),
       background: "var(--Color-Surface-Surface-Primary)",
       color: "var(--Color-Text-Text-Primary)",
       confirmButtonColor: "var(--Color-Surface-Surface-Brand)",
@@ -1519,9 +1531,9 @@ const submitBooking = async () => {
   if (!auth.currentUser) {
     Swal.fire({
       icon: "warning",
-      title: "Login Required",
-      text: "Please log in to make a booking.",
-      confirmButtonText: "OK",
+      title: t("loginRequired"),
+      text: t("loginRequiredMessage"),
+      confirmButtonText: t("ok"),
       background: "var(--Color-Surface-Surface-Primary)",
       color: "var(--Color-Text-Text-Primary)",
       confirmButtonColor: "var(--Color-Surface-Surface-Brand)",
@@ -1535,7 +1547,7 @@ const submitBooking = async () => {
       icon: "warning",
       title: t("cannotBookOwnProduct"),
       text: t("cannotBookOwnProductMessage"),
-      confirmButtonText: "OK",
+      confirmButtonText: t("ok"),
       background: "var(--Color-Surface-Surface-Primary)",
       color: "var(--Color-Text-Text-Primary)",
       confirmButtonColor: "var(--Color-Surface-Surface-Brand)",
@@ -1548,9 +1560,9 @@ const submitBooking = async () => {
     if (!booking.value.startDate || !booking.value.endDate) {
       Swal.fire({
         icon: "warning",
-        title: "Missing Dates",
-        text: "Please select both start and end dates.",
-        confirmButtonText: "OK",
+        title: t("missingDates"),
+        text: t("missingDatesMessage"),
+        confirmButtonText: t("ok"),
         background: "var(--Color-Surface-Surface-Primary)",
         color: "var(--Color-Text-Text-Primary)",
         confirmButtonColor: "var(--Color-Surface-Surface-Brand)",
@@ -1566,9 +1578,9 @@ const submitBooking = async () => {
     ) {
       Swal.fire({
         icon: "warning",
-        title: "Missing Information",
-        text: "Please fill in all personal information fields.",
-        confirmButtonText: "OK",
+        title: t("missingInformation"),
+        text: t("missingInformationMessage"),
+        confirmButtonText: t("ok"),
         background: "var(--Color-Surface-Surface-Primary)",
         color: "var(--Color-Text-Text-Primary)",
         confirmButtonColor: "var(--Color-Surface-Surface-Brand)",
@@ -1586,9 +1598,9 @@ const submitBooking = async () => {
       ) {
         Swal.fire({
           icon: "warning",
-          title: "Missing Payment Details",
-          text: "Please fill in all credit card details.",
-          confirmButtonText: "OK",
+          title: t("missingPaymentDetails"),
+          text: t("missingPaymentDetailsMessage"),
+          confirmButtonText: t("ok"),
           background: "var(--Color-Surface-Surface-Primary)",
           color: "var(--Color-Text-Text-Primary)",
           confirmButtonColor: "var(--Color-Surface-Surface-Brand)",
@@ -1603,9 +1615,9 @@ const submitBooking = async () => {
       if (!booking.value.phoneNumber) {
         Swal.fire({
           icon: "warning",
-          title: "Missing Phone Number",
-          text: "Please enter your phone number for mobile payment.",
-          confirmButtonText: "OK",
+          title: t("missingPhoneNumber"),
+          text: t("missingPhoneNumberMessage"),
+          confirmButtonText: t("ok"),
           background: "var(--Color-Surface-Surface-Primary)",
           color: "var(--Color-Text-Text-Primary)",
           confirmButtonColor: "var(--Color-Surface-Surface-Brand)",
@@ -1616,9 +1628,9 @@ const submitBooking = async () => {
       showOTPForm.value = true;
       Swal.fire({
         icon: "info",
-        title: "OTP Sent",
-        text: `An OTP has been sent to ${booking.value.phoneNumber}. Please verify to complete the booking.`,
-        confirmButtonText: "OK",
+        title: t("otpSent"),
+        text: t("otpSentMessage", [booking.value.phoneNumber]),
+        confirmButtonText: t("ok"),
         background: "var(--Color-Surface-Surface-Primary)",
         color: "var(--Color-Text-Text-Primary)",
         confirmButtonColor: "var(--Color-Surface-Surface-Brand)",
@@ -1632,9 +1644,9 @@ const submitBooking = async () => {
     console.error("Error processing booking:", error);
     Swal.fire({
       icon: "error",
-      title: "Error",
-      text: `Failed to process booking: ${error.message}`,
-      confirmButtonText: "OK",
+      title: t("failedToCreateBooking"),
+      text: t("failedToCreateBooking", [error.message]),
+      confirmButtonText: t("ok"),
       background: "var(--Color-Surface-Surface-Primary)",
       color: "var(--Color-Text-Text-Primary)",
       confirmButtonColor: "var(--Color-Surface-Surface-Brand)",
@@ -1651,9 +1663,9 @@ const createBooking = async () => {
     if (!userDoc.exists()) {
       Swal.fire({
         icon: "error",
-        title: "User Not Found",
-        text: "Your user profile could not be found. Please contact support.",
-        confirmButtonText: "OK",
+        title: t("userNotFound"),
+        text: t("userNotFoundMessage"),
+        confirmButtonText: t("ok"),
         background: "var(--Color-Surface-Surface-Primary)",
         color: "var(--Color-Text-Text-Primary)",
         confirmButtonColor: "var(--Color-Surface-Surface-Brand)",
@@ -1705,7 +1717,7 @@ const createBooking = async () => {
       statusHistory: [
         {
           status: "pending",
-          timestamp: serverTimestamp(),
+          timestamp: new Date().toISOString(),
           updatedBy: "system",
         },
       ],
@@ -1713,10 +1725,9 @@ const createBooking = async () => {
 
     Swal.fire({
       icon: "success",
-      title: "Booking Confirmed!",
-      text:
-        "Your rental has been successfully confirmed. You will receive a confirmation email shortly.",
-      confirmButtonText: "OK",
+      title: t("bookingConfirmed"),
+      text: t("bookingConfirmedMessage"),
+      confirmButtonText: t("ok"),
       background: "var(--Color-Surface-Surface-Primary)",
       color: "var(--Color-Text-Text-Primary)",
       confirmButtonColor: "var(--Color-Surface-Surface-Brand)",
@@ -1728,9 +1739,9 @@ const createBooking = async () => {
     console.error("Error creating booking:", error);
     Swal.fire({
       icon: "error",
-      title: "Error",
-      text: `Failed to create booking: ${error.message}`,
-      confirmButtonText: "OK",
+      title: t("failedToCreateBooking"),
+      text: t("failedToCreateBooking", [error.message]),
+      confirmButtonText: t("ok"),
       background: "var(--Color-Surface-Surface-Primary)",
       color: "var(--Color-Text-Text-Primary)",
       confirmButtonColor: "var(--Color-Surface-Surface-Brand)",
