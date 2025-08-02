@@ -6,8 +6,8 @@
       <div class="absolute inset-0 bg-gradient-to-t from-black via-black/50 to-transparent"></div>
       <div class="relative z-10 flex items-center justify-center h-full text-center" :style="{ marginTop: '-150px' }">
         <div class="text-white">
-          <h1 class="text-4xl sm:text-6xl md:text-8xl lg:text-[128px] font-bold mb-0" :style="{ height: 'auto', minHeight: '60px', lineHeight: '1.1' }">About Us</h1>
-          <p class="text-lg sm:text-xl md:text-2xl lg:text-[32px] font-medium mt-2">Making tools accessible, affordable, and shared.</p>
+          <h1 class="text-4xl sm:text-6xl md:text-8xl lg:text-[128px] font-bold mb-0" :style="{ height: 'auto', minHeight: '60px', lineHeight: '1.1' }">{{ $t("aboutUsHeroTitle") }}</h1>
+          <p class="text-lg sm:text-xl md:text-2xl lg:text-[32px] font-medium mt-2">{{ $t("aboutUsHeroSubtitle") }}</p>
         </div>
       </div>
     </div>
@@ -21,11 +21,10 @@
             <img src="@/assets/retinal-biometrics-technology-with-man-s-eye-digital-remix.jpg" alt="Vision" class="w-full h-full object-cover rounded-lg" />
           </div>
           <h3 class="text-2xl font-bold mb-4">
-            <span class="text-[var(--Color-Text-Text-Primary)]">Our</span>
-            <span class="text-[var(--Color-Text-Text-Brand)]"> Vision</span>
+            <span class="text-[var(--Color-Text-Text-Primary)]">{{ $t("ourVisionTitle") }}</span>
           </h3>
           <p class="text-[var(--Color-Text-Text-Secondary)]">
-            To become the leading rental platform in the region, transforming how people access items they need without the need to own them.
+            {{ $t("visionDescription") }}
           </p>
         </div>
 
@@ -35,11 +34,10 @@
             <img src="@/assets/business-strategy-success-target-goals.jpg" alt="Mission" class="w-full h-full object-cover rounded-lg" />
           </div>
           <h3 class="text-2xl font-bold mb-4">
-            <span class="text-[var(--Color-Text-Text-Primary)]">Our</span>
-            <span class="text-[var(--Color-Text-Text-Brand)]"> Mission</span>
+            <span class="text-[var(--Color-Text-Text-Primary)]">{{ $t("ourMissionTitle") }}</span>
           </h3>
           <p class="text-[var(--Color-Text-Text-Secondary)]">
-            To make everyday tools and equipment accessible and affordable for everyone, empowering smarter living through simple and secure rentals.
+            {{ $t("missionDescription") }}
           </p>
         </div>
 
@@ -49,11 +47,10 @@
             <img src="@/assets/businessman-touching-glowing-increasing-arrow-business-profit-investment-growth-concept.jpg" alt="Core Values" class="w-full h-full object-cover rounded-lg" />
           </div>
           <h3 class="text-2xl font-bold mb-4">
-            <span class="text-[var(--Color-Text-Text-Primary)]">Our Core</span>
-            <span class="text-[var(--Color-Text-Text-Brand)]"> Values</span>
+            <span class="text-[var(--Color-Text-Text-Primary)]">{{ $t("ourCoreValuesTitle") }}</span>
           </h3>
           <p class="text-[var(--Color-Text-Text-Secondary)]">
-            We value trust, simplicity, and affordability making rentals easy, safe, and sustainable through a connected community.
+            {{ $t("coreValuesDescription") }}
           </p>
         </div>
       </div>
@@ -62,11 +59,10 @@
     <!-- Who we are Section -->
     <div class="max-w-4xl mx-auto px-4 py-16">
       <h2 class="text-4xl font-bold text-center mb-8">
-        <span class="text-[var(--Color-Text-Text-Primary)]">Who</span>
-        <span class="text-[var(--Color-Text-Text-Brand)]"> we are?</span>
+        <span class="text-[var(--Color-Text-Text-Primary)]">{{ $t("whoWeAreTitle") }}</span>
       </h2>
       <p class="text-lg text-[var(--Color-Text-Text-Secondary)] text-center leading-relaxed">
-        We're a team of passionate problem-solvers who believe that access to the right tools should be simple, affordable, and community-driven. Our platform connects people who need equipment with those who have it making it easy to rent anything from a power drill to a ladder, for a few hours or a few days. Whether you're working on a home project, a business task, or something creative, we're here to help you find exactly what you need without the hassle of buying. At our core, we believe in sharing resources, building trust, and helping you get the job done smarter not harder.
+        {{ $t("whoWeAreDescription") }}
       </p>
     </div>
 
@@ -76,15 +72,15 @@
         <div class="grid grid-cols-1 md:grid-cols-3 gap-8 text-center text-white">
           <div>
             <div class="text-4xl font-bold mb-2">+1200</div>
-            <div class="text-lg">users</div>
+            <div class="text-lg">{{ $t("usersCount") }}</div>
           </div>
           <div>
             <div class="text-4xl font-bold mb-2">+800</div>
-            <div class="text-lg">satisfaction rate</div>
+            <div class="text-lg">{{ $t("satisfactionRate") }}</div>
           </div>
           <div>
             <div class="text-4xl font-bold mb-2">97%</div>
-            <div class="text-lg">tools listed</div>
+            <div class="text-lg">{{ $t("toolsListed") }}</div>
           </div>
         </div>
       </div>
@@ -93,10 +89,10 @@
     <!-- We Rent Anything Section -->
     <div class="max-w-7xl mx-auto px-4 py-16">
       <h2 class="text-4xl font-bold text-center mb-4">
-        <span class="text-[var(--Color-Text-Text-Primary)]">{{ $t('locale') === 'ar' ? 'نحن نؤجر' : $t('weRentAnything').split(' ')[0] + ' ' + $t('weRentAnything').split(' ')[1] }}</span>
-        <span class="text-[var(--Color-Text-Text-Brand)]"> {{ $t('locale') === 'ar' ? 'أي شيء' : $t('weRentAnything').split(' ').slice(2).join(' ') }}</span>
+        <span class="text-[var(--Color-Text-Text-Primary)]">{{ $t("weRentAnythingPart1") }}</span>
+        <span class="text-[var(--Color-Text-Text-Brand)]"> {{ $t("weRentAnythingPart2") }}</span>
       </h2>
-      <p class="text-xl text-center text-[var(--Color-Text-Text-Secondary)] mb-12">{{ $t('fromDrillsToDrones') }}</p>
+      <p class="text-xl text-center text-[var(--Color-Text-Text-Secondary)] mb-12">{{ $t("fromDrillsToDrones") }}</p>
       
       <div class="flex flex-col md:grid md:grid-cols-2 lg:grid-cols-4 gap-2 max-w-6xl mx-auto">
         <!-- Column 1 -->
@@ -144,8 +140,8 @@
     <!-- Why Rento Section -->
     <div class="max-w-7xl mx-auto px-4 py-16">
       <h2 class="text-4xl font-bold text-center mb-12">
-        <span class="text-[var(--Color-Text-Text-Primary)]">Why</span>
-        <span class="text-[var(--Color-Text-Text-Brand)]"> Rento?</span>
+        <span class="text-[var(--Color-Text-Text-Primary)]">{{ $t("whyRentoTitlePart1") }}</span>
+        <span class="text-[var(--Color-Text-Text-Brand)]"> {{ $t("whyRentoTitlePart2") }}</span>
       </h2>
       
       <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
@@ -154,9 +150,9 @@
             <i class="fas fa-shopping-cart text-white"></i>
           </div>
           <div>
-            <h3 class="text-xl font-semibold text-[var(--Color-Text-Text-Primary)] mb-2">Variety of Tools</h3>
+            <h3 class="text-xl font-semibold text-[var(--Color-Text-Text-Primary)] mb-2">{{ $t("varietyOfTools") }}</h3>
             <p class="text-[var(--Color-Text-Text-Secondary)]">
-              From drills and ladders to projectors and drones. Rento gives you access to a growing library of tools and equipment for any task, big or small.
+              {{ $t("varietyOfToolsDescription") }}
             </p>
           </div>
         </div>
@@ -166,9 +162,9 @@
             <i class="fas fa-lock text-white"></i>
           </div>
           <div>
-            <h3 class="text-xl font-semibold text-[var(--Color-Text-Text-Primary)] mb-2">Secure Transactions</h3>
+            <h3 class="text-xl font-semibold text-[var(--Color-Text-Text-Primary)] mb-2">{{ $t("secureTransactionsTitle") }}</h3>
             <p class="text-[var(--Color-Text-Text-Secondary)]">
-              All users are verified, and every rental is protected. Our system ensures your payments and tools are handled with trust and transparency.
+              {{ $t("secureTransactionsDescription") }}
             </p>
           </div>
         </div>
@@ -178,9 +174,9 @@
             <i class="fas fa-exchange-alt text-white"></i>
           </div>
           <div>
-            <h3 class="text-xl font-semibold text-[var(--Color-Text-Text-Primary)] mb-2">Flexible Options</h3>
+            <h3 class="text-xl font-semibold text-[var(--Color-Text-Text-Primary)] mb-2">{{ $t("flexibleOptions") }}</h3>
             <p class="text-[var(--Color-Text-Text-Secondary)]">
-              Choose the handover method that works best for you pickup, doorstep delivery, or in-person meetups. Convenience is at your fingertips.
+              {{ $t("flexibleOptionsDescription") }}
             </p>
           </div>
         </div>
@@ -190,9 +186,9 @@
             <i class="fas fa-leaf text-white"></i>
           </div>
           <div>
-            <h3 class="text-xl font-semibold text-[var(--Color-Text-Text-Primary)] mb-2">Eco-Conscious</h3>
+            <h3 class="text-xl font-semibold text-[var(--Color-Text-Text-Primary)] mb-2">{{ $t("ecoConscious") }}</h3>
             <p class="text-[var(--Color-Text-Text-Secondary)]">
-              Renting means less waste and more sharing. Together, we reduce unnecessary purchases and promote sustainable living for a better tomorrow.
+              {{ $t("ecoConsciousDescription") }}
             </p>
           </div>
         </div>
@@ -202,8 +198,8 @@
     <!-- Meet our Team Section -->
     <div class="max-w-7xl mx-auto px-4 py-16">
       <h2 class="text-4xl font-bold text-center mb-12">
-        <span class="text-[var(--Color-Text-Text-Primary)]">Meet our</span>
-        <span class="text-[var(--Color-Text-Text-Brand)]"> Team</span>
+        <span class="text-[var(--Color-Text-Text-Primary)]">{{ $t("meetOurTeamPart1") }}</span>
+        <span class="text-[var(--Color-Text-Text-Brand)]"> {{ $t("meetOurTeamPart2") }}</span>
       </h2>
       
       <div class="grid grid-cols-1 md:grid-cols-5 gap-8">
@@ -255,14 +251,14 @@
         <div class="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
           <div>
             <h2 class="text-6xl md:text-8xl lg:text-[96px] font-bold mb-6">
-              <div class="text-[var(--Color-Text-Text-Brand)]">Join us</div>
-              <div class="text-[var(--Color-Text-Text-Primary)]">now!</div>
+              <div class="text-[var(--Color-Text-Text-Brand)]">{{ $t("joinUsNowPart1") }}</div>
+              <div class="text-[var(--Color-Text-Text-Primary)]">{{ $t("joinUsNowPart2") }}</div>
             </h2>
           </div>
           
           <div class="text-center lg:text-left">
             <p class="text-lg text-[var(--Color-Text-Text-Primary)] mb-6">
-              Create an account now it's free! and rent the tool you want!
+              {{ $t("joinUsDescription") }}
             </p>
             <div class="space-y-4">
               <button 
@@ -270,16 +266,16 @@
                 class="bg-[var(--Color-Text-Text-Brand)] text-white px-8 py-3 rounded-lg font-semibold hover:bg-[var(--Color-Text-Text-Brand)] hover:opacity-90 transition-colors cursor-pointer"
                 :disabled="isAuthenticated"
               >
-                {{ isAuthenticated ? 'Already Signed Up!' : 'Sign up now!' }}
+                {{ isAuthenticated ? $t("alreadySignedUp") : $t("signUpNow") }}
               </button>
               <div class="text-sm text-[var(--Color-Text-Text-Secondary)]">
-                Already have an account? 
+                {{ $t("alreadyHaveAccount") }}
                 <a 
                   @click="handleLogin" 
                   class="text-[var(--Color-Text-Text-Brand)] hover:underline cursor-pointer"
                   :class="{ 'opacity-50 cursor-not-allowed': isAuthenticated }"
                 >
-                  {{ isAuthenticated ? 'Already Logged In' : 'Login' }}
+                  {{ isAuthenticated ? $t("alreadyLoggedIn") : $t("login") }}
                 </a>
               </div>
             </div>

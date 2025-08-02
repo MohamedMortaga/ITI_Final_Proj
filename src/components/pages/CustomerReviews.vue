@@ -1,7 +1,9 @@
 <template>
-  <div class="container mx-auto px-4 mt-12 mb-16">
-    <h3 class="text-center text-xl font-bold mb-6">
-      {{ $t('whatCustomersSay') }}
+  <div class="container mx-auto px-4 mt-6 mb-8">
+    <h3 class="text-center text-3xl lg:text-4xl font-bold mb-6">
+      <span class="text-[var(--Color-Text-Text-Primary)]">{{ $t('whatCustomersSayPart1') }}</span>
+      <span class="text-[var(--Color-Text-Text-Brand)]">{{ $t('whatCustomersSayPart2') }}</span>
+      <span class="text-[var(--Color-Text-Text-Primary)]">{{ $t('whatCustomersSayPart3') }}</span>
     </h3>
     <div class="flex flex-col lg:flex-row gap-6 justify-center">
       <div
