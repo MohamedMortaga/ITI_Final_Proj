@@ -37,7 +37,7 @@ import Profile from '@/views/Profile/Profile.vue';
 import MyProfile from '@/views/Profile/MyProfile.vue';
 import MyListings from '@/views/Profile/MyListings.vue';
 import MyRentals from '@/views/Profile/MyRentals.vue';
-import MyRentedProducts from '@/views/Profile/MyRentedProducts.vue';
+
 import MyBalance from '@/views/Profile/MyBalance.vue';
 import ContactDetails from '@/views/Profile/ContactDetails.vue';
 import IDVerification from '@/views/Profile/IDVerification.vue';
@@ -71,7 +71,7 @@ const routes = [
       { path: '', name: 'MyProfile', component: MyProfile, meta: { requiresAuth: true } },
       { path: 'listings', name: 'MyListings', component: MyListings, meta: { requiresAuth: true } },
       { path: 'rentals', name: 'MyRentals', component: MyRentals, meta: { requiresAuth: true } },
-      { path: 'rented-products', name: 'MyRentedProducts', component: MyRentedProducts, meta: { requiresAuth: true } },
+
       { path: 'balance', name: 'MyBalance', component: MyBalance, meta: { requiresAuth: true } },
 
       { path: 'contact-details', name: 'ContactDetails', component: ContactDetails, meta: { requiresAuth: true } },
