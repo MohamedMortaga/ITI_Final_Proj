@@ -129,7 +129,7 @@
           <!-- Delivery Method Section -->
           <div
             class="bg-[var(--Color-Surface-Surface-Primary)] border border-[var(--Color-Boarder-Border-Primary)] rounded-xl p-6"
-            style="height: 220px"
+            style="height: 100%"
           >
             <h2 class="text-xl font-semibold text-[var(--Color-Text-Text-Primary)] mb-4">
               {{ $t("deliveryMethod") }}
@@ -277,104 +277,98 @@
               </div>
             </div>
           </div>
+        </div>
+      </div>
+      <!-- Contact Details Section with Pricing -->
+      <div
+        class="w-full mt-8 bg-[var(--Color-Surface-Surface-Primary)] border border-[var(--Color-Boarder-Border-Primary)] rounded-xl p-6"
+      >
+        <h2 class="text-xl font-semibold text-[var(--Color-Text-Text-Primary)] mb-4">
+          {{ $t("renterContactInfo") }}
+        </h2>
 
-          <!-- Contact Details Section with Pricing -->
-          <div
-            class="bg-[var(--Color-Surface-Surface-Primary)] border border-[var(--Color-Boarder-Border-Primary)] rounded-xl p-6"
-          >
-            <h2 class="text-xl font-semibold text-[var(--Color-Text-Text-Primary)] mb-4">
-              {{ $t("renterContactInfo") }}
-            </h2>
-
-            <!-- Pricing Breakdown -->
-            <div class="space-y-3 mb-4">
-              <div class="flex justify-between items-center">
-                <span class="text-[var(--Color-Text-Text-Secondary)]"
-                  >{{ $t("subtotal") }}:</span
-                >
-                <span class="font-medium text-[var(--Color-Text-Text-Primary)]"
-                  >{{ $t("egp") }} {{ calculateSubtotal() }}</span
-                >
-              </div>
-              <div class="flex justify-between items-center">
-                <span class="text-[var(--Color-Text-Text-Secondary)]"
-                  >{{ $t("deliveryFee") }}:</span
-                >
-                <span class="font-medium text-[var(--Color-Text-Text-Primary)]"
-                  >{{ $t("egp") }} {{ calculateDeliveryFee() }}</span
-                >
-              </div>
-              <div class="flex justify-between items-center">
-                <span class="text-[var(--Color-Text-Text-Secondary)]"
-                  >{{ $t("serviceFee") }}:</span
-                >
-                <span class="font-medium text-[var(--Color-Text-Text-Primary)]"
-                  >{{ $t("egp") }} {{ calculateServiceFee() }}</span
-                >
-              </div>
-              <div
-                class="flex justify-between items-center pt-2 border-t border-[var(--Color-Boarder-Border-Primary)]"
-              >
-                <span class="text-lg font-bold text-[var(--Color-Text-Text-Primary)]"
-                  >{{ $t("total") }}:</span
-                >
-                <span class="text-xl font-bold text-[var(--Color-Text-Text-Brand)]"
-                  >{{ $t("egp") }} {{ calculateTotal() }}</span
-                >
-              </div>
-            </div>
-
-            <!-- Contact Information -->
-            <div
-              class="space-y-3 pt-3 border-t border-[var(--Color-Boarder-Border-Primary)]"
+        <!-- Pricing Breakdown -->
+        <div class="space-y-3 mb-4">
+          <div class="flex justify-between items-center">
+            <span class="text-[var(--Color-Text-Text-Secondary)]"
+              >{{ $t("subtotal") }}:</span
             >
-              <div class="flex items-center gap-2">
-                <i class="fas fa-user text-[var(--Color-Text-Text-Brand)] w-4"></i>
-                <span class="text-sm text-[var(--Color-Text-Text-Secondary)]"
-                  >{{ $t("name") }}:</span
-                >
-                <span class="text-sm font-medium text-[var(--Color-Text-Text-Primary)]">{{
-                  booking.userName || $t("notProvided")
-                }}</span>
-              </div>
-              <div class="flex items-center gap-2">
-                <i class="fas fa-phone text-[var(--Color-Text-Text-Brand)] w-4"></i>
-                <span class="text-sm text-[var(--Color-Text-Text-Secondary)]"
-                  >{{ $t("phone") }}:</span
-                >
-                <span class="text-sm font-medium text-[var(--Color-Text-Text-Primary)]">{{
-                  booking.phoneNumber || $t("notProvided")
-                }}</span>
-              </div>
-              <div class="flex items-center gap-2">
-                <i class="fas fa-envelope text-[var(--Color-Text-Text-Brand)] w-4"></i>
-                <span class="text-sm text-[var(--Color-Text-Text-Secondary)]"
-                  >{{ $t("email") }}:</span
-                >
-                <span class="text-sm font-medium text-[var(--Color-Text-Text-Primary)]">{{
-                  booking.userEmail || $t("notProvided")
-                }}</span>
-              </div>
-              <div class="flex items-center gap-2">
-                <i
-                  class="fas fa-map-marker-alt text-[var(--Color-Text-Text-Brand)] w-4"
-                ></i>
-                <span class="text-sm text-[var(--Color-Text-Text-Secondary)]"
-                  >{{ $t("deliveryMethod") }}:</span
-                >
-                <span class="text-sm font-medium text-[var(--Color-Text-Text-Primary)]">
-                  {{
-                    booking.deliveryMethod === "pickup"
-                      ? $t("pickupFromOwner")
-                      : $t("deliverToMyAddress")
-                  }}
-                </span>
-              </div>
-            </div>
+            <span class="font-medium text-[var(--Color-Text-Text-Primary)]"
+              >{{ $t("egp") }} {{ calculateSubtotal() }}</span
+            >
+          </div>
+          <div class="flex justify-between items-center">
+            <span class="text-[var(--Color-Text-Text-Secondary)]"
+              >{{ $t("deliveryFee") }}:</span
+            >
+            <span class="font-medium text-[var(--Color-Text-Text-Primary)]"
+              >{{ $t("egp") }} {{ calculateDeliveryFee() }}</span
+            >
+          </div>
+          <div class="flex justify-between items-center">
+            <span class="text-[var(--Color-Text-Text-Secondary)]"
+              >{{ $t("serviceFee") }}:</span
+            >
+            <span class="font-medium text-[var(--Color-Text-Text-Primary)]"
+              >{{ $t("egp") }} {{ calculateServiceFee() }}</span
+            >
+          </div>
+          <div
+            class="flex justify-between items-center pt-2 border-t border-[var(--Color-Boarder-Border-Primary)]"
+          >
+            <span class="text-lg font-bold text-[var(--Color-Text-Text-Primary)]"
+              >{{ $t("total") }}:</span
+            >
+            <span class="text-xl font-bold text-[var(--Color-Text-Text-Brand)]"
+              >{{ $t("egp") }} {{ calculateTotal() }}</span
+            >
+          </div>
+        </div>
+
+        <!-- Contact Information -->
+        <div class="space-y-3 pt-3 border-t border-[var(--Color-Boarder-Border-Primary)]">
+          <div class="flex items-center gap-2">
+            <i class="fas fa-user text-[var(--Color-Text-Text-Brand)] w-4"></i>
+            <span class="text-sm text-[var(--Color-Text-Text-Secondary)]"
+              >{{ $t("name") }}:</span
+            >
+            <span class="text-sm font-medium text-[var(--Color-Text-Text-Primary)]">{{
+              booking.userName || $t("notProvided")
+            }}</span>
+          </div>
+          <div class="flex items-center gap-2">
+            <i class="fas fa-phone text-[var(--Color-Text-Text-Brand)] w-4"></i>
+            <span class="text-sm text-[var(--Color-Text-Text-Secondary)]"
+              >{{ $t("phone") }}:</span
+            >
+            <span class="text-sm font-medium text-[var(--Color-Text-Text-Primary)]">{{
+              booking.phoneNumber || $t("notProvided")
+            }}</span>
+          </div>
+          <div class="flex items-center gap-2">
+            <i class="fas fa-envelope text-[var(--Color-Text-Text-Brand)] w-4"></i>
+            <span class="text-sm text-[var(--Color-Text-Text-Secondary)]"
+              >{{ $t("email") }}:</span
+            >
+            <span class="text-sm font-medium text-[var(--Color-Text-Text-Primary)]">{{
+              booking.userEmail || $t("notProvided")
+            }}</span>
+          </div>
+          <div class="flex items-center gap-2">
+            <i class="fas fa-map-marker-alt text-[var(--Color-Text-Text-Brand)] w-4"></i>
+            <span class="text-sm text-[var(--Color-Text-Text-Secondary)]"
+              >{{ $t("deliveryMethod") }}:</span
+            >
+            <span class="text-sm font-medium text-[var(--Color-Text-Text-Primary)]">
+              {{
+                booking.deliveryMethod === "pickup"
+                  ? $t("pickupFromOwner")
+                  : $t("deliverToMyAddress")
+              }}
+            </span>
           </div>
         </div>
       </div>
-
       <!-- Payment Method Section - Full Width -->
       <div
         class="mt-8 bg-[var(--Color-Surface-Surface-Primary)] border border-[var(--Color-Boarder-Border-Primary)] rounded-xl p-6"
