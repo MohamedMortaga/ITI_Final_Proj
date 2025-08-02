@@ -488,6 +488,88 @@
         </div>
       </div>
 
+      <!-- OTP Verification Popup Modal -->
+      <div
+        v-if="showOTPModal"
+        class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4"
+      >
+        <div class="bg-[var(--Color-Surface-Surface-Primary)] rounded-xl shadow-xl w-full max-w-md mx-4">
+          <!-- Modal Content -->
+          <div class="p-8 text-center">
+            <!-- Header Icon -->
+            <div class="flex justify-center mb-4">
+              <div class="w-16 h-16 bg-[var(--Color-Text-Text-Brand)] rounded-full flex items-center justify-center">
+                <svg class="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"></path>
+                </svg>
+              </div>
+            </div>
+
+            <!-- Title -->
+            <h2 class="text-2xl font-bold text-[var(--Color-Text-Text-Primary)] mb-2">
+              {{ $t("verifyPayment") }}
+            </h2>
+
+            <!-- Description -->
+            <p class="text-[var(--Color-Text-Text-Secondary)] mb-6">
+              {{ $t("enterOTPSentTo") }} 
+              <span class="font-medium text-[var(--Color-Text-Text-Primary)]">{{ booking.phoneNumber }}</span>
+            </p>
+
+            <!-- OTP Input Fields -->
+            <div class="flex justify-center space-x-2 mb-6">
+              <input
+                v-for="(digit, index) in 6"
+                :key="index"
+                v-model="otpDigits[index]"
+                type="text"
+                maxlength="1"
+                @input="handleOtpInput($event, index)"
+                @keydown="handleOtpKeydown($event, index)"
+                @paste="handleOtpPaste"
+                class="otp-input w-12 h-12 text-center text-lg font-semibold border-2 border-[var(--Color-Text-Text-Brand)] rounded-lg bg-[var(--Color-Surface-Surface-Primary)] text-[var(--Color-Text-Text-Primary)] focus:outline-none focus:ring-2 focus:ring-[var(--Color-Text-Text-Brand)] focus:ring-opacity-50 transition-all"
+                :class="{ 'border-[var(--Color-Text-Text-Brand)]': otpDigits[index], 'border-[var(--Color-Boarder-Border-Primary)]': !otpDigits[index] }"
+              />
+            </div>
+
+            <!-- Timer -->
+            <div class="text-sm text-[var(--Color-Text-Text-Secondary)] mb-6">
+              {{ $t("otpExpiresIn") }} 
+              <span class="font-medium text-[var(--Color-Text-Text-Brand)]">{{ otpTimer }}</span>
+            </div>
+
+            <!-- Action Buttons -->
+            <div class="space-y-3">
+              <!-- Verify OTP Button -->
+              <button
+                @click="verifyOTPFromModal"
+                :disabled="!isOtpComplete || otpTimer === '00'"
+                class="w-full bg-[var(--Color-Text-Text-Brand)] text-white py-3 px-6 rounded-lg font-semibold hover:bg-[var(--Color-Text-Text-Brand)] hover:opacity-90 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+              >
+                {{ $t("verifyOTP") }}
+              </button>
+
+              <!-- Resend Button -->
+              <button
+                @click="resendOTP"
+                :disabled="otpTimer !== '00'"
+                class="w-full border border-[var(--Color-Text-Text-Brand)] text-[var(--Color-Text-Text-Primary)] py-3 px-6 rounded-lg font-semibold hover:bg-[var(--Color-Surface-Surface-Secondary)] transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+              >
+                {{ otpTimer === '00' ? $t("resendOTP") : $t("resendIn") + ' ' + otpTimer + 's' }}
+              </button>
+
+              <!-- Cancel Link -->
+              <button
+                @click="closeOTPModal"
+                class="w-full text-[var(--Color-Text-Text-Primary)] py-2 font-medium hover:text-[var(--Color-Text-Text-Brand)] transition-colors"
+              >
+                {{ $t("cancel") }}
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+
       <!-- Summary Section -->
       <div
         class="mt-8 bg-[var(--Color-Surface-Surface-Primary)] border border-[var(--Color-Boarder-Border-Primary)] rounded-xl p-6"
@@ -769,6 +851,7 @@ const selectedLocation = ref("");
 
 // Modal and map related refs
 const showOTPForm = ref(false);
+const showOTPModal = ref(false);
 const showAddressModal = ref(false);
 const addressSearch = ref("");
 const addressSuggestions = ref([]);
@@ -776,6 +859,12 @@ const selectedAddress = ref("");
 const map = ref(null);
 const marker = ref(null);
 const mapInitialized = ref(false);
+
+// OTP Modal related refs
+const otpDigits = ref(['', '', '', '', '', '']);
+const otpTimer = ref('60');
+const otpTimerInterval = ref(null);
+const isOtpComplete = computed(() => otpDigits.value.every(digit => digit !== ''));
 
 const booking = ref({
   deliveryAddress: "30.0459°N, 31.2357°E",
@@ -1476,7 +1565,11 @@ const showLocationHelp = () => {
 
 onMounted(() => {});
 
-onUnmounted(() => {});
+onUnmounted(() => {
+  if (otpTimerInterval.value) {
+    clearInterval(otpTimerInterval.value);
+  }
+});
 
 const verifyOTP = async () => {
   if (booking.value.otp.length !== 6) {
@@ -1519,6 +1612,170 @@ const verifyOTP = async () => {
       iconColor: "#ef4444",
     });
   }
+};
+
+// OTP Modal Methods
+const startOtpTimer = () => {
+  let timeLeft = 60;
+  otpTimer.value = timeLeft.toString().padStart(2, '0');
+  
+  otpTimerInterval.value = setInterval(() => {
+    timeLeft--;
+    otpTimer.value = timeLeft.toString().padStart(2, '0');
+    
+    if (timeLeft <= 0) {
+      clearInterval(otpTimerInterval.value);
+      otpTimer.value = '00';
+    }
+  }, 1000);
+};
+
+const resetOtpTimer = () => {
+  if (otpTimerInterval.value) {
+    clearInterval(otpTimerInterval.value);
+  }
+  startOtpTimer();
+};
+
+const handleOtpInput = (event, index) => {
+  const value = event.target.value.replace(/\D/g, '');
+  otpDigits.value[index] = value;
+  
+  // Auto-focus next input
+  if (value && index < 5) {
+    const nextInput = event.target.parentElement.children[index + 1];
+    if (nextInput) {
+      nextInput.focus();
+    }
+  }
+  
+  // Update booking.otp
+  booking.value.otp = otpDigits.value.join('');
+};
+
+const handleOtpKeydown = (event, index) => {
+  // Handle backspace
+  if (event.key === 'Backspace' && !otpDigits.value[index] && index > 0) {
+    const prevInput = event.target.parentElement.children[index - 1];
+    if (prevInput) {
+      prevInput.focus();
+    }
+  }
+};
+
+const handleOtpPaste = (event) => {
+  event.preventDefault();
+  const pastedData = event.clipboardData.getData('text').replace(/\D/g, '');
+  const digits = pastedData.slice(0, 6).split('');
+  
+  otpDigits.value = [...digits, ...Array(6 - digits.length).fill('')];
+  booking.value.otp = otpDigits.value.join('');
+  
+  // Focus last filled input or first empty input
+  const lastFilledIndex = otpDigits.value.findIndex(digit => !digit);
+  const focusIndex = lastFilledIndex === -1 ? 5 : lastFilledIndex;
+  const focusInput = event.target.parentElement.children[focusIndex];
+  if (focusInput) {
+    focusInput.focus();
+  }
+};
+
+const openOtpModal = () => {
+  showOTPModal.value = true;
+  // Auto-populate OTP with "123456"
+  otpDigits.value = ['1', '2', '3', '4', '5', '6'];
+  booking.value.otp = '123456';
+  startOtpTimer();
+  
+  // Auto-focus first input after modal opens
+  setTimeout(() => {
+    const firstInput = document.querySelector('.otp-input');
+    if (firstInput) {
+      firstInput.focus();
+    }
+  }, 100);
+};
+
+const closeOtpModal = () => {
+  showOTPModal.value = false;
+  if (otpTimerInterval.value) {
+    clearInterval(otpTimerInterval.value);
+  }
+  otpDigits.value = ['', '', '', '', '', ''];
+  booking.value.otp = '';
+};
+
+const verifyOTPFromModal = async () => {
+  const otp = otpDigits.value.join('');
+  if (otp.length !== 6) {
+    Swal.fire({
+      icon: "warning",
+      title: t("invalidOTP"),
+      text: t("invalidOTPMessage"),
+      confirmButtonText: t("ok"),
+      background: "var(--Color-Surface-Surface-Primary)",
+      color: "var(--Color-Text-Text-Primary)",
+      confirmButtonColor: "var(--Color-Surface-Surface-Brand)",
+      iconColor: "#f59e0b",
+    });
+    return;
+  }
+
+  try {
+    booking.value.otp = otp;
+    console.log("OTP verified successfully!");
+    closeOtpModal();
+    
+    Swal.fire({
+      icon: "success",
+      title: t("paymentVerified"),
+      text: t("paymentVerifiedMessage"),
+      confirmButtonText: t("ok"),
+      background: "var(--Color-Surface-Surface-Primary)",
+      color: "var(--Color-Text-Text-Primary)",
+      confirmButtonColor: "var(--Color-Surface-Surface-Brand)",
+      iconColor: "#10b981",
+    });
+    await createBooking();
+  } catch (error) {
+    console.error("Error verifying OTP:", error);
+    Swal.fire({
+      icon: "error",
+      title: t("failedToVerifyOTP"),
+      text: t("failedToVerifyOTP", [error.message]),
+      confirmButtonText: t("ok"),
+      background: "var(--Color-Surface-Surface-Primary)",
+      color: "var(--Color-Text-Text-Primary)",
+      confirmButtonColor: "var(--Color-Surface-Surface-Brand)",
+      iconColor: "#ef4444",
+    });
+  }
+};
+
+const resendOTP = () => {
+  // Simulate resending OTP
+  Swal.fire({
+    icon: "info",
+    title: t("otpResent"),
+    text: t("otpResentMessage", [booking.value.phoneNumber]),
+    confirmButtonText: t("ok"),
+    background: "var(--Color-Surface-Surface-Primary)",
+    color: "var(--Color-Text-Text-Primary)",
+    confirmButtonColor: "var(--Color-Surface-Surface-Brand)",
+    iconColor: "#3b82f6",
+  });
+  
+  resetOtpTimer();
+  otpDigits.value = ['', '', '', '', '', ''];
+  booking.value.otp = '';
+  
+  // Auto-focus first input
+  setTimeout(() => {
+    const firstInput = document.querySelector('.otp-input');
+    if (firstInput) {
+      firstInput.focus();
+    }
+  }, 100);
 };
 
 const submitBooking = async () => {
@@ -1619,20 +1876,9 @@ const submitBooking = async () => {
         });
         return;
       }
-      showOTPForm.value = true;
-      Swal.fire({
-        icon: "info",
-        title: t("otpSent"),
-        text: t("otpSentMessage", [booking.value.phoneNumber]),
-        confirmButtonText: t("ok"),
-        background: "var(--Color-Surface-Surface-Primary)",
-        color: "var(--Color-Text-Text-Primary)",
-        confirmButtonColor: "var(--Color-Surface-Surface-Brand)",
-        iconColor: "#3b82f6",
-      });
-      setTimeout(() => {
-        booking.value.otp = "123456";
-      }, 2000);
+      
+      // Directly open OTP modal without showing intermediate popup
+      openOtpModal();
     }
   } catch (error) {
     console.error("Error processing booking:", error);
@@ -1798,3 +2044,10 @@ onMounted(() => {
   }
 });
 </script>
+
+<style scoped>
+.otp-input:focus {
+  border-color: var(--Color-Text-Text-Brand);
+  box-shadow: 0 0 0 3px rgba(var(--Color-Text-Text-Brand), 0.1);
+}
+</style>
