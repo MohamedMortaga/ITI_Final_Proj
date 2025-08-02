@@ -37,12 +37,14 @@
                 class="w-full h-96 object-cover cursor-pointer hover:opacity-90 transition-opacity"
                 @click="openImageModal"
               />
-              
+
               <!-- Zoom Icon Overlay -->
-              <div class="absolute top-4 right-4 bg-black bg-opacity-50 text-white rounded-full w-10 h-10 flex items-center justify-center">
+              <div
+                class="absolute top-4 right-4 bg-black bg-opacity-50 text-white rounded-full w-10 h-10 flex items-center justify-center"
+              >
                 <i class="fas fa-search-plus"></i>
               </div>
-              
+
               <!-- Navigation Arrows -->
               <button
                 v-if="availableImages.length > 1"
@@ -58,7 +60,7 @@
               >
                 <i class="fas fa-chevron-right text-gray-600"></i>
               </button>
-              
+
               <!-- Pagination Dots -->
               <div
                 v-if="availableImages.length > 1"
@@ -69,11 +71,15 @@
                   :key="index"
                   @click="currentImageIndex = index"
                   class="w-2 h-2 rounded-full cursor-pointer transition-all"
-                  :class="index === currentImageIndex ? 'bg-[var(--color-success-500)]' : 'bg-gray-300'"
+                  :class="
+                    index === currentImageIndex
+                      ? 'bg-[var(--color-success-500)]'
+                      : 'bg-gray-300'
+                  "
                 ></div>
               </div>
             </div>
-            
+
             <!-- Thumbnail Navigation -->
             <div
               v-if="availableImages.length > 1"
@@ -84,7 +90,11 @@
                 :key="index"
                 @click="currentImageIndex = index"
                 class="w-16 h-16 rounded-lg overflow-hidden cursor-pointer border-2 transition-all"
-                :class="index === currentImageIndex ? 'border-[var(--color-success-500)]' : 'border-gray-300'"
+                :class="
+                  index === currentImageIndex
+                    ? 'border-[var(--color-success-500)]'
+                    : 'border-gray-300'
+                "
               >
                 <img
                   :src="image"
@@ -342,12 +352,6 @@
             </div>
             <div class="space-y-3">
               <button
-                @click="viewOwnerTools"
-                class="w-full border border-[var(--Color-Text-Text-Brand)] text-[var(--Color-Text-Text-Brand)] py-2.5 rounded-lg hover:bg-[var(--Color-Text-Text-Brand)] hover:text-white transition-colors font-medium"
-              >
-                {{ $t("viewOwnerTools") }}
-              </button>
-              <button
                 @click="sendMessage"
                 class="w-full bg-[var(--Color-Surface-Surface-Brand)] text-[var(--Color-Text-Text-Invert)] py-2.5 rounded-lg hover:bg-[var(--Color-Text-Text-Brand)] hover:text-white transition-colors relative font-medium"
               >
@@ -383,8 +387,8 @@
                 class="border-b border-[var(--Color-Boarder-Border-Primary)] pb-4 last:border-b-0"
               >
                 <div class="flex items-center gap-2 mb-2">
-                  <VerificationBadge 
-                    :userName="review.userName || review.rentUserId" 
+                  <VerificationBadge
+                    :userName="review.userName || review.rentUserId"
                     :isVerified="review.userVerificationStatus"
                   />
                   <span class="text-yellow-400 text-sm">
@@ -725,24 +729,49 @@
             >
               {{ $t("renterContactInfo") }}
             </h3>
-            
+
             <!-- Pricing Breakdown -->
             <div class="space-y-3 mb-4">
               <div class="flex justify-between items-center">
-                <span class="text-[var(--color-gray-600)] dark:text-[var(--color-gray-400)]">{{ $t("subtotal") }}:</span>
-                <span class="font-medium text-[var(--color-gray-800)] dark:text-[var(--color-gray-200)]">{{ $t("egp") }} {{ calculateSubtotal() }}</span>
+                <span
+                  class="text-[var(--color-gray-600)] dark:text-[var(--color-gray-400)]"
+                  >{{ $t("subtotal") }}:</span
+                >
+                <span
+                  class="font-medium text-[var(--color-gray-800)] dark:text-[var(--color-gray-200)]"
+                  >{{ $t("egp") }} {{ calculateSubtotal() }}</span
+                >
               </div>
               <div class="flex justify-between items-center">
-                <span class="text-[var(--color-gray-600)] dark:text-[var(--color-gray-400)]">{{ $t("deliveryFee") }}:</span>
-                <span class="font-medium text-[var(--color-gray-800)] dark:text-[var(--color-gray-200)]">{{ $t("egp") }} {{ calculateDeliveryFee() }}</span>
+                <span
+                  class="text-[var(--color-gray-600)] dark:text-[var(--color-gray-400)]"
+                  >{{ $t("deliveryFee") }}:</span
+                >
+                <span
+                  class="font-medium text-[var(--color-gray-800)] dark:text-[var(--color-gray-200)]"
+                  >{{ $t("egp") }} {{ calculateDeliveryFee() }}</span
+                >
               </div>
               <div class="flex justify-between items-center">
-                <span class="text-[var(--color-gray-600)] dark:text-[var(--color-gray-400)]">{{ $t("serviceFee") }}:</span>
-                <span class="font-medium text-[var(--color-gray-800)] dark:text-[var(--color-gray-200)]">{{ $t("egp") }} 5.00</span>
+                <span
+                  class="text-[var(--color-gray-600)] dark:text-[var(--color-gray-400)]"
+                  >{{ $t("serviceFee") }}:</span
+                >
+                <span
+                  class="font-medium text-[var(--color-gray-800)] dark:text-[var(--color-gray-200)]"
+                  >{{ $t("egp") }} 5.00</span
+                >
               </div>
-              <div class="flex justify-between items-center pt-2 border-t border-gray-300 dark:border-gray-600">
-                <span class="text-lg font-bold text-[var(--color-gray-800)] dark:text-[var(--color-gray-200)]">{{ $t("total") }}:</span>
-                <span class="text-xl font-bold text-[var(--color-success-500)]">{{ $t("egp") }} {{ calculateTotal() }}</span>
+              <div
+                class="flex justify-between items-center pt-2 border-t border-gray-300 dark:border-gray-600"
+              >
+                <span
+                  class="text-lg font-bold text-[var(--color-gray-800)] dark:text-[var(--color-gray-200)]"
+                  >{{ $t("total") }}:</span
+                >
+                <span class="text-xl font-bold text-[var(--color-success-500)]"
+                  >{{ $t("egp") }} {{ calculateTotal() }}</span
+                >
               </div>
             </div>
 
@@ -750,24 +779,51 @@
             <div class="space-y-3 pt-3 border-t border-gray-300 dark:border-gray-600">
               <div class="flex items-center gap-2">
                 <i class="fas fa-user text-[var(--color-success-500)] w-4"></i>
-                <span class="text-sm text-[var(--color-gray-600)] dark:text-[var(--color-gray-400)]">{{ $t("name") }}:</span>
-                <span class="text-sm font-medium text-[var(--color-gray-800)] dark:text-[var(--color-gray-200)]">{{ booking.userName || $t("notProvided") }}</span>
+                <span
+                  class="text-sm text-[var(--color-gray-600)] dark:text-[var(--color-gray-400)]"
+                  >{{ $t("name") }}:</span
+                >
+                <span
+                  class="text-sm font-medium text-[var(--color-gray-800)] dark:text-[var(--color-gray-200)]"
+                  >{{ booking.userName || $t("notProvided") }}</span
+                >
               </div>
               <div class="flex items-center gap-2">
                 <i class="fas fa-phone text-[var(--color-success-500)] w-4"></i>
-                <span class="text-sm text-[var(--color-gray-600)] dark:text-[var(--color-gray-400)]">{{ $t("phone") }}:</span>
-                <span class="text-sm font-medium text-[var(--color-gray-800)] dark:text-[var(--color-gray-200)]">{{ booking.phoneNumber || $t("notProvided") }}</span>
+                <span
+                  class="text-sm text-[var(--color-gray-600)] dark:text-[var(--color-gray-400)]"
+                  >{{ $t("phone") }}:</span
+                >
+                <span
+                  class="text-sm font-medium text-[var(--color-gray-800)] dark:text-[var(--color-gray-200)]"
+                  >{{ booking.phoneNumber || $t("notProvided") }}</span
+                >
               </div>
               <div class="flex items-center gap-2">
                 <i class="fas fa-envelope text-[var(--color-success-500)] w-4"></i>
-                <span class="text-sm text-[var(--color-gray-600)] dark:text-[var(--color-gray-400)]">{{ $t("email") }}:</span>
-                <span class="text-sm font-medium text-[var(--color-gray-800)] dark:text-[var(--color-gray-200)]">{{ booking.userEmail || $t("notProvided") }}</span>
+                <span
+                  class="text-sm text-[var(--color-gray-600)] dark:text-[var(--color-gray-400)]"
+                  >{{ $t("email") }}:</span
+                >
+                <span
+                  class="text-sm font-medium text-[var(--color-gray-800)] dark:text-[var(--color-gray-200)]"
+                  >{{ booking.userEmail || $t("notProvided") }}</span
+                >
               </div>
               <div class="flex items-center gap-2">
                 <i class="fas fa-map-marker-alt text-[var(--color-success-500)] w-4"></i>
-                <span class="text-sm text-[var(--color-gray-600)] dark:text-[var(--color-gray-400)]">{{ $t("deliveryMethod") }}:</span>
-                <span class="text-sm font-medium text-[var(--color-gray-800)] dark:text-[var(--color-gray-200)]">
-                  {{ booking.deliveryMethod === 'pickup' ? $t("pickupFromOwner") : $t("deliverToMyAddress") }}
+                <span
+                  class="text-sm text-[var(--color-gray-600)] dark:text-[var(--color-gray-400)]"
+                  >{{ $t("deliveryMethod") }}:</span
+                >
+                <span
+                  class="text-sm font-medium text-[var(--color-gray-800)] dark:text-[var(--color-gray-200)]"
+                >
+                  {{
+                    booking.deliveryMethod === "pickup"
+                      ? $t("pickupFromOwner")
+                      : $t("deliverToMyAddress")
+                  }}
                 </span>
               </div>
             </div>
@@ -798,8 +854,8 @@
                   >Owner:</span
                 >
                 <div class="flex items-center space-x-2">
-                  <VerificationBadge 
-                    :userName="booking.sellerName" 
+                  <VerificationBadge
+                    :userName="booking.sellerName"
                     :isVerified="sellerVerificationStatus"
                   />
                 </div>
@@ -1125,7 +1181,7 @@
             class="max-w-full max-h-[80vh] object-contain transition-transform duration-200"
             :style="{
               transform: `scale(${zoomLevel}) translate(${panX}px, ${panY}px)`,
-              cursor: isPanning ? 'grabbing' : 'grab'
+              cursor: isPanning ? 'grabbing' : 'grab',
             }"
             @click.stop
           />
@@ -1252,29 +1308,31 @@ const currentImage = computed(() => {
 
 const nextImage = () => {
   if (availableImages.value.length > 1) {
-    currentImageIndex.value = (currentImageIndex.value + 1) % availableImages.value.length;
+    currentImageIndex.value =
+      (currentImageIndex.value + 1) % availableImages.value.length;
   }
 };
 
 const previousImage = () => {
   if (availableImages.value.length > 1) {
-    currentImageIndex.value = currentImageIndex.value === 0 
-      ? availableImages.value.length - 1 
-      : currentImageIndex.value - 1;
+    currentImageIndex.value =
+      currentImageIndex.value === 0
+        ? availableImages.value.length - 1
+        : currentImageIndex.value - 1;
   }
 };
 
 // Function to get seller verification status
 const getSellerVerificationStatus = async (sellerId) => {
   try {
-    const userDoc = await getDoc(doc(db, 'users', sellerId));
+    const userDoc = await getDoc(doc(db, "users", sellerId));
     if (userDoc.exists()) {
       const userData = userDoc.data();
       return userData.isVerified || false;
     }
     return false;
   } catch (error) {
-    console.error('Error fetching seller verification status:', error);
+    console.error("Error fetching seller verification status:", error);
     return false;
   }
 };
@@ -1282,7 +1340,9 @@ const getSellerVerificationStatus = async (sellerId) => {
 // Load seller verification status when product loads
 const loadSellerVerificationStatus = async () => {
   if (product.value?.userId) {
-    sellerVerificationStatus.value = await getSellerVerificationStatus(product.value.userId);
+    sellerVerificationStatus.value = await getSellerVerificationStatus(
+      product.value.userId
+    );
   }
 };
 
@@ -1420,10 +1480,10 @@ const loadProduct = async () => {
       booking.value.sellerId = product.value.sellerId || product.value.userId;
       booking.value.productTitle = product.value.title;
       booking.value.productPrice = parseFloat(product.value.price) || 0;
-      
+
       // Reset image gallery to first image
       currentImageIndex.value = 0;
-      
+
       await loadSellerDetails(booking.value.sellerId);
       await loadOwnerProducts(booking.value.sellerId);
       await loadSellerVerificationStatus(); // Load seller verification status
@@ -1956,7 +2016,8 @@ const submitBooking = async () => {
     await setDoc(doc(bookingsRef), {
       ...booking.value,
       productTitle: product.value.title,
-      productImage: product.value.image1 || product.value.image2 || product.value.image3 || '',
+      productImage:
+        product.value.image1 || product.value.image2 || product.value.image3 || "",
       sellerName: booking.value.sellerName,
       // Add seller contact information
       sellerContactInfo: sellerContactInfo,
@@ -2015,7 +2076,8 @@ const verifyOTP = async () => {
     await setDoc(doc(bookingsRef), {
       ...booking.value,
       productTitle: product.value.title,
-      productImage: product.value.image1 || product.value.image2 || product.value.image3 || '',
+      productImage:
+        product.value.image1 || product.value.image2 || product.value.image3 || "",
       sellerName: booking.value.sellerName,
     });
 
@@ -2158,7 +2220,7 @@ const navigateToRentConfirmation = async () => {
     try {
       const userDocRef = doc(db, "users", auth.currentUser.uid);
       const userDoc = await getDoc(userDocRef);
-      
+
       if (!userDoc.exists()) {
         Swal.fire({
           icon: "error",
@@ -2170,13 +2232,14 @@ const navigateToRentConfirmation = async () => {
       }
 
       const userData = userDoc.data();
-      
+
       // Check if user is verified
       if (!userData.isVerified) {
         Swal.fire({
           icon: "warning",
           title: "ID Verification Required",
-          text: "You must verify your ID before renting tools. Please upload your ID card in your profile.",
+          text:
+            "You must verify your ID before renting tools. Please upload your ID card in your profile.",
           confirmButtonText: "Go to ID Verification",
           showCancelButton: true,
           cancelButtonText: "Cancel",
@@ -2521,59 +2584,65 @@ const calculateSubtotal = () => {
 };
 
 const calculateDeliveryFee = () => {
-  if (booking.value.deliveryMethod === 'pickup') {
+  if (booking.value.deliveryMethod === "pickup") {
     return "0.00";
   }
-  
-  if (booking.value.deliveryMethod === 'delivery') {
+
+  if (booking.value.deliveryMethod === "delivery") {
     // Check if we have both renter and lender coordinates
-    if (booking.value.renterLat && booking.value.renterLng && 
-        booking.value.lenderLat && booking.value.lenderLng) {
-      
+    if (
+      booking.value.renterLat &&
+      booking.value.renterLng &&
+      booking.value.lenderLat &&
+      booking.value.lenderLng
+    ) {
       // Calculate real distance between renter and lender
       const distance = calculateDistance(
-        booking.value.lenderLat, 
+        booking.value.lenderLat,
         booking.value.lenderLng,
-        booking.value.renterLat, 
+        booking.value.renterLat,
         booking.value.renterLng
       );
-      
+
       // Base delivery fee
       const baseFee = 25;
-      
+
       // Distance-based fee (5 EGP per km, max 200 EGP)
       const distanceFee = Math.min(distance * 5, 200);
-      
+
       return (baseFee + distanceFee).toFixed(2);
     }
-    
+
     // Fallback: if coordinates not available, use address-based calculation
-    const address = booking.value.deliveryAddress || '';
-    if (address.trim() === '') {
+    const address = booking.value.deliveryAddress || "";
+    if (address.trim() === "") {
       return "0.00";
     }
-    
+
     const baseFee = 25;
     let distanceFee = 0;
     const addressLower = address.toLowerCase();
-    
-    if (addressLower.includes('cairo') || addressLower.includes('القاهرة')) {
+
+    if (addressLower.includes("cairo") || addressLower.includes("القاهرة")) {
       distanceFee = 15;
-    } else if (addressLower.includes('giza') || addressLower.includes('الجيزة')) {
+    } else if (addressLower.includes("giza") || addressLower.includes("الجيزة")) {
       distanceFee = 25;
-    } else if (addressLower.includes('alexandria') || addressLower.includes('الإسكندرية')) {
+    } else if (
+      addressLower.includes("alexandria") ||
+      addressLower.includes("الإسكندرية")
+    ) {
       distanceFee = 80;
-    } else if (addressLower.includes('sharm') || addressLower.includes('شرم')) {
+    } else if (addressLower.includes("sharm") || addressLower.includes("شرم")) {
       distanceFee = 150;
-    } else if (addressLower.includes('hurghada') || addressLower.includes('الغردقة')) {
+    } else if (addressLower.includes("hurghada") || addressLower.includes("الغردقة")) {
       distanceFee = 120;
     } else {
       distanceFee = 35;
     }
-    
+
     return (baseFee + distanceFee).toFixed(2);
   }
-  
+
   return "0.00";
 };
 
@@ -2588,13 +2657,15 @@ const calculateTotal = () => {
 // Calculate distance between two points using Haversine formula
 const calculateDistance = (lat1, lon1, lat2, lon2) => {
   const R = 6371; // Earth's radius in kilometers
-  const dLat = (lat2 - lat1) * Math.PI / 180;
-  const dLon = (lon2 - lon1) * Math.PI / 180;
-  const a = 
-    Math.sin(dLat/2) * Math.sin(dLat/2) +
-    Math.cos(lat1 * Math.PI / 180) * Math.cos(lat2 * Math.PI / 180) * 
-    Math.sin(dLon/2) * Math.sin(dLon/2);
-  const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
+  const dLat = ((lat2 - lat1) * Math.PI) / 180;
+  const dLon = ((lon2 - lon1) * Math.PI) / 180;
+  const a =
+    Math.sin(dLat / 2) * Math.sin(dLat / 2) +
+    Math.cos((lat1 * Math.PI) / 180) *
+      Math.cos((lat2 * Math.PI) / 180) *
+      Math.sin(dLon / 2) *
+      Math.sin(dLon / 2);
+  const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
   const distance = R * c; // Distance in kilometers
   return distance;
 };
@@ -2641,14 +2712,14 @@ onMounted(() => {
   }
 
   // Add keyboard event listener
-  document.addEventListener('keydown', handleKeydown);
+  document.addEventListener("keydown", handleKeydown);
 
   // Cleanup function
   return () => {
     if (chatUnsubscribe.value) {
       chatUnsubscribe.value();
     }
-    document.removeEventListener('keydown', handleKeydown);
+    document.removeEventListener("keydown", handleKeydown);
   };
 });
 
@@ -2691,10 +2762,10 @@ const resetZoom = () => {
 // Pan functions
 const startPan = (event) => {
   isPanning.value = true;
-  if (event.type === 'mousedown') {
+  if (event.type === "mousedown") {
     lastPanX.value = event.clientX;
     lastPanY.value = event.clientY;
-  } else if (event.type === 'touchstart') {
+  } else if (event.type === "touchstart") {
     lastPanX.value = event.touches[0].clientX;
     lastPanY.value = event.touches[0].clientY;
   }
@@ -2702,24 +2773,24 @@ const startPan = (event) => {
 
 const pan = (event) => {
   if (!isPanning.value) return;
-  
+
   event.preventDefault();
-  
+
   let currentX, currentY;
-  if (event.type === 'mousemove') {
+  if (event.type === "mousemove") {
     currentX = event.clientX;
     currentY = event.clientY;
-  } else if (event.type === 'touchmove') {
+  } else if (event.type === "touchmove") {
     currentX = event.touches[0].clientX;
     currentY = event.touches[0].clientY;
   }
-  
+
   const deltaX = currentX - lastPanX.value;
   const deltaY = currentY - lastPanY.value;
-  
+
   panX.value += deltaX;
   panY.value += deltaY;
-  
+
   lastPanX.value = currentX;
   lastPanY.value = currentY;
 };
@@ -2731,7 +2802,7 @@ const stopPan = () => {
 // Mouse wheel zoom
 const handleWheel = (event) => {
   event.preventDefault();
-  
+
   if (event.deltaY < 0) {
     zoomIn();
   } else {
@@ -2742,29 +2813,29 @@ const handleWheel = (event) => {
 // Keyboard event handling for modal
 const handleKeydown = (event) => {
   if (!showImageModal.value) return;
-  
+
   switch (event.key) {
-    case 'Escape':
+    case "Escape":
       closeImageModal();
       break;
-    case 'ArrowLeft':
+    case "ArrowLeft":
       if (availableImages.value.length > 1) {
         previousImage();
       }
       break;
-    case 'ArrowRight':
+    case "ArrowRight":
       if (availableImages.value.length > 1) {
         nextImage();
       }
       break;
-    case '+':
-    case '=':
+    case "+":
+    case "=":
       zoomIn();
       break;
-    case '-':
+    case "-":
       zoomOut();
       break;
-    case '0':
+    case "0":
       resetZoom();
       break;
   }
