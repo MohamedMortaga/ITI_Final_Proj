@@ -117,8 +117,8 @@
                 v-if="!isProductOwner"
                 @click="navigateToRentConfirmation"
                 :disabled="product?.status === 'pending' || isBookingPending"
-                class="bg-[var(--Color-Surface-Surface-Brand)] text-[var(--Color-Text-Text-Invert)] py-3 px-6 rounded-lg font-semibold hover:bg-[var(--Color-Text-Text-Brand)] hover:text-white disabled:bg-gray-400 disabled:cursor-not-allowed transition-colors whitespace-nowrap"
-              >
+               class="w-full mt-4 bg-[var(--Color-Surface-Surface-Brand)] text-[var(--Color-Text-Text-Invert)] py-3 px-6 rounded-lg font-semibold hover:bg-[var(--Color-Text-Text-Brand)] hover:text-white disabled:bg-gray-400 disabled:cursor-not-allowed transition-colors"
+            >
                 {{
                   product?.status === "pending" || isBookingPending
                     ? $t("toolNotAvailable")
