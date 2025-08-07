@@ -17,15 +17,17 @@
       class="border-t border-[var(--Color-Boarder-Border-Primary)] w-screen -ml-4 lg:-ml-6 xl:-ml-[88px]"
     ></div>
 
+    <!-- Hero Banner - Full Width -->
+    <div class="w-screen -ml-4 lg:-ml-6 xl:-ml-[88px] -mr-4 lg:-mr-6 xl:-mr-[88px]">
+      <HeroBanner />
+    </div>
+
     <!-- Category Filter -->
     <CategoryButtons
       :categories="categories"
       :selectedCategory="selectedCategory"
       @update:selectedCategory="selectedCategory = $event"
     />
-
-    <!-- Hero Banner -->
-    <HeroBanner class="px-2 lg:px-4" />
 
     <!-- Recommended Products -->
     <div class="container mx-auto px-2 lg:px-4 mt-8 flex-grow overflow-hidden">
