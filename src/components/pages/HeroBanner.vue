@@ -1,11 +1,11 @@
 <template>
-  <div class="w-full mt-6">
-    <div class="relative rounded-[16px] overflow-hidden w-full">
-      <div class="relative h-[400px] lg:h-[500px]">
+  <div class="w-full">
+    <div class="relative  overflow-hidden w-full">
+      <div class="relative h-[400px] lg:h-[485px]">
         <!-- Unified Hero Container -->
         <div class="relative h-full w-full">
           <!-- Slides Container -->
-          <div class="relative h-full w-full overflow-hidden rounded-[16px]">
+          <div class="relative h-full w-full overflow-hidden">
             <div class="relative h-full w-full">
               <!-- Horizontal Image Stream -->
               <div class="flex h-full transition-transform duration-1000 ease-in-out" :style="{ transform: `translateX(-${currentSlide * 100}%)` }">
@@ -23,68 +23,37 @@
                     />
                     <!-- Gradient overlay for better text readability -->
                     <div class="absolute inset-0 bg-gradient-to-r from-black/60 via-black/40 to-transparent"></div>
-                    
-                    <!-- Unified Content Overlay -->
-                    <div class="absolute inset-0 flex items-center">
-                      <div class="flex-1 flex items-center justify-center lg:justify-start p-8 lg:p-12">
-                        <div class="text-center lg:text-left max-w-2xl text-white">
-                          <!-- Hero Content with Dissolve Transition -->
-                          <transition-group 
-                            name="dissolve" 
-                            tag="div"
-                            class="space-y-6"
-                          >
-                            <div key="title" class="mb-6">
-                              <h1 class="text-4xl md:text-5xl lg:text-6xl font-bold mb-4 leading-tight">
-                                {{ slide.title }}
-                              </h1>
-                            </div>
-                            
-                            <div key="subtitle" class="mb-8">
-                              <p class="text-lg md:text-xl lg:text-2xl mb-8 opacity-90 max-w-2xl mx-auto lg:mx-0">
-                                {{ slide.subtitle }}
-                              </p>
-                            </div>
-                            
-                            <div key="buttons" class="flex flex-col sm:flex-row gap-4 justify-center lg:justify-start items-center mb-8">
-                              <button 
-                                @click="handlePrimaryAction"
-                                class="bg-[var(--Color-Text-Text-Brand)] hover:bg-[var(--Color-Text-Text-Brand)]/90 text-white px-8 py-4 rounded-lg font-semibold text-lg transition-all duration-300 transform hover:scale-105 shadow-lg"
-                              >
-                                {{ slide.primaryButton }}
-                              </button>
-                              <button 
-                                @click="handleSecondaryAction"
-                                class="bg-white/20 backdrop-blur-sm hover:bg-white/30 text-white px-8 py-4 rounded-lg font-semibold text-lg transition-all duration-300 border border-white/30"
-                              >
-                                {{ slide.secondaryButton }}
-                              </button>
-                            </div>
-                            
-                            <div key="stats" class="flex flex-wrap justify-center lg:justify-start gap-8 text-sm md:text-base">
-                              <div class="flex items-center gap-2">
-                                <svg class="w-5 h-5 text-[var(--Color-Text-Text-Brand)]" fill="currentColor" viewBox="0 0 20 20">
-                                  <path d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>
-                                </svg>
-                                <span>{{ slide.stats.verified }}</span>
-                              </div>
-                              <div class="flex items-center gap-2">
-                                <svg class="w-5 h-5 text-[var(--Color-Text-Text-Brand)]" fill="currentColor" viewBox="0 0 20 20">
-                                  <path d="M3 4a1 1 0 011-1h12a1 1 0 011 1v2a1 1 0 01-1 1H4a1 1 0 01-1-1V4zM3 10a1 1 0 011-1h6a1 1 0 011 1v6a1 1 0 01-1 1H4a1 1 0 01-1-1v-6zM14 9a1 1 0 00-1 1v6a1 1 0 001 1h2a1 1 0 001-1v-6a1 1 0 00-1-1h-2z"/>
-                                </svg>
-                                <span>{{ slide.stats.categories }}</span>
-                              </div>
-                              <div class="flex items-center gap-2">
-                                <svg class="w-5 h-5 text-[var(--Color-Text-Text-Brand)]" fill="currentColor" viewBox="0 0 20 20">
-                                  <path d="M9 6a3 3 0 11-6 0 3 3 0 016 0zM17 6a3 3 0 11-6 0 3 3 0 016 0zM12.93 17c.046-.327.07-.66.07-1a6.97 6.97 0 00-1.5-4.33A5 5 0 0119 13c0 1.01-.377 1.94-1 2.65V19a1 1 0 11-2 0v-1.35A3 3 0 0114 16c0-.34.024-.673.07-1H12.93z"/>
-                                </svg>
-                                <span>{{ slide.stats.users }}</span>
-                              </div>
-                            </div>
-                          </transition-group>
-                        </div>
-                      </div>
-                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Fixed Content Overlay - Outside the sliding container -->
+          <div class="absolute inset-0 flex items-center pointer-events-none">
+            <div class="flex-1 flex items-center justify-start p-8 lg:p-12">
+              <div class="text-left max-w-2xl text-white pointer-events-auto">
+                <div class="space-y-6">
+                  <div class="ml-[24px] lg:ml-12 mb-6">
+                    <h1 class="text-4xl md:text-5xl lg:text-6xl font-bold mb-4 leading-tight">
+                      Save Money, Live Better
+                    </h1>
+                  </div>
+                  
+                  <!-- Subtitle - hidden on mobile, visible on desktop -->
+                  <div class="hidden lg:block ml-[24px] lg:ml-12 mb-8">
+                    <p class="text-lg md:text-xl lg:text-2xl mb-8 opacity-90 max-w-2xl">
+                      Why buy when you can rent? Access premium equipment at a fraction of the cost. Perfect for projects, events, and temporary needs.
+                    </p>
+                  </div>
+                  
+                  <div class="flex flex-row gap-3 lg:gap-4 justify-start items-center mb-8 ml-[24px] lg:ml-12">
+                    <button 
+                      @click="handlePrimaryAction"
+                      class="bg-[var(--Color-Text-Text-Brand)] hover:bg-[var(--Color-Text-Text-Brand)]/90 text-white px-4 py-2 lg:px-8 lg:py-4 rounded-lg font-semibold text-sm lg:text-lg transition-all duration-300 transform hover:scale-105 shadow-lg"
+                    >
+                      Explore Now
+                    </button>
                   </div>
                 </div>
               </div>
@@ -97,16 +66,16 @@
             class="absolute left-4 top-1/2 -translate-y-1/2 bg-black/30 hover:bg-black/50 text-white p-3 rounded-full transition-all duration-300 backdrop-blur-sm"
             aria-label="Previous slide"
           >
-            <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <svg class="w-3 lg:w-4 h-3 lg:h-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path>
             </svg>
           </button>
           <button 
             @click="nextSlide"
-            class="absolute right-4 top-1/2 -translate-y-1/2 bg-black/30 hover:bg-black/50 text-white p-3 rounded-full transition-all duration-300 backdrop-blur-sm"
+            class="lg:mr-3 absolute right-4 top-1/2 -translate-y-1/2 bg-black/30 hover:bg-black/50 text-white p-3 rounded-full transition-all duration-300 backdrop-blur-sm"
             aria-label="Next slide"
           >
-            <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <svg class="w-3 lg:w-4 h-3 lg:h-4  text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
             </svg>
           </button>
@@ -142,7 +111,7 @@ let slideInterval = null;
 const slides = [
   { 
     id: 0, 
-    image: new URL('@/assets/side-view-woman-with-photo-camera.jpg', import.meta.url).href,
+    image: new URL('@/assets/side-view-woman-with-photo-camera.png', import.meta.url).href,
     alt: 'Woman with Photo Camera',
     title: 'Rent Anything, Anywhere',
     subtitle: 'Discover thousands of tools and equipment available for rent. From cameras to camping gear, find what you need without the commitment of buying.',
@@ -200,16 +169,7 @@ const goToSlide = (index) => {
 };
 
 const handlePrimaryAction = () => {
-  // Navigate to signup if not authenticated, otherwise to products
-  const user = localStorage.getItem('user');
-  if (user) {
-    router.push('/all-products');
-  } else {
-    router.push('/signup');
-  }
-};
-
-const handleSecondaryAction = () => {
+  // Navigate to browse tools page
   router.push('/all-products');
 };
 
