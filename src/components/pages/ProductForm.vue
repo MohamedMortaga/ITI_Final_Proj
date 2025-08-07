@@ -41,12 +41,37 @@
             @change="$emit('imageUpload', $event, 1)"
             accept="image/*"
             class="absolute inset-0 w-full h-full opacity-0 cursor-pointer z-10"
+            :disabled="uploading1"
             required
           />
           <div
             class="border-2 border-dashed border-[var(--Color-Boarder-Border-Primary)] dark:border-[var(--Color-Boarder-Border-Primary)] rounded-xl p-6 text-center hover:border-[var(--Colors-Primary-500)] hover:bg-[var(--Color-Surface-Surface-Secondary)] dark:hover:bg-[var(--Color-Surface-Surface-Secondary)] transition-all duration-300 bg-[var(--Color-Surface-Surface-Primary)] dark:bg-[var(--Color-Surface-Surface-Primary)] shadow-sm hover:shadow-md"
           >
-            <div v-if="!form.image1" class="space-y-3">
+            <div v-if="uploading1" class="space-y-3">
+              <div
+                class="mx-auto w-16 h-16 bg-[var(--Colors-Primary-100)] dark:bg-[var(--Colors-Primary-900)] rounded-full flex items-center justify-center"
+              >
+                <svg
+                  class="h-8 w-8 text-[var(--Colors-Primary-500)] animate-spin"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    stroke-width="2"
+                    d="M4 12a8 8 0 0116 0 8 8 0 01-16 0"
+                  ></path>
+                </svg>
+              </div>
+              <p
+                class="text-sm font-medium text-[var(--Color-Text-Text-Primary)] dark:text-[var(--Color-Text-Text-Primary)] font-nunito"
+              >
+                {{ $t("uploading") || "Uploading..." }}
+              </p>
+            </div>
+            <div v-else-if="!form.image1" class="space-y-3">
               <div
                 class="mx-auto w-16 h-16 bg-[var(--Colors-Primary-100)] dark:bg-[var(--Colors-Primary-900)] rounded-full flex items-center justify-center"
               >
@@ -154,11 +179,36 @@
             @change="$emit('imageUpload', $event, 2)"
             accept="image/*"
             class="absolute inset-0 w-full h-full opacity-0 cursor-pointer z-10"
+            :disabled="uploading2"
           />
           <div
             class="border-2 border-dashed border-[var(--Color-Boarder-Border-Primary)] dark:border-[var(--Color-Boarder-Border-Primary)] rounded-xl p-6 text-center hover:border-[var(--Colors-Primary-500)] hover:bg-[var(--Color-Surface-Surface-Secondary)] dark:hover:bg-[var(--Color-Surface-Surface-Secondary)] transition-all duration-300 bg-[var(--Color-Surface-Surface-Primary)] dark:bg-[var(--Color-Surface-Surface-Primary)] shadow-sm hover:shadow-md"
           >
-            <div v-if="!form.image2" class="space-y-3">
+            <div v-if="uploading2" class="space-y-3">
+              <div
+                class="mx-auto w-16 h-16 bg-[var(--Colors-Primary-100)] dark:bg-[var(--Colors-Primary-900)] rounded-full flex items-center justify-center"
+              >
+                <svg
+                  class="h-8 w-8 text-[var(--Colors-Primary-500)] animate-spin"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    stroke-width="2"
+                    d="M4 12a8 8 0 0116 0 8 8 0 01-16 0"
+                  ></path>
+                </svg>
+              </div>
+              <p
+                class="text-sm font-medium text-[var(--Color-Text-Text-Primary)] dark:text-[var(--Color-Text-Text-Primary)] font-nunito"
+              >
+                {{ $t("uploading") || "Uploading..." }}
+              </p>
+            </div>
+            <div v-else-if="!form.image2" class="space-y-3">
               <div
                 class="mx-auto w-16 h-16 bg-[var(--Colors-Primary-100)] dark:bg-[var(--Colors-Primary-900)] rounded-full flex items-center justify-center"
               >
@@ -266,11 +316,36 @@
             @change="$emit('imageUpload', $event, 3)"
             accept="image/*"
             class="absolute inset-0 w-full h-full opacity-0 cursor-pointer z-10"
+            :disabled="uploading3"
           />
           <div
             class="border-2 border-dashed border-[var(--Color-Boarder-Border-Primary)] dark:border-[var(--Color-Boarder-Border-Primary)] rounded-xl p-6 text-center hover:border-[var(--Colors-Primary-500)] hover:bg-[var(--Color-Surface-Surface-Secondary)] dark:hover:bg-[var(--Color-Surface-Surface-Secondary)] transition-all duration-300 bg-[var(--Color-Surface-Surface-Primary)] dark:bg-[var(--Color-Surface-Surface-Primary)] shadow-sm hover:shadow-md"
           >
-            <div v-if="!form.image3" class="space-y-3">
+            <div v-if="uploading3" class="space-y-3">
+              <div
+                class="mx-auto w-16 h-16 bg-[var(--Colors-Primary-100)] dark:bg-[var(--Colors-Primary-900)] rounded-full flex items-center justify-center"
+              >
+                <svg
+                  class="h-8 w-8 text-[var(--Colors-Primary-500)] animate-spin"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    stroke-width="2"
+                    d="M4 12a8 8 0 0116 0 8 8 0 01-16 0"
+                  ></path>
+                </svg>
+              </div>
+              <p
+                class="text-sm font-medium text-[var(--Color-Text-Text-Primary)] dark:text-[var(--Color-Text-Text-Primary)] font-nunito"
+              >
+                {{ $t("uploading") || "Uploading..." }}
+              </p>
+            </div>
+            <div v-else-if="!form.image3" class="space-y-3">
               <div
                 class="mx-auto w-16 h-16 bg-[var(--Colors-Primary-100)] dark:bg-[var(--Colors-Primary-900)] rounded-full flex items-center justify-center"
               >
@@ -487,29 +562,17 @@
 <script setup>
 import { computed } from "vue";
 
-// استخراج props
-const {
-  form,
-  categories,
-  isEdit,
-  uploading,
-  uploading1,
-  uploading2,
-  uploading3,
-} = defineProps([
-  "form",
-  "categories",
-  "isEdit",
-  "uploading",
-  "uploading1",
-  "uploading2",
-  "uploading3",
-]);
+const { form, categories, isEdit, uploading1, uploading2, uploading3 } = defineProps({
+  form: Object,
+  categories: Array,
+  isEdit: Boolean,
+  uploading1: Boolean,
+  uploading2: Boolean,
+  uploading3: Boolean,
+});
 
-// ✅ عرفي العمولة قبل استخدامها
 const commissionRate = 0.15;
 
-// ✅ بعدها احسبي صافي الربح
 const netProfit = computed(() => {
   try {
     if (!form.price) return 0;
@@ -520,6 +583,19 @@ const netProfit = computed(() => {
   }
 });
 
-// تعريف الإيفنتات
 defineEmits(["submitForm", "imageUpload", "removeImage"]);
 </script>
+
+<style>
+.animate-spin {
+  animation: spin 1s linear infinite;
+}
+@keyframes spin {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
+</style>
