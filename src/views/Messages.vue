@@ -1180,7 +1180,6 @@ onUnmounted(() => {
   }
 });
 </script>
-
 <style scoped>
 /* Scrollbar styles for messages container */
 .messages-container::-webkit-scrollbar {
@@ -1234,6 +1233,41 @@ onUnmounted(() => {
 
 .dark .conversations-list::-webkit-scrollbar-thumb:hover {
   background: rgba(255, 255, 255, 0.2);
+}
+
+/* Desktop-specific styles */
+.main-content {
+  height: calc(100vh - 120px); /* Account for header (~80px) and padding (~40px) */
+  display: grid;
+  gap: 24px; /* Match the gap-6 (1.5rem = 24px) */
+}
+
+.conversations-list {
+  max-height: calc(100vh - 120px); /* Full viewport height minus header and padding */
+  overflow-y: auto; /* Enable scrolling for overflow */
+}
+
+.conversations-list-content {
+  max-height: calc(100vh - 200px); /* Adjust for conversation header (~80px) */
+  overflow-y: auto;
+}
+
+.chat-area {
+  max-height: calc(100vh - 120px); /* Full viewport height minus header and padding */
+  overflow-y: auto; /* Enable scrolling for overflow */
+}
+
+.chat-area .h-full {
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+}
+
+.messages-container {
+  max-height: calc(
+    100vh - 260px
+  ); /* Adjust for chat header (~80px), input (~60px), and padding */
+  overflow-y: auto; /* Ensure scrolling */
 }
 
 /* Animations */
@@ -1307,7 +1341,7 @@ onUnmounted(() => {
   .main-content {
     display: flex;
     flex-direction: column;
-    height: calc(200vh - 120px); /* Account for header (~80px) and padding (~40px) */
+    height: calc(140vh - 120px); /* Account for header (~80px) and padding (~40px) */
     min-height: 0; /* Prevent overflow */
   }
 
