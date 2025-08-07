@@ -366,7 +366,6 @@
         </div>
       </div>
     </div>
-
     <!-- Category -->
     <div class="mb-4">
       <label

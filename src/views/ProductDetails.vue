@@ -109,7 +109,7 @@
           <div
             class="bg-[var(--Color-Surface-Surface-Tertiary)] rounded-xl border border-[var(--Color-Boarder-Border-Primary)] p-6"
           >
-            <div class="flex items-center justify-between mb-4">
+            <div class="flex items-center justify-between mb-4 gap-3">
               <h1 class="text-3xl font-bold text-[var(--Color-Text-Text-Primary)]">
                 {{ product.title }}
               </h1>
@@ -117,8 +117,8 @@
                 v-if="!isProductOwner"
                 @click="navigateToRentConfirmation"
                 :disabled="product?.status === 'pending' || isBookingPending"
-               class="w-full mt-4 bg-[var(--Color-Surface-Surface-Brand)] text-[var(--Color-Text-Text-Invert)] py-3 px-6 rounded-lg font-semibold hover:bg-[var(--Color-Text-Text-Brand)] hover:text-white disabled:bg-gray-400 disabled:cursor-not-allowed transition-colors"
-            >
+                class="w-auto mt-4 bg-[var(--Color-Surface-Surface-Brand)] text-[var(--Color-Text-Text-Invert)] py-3 px-6 rounded-lg font-semibold hover:bg-[var(--Color-Text-Text-Brand)] hover:text-white disabled:bg-gray-400 disabled:cursor-not-allowed transition-colors"
+              >
                 {{
                   product?.status === "pending" || isBookingPending
                     ? $t("toolNotAvailable")
