@@ -1,6 +1,6 @@
 <template>
   <div
-    class="min-h-screen flex flex-col px-6 lg:px-[88px] overflow-x-hidden"
+    class="min-h-screen flex flex-col px-4 lg:px-6 xl:px-[88px] overflow-x-hidden"
     :style="{
       backgroundColor: 'var(--Color-Surface-Surface-Primary)',
       color: 'var(--Color-Text-Text-Primary)',
@@ -12,9 +12,9 @@
       v-model:selectedLocation="selectedLocation"
     />
 
-    <!-- Full-width divider -->
+    <!-- Full-width divider that ignores parent padding -->
     <div
-      class="border-t border-[var(--Color-Boarder-Border-Primary)] w-full"
+      class="border-t border-[var(--Color-Boarder-Border-Primary)] w-screen -ml-4 lg:-ml-6 xl:-ml-[88px]"
     ></div>
 
     <!-- Category Buttons -->

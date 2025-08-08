@@ -31,7 +31,7 @@
                 v-for="link in navLinks"
                 :key="link.to"
                 :to="link.to"
-                class="text-sm lg:text-xl font-medium hover:text-[var(--Color-Text-Text-Brand)] px-2 py-1 rounded transition-colors"
+                class="text-base font-medium hover:text-[var(--Color-Text-Text-Brand)] px-2 py-1 rounded transition-colors"
                 :class="{
                   'text-[var(--Color-Text-Text-Brand)] font-bold':
                     $route.path === link.to,
@@ -193,14 +193,14 @@
               <img
                 :src="userProfileImage || '../../assets/default.png'"
                 alt="User Profile"
-                class="h-8 w-8 sm:h-10 sm:w-10 rounded-full cursor-pointer hover:opacity-80 transition-opacity"
+                class="h-6 w-6 sm:h-8 sm:w-8 rounded-full cursor-pointer hover:opacity-80 transition-opacity"
               />
             </router-link>
 
             <router-link
               v-if="!isAuthenticated"
               to="/login"
-              class="px-3 py-1 sm:px-4 sm:py-2 rounded-md text-sm sm:text-xl font-medium bg-[var(--Color-Surface-Surface-Brand)] hover:bg-[var(--Colors-Primary-700)] text-[var(--Color-Text-Text-Invert)] transition-colors"
+              class="px-2 py-1 sm:px-3 sm:py-1.5 rounded-md text-xs sm:text-sm font-medium bg-[var(--Color-Surface-Surface-Brand)] hover:bg-[var(--Colors-Primary-700)] text-[var(--Color-Text-Text-Invert)] transition-colors"
             >
               {{ $t("login") }}
             </router-link>

@@ -35,12 +35,6 @@
         <h2 class="text-lg lg:text-xl font-bold text-[var(--Color-Text-Text-Brand)]">
           {{ $t("recommendedForYou") }}
         </h2>
-        <router-link
-          to="/all-products"
-          class="text-[var(--Color-Text-Text-Brand)] font-medium hover:underline text-sm lg:text-base"
-        >
-          {{ $t("viewAll") }}
-        </router-link>
       </div>
       <div
         v-if="filteredProducts.length === 0"
@@ -59,6 +53,29 @@
           :isAuthenticated="isAuthenticated"
           :promptLogin="promptLogin"
         />
+      </div>
+      
+      <!-- View All Button -->
+      <div class="flex justify-center mt-8">
+        <router-link
+          to="/all-products"
+          class="inline-flex items-center justify-center gap-2 px-8 py-2 bg-[var(--Color-Text-Text-Brand)] text-white font-medium rounded-lg hover:bg-[var(--Colors-Primary-600)] transition-all duration-300 group min-w-[200px] relative"
+        >
+          <span class="group-hover:translate-x-[-8px] transition-transform duration-300">{{ $t("viewAll") }}</span>
+          <svg
+            class="w-4 h-4 opacity-0 group-hover:opacity-100 transition-all duration-300 absolute right-4"
+            fill="none"
+            stroke="currentColor"
+            viewBox="0 0 24 24"
+          >
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="2"
+              d="M9 5l7 7-7 7"
+            />
+          </svg>
+        </router-link>
       </div>
       <!-- Share Banner -->
       <ShareBanner />

@@ -46,11 +46,46 @@
           <i class="fa-solid fa-magnifying-glass absolute left-2 sm:left-4 top-1/2 -translate-y-1/2 text-[var(--Color-Text-Text-Brand)] w-5 h-5 pointer-events-none"></i>
           <input 
             :value="searchQuery" 
-            @input="$emit('update:searchQuery', $event.target.value)" 
+            @input="handleSearchInput" 
+            @focus="showDropdown = true"
+            @blur="handleBlur"
             type="text" 
             :placeholder="$t('searchPlaceholder')"
             class="pl-8 sm:pl-12 pr-4 py-3 w-full border rounded-lg focus:outline-none focus:ring-2 focus:ring-[var(--Color-Text-Text-Brand)] text-base text-[var(--Color-Text-Text-Primary)] placeholder-[var(--Color-Text-Text-Secondary)] bg-[var(--Color-Surface-Surface-Primary)] border-[var(--Color-Boarder-Border-Primary)] dark:border-[var(--Color-Boarder-Border-Primary)]" 
           />
+          
+          <!-- Search Results Dropdown -->
+          <div 
+            v-if="showDropdown && filteredResults.length > 0" 
+            class="absolute top-full left-0 right-0 mt-1 bg-[var(--Color-Surface-Surface-Primary)] border border-[var(--Color-Boarder-Border-Primary)] rounded-lg shadow-lg z-50 max-h-64 overflow-y-auto"
+          >
+            <div 
+              v-for="product in filteredResults.slice(0, 5)" 
+              :key="product.id"
+              @click="selectProduct(product)"
+              class="flex items-center gap-3 p-3 hover:bg-gray-25 dark:hover:bg-gray-600 cursor-pointer border-b border-[var(--Color-Boarder-Border-Primary)] last:border-b-0 transition-colors"
+            >
+              <div class="w-12 h-12 flex-shrink-0">
+                <img 
+                  :src="product.image1 || require('@/assets/default.png')" 
+                  :alt="product.title"
+                  class="w-full h-full object-cover rounded-lg"
+                  @error="$event.target.src = require('@/assets/default.png')"
+                />
+              </div>
+              <div class="flex-1 min-w-0">
+                <h4 class="text-sm font-medium text-[var(--Color-Text-Text-Primary)] truncate">
+                  {{ product.title }}
+                </h4>
+                <p class="text-xs text-[var(--Color-Text-Text-Secondary)]">
+                  {{ product.category }} • {{ product.location }}
+                </p>
+                <p class="text-xs text-[var(--Color-Text-Text-Brand)] font-medium">
+                  EGP {{ product.price }}/day
+                </p>
+              </div>
+            </div>
+          </div>
         </div>
       </div>
     </div>
@@ -58,7 +93,12 @@
 </template>
 
 <script>
+import { ref, computed, watch } from 'vue'
 import { useLocation } from '@/composables/useLocation'
+import { useGlobalRealTime } from '@/composables/useGlobalRealTime'
+import { useRouter } from 'vue-router'
+import { getAuth } from 'firebase/auth'
+import Swal from 'sweetalert2'
 
 export default {
   props: {
@@ -74,6 +114,76 @@ export default {
   },
   setup(props, { emit }) {
     const { userLocation, setLocation } = useLocation()
+    const { products } = useGlobalRealTime()
+    const router = useRouter()
+    
+    const showDropdown = ref(false)
+    const searchTimeout = ref(null)
+
+    // Filter products based on search query
+    const filteredResults = computed(() => {
+      if (!props.searchQuery || !products.value) return []
+      
+      const query = props.searchQuery.toLowerCase()
+      return products.value
+        .filter(product => product.isApproved === true)
+        .filter(product => 
+          product.title?.toLowerCase().includes(query) ||
+          product.category?.toLowerCase().includes(query) ||
+          product.description?.toLowerCase().includes(query)
+        )
+        .slice(0, 5) // Limit to 5 results
+    })
+
+    // Handle search input
+    const handleSearchInput = (event) => {
+      const value = event.target.value
+      emit('update:searchQuery', value)
+      
+      // Clear previous timeout
+      if (searchTimeout.value) {
+        clearTimeout(searchTimeout.value)
+      }
+      
+      // Show dropdown after a short delay
+      searchTimeout.value = setTimeout(() => {
+        showDropdown.value = value.length > 0
+      }, 300)
+    }
+
+    // Handle blur event
+    const handleBlur = () => {
+      // Delay hiding dropdown to allow for clicks
+      setTimeout(() => {
+        showDropdown.value = false
+      }, 200)
+    }
+
+    // Select a product from dropdown
+    const selectProduct = (product) => {
+      emit('update:searchQuery', product.title)
+      showDropdown.value = false
+      
+      // Check if user is authenticated
+      const auth = getAuth()
+      if (auth.currentUser) {
+        // User is authenticated, navigate to product details
+        router.push({ name: 'ProductDetails', params: { id: product.id } })
+      } else {
+        // User is not authenticated, show login prompt
+        Swal.fire({
+          position: "top-end",
+          icon: "warning",
+          title: "Please log in to view product details",
+          showConfirmButton: true,
+          confirmButtonText: "Go to Login",
+        }).then((result) => {
+          if (result.isConfirmed) {
+            router.push({ name: 'Login' })
+          }
+        })
+      }
+    }
 
     // Watch for changes in the selectedLocation prop and update global state
     const handleLocationChange = (event) => {
@@ -87,8 +197,20 @@ export default {
       emit('update:selectedLocation', userLocation.value)
     }
 
+    // Watch for search query changes
+    watch(() => props.searchQuery, (newQuery) => {
+      if (!newQuery) {
+        showDropdown.value = false
+      }
+    })
+
     return {
-      handleLocationChange
+      handleLocationChange,
+      handleSearchInput,
+      handleBlur,
+      selectProduct,
+      showDropdown,
+      filteredResults
     }
   }
 }
