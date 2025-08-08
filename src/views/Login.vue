@@ -1,10 +1,10 @@
 <template>
   <div
     :dir="i18n.locale.value === 'ar' ? 'rtl' : 'ltr'"
-    class="min-h-screen flex items-center justify-center bg-[var(--Color-Surface-Surface-Primary)] px-4 sm:px-6 lg:px-8 overflow-y-hidden dark:bg-[var(--Color-Surface-Surface-Primary)]"
+    class="min-h-screen flex bg-[var(--Color-Surface-Surface-Primary)] dark:bg-[var(--Color-Surface-Surface-Primary)]"
   >
     <div
-      class="max-w-6xl w-full flex flex-col lg:flex-row items-center justify-between xl:max-w-7xl 2xl:max-w-[1500px]"
+      class="w-full flex flex-col lg:flex-row"
     >
       <!-- Form Section -->
       <div
@@ -15,25 +15,22 @@
           class="mb-6"
           :class="i18n.locale.value === 'ar' ? 'text-right' : 'text-left'"
         >
-          <h1
-            class="text-3xl font-bold text-[var(--Color-Text-Text-Brand)] dark:text-[var(--Color-Text-Text-Brand)] lg:text-3xl xl:text-4xl"
+        <router-link
+            to="/"
+            class="flex items-center"
           >
-            {{ $t("rento") }}
-          </h1>
+            <img
+              :src="require('@/assets/logo/logo light .png')"
+              alt="Rento Logo"
+              class="h-16 w-auto"
+            />
+          </router-link>
         </div>
 
-        <h2 class="text-2xl font-semibold mb-4 lg:text-2xl xl:text-3xl">
+        <h2 class="text-2xl font-semibold mb-4 lg:text-2xl xl:text-3xl text-center">
           {{ $t("login") }}
         </h2>
-        <p class="text-gray-600 mb-6 lg:text-base xl:text-lg dark:text-gray-300">
-          {{ $t("registerHere") }}<br />
-          <router-link
-            to="/Signup"
-            class="text-[var(--Color-Text-Text-Brand)] font-semibold"
-          >
-            {{ $t("signUp") }}
-          </router-link>
-        </p>
+        
 
         <form class="space-y-3 xl:space-y-3" @submit.prevent="handleSubmit">
           <!-- Email -->
@@ -129,6 +126,18 @@
                 class="h-4 w-4 lg:h-6 lg:w-6 xl:h-6 xl:w-6"
               />
             </button>
+            
+          </div>
+          <div class="text-center pt-10">
+            <p class="text-gray-600 mb-6 lg:text-base text-sm dark:text-gray-300">
+          {{ $t("registerHere") }}
+          <router-link
+            to="/Signup"
+            class="text-[var(--Color-Text-Text-Brand)] font-semibold underline"
+          >
+            {{ $t("signUp") }}
+          </router-link>
+        </p>
           </div>
 
           <!-- Error -->
@@ -144,13 +153,13 @@
 
       <!-- Illustration -->
       <div
-        class="hidden lg:block w-full lg:w-1/2 mt-8 lg:mt-0"
+        class="hidden lg:block w-full lg:w-1/2 h-screen sticky top-0"
         :class="i18n.locale.value === 'ar' ? 'lg:order-1' : 'lg:order-2'"
       >
         <img
           src="../assets/login.png"
           alt="Login Illustration"
-          class="w-full h-auto"
+          class="w-full h-full object-cover object-center"
           loading="lazy"
         />
       </div>
