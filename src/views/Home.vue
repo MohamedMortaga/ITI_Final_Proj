@@ -88,75 +88,83 @@
       <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 lg:gap-8">
         <!-- Basic Plan -->
         <div
-          class="bg-[var(--Color-Surface-Surface-Primary)] border border-[var(--Color-Boarder-Border-Primary)] rounded-xl p-6 lg:p-8 relative hover:shadow-lg transition-all duration-300"
+          class="bg-[var(--Color-Surface-Surface-Primary)] border border-[var(--Color-Boarder-Border-Primary)] rounded-xl p-6 lg:p-8 relative hover:shadow-lg transition-all duration-300 flex flex-col h-full"
         >
-          <div class="text-center mb-6 lg:mb-8">
-            <h3
-              class="text-xl lg:text-2xl font-bold text-[var(--Color-Text-Text-Primary)] mb-2"
-            >
-              {{ $t("basic") }}
-            </h3>
-            <p
-              class="text-sm lg:text-base text-[var(--Color-Text-Text-Secondary)] mb-4 lg:mb-6"
-            >
-              {{ $t("basicDescription") }}
-            </p>
-            <div class="mb-4 lg:mb-6">
-              <span
-                class="text-3xl lg:text-4xl font-bold text-[var(--Color-Text-Text-Brand)]"
-                >$0</span
+          <div class="flex-grow">
+            <!-- This wrapper will push the button down -->
+            <div class="text-center mb-6 lg:mb-8">
+              <h3
+                class="text-xl lg:text-2xl font-bold text-[var(--Color-Text-Text-Primary)] mb-2"
               >
-              <span class="text-sm lg:text-base text-[var(--Color-Text-Text-Secondary)]"
-                >/month</span
+                {{ $t("basic") }}
+              </h3>
+              <p
+                class="text-sm lg:text-base text-[var(--Color-Text-Text-Secondary)] mb-4 lg:mb-6"
               >
+                {{ $t("basicDescription") }}
+              </p>
+              <div class="mb-4 lg:mb-6">
+                <span
+                  class="text-3xl lg:text-4xl font-bold text-[var(--Color-Text-Text-Brand)]"
+                  >$0</span
+                >
+                <span class="text-sm lg:text-base text-[var(--Color-Text-Text-Secondary)]"
+                  >/month</span
+                >
+              </div>
             </div>
-          </div>
 
-          <ul class="space-y-3 lg:space-y-4 mb-6 lg:mb-8">
-            <li class="flex items-center">
-              <div
-                class="w-4 h-4 lg:w-5 lg:h-5 bg-[var(--Color-Text-Text-Brand)] rounded-full flex items-center justify-center mr-2 lg:mr-3 flex-shrink-0"
-              >
-                <i class="fas fa-check text-white text-xs"></i>
-              </div>
-              <span class="text-sm lg:text-base text-[var(--Color-Text-Text-Primary)]">{{
-                $t("accessToBasicTools")
-              }}</span>
-            </li>
-            <li class="flex items-center">
-              <div
-                class="w-4 h-4 lg:w-5 lg:h-5 bg-[var(--Color-Text-Text-Brand)] rounded-full flex items-center justify-center mr-2 lg:mr-3 flex-shrink-0"
-              >
-                <i class="fas fa-check text-white text-xs"></i>
-              </div>
-              <span class="text-sm lg:text-base text-[var(--Color-Text-Text-Primary)]">{{
-                $t("standardCustomerSupport")
-              }}</span>
-            </li>
-            <li class="flex items-center">
-              <div
-                class="w-4 h-4 lg:w-5 lg:h-5 bg-[var(--Color-Text-Text-Brand)] rounded-full flex items-center justify-center mr-2 lg:mr-3 flex-shrink-0"
-              >
-                <i class="fas fa-check text-white text-xs"></i>
-              </div>
-              <span class="text-sm lg:text-base text-[var(--Color-Text-Text-Primary)]">{{
-                $t("basicRentalInsurance")
-              }}</span>
-            </li>
-            <li class="flex items-center">
-              <div
-                class="w-4 h-4 lg:w-5 lg:h-5 bg-[var(--Color-Text-Text-Brand)] rounded-full flex items-center justify-center mr-2 lg:mr-3 flex-shrink-0"
-              >
-                <i class="fas fa-check text-white text-xs"></i>
-              </div>
-              <span class="text-sm lg:text-base text-[var(--Color-Text-Text-Primary)]">{{
-                $t("hourRentalPeriods")
-              }}</span>
-            </li>
-          </ul>
+            <ul class="space-y-3 lg:space-y-4 mb-6 lg:mb-8">
+              <li class="flex items-center">
+                <div
+                  class="w-4 h-4 lg:w-5 lg:h-5 bg-[var(--Color-Text-Text-Brand)] rounded-full flex items-center justify-center mr-2 lg:mr-3 flex-shrink-0"
+                >
+                  <i class="fas fa-check text-white text-xs"></i>
+                </div>
+                <span
+                  class="text-sm lg:text-base text-[var(--Color-Text-Text-Primary)]"
+                  >{{ $t("accessToBasicTools") }}</span
+                >
+              </li>
+              <li class="flex items-center">
+                <div
+                  class="w-4 h-4 lg:w-5 lg:h-5 bg-[var(--Color-Text-Text-Brand)] rounded-full flex items-center justify-center mr-2 lg:mr-3 flex-shrink-0"
+                >
+                  <i class="fas fa-check text-white text-xs"></i>
+                </div>
+                <span
+                  class="text-sm lg:text-base text-[var(--Color-Text-Text-Primary)]"
+                  >{{ $t("standardCustomerSupport") }}</span
+                >
+              </li>
+              <li class="flex items-center">
+                <div
+                  class="w-4 h-4 lg:w-5 lg:h-5 bg-[var(--Color-Text-Text-Brand)] rounded-full flex items-center justify-center mr-2 lg:mr-3 flex-shrink-0"
+                >
+                  <i class="fas fa-check text-white text-xs"></i>
+                </div>
+                <span
+                  class="text-sm lg:text-base text-[var(--Color-Text-Text-Primary)]"
+                  >{{ $t("basicRentalInsurance") }}</span
+                >
+              </li>
+              <li class="flex items-center">
+                <div
+                  class="w-4 h-4 lg:w-5 lg:h-5 bg-[var(--Color-Text-Text-Brand)] rounded-full flex items-center justify-center mr-2 lg:mr-3 flex-shrink-0"
+                >
+                  <i class="fas fa-check text-white text-xs"></i>
+                </div>
+                <span
+                  class="text-sm lg:text-base text-[var(--Color-Text-Text-Primary)]"
+                  >{{ $t("hourRentalPeriods") }}</span
+                >
+              </li>
+            </ul>
+          </div>
+          <!-- End of flex-grow wrapper -->
 
           <button
-            class="w-full bg-[var(--Color-Text-Text-Brand)] text-white py-2 lg:py-3 rounded-lg text-sm lg:text-base font-semibold hover:opacity-90 transition-colors"
+            class="mt-auto bg-[var(--Color-Text-Text-Brand)] text-white py-2 lg:py-3 rounded-lg text-sm lg:text-base font-semibold hover:opacity-90 transition-colors w-full"
           >
             {{ $t("getStartedFree") }}
           </button>
@@ -267,105 +275,114 @@
 
         <!-- Premium Plan -->
         <div
-          class="bg-[var(--Color-Surface-Surface-Primary)] border border-[var(--Color-Boarder-Border-Primary)] rounded-xl p-6 lg:p-8 relative hover:shadow-lg transition-all duration-300 md:col-span-2 lg:col-span-1"
+          class="bg-[var(--Color-Surface-Surface-Primary)] border border-[var(--Color-Boarder-Border-Primary)] rounded-xl p-6 lg:p-8 relative hover:shadow-lg transition-all duration-300 md:col-span-2 lg:col-span-1 flex flex-col h-full"
         >
-          <div class="text-center mb-6 lg:mb-8">
-            <h3
-              class="text-xl lg:text-2xl font-bold text-[var(--Color-Text-Text-Primary)] mb-2"
-            >
-              {{ $t("premium") }}
-            </h3>
-            <p
-              class="text-sm lg:text-base text-[var(--Color-Text-Text-Secondary)] mb-4 lg:mb-6"
-            >
-              {{ $t("premiumDescription") }}
-            </p>
-            <div class="mb-4 lg:mb-6">
-              <span
-                class="text-3xl lg:text-4xl font-bold text-[var(--Color-Text-Text-Brand)]"
-                >$49</span
+          <div class="flex-grow">
+            <div class="text-center mb-6 lg:mb-8">
+              <h3
+                class="text-xl lg:text-2xl font-bold text-[var(--Color-Text-Text-Primary)] mb-2"
               >
-              <span class="text-sm lg:text-base text-[var(--Color-Text-Text-Secondary)]"
-                >/month</span
+                {{ $t("premium") }}
+              </h3>
+              <p
+                class="text-sm lg:text-base text-[var(--Color-Text-Text-Secondary)] mb-4 lg:mb-6"
               >
+                {{ $t("premiumDescription") }}
+              </p>
+              <div class="mb-4 lg:mb-6">
+                <span
+                  class="text-3xl lg:text-4xl font-bold text-[var(--Color-Text-Text-Brand)]"
+                  >$49</span
+                >
+                <span class="text-sm lg:text-base text-[var(--Color-Text-Text-Secondary)]"
+                  >/month</span
+                >
+              </div>
             </div>
+
+            <ul class="space-y-3 lg:space-y-4 mb-6 lg:mb-8">
+              <li class="flex items-center">
+                <div
+                  class="w-4 h-4 lg:w-5 lg:h-5 bg-[var(--Color-Text-Text-Brand)] rounded-full flex items-center justify-center mr-2 lg:mr-3 flex-shrink-0"
+                >
+                  <i class="fas fa-check text-white text-xs"></i>
+                </div>
+                <span
+                  class="text-sm lg:text-base text-[var(--Color-Text-Text-Primary)]"
+                  >{{ $t("everythingInPro") }}</span
+                >
+              </li>
+              <li class="flex items-center">
+                <div
+                  class="w-4 h-4 lg:w-5 lg:h-5 bg-[var(--Color-Text-Text-Brand)] rounded-full flex items-center justify-center mr-2 lg:mr-3 flex-shrink-0"
+                >
+                  <i class="fas fa-check text-white text-xs"></i>
+                </div>
+                <span
+                  class="text-sm lg:text-base text-[var(--Color-Text-Text-Primary)]"
+                  >{{ $t("dedicatedSupport") }}</span
+                >
+              </li>
+              <li class="flex items-center">
+                <div
+                  class="w-4 h-4 lg:w-5 lg:h-5 bg-[var(--Color-Text-Text-Brand)] rounded-full flex items-center justify-center mr-2 lg:mr-3 flex-shrink-0"
+                >
+                  <i class="fas fa-check text-white text-xs"></i>
+                </div>
+                <span
+                  class="text-sm lg:text-base text-[var(--Color-Text-Text-Primary)]"
+                  >{{ $t("premiumRentalInsurance") }}</span
+                >
+              </li>
+              <li class="flex items-center">
+                <div
+                  class="w-4 h-4 lg:w-5 lg:h-5 bg-[var(--Color-Text-Text-Brand)] rounded-full flex items-center justify-center mr-2 lg:mr-3 flex-shrink-0"
+                >
+                  <i class="fas fa-check text-white text-xs"></i>
+                </div>
+                <span
+                  class="text-sm lg:text-base text-[var(--Color-Text-Text-Primary)]"
+                  >{{ $t("unlimitedRentalPeriods") }}</span
+                >
+              </li>
+              <li class="flex items-center">
+                <div
+                  class="w-4 h-4 lg:w-5 lg:h-5 bg-[var(--Color-Text-Text-Brand)] rounded-full flex items-center justify-center mr-2 lg:mr-3 flex-shrink-0"
+                >
+                  <i class="fas fa-check text-white text-xs"></i>
+                </div>
+                <span
+                  class="text-sm lg:text-base text-[var(--Color-Text-Text-Primary)]"
+                  >{{ $t("priorityBooking") }}</span
+                >
+              </li>
+              <li class="flex items-center">
+                <div
+                  class="w-4 h-4 lg:w-5 lg:h-5 bg-[var(--Color-Text-Text-Brand)] rounded-full flex items-center justify-center mr-2 lg:mr-3 flex-shrink-0"
+                >
+                  <i class="fas fa-check text-white text-xs"></i>
+                </div>
+                <span
+                  class="text-sm lg:text-base text-[var(--Color-Text-Text-Primary)]"
+                  >{{ $t("exclusiveToolsAccess") }}</span
+                >
+              </li>
+              <li class="flex items-center">
+                <div
+                  class="w-4 h-4 lg:w-5 lg:h-5 bg-[var(--Color-Text-Text-Brand)] rounded-full flex items-center justify-center mr-2 lg:mr-3 flex-shrink-0"
+                >
+                  <i class="fas fa-check text-white text-xs"></i>
+                </div>
+                <span
+                  class="text-sm lg:text-base text-[var(--Color-Text-Text-Primary)]"
+                  >{{ $t("analyticsDashboard") }}</span
+                >
+              </li>
+            </ul>
           </div>
 
-          <ul class="space-y-3 lg:space-y-4 mb-6 lg:mb-8">
-            <li class="flex items-center">
-              <div
-                class="w-4 h-4 lg:w-5 lg:h-5 bg-[var(--Color-Text-Text-Brand)] rounded-full flex items-center justify-center mr-2 lg:mr-3 flex-shrink-0"
-              >
-                <i class="fas fa-check text-white text-xs"></i>
-              </div>
-              <span class="text-sm lg:text-base text-[var(--Color-Text-Text-Primary)]">{{
-                $t("everythingInPro")
-              }}</span>
-            </li>
-            <li class="flex items-center">
-              <div
-                class="w-4 h-4 lg:w-5 lg:h-5 bg-[var(--Color-Text-Text-Brand)] rounded-full flex items-center justify-center mr-2 lg:mr-3 flex-shrink-0"
-              >
-                <i class="fas fa-check text-white text-xs"></i>
-              </div>
-              <span class="text-sm lg:text-base text-[var(--Color-Text-Text-Primary)]">{{
-                $t("dedicatedSupport")
-              }}</span>
-            </li>
-            <li class="flex items-center">
-              <div
-                class="w-4 h-4 lg:w-5 lg:h-5 bg-[var(--Color-Text-Text-Brand)] rounded-full flex items-center justify-center mr-2 lg:mr-3 flex-shrink-0"
-              >
-                <i class="fas fa-check text-white text-xs"></i>
-              </div>
-              <span class="text-sm lg:text-base text-[var(--Color-Text-Text-Primary)]">{{
-                $t("premiumRentalInsurance")
-              }}</span>
-            </li>
-            <li class="flex items-center">
-              <div
-                class="w-4 h-4 lg:w-5 lg:h-5 bg-[var(--Color-Text-Text-Brand)] rounded-full flex items-center justify-center mr-2 lg:mr-3 flex-shrink-0"
-              >
-                <i class="fas fa-check text-white text-xs"></i>
-              </div>
-              <span class="text-sm lg:text-base text-[var(--Color-Text-Text-Primary)]">{{
-                $t("unlimitedRentalPeriods")
-              }}</span>
-            </li>
-            <li class="flex items-center">
-              <div
-                class="w-4 h-4 lg:w-5 lg:h-5 bg-[var(--Color-Text-Text-Brand)] rounded-full flex items-center justify-center mr-2 lg:mr-3 flex-shrink-0"
-              >
-                <i class="fas fa-check text-white text-xs"></i>
-              </div>
-              <span class="text-sm lg:text-base text-[var(--Color-Text-Text-Primary)]">{{
-                $t("priorityBooking")
-              }}</span>
-            </li>
-            <li class="flex items-center">
-              <div
-                class="w-4 h-4 lg:w-5 lg:h-5 bg-[var(--Color-Text-Text-Brand)] rounded-full flex items-center justify-center mr-2 lg:mr-3 flex-shrink-0"
-              >
-                <i class="fas fa-check text-white text-xs"></i>
-              </div>
-              <span class="text-sm lg:text-base text-[var(--Color-Text-Text-Primary)]">{{
-                $t("exclusiveToolsAccess")
-              }}</span>
-            </li>
-            <li class="flex items-center">
-              <div
-                class="w-4 h-4 lg:w-5 lg:h-5 bg-[var(--Color-Text-Text-Brand)] rounded-full flex items-center justify-center mr-2 lg:mr-3 flex-shrink-0"
-              >
-                <i class="fas fa-check text-white text-xs"></i>
-              </div>
-              <span class="text-sm lg:text-base text-[var(--Color-Text-Text-Primary)]">{{
-                $t("analyticsDashboard")
-              }}</span>
-            </li>
-          </ul>
-
           <button
-            class="w-full bg-[var(--Color-Text-Text-Brand)] text-white py-2 lg:py-3 rounded-lg text-sm lg:text-base font-semibold hover:opacity-90 transition-colors"
+            class="mt-auto bg-[var(--Color-Text-Text-Brand)] text-white py-2 lg:py-3 rounded-lg text-sm lg:text-base font-semibold hover:opacity-90 transition-colors w-full"
           >
             {{ $t("startPremiumPlan") }}
           </button>
