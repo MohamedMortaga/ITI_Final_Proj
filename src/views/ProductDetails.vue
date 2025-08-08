@@ -34,7 +34,7 @@
               <img
                 :src="currentImage || product.image1 || require('@/assets/logo.png')"
                 alt="Product Image"
-                class="w-full h-96 object-cover cursor-pointer hover:opacity-90 transition-opacity"
+                class="w-full h-100 object-cover cursor-pointer hover:opacity-90 transition-opacity"
                 @click="openImageModal"
               />
 
@@ -109,15 +109,15 @@
           <div
             class="bg-[var(--Color-Surface-Surface-Tertiary)] rounded-xl border border-[var(--Color-Boarder-Border-Primary)] p-6"
           >
-            <div class="flex items-center justify-between mb-4 gap-3">
-              <h1 class="text-3xl font-bold text-[var(--Color-Text-Text-Primary)]">
+            <div class="flex items-center justify-between mb-4 gap-2">
+              <h1 class="md:text-2xl  sm:text-sm font-bold text-[var(--Color-Text-Text-Primary)]">
                 {{ product.title }}
               </h1>
               <button
                 v-if="!isProductOwner"
                 @click="navigateToRentConfirmation"
                 :disabled="product?.status === 'pending' || isBookingPending"
-                class="w-auto mt-4 bg-[var(--Color-Surface-Surface-Brand)] text-[var(--Color-Text-Text-Invert)] py-3 px-6 rounded-lg font-semibold hover:bg-[var(--Color-Text-Text-Brand)] hover:text-white disabled:bg-gray-400 disabled:cursor-not-allowed transition-colors"
+                class="w-auto mt-4 bg-[var(--Color-Surface-Surface-Brand)] sm:text-sm text-[var(--Color-Text-Text-Invert)] py-3 px-6 rounded-lg font-semibold hover:bg-[var(--Color-Text-Text-Brand)] hover:text-white disabled:bg-gray-400 disabled:cursor-not-allowed transition-colors"
               >
                 {{
                   product?.status === "pending" || isBookingPending
@@ -172,7 +172,9 @@
                   product.category || product.type
                 }}</span>
               </div>
-              <div
+
+              <!-- brand -->
+              <!-- <div
                 class="flex justify-between py-2 border-b border-[var(--Color-Boarder-Border-Primary)]"
               >
                 <span class="font-medium text-[var(--Color-Text-Text-Secondary)]"
@@ -181,8 +183,10 @@
                 <span class="text-[var(--Color-Text-Text-Primary)]">{{
                   $t("bosch")
                 }}</span>
-              </div>
-              <div
+              </div> -->
+
+              <!-- model -->
+              <!-- <div
                 class="flex justify-between py-2 border-b border-[var(--Color-Boarder-Border-Primary)]"
               >
                 <span class="font-medium text-[var(--Color-Text-Text-Secondary)]"
@@ -191,7 +195,7 @@
                 <span class="text-[var(--Color-Text-Text-Primary)]">{{
                   product.model || $t("gsr18v50Professional")
                 }}</span>
-              </div>
+              </div> -->
               <div
                 class="flex justify-between py-2 border-b border-[var(--Color-Boarder-Border-Primary)]"
               >
@@ -992,95 +996,161 @@
       class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4"
     >
       <div
-        class="bg-[var(--Color-Surface-Surface-Tertiary)] rounded-xl border border-[var(--Color-Boarder-Border-Primary)] w-full max-w-2xl h-[600px] flex flex-col"
+        class="bg-[var(--Color-Surface-Surface-Primary)] rounded-2xl border border-[var(--Color-Boarder-Border-Primary)] w-full max-w-2xl h-[600px] flex flex-col overflow-hidden"
       >
         <!-- Chat Header -->
         <div
-          class="bg-[var(--Color-Surface-Surface-Brand)] text-[var(--Color-Text-Text-Invert)] p-4 rounded-t-xl flex justify-between items-center"
+          class="p-6 border-b border-[var(--Color-Boarder-Border-Primary)] bg-[var(--Color-Surface-Surface-Brand)] text-[var(--Color-Text-Text-Invert)]"
         >
-          <div class="flex items-center gap-3">
-            <img
-              :src="booking.sellerImage || require('@/assets/default.png')"
-              alt="Owner"
-              class="w-10 h-10 rounded-full object-cover"
-            />
-            <div>
-              <h3 class="font-semibold text-lg">{{ booking.sellerName }}</h3>
-              <p class="text-sm opacity-90">Product: {{ product?.title }}</p>
+          <div class="flex items-center justify-between">
+            <div class="flex items-center gap-4">
+              <!-- Avatar -->
+              <div class="relative">
+                <img
+                  :src="booking.sellerImage || require('@/assets/default.png')"
+                  alt="Owner"
+                  class="w-12 h-12 rounded-full object-cover ring-2 ring-[var(--Color-Text-Text-Invert)]/20"
+                />
+                <!-- Online Status -->
+                <div
+                  class="absolute -bottom-1 -right-1 w-4 h-4 bg-[var(--color-success-400)] rounded-full border-2 border-[var(--Color-Text-Text-Invert)]"
+                ></div>
+              </div>
+              <div>
+                <h3 class="font-bold text-lg">
+                  {{ booking.sellerName }}
+                </h3>
+                <div class="flex items-center gap-2 mt-1">
+                  <i class="fas fa-tag text-xs opacity-80"></i>
+                  <p class="text-sm opacity-90 font-medium">
+                    {{ product?.title }}
+                  </p>
+                </div>
+              </div>
+            </div>
+            <div class="flex items-center gap-2">
+              <button
+                @click="closeChatModal"
+                class="p-2 hover:bg-[var(--Color-Text-Text-Invert)]/20 rounded-lg transition-all duration-200"
+                title="Close Chat"
+              >
+                <i class="fas fa-times"></i>
+              </button>
             </div>
           </div>
-          <button
-            @click="closeChatModal"
-            class="text-white hover:text-gray-200 text-2xl font-bold"
-          >
-            ×
-          </button>
         </div>
 
         <!-- Chat Messages -->
         <div
           id="chat-messages-container"
-          class="flex-1 overflow-y-auto p-4 space-y-4 bg-[var(--Colors-Gray-50)] dark:bg-[var(--Colors-Gray-800)]"
+          class="flex-1 overflow-y-auto p-6 bg-[var(--Colors-Gray-25)] dark:bg-[var(--Color-Surface-Surface-Primary)]"
         >
           <!-- Loading State -->
           <div v-if="chatLoading" class="flex justify-center items-center h-32">
-            <div
-              class="animate-spin rounded-full h-8 w-8 border-b-2 border-[var(--color-success-500)]"
-            ></div>
+            <div class="text-center">
+              <div
+                class="animate-spin rounded-full h-12 w-12 border-4 border-[var(--color-primary-25)] dark:border-[var(--color-Gray-600)] border-t-[var(--Color-Surface-Surface-Brand)] mx-auto mb-4"
+              ></div>
+              <p class="text-[var(--Color-Text-Text-Secondary)]">
+                Loading messages...
+              </p>
+            </div>
           </div>
 
           <!-- Error State -->
-          <div v-else-if="chatError" class="text-center text-red-500 p-4">
-            <i class="fas fa-exclamation-triangle mb-2"></i>
-            <p>{{ chatError }}</p>
+          <div v-else-if="chatError" class="text-center p-12">
+            <div
+              class="p-6 bg-[var(--color-Gray-25)] rounded-2xl mb-6 inline-block"
+            >
+              <i class="fas fa-exclamation-triangle text-4xl text-red-500"></i>
+            </div>
+            <h3 class="text-lg font-semibold text-[var(--Color-Text-Text-Primary)] mb-2">
+              Error Loading Messages
+            </h3>
+            <p class="text-[var(--Color-Text-Text-Secondary)]">
+              {{ chatError }}
+            </p>
+          </div>
+
+          <!-- No Messages -->
+          <div
+            v-else-if="chatMessages.length === 0"
+            class="text-center p-12"
+          >
+            <div
+              class="p-6 bg-[var(--color-Gray-25)] rounded-2xl mb-6 inline-block"
+            >
+              <i
+                class="fas fa-comments text-4xl text-[var(--Color-Surface-Surface-Brand)]"
+              ></i>
+            </div>
+            <h3
+              class="text-lg font-semibold text-[var(--Color-Text-Text-Primary)] mb-2"
+            >
+              Start the Conversation
+            </h3>
+            <p class="text-[var(--Color-Text-Text-Secondary)]">
+              Send the first message to begin chatting!
+            </p>
           </div>
 
           <!-- Messages -->
-          <div
-            v-else-if="chatMessages.length === 0"
-            class="text-center text-gray-500 p-8"
-          >
-            <i class="fas fa-comments text-4xl mb-4 opacity-50"></i>
-            <p>No messages yet. Start the conversation!</p>
-          </div>
-
-          <div v-else>
+          <div v-else class="space-y-4">
             <div
               v-for="message in chatMessages"
               :key="message.id"
-              class="flex"
+              class="flex group"
               :class="isOwnMessage(message) ? 'justify-end' : 'justify-start'"
             >
               <div
-                class="max-w-xs lg:max-w-md px-4 py-2 rounded-lg relative"
+                class="message-bubble max-w-xs lg:max-w-md px-6 py-3 rounded-2xl relative transition-all duration-200"
                 :class="
                   isOwnMessage(message)
                     ? 'bg-[var(--Color-Surface-Surface-Brand)] text-[var(--Color-Text-Text-Invert)]'
-                    : 'bg-[var(--Color-Surface-Surface-Tertiary)] text-[var(--Color-Text-Text-Primary)]'
+                    : 'bg-[var(--Color-Surface-Surface-Primary)] text-[var(--Color-Text-Text-Primary)] border border-[var(--Color-Boarder-Border-Primary)]'
                 "
               >
-                <div class="flex items-center gap-2 mb-1">
-                  <span class="text-xs opacity-75">{{ message.senderName }}</span>
-                  <span class="text-xs opacity-75">{{
-                    formatChatTime(message.timestamp)
-                  }}</span>
-                  <!-- Read indicator for own messages -->
-                  <span v-if="isOwnMessage(message)" class="text-xs opacity-75">
-                    <i
-                      :class="
-                        message.read
-                          ? 'fas fa-check-double text-blue-300'
-                          : 'fas fa-check text-gray-300'
-                      "
-                    ></i>
-                  </span>
-                  <!-- Unread indicator for other's messages -->
-                  <span
-                    v-else-if="!message.read"
-                    class="w-2 h-2 bg-red-500 rounded-full"
-                  ></span>
+                <!-- Message Header -->
+                <div class="flex items-center justify-between mb-2">
+                  <div class="flex items-center gap-2">
+                    <span class="text-xs font-medium opacity-80">{{
+                      message.senderName
+                    }}</span>
+                    <span class="text-xs opacity-60">{{
+                      formatChatTime(message.timestamp)
+                    }}</span>
+                  </div>
+
+                  <!-- Message Status -->
+                  <div class="flex items-center gap-1">
+                    <!-- Read indicator for own messages -->
+                    <span v-if="isOwnMessage(message)" class="text-xs">
+                      <i
+                        :class="
+                          message.read
+                            ? 'fas fa-check-double text-[var(--color-primary-300)]'
+                            : 'fas fa-check text-[var(--color-gray-300)]'
+                        "
+                      ></i>
+                    </span>
+                    <!-- Unread indicator for other's messages -->
+                    <span
+                      v-else-if="!message.read"
+                      class="w-2 h-2 bg-[var(--color-error-500)] rounded-full animate-pulse"
+                    ></span>
+                    <!-- Read indicator for other's messages -->
+                    <span v-else class="text-xs opacity-60">
+                      <i class="fas fa-check text-[var(--color-success-400)]"></i>
+                    </span>
+                  </div>
                 </div>
-                <p class="text-sm">{{ message.content }}</p>
+
+                <!-- Message Content -->
+                <div class="relative">
+                  <p class="text-sm leading-relaxed">{{ message.content }}</p>
+
+
+                </div>
               </div>
             </div>
           </div>
@@ -1088,21 +1158,36 @@
 
         <!-- Chat Input -->
         <div
-          class="p-4 border-t border-[var(--Color-Boarder-Border-Primary)] bg-[var(--Color-Surface-Surface-Tertiary)]"
+          class="p-6 border-t border-[var(--Color-Boarder-Border-Primary)] bg-[var(--Color-Surface-Surface-Primary)]"
         >
-          <form @submit.prevent="sendChatMessage" class="flex gap-2">
-            <input
-              v-model="newChatMessage"
-              type="text"
-              placeholder="Type your message..."
-              @keyup.enter="sendChatMessage"
-              class="flex-1 px-4 py-2 border border-[var(--Color-Boarder-Border-Primary)] rounded-lg focus:outline-none focus:ring-2 focus:ring-[var(--Color-Text-Text-Brand)] bg-[var(--Color-Surface-Surface-Secondary)] text-[var(--Color-Text-Text-Primary)]"
-              :disabled="!auth.currentUser"
-            />
+          <form @submit.prevent="sendChatMessage" class="flex items-end gap-3">
+            <!-- Message Input -->
+            <div class="flex-1 relative">
+              <textarea
+                v-model="newChatMessage"
+                placeholder="Type your message..."
+                @keyup.enter.exact="sendChatMessage"
+                @keyup.enter.shift.exact="newChatMessage += '\n'"
+                rows="1"
+                class="w-full px-4 py-3 pr-12 border border-[var(--Color-Boarder-Border-Primary)] rounded-xl focus:outline-none bg-[var(--Color-Surface-Surface-Primary)] text-[var(--Color-Text-Text-Primary)] resize-none transition-all duration-200"
+                style="min-height: 48px; max-height: 120px"
+                :disabled="!auth.currentUser"
+              ></textarea>
+
+              <!-- Character Count -->
+              <div
+                class="absolute bottom-2 right-3 text-xs text-[var(--Color-Text-Text-Secondary)]"
+              >
+                {{ newChatMessage.length }}/500
+              </div>
+            </div>
+
+            <!-- Send Button -->
             <button
               type="submit"
-              :disabled="!newChatMessage.trim() || !auth.currentUser"
-              class="px-6 py-2 bg-[var(--Color-Surface-Surface-Brand)] text-[var(--Color-Text-Text-Invert)] rounded-lg hover:bg-[var(--Color-Text-Text-Brand)] hover:text-white disabled:bg-gray-400 disabled:cursor-not-allowed transition-colors"
+              :disabled="!newChatMessage || !newChatMessage.trim() || newChatMessage.length > 500 || !auth.currentUser"
+              class="p-3 bg-[var(--Color-Surface-Surface-Brand)] text-[var(--Color-Text-Text-Invert)] rounded-xl disabled:bg-[var(--color-gray-400)] disabled:cursor-not-allowed transition-all duration-200"
+              title="Send message"
             >
               <i class="fas fa-paper-plane"></i>
             </button>
@@ -2840,4 +2925,6 @@ const handleKeydown = (event) => {
       break;
   }
 };
+
+
 </script>

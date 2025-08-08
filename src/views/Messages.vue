@@ -475,30 +475,7 @@
                     <div class="relative">
                       <p class="text-sm leading-relaxed">{{ message.content }}</p>
 
-                      <!-- Message Actions (on hover) -->
-                      <div
-                        class="absolute -top-2 -right-2 opacity-0 group-hover:opacity-100 transition-opacity duration-200"
-                      >
-                        <div
-                          class="flex items-center gap-1 bg-[var(--Color-Surface-Surface-Primary)] rounded-lg p-1"
-                        >
-                          <button
-                            @click="reactToMessage(message.id, '👍')"
-                            class="p-1 hover:bg-[var(--color-gray-100)] rounded transition-colors"
-                            title="React"
-                          >
-                            <i class="fas fa-thumbs-up text-xs"></i>
-                          </button>
-                          <button
-                            v-if="isOwnMessage(message)"
-                            @click="editMessage(message)"
-                            class="p-1 hover:bg-[var(--color-gray-100)] rounded transition-colors"
-                            title="Edit"
-                          >
-                            <i class="fas fa-edit text-xs"></i>
-                          </button>
-                        </div>
-                      </div>
+
                     </div>
                   </div>
                 </div>
@@ -1022,15 +999,7 @@ const handleTyping = () => {
   }, 3000);
 };
 
-const reactToMessage = (messageId, reaction) => {
-  // TODO: Implement message reactions
-  console.log("React to message:", messageId, reaction);
-};
 
-const editMessage = (message) => {
-  // TODO: Implement message editing
-  console.log("Edit message:", message);
-};
 
 const attachFile = (type) => {
   showAttachmentMenu.value = false;
