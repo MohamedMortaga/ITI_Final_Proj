@@ -15,7 +15,7 @@
         <h2 class="text-3xl font-bold text-[var(--Color-Text-Text-Brand)] mb-8 text-center">{{ $t('commissionStructure') }}</h2>
         <div class="bg-[var(--Color-Surface-Surface-Primary)] border border-[var(--Color-Boarder-Border-Primary)] rounded-2xl p-8 mb-8">
           <div class="text-center mb-8">
-            <div class="text-6xl font-bold text-[var(--Color-Surface-Surface-Brand)] mb-4">10%</div>
+            <div class="text-6xl font-bold text-[var(--Color-Surface-Surface-Brand)] mb-4">15%</div>
             <h3 class="text-2xl font-bold mb-4">{{ $t('commissionRate') }}</h3>
             <p class="text-lg text-[var(--Color-Text-Text-Secondary)]">{{ $t('commissionDescription') }}</p>
           </div>
@@ -77,7 +77,7 @@
               </div>
               <div class="flex justify-between mb-2">
                 <span>{{ $t('platformFee') }}</span>
-                <span class="text-[var(--Color-Surface-Surface-Brand)]">$5 (10%)</span>
+                <span class="text-[var(--Color-Surface-Surface-Brand)]">$5 (15%)</span>
               </div>
               <div class="flex justify-between font-bold text-lg">
                 <span>{{ $t('ownerEarns') }}</span>
@@ -99,7 +99,7 @@
               </div>
               <div class="flex justify-between mb-2">
                 <span>{{ $t('platformFee') }}</span>
-                <span class="text-[var(--Color-Surface-Surface-Brand)]">$3 (10%)</span>
+                <span class="text-[var(--Color-Surface-Surface-Brand)]">$3 (15%)</span>
               </div>
               <div class="flex justify-between font-bold text-lg">
                 <span>{{ $t('ownerEarns') }}</span>
