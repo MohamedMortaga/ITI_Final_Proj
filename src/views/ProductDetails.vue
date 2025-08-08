@@ -947,7 +947,7 @@
             }}</label>
             <textarea
               v-model="newReview.review"
-              class="w-full p-2 rounded-lg bg-[var(--Color-Surface-Surface-Secondary)] border border-[var(--Color-Boarder-Border-Primary)]"
+              class="w-full p-2 rounded-lg bg-[var(--Color-Surface-Surface-Primary)] border border-[var(--Color-Surface-Border-Primary)]"
               :placeholder="$t('writeReview')"
               required
             ></textarea>
@@ -971,7 +971,7 @@
             <button
               type="button"
               @click="showReviewForm = false"
-              class="bg-[var(--Color-Surface-Surface-Secondary)] text-[var(--Color-Text-Text-Primary)] py-2 px-4 rounded-lg hover:bg-[var(--Color-Boarder-Border-Primary)]"
+              class="bg-[var(--Color-Surface-Surface-Primary)] text-[var(--Color-Text-Text-Brand)] py-2 px-4 rounded-lg border border-[var(--Color-Boarder-Surface-Brand)]"
             >
               {{ $t("cancel") }}
             </button>
@@ -1020,7 +1020,7 @@
         <!-- Chat Messages -->
         <div
           id="chat-messages-container"
-          class="flex-1 overflow-y-auto p-4 space-y-4 bg-[var(--Color-Surface-Surface-Secondary)]"
+          class="flex-1 overflow-y-auto p-4 space-y-4 bg-[var(--Colors-Gray-50)] dark:bg-[var(--Colors-Gray-800)]"
         >
           <!-- Loading State -->
           <div v-if="chatLoading" class="flex justify-center items-center h-32">

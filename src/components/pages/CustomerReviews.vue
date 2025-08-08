@@ -17,22 +17,7 @@
         :key="review.id"
         class="bg-[var(--Color-Surface-Surface-Tertiary)] border border-[var(--Color-Boarder-Border-Primary)] rounded-xl p-6 flex-1 w-full max-w-full md:max-w-lg md:w-[90%] mx-auto"
       >
-        <div class="flex items-center mb-2">
-          <span class="text-yellow-400 text-lg mr-2">{{ review.rating.toFixed(1) }}</span>
-          <div class="flex">
-            <i
-              class="fa-solid fa-star text-yellow-400"
-              v-for="n in 5"
-              :key="n"
-              :class="{
-                'text-yellow-400': n <= review.rating,
-                'text-gray-300': n > review.rating,
-              }"
-            ></i>
-          </div>
-        </div>
-        <p class="text-sm mb-4">{{ review.comment }}</p>
-        <div class="flex items-center gap-2">
+      <div class="flex items-center gap-2">
           <div
             v-if="!review.userImage"
             class="w-8 h-8 rounded-full bg-gray-200 flex items-center justify-center"
@@ -52,6 +37,24 @@
             </div>
           </div>
         </div>
+        <br><p class="text-sm mb-4">{{ review.comment }}</p>
+
+        <div class="flex items-center">
+          <span class="text-yellow-400 text-sm mr-2">{{ review.rating.toFixed(1) }}</span>
+          <div class="flex">
+            <i
+              class="fa-solid h-3 w-3 fa-star text-[var(--Colors-Warning-200)]"
+              v-for="n in 5"
+              :key="n"
+              :class="{
+                'text-yellow-400': n <= review.rating,
+                'hidden' : n > review.rating,
+              }"
+            ></i>
+          </div>
+        </div>
+        
+       
       </div>
     </div>
     <CarouselControls
