@@ -1,10 +1,11 @@
 // src/composables/useAdminProducts.js
-import { ref } from "vue";
+import { ref, computed } from "vue";
 import {
   collection, addDoc, deleteDoc, updateDoc, doc, getDoc,
   query, where, getDocs, serverTimestamp
 } from "firebase/firestore";
-import { db, auth } from "@/firebase/config";
+import { ref as storageRef, deleteObject } from "firebase/storage";
+import { db, storage, auth } from "@/firebase/config";
 import { useStorageUpload } from "@/composables/useStorage";
 import { onAuthStateChanged } from "firebase/auth";
 import Swal from "sweetalert2";
@@ -15,6 +16,7 @@ const form = ref({
   title: "",
   category: "",
   price: "",
+  actualPrice: "",
   details: "",
   image1: null,
   image1Path: "",
@@ -26,14 +28,15 @@ const form = ref({
 });
 const isEdit = ref(false);
 const editId = ref(null);
-const currentUser  = ref(null);
+const currentUser = ref(null);
 const searchQuery = ref("");
 const selectedCategory = ref("");
 const uploading = ref(false);
 const uploading1 = ref(false);
 const uploading2 = ref(false);
 const uploading3 = ref(false);
-const allProducts = ref([])
+const allProducts = ref([]);
+
 // Define the commission rate
 const commissionRate = 0.15;
 
@@ -42,7 +45,7 @@ const loadCategories = async () => {
     const snapshot = await getDocs(collection(db, "categories"));
     categories.value = snapshot.docs
       .map((doc) => ({ id: doc.id, ...doc.data() }))
-      .filter((cat) => cat.status !== 'inactive'); // Only show active categories
+      .filter((cat) => cat.status !== 'inactive');
     if (categories.value.length === 0) {
       Swal.fire({
         position: "center",
@@ -58,26 +61,24 @@ const loadCategories = async () => {
     });
   }
 };
+
 const disapproveProduct = async (productId) => {
   try {
     const productRef = doc(db, "products", productId);
     await updateDoc(productRef, { isApproved: false }); 
     alert("disapproved successfully");
-
- 
     await fetchProducts();
   } catch (error) {
     console.error("error ", error);
   }
 };
+
 const loadProducts = async () => {
   try {
-    if (!currentUser .value) throw new Error("No user is logged in.");
-    const q = query(collection(db, "products"), where("userId", "==", currentUser .value.uid));
+    if (!currentUser.value) throw new Error("No user is logged in.");
+    const q = query(collection(db, "products"), where("userId", "==", currentUser.value.uid));
     const snapshot = await getDocs(q);
-    // Show all products (both approved and pending) for the current user
     products.value = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
-
   } catch (err) {
     Swal.fire({
       position: "center",
@@ -88,7 +89,7 @@ const loadProducts = async () => {
 };
 
 onAuthStateChanged(auth, (user) => {
-  currentUser .value = user;
+  currentUser.value = user;
   if (user) {
     loadProducts();
     loadCategories();
@@ -105,7 +106,6 @@ const handleImageUpload = async (event, imageNumber) => {
   const file = event.target.files[0];
   if (!file) return;
 
-  // Set the appropriate uploading state
   if (imageNumber === 1) uploading1.value = true;
   else if (imageNumber === 2) uploading2.value = true;
   else if (imageNumber === 3) uploading3.value = true;
@@ -119,7 +119,6 @@ const handleImageUpload = async (event, imageNumber) => {
     };
     reader.readAsDataURL(file);
 
-    // Use enhanced upload function with retry logic
     await uploadImage(file, 'products', 3);
 
     if (uploadError.value) {
@@ -156,57 +155,46 @@ const handleImageUpload = async (event, imageNumber) => {
 
 const submitForm = async () => {
   try {
-    if (!currentUser .value) {
+    if (!currentUser.value) {
       Swal.fire({ icon: "error", title: "Please log in first." });
       return;
     }
 
-
-
-    if (!form.value.title || !form.value.category || !form.value.price || !form.value.location || !form.value.image1) {
+    if (!form.value.title || !form.value.category || !form.value.price || 
+        !form.value.actualPrice || !form.value.location || !form.value.image1) {
       Swal.fire({ icon: "error", title: "Please fill all required fields including at least one image." });
       return;
     }
 
-    // Calculate net profit
-    const netProfit = form.value.price - form.value.price * commissionRate;
+    // Calculate net profit based on actual price
+    const netProfit = form.value.actualPrice - form.value.actualPrice * commissionRate;
+
+    const productData = {
+      title: form.value.title,
+      category: form.value.category,
+      price: Number(form.value.price),
+      actualPrice: Number(form.value.actualPrice),
+      details: form.value.details,
+      image1: form.value.image1 || "",
+      image1Path: form.value.image1Path || "",
+      image2: form.value.image2 || "",
+      image2Path: form.value.image2Path || "",
+      image3: form.value.image3 || "",
+      image3Path: form.value.image3Path || "",
+      location: form.value.location,
+      userId: currentUser.value.uid,
+      netProfit: netProfit,
+      ownerName: currentUser.value.displayName || currentUser.value.email,
+      isApproved: false
+    };
 
     if (isEdit.value) {
-      const docRef = doc(db, "products", editId.value);
-      await updateDoc(docRef, {
-        title: form.value.title,
-        category: form.value.category,
-        price: Number(form.value.price),
-        details: form.value.details,
-        image1: form.value.image1 || "",
-        image1Path: form.value.image1Path || "",
-        image2: form.value.image2 || "",
-        image2Path: form.value.image2Path || "",
-        image3: form.value.image3 || "",
-        image3Path: form.value.image3Path || "",
-        location: form.value.location,
-        userId: currentUser .value.uid,
-        netProfit: netProfit, // Include net profit in the update
-      });
+      await updateDoc(doc(db, "products", editId.value), productData);
       Swal.fire({ icon: "success", title: "Updated successfully", timer: 1500, showConfirmButton: false });
     } else {
       await addDoc(collection(db, "products"), {
-        title: form.value.title,
-        category: form.value.category,
-        price: Number(form.value.price),
-        details: form.value.details,
-        image1: form.value.image1 || "",
-        image1Path: form.value.image1Path || "",
-        image2: form.value.image2 || "",
-        image2Path: form.value.image2Path || "",
-        image3: form.value.image3 || "",
-        image3Path: form.value.image3Path || "",
-        location: form.value.location,
-        userId: currentUser .value.uid,
-        ownerName: currentUser .value.displayName || currentUser .value.email,
-        createdAt: serverTimestamp(),
-        netProfit: netProfit, // Include net profit in the new product
-        isApproved: false
+        ...productData,
+        createdAt: serverTimestamp()
       });
       Swal.fire({ icon: "success", title: "Added successfully", timer: 1500, showConfirmButton: false });
     }
@@ -222,7 +210,6 @@ const deleteProduct = async (id) => {
   try {
     const product = products.value.find((p) => p.id === id);
     
-    // Delete all images from storage
     if (product.image1Path) {
       const imageRef = storageRef(storage, product.image1Path);
       await deleteObject(imageRef).catch((err) => console.warn("Failed to delete image1:", err.message));
@@ -249,6 +236,7 @@ const editProduct = (product) => {
     title: product.title,
     category: product.category,
     price: product.price,
+    actualPrice: product.actualPrice || product.price, // Fallback to price if no actualPrice
     details: product.details || "",
     image1: product.image1 || "",
     image1Path: product.image1Path || "",
@@ -256,7 +244,7 @@ const editProduct = (product) => {
     image2Path: product.image2Path || "",
     image3: product.image3 || "",
     image3Path: product.image3Path || "",
-    location: product.location || "",
+    location: product.location || ""
   };
   isEdit.value = true;
   editId.value = product.id;
@@ -267,6 +255,7 @@ const resetForm = () => {
     title: "",
     category: "",
     price: "",
+    actualPrice: "",
     details: "",
     image1: null,
     image1Path: "",
@@ -290,6 +279,16 @@ const highlightText = (text) => {
   return text.replace(regex, '<mark class="bg-yellow-200">$1</mark>');
 };
 
+const netProfit = computed(() => {
+  try {
+    if (!form.value.actualPrice) return 0;
+    return form.value.actualPrice - form.value.actualPrice * commissionRate;
+  } catch (e) {
+    console.error("Error in netProfit computed:", e);
+    return 0;
+  }
+});
+
 export default function useAdminProducts() {
   return {
     products,
@@ -303,6 +302,7 @@ export default function useAdminProducts() {
     uploading1,
     uploading2,
     uploading3,
+    netProfit,
     loadProducts,
     loadCategories,
     submitForm,

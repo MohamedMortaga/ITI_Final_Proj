@@ -441,6 +441,7 @@
         </div>
       </div>
     </div>
+
     <!-- Category -->
     <div class="mb-4">
       <label
@@ -458,6 +459,25 @@
         </option>
       </select>
     </div>
+
+    <!-- Actual Price -->
+    <div class="mb-4">
+      <label
+        class="block text-sm font-medium text-[var(--Color-Text-Text-Primary)] dark:text-[var(--Color-Text-Text-Primary)] mb-1 font-nunito"
+        >{{ $t("actualPrice") }}</label
+      >
+      <input
+        v-model.number="form.actualPrice"
+        type="number"
+        :placeholder="$t('enterActualPrice')"
+        class="w-full px-3 md:px-4 py-2 rounded-lg border border-[var(--Color-Boarder-Border-Primary)] dark:border-[var(--Color-Boarder-Border-Primary)] bg-[var(--Color-Surface-Surface-Primary)] dark:bg-[var(--Color-Surface-Surface-Primary)] text-[var(--Color-Text-Text-Secondary)] dark:text-[var(--Color-Text-Text-Secondary)] focus:outline-none focus:ring-2 focus:ring-[var(--Colors-Primary-500)] font-nunito"
+        required
+      />
+      <p class="text-xs text-[var(--Color-Text-Text-Secondary)] mt-1 font-nunito">
+        {{ $t("originalPriceBeforeDiscounts") }}
+      </p>
+    </div>
+
     <!-- Price -->
     <div class="mb-4">
       <label
@@ -472,6 +492,7 @@
         required
       />
     </div>
+
     <!-- Location -->
     <div class="mb-4">
       <label
@@ -515,6 +536,7 @@
         <option value="fayoum">{{ $t("fayoum") }}</option>
       </select>
     </div>
+
     <!-- Net Profit -->
     <div class="mb-4">
       <label
@@ -528,6 +550,7 @@
         class="w-full px-3 md:px-4 py-2 bg-gray-25 dark:bg-gray-600 rounded-lg border border-[var(--Color-Boarder-Border-Primary)] dark:border-[var(--Color-Boarder-Border-Primary)] dark:text-gray-200 focus:outline-none font-nunito"
       />
     </div>
+
     <!-- Details -->
     <div class="mb-6">
       <label
@@ -541,6 +564,7 @@
         class="w-full px-3 md:px-4 py-2 rounded-lg border border-[var(--Color-Boarder-Border-Primary)] dark:border-[var(--Color-Boarder-Border-Primary)] bg-[var(--Color-Surface-Surface-Primary)] dark:bg-[var(--Color-Surface-Surface-Primary)] text-[var(--Color-Text-Text-Secondary)] dark:text-[var(--Color-Text-Text-Secondary)] focus:outline-none focus:ring-2 focus:ring-[var(--Colors-Primary-500)] font-nunito"
       ></textarea>
     </div>
+
     <!-- Submit Button -->
     <button
       type="button"
@@ -583,7 +607,7 @@ const netProfit = computed(() => {
   }
 });
 
-defineEmits(["submitForm", "imageUpload", "removeImage"]);
+defineEmits(["submitForm", "imageUpload", "removeImage", "cancelForm"]);
 </script>
 
 <style>
