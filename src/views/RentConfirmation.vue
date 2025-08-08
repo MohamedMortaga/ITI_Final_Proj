@@ -279,6 +279,7 @@
           </div>
         </div>
       </div>
+
       <!-- Contact Details Section with Pricing -->
       <div
         class="w-full mt-8 bg-[var(--Color-Surface-Surface-Primary)] border border-[var(--Color-Boarder-Border-Primary)] rounded-xl p-6"
@@ -369,6 +370,7 @@
           </div>
         </div>
       </div>
+
       <!-- Payment Method Section - Full Width -->
       <div
         class="mt-8 bg-[var(--Color-Surface-Surface-Primary)] border border-[var(--Color-Boarder-Border-Primary)] rounded-xl p-6"
@@ -493,14 +495,28 @@
         v-if="showOTPModal"
         class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4"
       >
-        <div class="bg-[var(--Color-Surface-Surface-Primary)] rounded-xl shadow-xl w-full max-w-md mx-4">
+        <div
+          class="bg-[var(--Color-Surface-Surface-Primary)] rounded-xl shadow-xl w-full max-w-md mx-4"
+        >
           <!-- Modal Content -->
           <div class="p-8 text-center">
             <!-- Header Icon -->
             <div class="flex justify-center mb-4">
-              <div class="w-16 h-16 bg-[var(--Color-Text-Text-Brand)] rounded-full flex items-center justify-center">
-                <svg class="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"></path>
+              <div
+                class="w-16 h-16 bg-[var(--Color-Text-Text-Brand)] rounded-full flex items-center justify-center"
+              >
+                <svg
+                  class="w-8 h-8 text-white"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    stroke-width="2"
+                    d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"
+                  ></path>
                 </svg>
               </div>
             </div>
@@ -512,8 +528,10 @@
 
             <!-- Description -->
             <p class="text-[var(--Color-Text-Text-Secondary)] mb-6">
-              {{ $t("enterOTPSentTo") }} 
-              <span class="font-medium text-[var(--Color-Text-Text-Primary)]">{{ booking.phoneNumber }}</span>
+              {{ $t("enterOTPSentTo") }}
+              <span class="font-medium text-[var(--Color-Text-Text-Primary)]">{{
+                booking.phoneNumber
+              }}</span>
             </p>
 
             <!-- OTP Input Fields -->
@@ -527,15 +545,20 @@
                 @input="handleOtpInput($event, index)"
                 @keydown="handleOtpKeydown($event, index)"
                 @paste="handleOtpPaste"
-                class="otp-input w-12 h-12 text-center text-lg font-semibold border-2 border-[var(--Color-Text-Text-Brand)] rounded-lg bg-[var(--Color-Surface-Surface-Primary)] text-[var(--Color-Text-Text-Primary)] focus:outline-none focus:ring-2 focus:ring-[var(--Color-Text-Text-Brand)] focus:ring-opacity-50 transition-all"
-                :class="{ 'border-[var(--Color-Text-Text-Brand)]': otpDigits[index], 'border-[var(--Color-Boarder-Border-Primary)]': !otpDigits[index] }"
+                class="otp-input w-12 h-12 text-center text-lg font-semibold border-2 border-[var(--Color-Boarder-Border-Primary)] rounded-lg bg-[var(--Color-Surface-Surface-Primary)] text-[var(--Color-Text-Text-Primary)] focus:outline-none focus:ring-2 focus:ring-[var(--Color-Text-Text-Brand)] focus:ring-opacity-50 transition-all"
+                :class="{
+                  'border-[var(--Color-Text-Text-Brand)]': otpDigits[index],
+                  'border-[var(--Color-Boarder-Border-Primary)]': !otpDigits[index],
+                }"
               />
             </div>
 
             <!-- Timer -->
             <div class="text-sm text-[var(--Color-Text-Text-Secondary)] mb-6">
-              {{ $t("otpExpiresIn") }} 
-              <span class="font-medium text-[var(--Color-Text-Text-Brand)]">{{ otpTimer }}</span>
+              {{ $t("otpExpiresIn") }}
+              <span class="font-medium text-[var(--Color-Text-Text-Brand)]">{{
+                otpTimer
+              }}</span>
             </div>
 
             <!-- Action Buttons -->
@@ -555,7 +578,11 @@
                 :disabled="otpTimer !== '00'"
                 class="w-full border border-[var(--Color-Text-Text-Brand)] text-[var(--Color-Text-Text-Primary)] py-3 px-6 rounded-lg font-semibold hover:bg-[var(--Color-Surface-Surface-Secondary)] transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
               >
-                {{ otpTimer === '00' ? $t("resendOTP") : $t("resendIn") + ' ' + otpTimer + 's' }}
+                {{
+                  otpTimer === "00"
+                    ? $t("resendOTP")
+                    : $t("resendIn") + " " + otpTimer + "s"
+                }}
               </button>
 
               <!-- Cancel Link -->
@@ -564,6 +591,106 @@
                 class="w-full text-[var(--Color-Text-Text-Primary)] py-2 font-medium hover:text-[var(--Color-Text-Text-Brand)] transition-colors"
               >
                 {{ $t("cancel") }}
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Review Modal -->
+      <div
+        v-if="showReviewModal"
+        class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4"
+      >
+        <div
+          class="bg-[var(--Color-Surface-Surface-Primary)] rounded-xl shadow-xl w-full max-w-md mx-4"
+        >
+          <div class="p-8">
+            <!-- Header -->
+            <div class="flex justify-between items-center mb-4">
+              <h2 class="text-2xl font-bold text-[var(--Color-Text-Text-Primary)]">
+                {{ $t("leaveReview") }}
+              </h2>
+              <button
+                @click="showReviewModal = false"
+                class="text-[var(--Color-Text-Text-Secondary)] hover:text-[var(--Color-Text-Text-Primary)] transition-colors p-1 rounded-lg hover:bg-[var(--Color-Surface-Surface-Secondary)]"
+              >
+                <svg
+                  class="w-5 h-5"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    stroke-width="2"
+                    d="M6 18L18 6M6 6l12 12"
+                  ></path>
+                </svg>
+              </button>
+            </div>
+
+            <!-- Rating Stars -->
+            <div class="mb-6">
+              <label
+                class="block text-sm font-medium text-[var(--Color-Text-Text-Secondary)] mb-2"
+              >
+                {{ $t("rating") }}
+              </label>
+              <div class="flex justify-center space-x-2">
+                <button
+                  v-for="star in 5"
+                  :key="star"
+                  @click="review.rating = star"
+                  class="focus:outline-none"
+                >
+                  <svg
+                    class="w-8 h-8"
+                    :class="{
+                      'text-yellow-400': star <= review.rating,
+                      'text-gray-300': star > review.rating,
+                    }"
+                    fill="currentColor"
+                    viewBox="0 0 20 20"
+                  >
+                    <path
+                      d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"
+                    ></path>
+                  </svg>
+                </button>
+              </div>
+            </div>
+
+            <!-- Review Comment -->
+            <div class="mb-6">
+              <label
+                class="block text-sm font-medium text-[var(--Color-Text-Text-Secondary)] mb-2"
+              >
+                {{ $t("comment") }} ({{ $t("optional") }})
+              </label>
+              <textarea
+                v-model="review.comment"
+                class="w-full p-3 rounded-lg border border-[var(--Color-Boarder-Border-Primary)] bg-[var(--Color-Surface-Surface-Primary)] text-[var(--Color-Text-Text-Primary)] placeholder-[var(--Color-Text-Text-Secondary)] focus:outline-none focus:ring-2 focus:ring-[var(--Color-Text-Text-Brand)]"
+                rows="4"
+                :placeholder="$t('writeYourReview')"
+              ></textarea>
+            </div>
+
+            <!-- Action Buttons -->
+            <div class="flex space-x-3">
+              <button
+                @click="showReviewModal = false"
+                class="flex-1 px-4 py-2 border border-[var(--Color-Boarder-Border-Primary)] text-[var(--Color-Text-Text-Primary)] rounded-lg hover:bg-[var(--Color-Surface-Surface-Secondary)] transition-colors"
+              >
+                {{ $t("cancel") }}
+              </button>
+              <button
+                @click="submitReview"
+                :disabled="!review.rating"
+                class="flex-1 px-4 py-2 bg-[var(--Color-Surface-Surface-Brand)] text-[var(--Color-Text-Text-Invert)] rounded-lg hover:bg-[var(--Color-Surface-Surface-Brand)] hover:opacity-90 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+              >
+                {{ $t("submitReview") }}
               </button>
             </div>
           </div>
@@ -823,49 +950,48 @@
 <script setup>
 import { ref, computed, onMounted, onUnmounted, nextTick, watch } from "vue";
 import { useRoute, useRouter } from "vue-router";
-import { useI18n } from "vue-i18n";
 import L from "leaflet";
 import "leaflet/dist/leaflet.css";
 import AppFooter from "@/components/pages/AppFooter.vue";
 import SearchBar from "@/components/pages/SearchBar.vue";
 import Navbar from "@/components/pages/Navbar.vue";
+import { useI18n } from "vue-i18n";
+const { t } = useI18n();
 import {
   doc,
   getDoc,
   setDoc,
   collection,
+  addDoc, // Make sure this is imported
   serverTimestamp,
   updateDoc,
 } from "firebase/firestore";
 import { db, auth } from "@/firebase/config";
 import Swal from "sweetalert2";
 
-const { t } = useI18n();
 const route = useRoute();
 const router = useRouter();
 const product = ref(null);
-
-// SearchBar reactive variables
 const searchQuery = ref("");
 const selectedLocation = ref("");
-
-// Modal and map related refs
 const showOTPForm = ref(false);
 const showOTPModal = ref(false);
 const showAddressModal = ref(false);
+const showReviewModal = ref(false);
 const addressSearch = ref("");
 const addressSuggestions = ref([]);
 const selectedAddress = ref("");
 const map = ref(null);
 const marker = ref(null);
 const mapInitialized = ref(false);
-
-// OTP Modal related refs
-const otpDigits = ref(['', '', '', '', '', '']);
-const otpTimer = ref('60');
+const otpDigits = ref(["", "", "", "", "", ""]);
+const otpTimer = ref("60");
 const otpTimerInterval = ref(null);
-const isOtpComplete = computed(() => otpDigits.value.every(digit => digit !== ''));
-
+const isOtpComplete = computed(() => otpDigits.value.every((digit) => digit !== ""));
+const review = ref({
+  rating: 0,
+  comment: "",
+});
 const booking = ref({
   deliveryAddress: "30.0459°N, 31.2357°E",
   deliveryFee: 0,
@@ -896,7 +1022,6 @@ const booking = ref({
   lenderLat: null,
   lenderLng: null,
 });
-
 const loadProduct = async () => {
   try {
     const id = route.params.id;
@@ -994,14 +1119,11 @@ const loadSellerDetails = async (sellerId) => {
 const loadUserDetails = async () => {
   if (auth.currentUser) {
     try {
-      const userDocRef = doc(db, "users", auth.currentUser.uid);
-      const userDocSnap = await getDoc(userDocRef);
-
-      if (userDocSnap.exists()) {
-        const userData = userDocSnap.data();
-        booking.value.userName = userData.displayName || userData.name || "";
-        booking.value.userEmail = userData.email || auth.currentUser.email || "";
-        booking.value.phoneNumber = userData.phoneNumber || userData.phone || "";
+      const userDetails = await rentService.loadUserDetails(auth.currentUser.uid);
+      if (userDetails) {
+        booking.value.userName = userDetails.displayName || userDetails.name || "";
+        booking.value.userEmail = userDetails.email || auth.currentUser.email || "";
+        booking.value.phoneNumber = userDetails.phoneNumber || userDetails.phone || "";
       }
     } catch (error) {
       console.error("Error loading user details:", error);
@@ -1234,73 +1356,50 @@ const confirmAddress = () => {
   }
 };
 
-const initializeMap = () => {
-  return new Promise((resolve, reject) => {
-    try {
-      nextTick(() => {
-        if (typeof L === "undefined") {
-          console.warn("Leaflet not loaded");
-          reject(new Error("Leaflet not loaded"));
-          return;
-        }
-
-        const mapContainer = document.getElementById("map");
-        if (!mapContainer) {
-          console.warn("Map container not found");
-          reject(new Error("Map container not found"));
-          return;
-        }
-
-        if (mapInitialized.value) {
-          resolve();
-          return;
-        }
-
-        delete L.Icon.Default.prototype._getIconUrl;
-        L.Icon.Default.mergeOptions({
-          iconRetinaUrl:
-            "https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.7.1/images/marker-icon-2x.png",
-          iconUrl:
-            "https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.7.1/images/marker-icon.png",
-          shadowUrl:
-            "https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.7.1/images/marker-shadow.png",
-        });
-
-        map.value = L.map("map").setView([30.0444, 31.2357], 10);
-
-        L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
-          attribution: "© OpenStreetMap contributors",
-        }).addTo(map.value);
-
-        marker.value = L.marker([30.0444, 31.2357]).addTo(map.value);
-
-        map.value.on("click", (e) => {
-          const { lat, lng } = e.latlng;
-
-          if (marker.value && map.value) {
-            try {
-              map.value.removeLayer(marker.value);
-            } catch (error) {
-              console.warn("Error removing marker:", error);
-            }
-          }
-
-          if (map.value) {
-            marker.value = L.marker([lat, lng]).addTo(map.value);
-            reverseGeocode(lat, lng);
-          }
-        });
-
-        mapInitialized.value = true;
-        resolve();
-      });
-    } catch (error) {
-      console.error("Error initializing map:", error);
-      reject(error);
+const initializeMap = async () => {
+  try {
+    await nextTick(); // Ensure DOM is updated
+    const mapContainer = document.getElementById("map");
+    if (!mapContainer) {
+      console.warn("Map container not found");
+      return;
     }
-  });
+    if (mapInitialized.value) {
+      return;
+    }
+    delete L.Icon.Default.prototype._getIconUrl;
+    L.Icon.Default.mergeOptions({
+      iconRetinaUrl:
+        "https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.7.1/images/marker-icon-2x.png",
+      iconUrl:
+        "https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.7.1/images/marker-icon.png",
+      shadowUrl:
+        "https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.7.1/images/marker-shadow.png",
+    });
+    map.value = L.map("map").setView([30.0444, 31.2357], 10);
+    L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
+      attribution: "© OpenStreetMap contributors",
+    }).addTo(map.value);
+    marker.value = L.marker([30.0444, 31.2357]).addTo(map.value);
+    map.value.on("click", (e) => {
+      const { lat, lng } = e.latlng;
+      if (marker.value && map.value) {
+        try {
+          map.value.removeLayer(marker.value);
+        } catch (error) {
+          console.warn("Error removing marker:", error);
+        }
+      }
+      if (map.value) {
+        marker.value = L.marker([lat, lng]).addTo(map.value);
+        reverseGeocode(lat, lng);
+      }
+    });
+    mapInitialized.value = true;
+  } catch (error) {
+    console.error("Error initializing map:", error);
+  }
 };
-
 const getLocationFromAddress = async (address) => {
   try {
     const response = await fetch(
@@ -1563,16 +1662,8 @@ const showLocationHelp = () => {
   });
 };
 
-onMounted(() => {});
-
-onUnmounted(() => {
-  if (otpTimerInterval.value) {
-    clearInterval(otpTimerInterval.value);
-  }
-});
-
 const verifyOTP = async () => {
-  if (booking.value.otp.length !== 6) {
+  if (!booking.value.otp || booking.value.otp.length !== 6) {
     Swal.fire({
       icon: "warning",
       title: t("invalidOTP"),
@@ -1587,8 +1678,16 @@ const verifyOTP = async () => {
   }
 
   try {
-    console.log("OTP verified successfully!");
-    Swal.fire({
+    // 1. First create the booking
+    const bookingId = await createBooking();
+
+    // 2. Close OTP modal if open
+    if (showOTPModal.value) {
+      closeOtpModal();
+    }
+
+    // 3. Show success message and THEN show review modal
+    await Swal.fire({
       icon: "success",
       title: t("paymentVerified"),
       text: t("paymentVerifiedMessage"),
@@ -1597,35 +1696,40 @@ const verifyOTP = async () => {
       color: "var(--Color-Text-Text-Primary)",
       confirmButtonColor: "var(--Color-Surface-Surface-Brand)",
       iconColor: "#10b981",
+    }).then(() => {
+      // 4. Show review modal after user clicks "OK"
+      showReviewModal.value = true;
     });
-    await createBooking();
+
+    return bookingId;
   } catch (error) {
     console.error("Error verifying OTP:", error);
     Swal.fire({
       icon: "error",
       title: t("failedToVerifyOTP"),
-      text: t("failedToVerifyOTP", [error.message]),
+      text: t("failedToVerifyOTPMessage", [error.message]),
       confirmButtonText: t("ok"),
       background: "var(--Color-Surface-Surface-Primary)",
       color: "var(--Color-Text-Text-Primary)",
       confirmButtonColor: "var(--Color-Surface-Surface-Brand)",
       iconColor: "#ef4444",
     });
+    throw error;
   }
 };
 
 // OTP Modal Methods
 const startOtpTimer = () => {
   let timeLeft = 60;
-  otpTimer.value = timeLeft.toString().padStart(2, '0');
-  
+  otpTimer.value = timeLeft.toString().padStart(2, "0");
+
   otpTimerInterval.value = setInterval(() => {
     timeLeft--;
-    otpTimer.value = timeLeft.toString().padStart(2, '0');
-    
+    otpTimer.value = timeLeft.toString().padStart(2, "0");
+
     if (timeLeft <= 0) {
       clearInterval(otpTimerInterval.value);
-      otpTimer.value = '00';
+      otpTimer.value = "00";
     }
   }, 1000);
 };
@@ -1638,9 +1742,9 @@ const resetOtpTimer = () => {
 };
 
 const handleOtpInput = (event, index) => {
-  const value = event.target.value.replace(/\D/g, '');
+  const value = event.target.value.replace(/\D/g, "");
   otpDigits.value[index] = value;
-  
+
   // Auto-focus next input
   if (value && index < 5) {
     const nextInput = event.target.parentElement.children[index + 1];
@@ -1648,14 +1752,14 @@ const handleOtpInput = (event, index) => {
       nextInput.focus();
     }
   }
-  
+
   // Update booking.otp
-  booking.value.otp = otpDigits.value.join('');
+  booking.value.otp = otpDigits.value.join("");
 };
 
 const handleOtpKeydown = (event, index) => {
   // Handle backspace
-  if (event.key === 'Backspace' && !otpDigits.value[index] && index > 0) {
+  if (event.key === "Backspace" && !otpDigits.value[index] && index > 0) {
     const prevInput = event.target.parentElement.children[index - 1];
     if (prevInput) {
       prevInput.focus();
@@ -1665,14 +1769,14 @@ const handleOtpKeydown = (event, index) => {
 
 const handleOtpPaste = (event) => {
   event.preventDefault();
-  const pastedData = event.clipboardData.getData('text').replace(/\D/g, '');
-  const digits = pastedData.slice(0, 6).split('');
-  
-  otpDigits.value = [...digits, ...Array(6 - digits.length).fill('')];
-  booking.value.otp = otpDigits.value.join('');
-  
+  const pastedData = event.clipboardData.getData("text").replace(/\D/g, "");
+  const digits = pastedData.slice(0, 6).split("");
+
+  otpDigits.value = [...digits, ...Array(6 - digits.length).fill("")];
+  booking.value.otp = otpDigits.value.join("");
+
   // Focus last filled input or first empty input
-  const lastFilledIndex = otpDigits.value.findIndex(digit => !digit);
+  const lastFilledIndex = otpDigits.value.findIndex((digit) => !digit);
   const focusIndex = lastFilledIndex === -1 ? 5 : lastFilledIndex;
   const focusInput = event.target.parentElement.children[focusIndex];
   if (focusInput) {
@@ -1683,13 +1787,13 @@ const handleOtpPaste = (event) => {
 const openOtpModal = () => {
   showOTPModal.value = true;
   // Auto-populate OTP with "123456"
-  otpDigits.value = ['1', '2', '3', '4', '5', '6'];
-  booking.value.otp = '123456';
+  otpDigits.value = ["1", "2", "3", "4", "5", "6"];
+  booking.value.otp = "123456";
   startOtpTimer();
-  
+
   // Auto-focus first input after modal opens
   setTimeout(() => {
-    const firstInput = document.querySelector('.otp-input');
+    const firstInput = document.querySelector(".otp-input");
     if (firstInput) {
       firstInput.focus();
     }
@@ -1701,13 +1805,27 @@ const closeOtpModal = () => {
   if (otpTimerInterval.value) {
     clearInterval(otpTimerInterval.value);
   }
-  otpDigits.value = ['', '', '', '', '', ''];
-  booking.value.otp = '';
+  otpDigits.value = ["", "", "", "", "", ""];
+  booking.value.otp = "";
+  otpTimer.value = "60";
 };
-
+const resendOTP = () => {
+  resetOtpTimer();
+  otpDigits.value = ["", "", "", "", "", ""];
+  booking.value.otp = "";
+  Swal.fire({
+    icon: "success",
+    title: t("otpResent"),
+    text: t("otpResentMessage"),
+    confirmButtonText: t("ok"),
+    background: "var(--Color-Surface-Surface-Primary)",
+    color: "var(--Color-Text-Text-Primary)",
+    confirmButtonColor: "var(--Color-Surface-Surface-Brand)",
+    iconColor: "#10b981",
+  });
+};
 const verifyOTPFromModal = async () => {
-  const otp = otpDigits.value.join('');
-  if (otp.length !== 6) {
+  if (!isOtpComplete.value) {
     Swal.fire({
       icon: "warning",
       title: t("invalidOTP"),
@@ -1722,11 +1840,14 @@ const verifyOTPFromModal = async () => {
   }
 
   try {
-    booking.value.otp = otp;
-    console.log("OTP verified successfully!");
-    closeOtpModal();
-    
-    Swal.fire({
+    // Combine OTP digits
+    booking.value.otp = otpDigits.value.join("");
+
+    // 1. First create the booking
+    const bookingId = await createBooking();
+
+    // 2. Show success message and THEN show review modal
+    await Swal.fire({
       icon: "success",
       title: t("paymentVerified"),
       text: t("paymentVerifiedMessage"),
@@ -1735,10 +1856,16 @@ const verifyOTPFromModal = async () => {
       color: "var(--Color-Text-Text-Primary)",
       confirmButtonColor: "var(--Color-Surface-Surface-Brand)",
       iconColor: "#10b981",
+    }).then(() => {
+      // 3. Close OTP modal
+      closeOtpModal();
+      // 4. Show review modal after user clicks "OK"
+      showReviewModal.value = true;
     });
-    await createBooking();
+
+    return bookingId;
   } catch (error) {
-    console.error("Error verifying OTP:", error);
+    console.error("Error verifying OTP from modal:", error);
     Swal.fire({
       icon: "error",
       title: t("failedToVerifyOTP"),
@@ -1749,41 +1876,16 @@ const verifyOTPFromModal = async () => {
       confirmButtonColor: "var(--Color-Surface-Surface-Brand)",
       iconColor: "#ef4444",
     });
+    throw error;
   }
 };
-
-const resendOTP = () => {
-  // Simulate resending OTP
-  Swal.fire({
-    icon: "info",
-    title: t("otpResent"),
-    text: t("otpResentMessage", [booking.value.phoneNumber]),
-    confirmButtonText: t("ok"),
-    background: "var(--Color-Surface-Surface-Primary)",
-    color: "var(--Color-Text-Text-Primary)",
-    confirmButtonColor: "var(--Color-Surface-Surface-Brand)",
-    iconColor: "#3b82f6",
-  });
-  
-  resetOtpTimer();
-  otpDigits.value = ['', '', '', '', '', ''];
-  booking.value.otp = '';
-  
-  // Auto-focus first input
-  setTimeout(() => {
-    const firstInput = document.querySelector('.otp-input');
-    if (firstInput) {
-      firstInput.focus();
-    }
-  }, 100);
-};
-
-const submitBooking = async () => {
-  if (!auth.currentUser) {
+const submitReview = async () => {
+  // Validate rating exists
+  if (!review.value.rating) {
     Swal.fire({
       icon: "warning",
-      title: t("loginRequired"),
-      text: t("loginRequiredMessage"),
+      title: t("ratingRequired"),
+      text: t("ratingRequiredMessage"),
       confirmButtonText: t("ok"),
       background: "var(--Color-Surface-Surface-Primary)",
       color: "var(--Color-Text-Text-Primary)",
@@ -1793,99 +1895,100 @@ const submitBooking = async () => {
     return;
   }
 
-  if (auth.currentUser.uid === booking.value.sellerId) {
+  // Validate user is logged in
+  if (!auth.currentUser) {
     Swal.fire({
-      icon: "warning",
-      title: t("cannotBookOwnProduct"),
-      text: t("cannotBookOwnProductMessage"),
+      icon: "error",
+      title: t("authenticationError"),
+      text: t("loginToSubmitReview"),
       confirmButtonText: t("ok"),
       background: "var(--Color-Surface-Surface-Primary)",
       color: "var(--Color-Text-Text-Primary)",
       confirmButtonColor: "var(--Color-Surface-Surface-Brand)",
-      iconColor: "#f59e0b",
+      iconColor: "#ef4444",
     });
     return;
   }
 
   try {
-    if (!booking.value.startDate || !booking.value.endDate) {
-      Swal.fire({
-        icon: "warning",
-        title: t("missingDates"),
-        text: t("missingDatesMessage"),
-        confirmButtonText: t("ok"),
-        background: "var(--Color-Surface-Surface-Primary)",
-        color: "var(--Color-Text-Text-Primary)",
-        confirmButtonColor: "var(--Color-Surface-Surface-Brand)",
-        iconColor: "#f59e0b",
-      });
-      return;
+    // Create review data with all required fields
+    const reviewData = {
+      productId: booking.value.productId,
+      userId: auth.currentUser.uid,
+      userName: booking.value.userName || auth.currentUser.displayName || "Anonymous",
+      userEmail: booking.value.userEmail || auth.currentUser.email || "",
+      rating: Number(review.value.rating), // Ensure it's a number
+      comment: review.value.comment || "",
+      timestamp: serverTimestamp(),
+      productTitle: product.value?.title || "Unknown Product",
+      productImage:
+        product.value?.image1 || product.value?.image2 || product.value?.image3 || "",
+      sellerId: booking.value.sellerId || "",
+      bookingId: booking.value.id || "",
+      status: "approved", // Default status
+    };
+
+    console.log("Submitting review:", reviewData); // Debug log
+
+    // Add review to Firestore with error handling
+    const reviewRef = await addDoc(collection(db, "web-reviews"), reviewData).catch(
+      (firestoreError) => {
+        console.error("Firestore error:", firestoreError);
+        throw new Error("Failed to save review to database");
+      }
+    );
+
+    console.log("Review saved with ID:", reviewRef.id); // Debug log
+
+    // Update product's average rating if product exists
+    if (product.value) {
+      await updateProductRating(booking.value.productId, review.value.rating).catch(
+        (ratingError) => {
+          console.error("Rating update error:", ratingError);
+          // Don't fail the whole operation if rating update fails
+        }
+      );
     }
 
-    if (
-      !booking.value.userName ||
-      !booking.value.phoneNumber ||
-      !booking.value.userEmail
-    ) {
-      Swal.fire({
-        icon: "warning",
-        title: t("missingInformation"),
-        text: t("missingInformationMessage"),
-        confirmButtonText: t("ok"),
-        background: "var(--Color-Surface-Surface-Primary)",
-        color: "var(--Color-Text-Text-Primary)",
-        confirmButtonColor: "var(--Color-Surface-Surface-Brand)",
-        iconColor: "#f59e0b",
-      });
-      return;
-    }
+    // Show success message
+    await Swal.fire({
+      icon: "success",
+      title: t("reviewSubmitted"),
+      text: t("reviewSubmittedMessage"),
+      confirmButtonText: t("ok"),
+      background: "var(--Color-Surface-Surface-Primary)",
+      color: "var(--Color-Text-Text-Primary)",
+      confirmButtonColor: "var(--Color-Surface-Surface-Brand)",
+      iconColor: "#10b981",
+    });
 
-    if (booking.value.paymentMethod === "credit_card") {
-      if (
-        !booking.value.cardNumber ||
-        !booking.value.expiryDate ||
-        !booking.value.cvv ||
-        !booking.value.cardHolderName
-      ) {
-        Swal.fire({
-          icon: "warning",
-          title: t("missingPaymentDetails"),
-          text: t("missingPaymentDetailsMessage"),
-          confirmButtonText: t("ok"),
-          background: "var(--Color-Surface-Surface-Primary)",
-          color: "var(--Color-Text-Text-Primary)",
-          confirmButtonColor: "var(--Color-Surface-Surface-Brand)",
-          iconColor: "#f59e0b",
-        });
-        return;
-      }
-      await createBooking();
-    } else if (
-      ["vodafone_cash", "etisalat_wallet"].includes(booking.value.paymentMethod)
-    ) {
-      if (!booking.value.phoneNumber) {
-        Swal.fire({
-          icon: "warning",
-          title: t("missingPhoneNumber"),
-          text: t("missingPhoneNumberMessage"),
-          confirmButtonText: t("ok"),
-          background: "var(--Color-Surface-Surface-Primary)",
-          color: "var(--Color-Text-Text-Primary)",
-          confirmButtonColor: "var(--Color-Surface-Surface-Brand)",
-          iconColor: "#f59e0b",
-        });
-        return;
-      }
-      
-      // Directly open OTP modal without showing intermediate popup
-      openOtpModal();
+    // Reset and close
+    showReviewModal.value = false;
+    review.value = { rating: 0, comment: "" };
+
+    // Redirect to product page
+    if (booking.value.productId) {
+      router.push(`/product/${booking.value.productId}`);
+    } else {
+      router.push("/"); // Fallback if no product ID
     }
   } catch (error) {
-    console.error("Error processing booking:", error);
+    console.error("Full error submitting review:", {
+      message: error.message,
+      stack: error.stack,
+      code: error.code,
+    });
+
     Swal.fire({
       icon: "error",
-      title: t("failedToCreateBooking"),
-      text: t("failedToCreateBooking", [error.message]),
+      title: t("failedToSubmitReview"),
+      html: `
+        <div class="text-left">
+          <p>${t("failedToSubmitReviewMessage")}</p>
+          <p class="mt-2 text-sm">${error.message}</p>
+          ${error.code ? `<p class="text-xs mt-1">Error code: ${error.code}</p>` : ""}
+        </div>
+      `,
       confirmButtonText: t("ok"),
       background: "var(--Color-Surface-Surface-Primary)",
       color: "var(--Color-Text-Text-Primary)",
@@ -1897,70 +2000,27 @@ const submitBooking = async () => {
 
 const createBooking = async () => {
   try {
-    const userDocRef = doc(db, "users", auth.currentUser.uid);
-    const userDoc = await getDoc(userDocRef);
-
-    if (!userDoc.exists()) {
-      Swal.fire({
-        icon: "error",
-        title: t("userNotFound"),
-        text: t("userNotFoundMessage"),
-        confirmButtonText: t("ok"),
-        background: "var(--Color-Surface-Surface-Primary)",
-        color: "var(--Color-Text-Text-Primary)",
-        confirmButtonColor: "var(--Color-Surface-Surface-Brand)",
-        iconColor: "#ef4444",
-      });
-      return;
-    }
-
-    const userData = userDoc.data();
-
-    const productRef = doc(db, "products", booking.value.productId);
-    await updateDoc(productRef, { status: "pending" });
-
-    let sellerContactInfo = {};
-    try {
-      const sellerDocRef = doc(db, "users", booking.value.sellerId);
-      const sellerDocSnap = await getDoc(sellerDocRef);
-      if (sellerDocSnap.exists()) {
-        const sellerData = sellerDocSnap.data();
-        sellerContactInfo = {
-          sellerPhone: sellerData.phoneNumber || sellerData.phone || "",
-          sellerEmail: sellerData.email || "",
-          sellerAddress: sellerData.address || product.value.location || "Cairo, Egypt",
-          sellerName: sellerData.displayName || booking.value.sellerName,
-        };
-      }
-    } catch (error) {
-      console.error("Error loading seller contact info:", error);
-      sellerContactInfo = {
-        sellerPhone: "",
-        sellerEmail: "",
-        sellerAddress: product.value.location || "Cairo, Egypt",
-        sellerName: booking.value.sellerName,
-      };
-    }
-
+    // Set the booking details
     booking.value.userId = auth.currentUser.uid;
-    booking.value.timestamp = serverTimestamp();
+    booking.value.totalPrice = parseFloat(calculateTotal());
+    booking.value.deliveryFee = parseFloat(calculateDeliveryFee());
 
+    // Create a reference to the bookings collection
     const bookingsRef = collection(db, "bookings");
-    await setDoc(doc(bookingsRef), {
+
+    // Add the booking to Firestore
+    const docRef = await addDoc(bookingsRef, {
       ...booking.value,
-      productTitle: product.value.title,
-      productImage:
-        product.value.image1 || product.value.image2 || product.value.image3 || "",
-      sellerName: booking.value.sellerName,
-      sellerContactInfo: sellerContactInfo,
-      contactDetailsSent: true,
-      statusHistory: [
-        {
-          status: "pending",
-          timestamp: new Date().toISOString(),
-          updatedBy: "system",
-        },
-      ],
+      timestamp: serverTimestamp(),
+    });
+
+    // Get the auto-generated ID
+    const bookingId = docRef.id;
+
+    // Update product availability
+    const productRef = doc(db, "products", booking.value.productId);
+    await updateDoc(productRef, {
+      availability: false,
     });
 
     Swal.fire({
@@ -1972,8 +2032,6 @@ const createBooking = async () => {
       color: "var(--Color-Text-Text-Primary)",
       confirmButtonColor: "var(--Color-Surface-Surface-Brand)",
       iconColor: "#10b981",
-    }).then(() => {
-      router.push("/home");
     });
   } catch (error) {
     console.error("Error creating booking:", error);
@@ -1990,6 +2048,150 @@ const createBooking = async () => {
   }
 };
 
+// Add updateProductRating method
+const updateProductRating = async (productId, newRating) => {
+  try {
+    const productRef = doc(db, "products", productId);
+    const productSnap = await getDoc(productRef);
+
+    if (productSnap.exists()) {
+      const productData = productSnap.data();
+      const currentRating = productData.averageRating || 0;
+      const totalRatings = productData.totalRatings || 0;
+
+      // Calculate new average rating
+      const newTotalRatings = totalRatings + 1;
+      const newAverageRating =
+        (currentRating * totalRatings + newRating) / newTotalRatings;
+
+      // Update product document
+      await updateDoc(productRef, {
+        averageRating: newAverageRating,
+        totalRatings: newTotalRatings,
+      });
+    }
+  } catch (error) {
+    console.error("Error updating product rating:", error);
+  }
+};
+
+const updateProductAvailability = async () => {
+  try {
+    const productRef = doc(db, "products", booking.value.productId);
+    await updateDoc(productRef, {
+      availability: false,
+    });
+  } catch (error) {
+    console.error("Error updating product availability:", error);
+    throw error; // Re-throw the error so it can be caught by the calling function
+  }
+};
+const submitBooking = async () => {
+  if (!auth.currentUser) {
+    Swal.fire({
+      icon: "warning",
+      title: t("loginRequired"),
+      text: t("loginRequiredMessage"),
+      confirmButtonText: t("ok"),
+      background: "var(--Color-Surface-Surface-Primary)",
+      color: "var(--Color-Text-Text-Primary)",
+      confirmButtonColor: "var(--Color-Surface-Surface-Brand)",
+      iconColor: "#f59e0b",
+    });
+    router.push("/login");
+    return;
+  }
+  if (!booking.value.startDate || !booking.value.endDate) {
+    Swal.fire({
+      icon: "warning",
+      title: t("datesRequired"),
+      text: t("datesRequiredMessage"),
+      confirmButtonText: t("ok"),
+      background: "var(--Color-Surface-Surface-Primary)",
+      color: "var(--Color-Text-Text-Primary)",
+      confirmButtonColor: "var(--Color-Surface-Surface-Brand)",
+      iconColor: "#f59e0b",
+    });
+    return;
+  }
+  if (!booking.value.phoneNumber) {
+    Swal.fire({
+      icon: "warning",
+      title: t("phoneRequired"),
+      text: t("phoneRequiredMessage"),
+      confirmButtonText: t("ok"),
+      background: "var(--Color-Surface-Surface-Primary)",
+      color: "var(--Color-Text-Text-Primary)",
+      confirmButtonColor: "var(--Color-Surface-Surface-Brand)",
+      iconColor: "#f59e0b",
+    });
+    return;
+  }
+  if (booking.value.deliveryMethod === "delivery" && !booking.value.deliveryAddress) {
+    Swal.fire({
+      icon: "warning",
+      title: t("addressRequired"),
+      text: t("addressRequiredMessage"),
+      confirmButtonText: t("ok"),
+      background: "var(--Color-Surface-Surface-Primary)",
+      color: "var(--Color-Text-Text-Primary)",
+      confirmButtonColor: "var(--Color-Surface-Surface-Brand)",
+      iconColor: "#f59e0b",
+    });
+    return;
+  }
+  try {
+    if (booking.value.paymentMethod !== "credit_card") {
+      openOtpModal();
+    } else {
+      // For credit card, you might want to integrate a payment gateway here
+      Swal.fire({
+        icon: "info",
+        title: t("creditCardProcessing"),
+        text: t("creditCardProcessingMessage"),
+        confirmButtonText: t("ok"),
+        background: "var(--Color-Surface-Surface-Primary)",
+        color: "var(--Color-Text-Text-Primary)",
+        confirmButtonColor: "var(--Color-Surface-Surface-Brand)",
+        iconColor: "#3b82f6",
+      });
+      await createBooking();
+      showReviewModal.value = true;
+    }
+  } catch (error) {
+    console.error("Error submitting booking:", error);
+    Swal.fire({
+      icon: "error",
+      title: t("failedToSubmitBooking"),
+      text: t("failedToSubmitBooking", [error.message]),
+      confirmButtonText: t("ok"),
+      background: "var(--Color-Surface-Surface-Primary)",
+      color: "var(--Color-Text-Text-Primary)",
+      confirmButtonColor: "var(--Color-Surface-Surface-Brand)",
+      iconColor: "#ef4444",
+    });
+  }
+};
+onMounted(async () => {
+  await loadProduct();
+  await loadUserDetails();
+  await initializeMap();
+});
+onUnmounted(() => {
+  if (map.value) {
+    try {
+      map.value.remove();
+      map.value = null;
+      mapInitialized.value = false;
+    } catch (error) {
+      console.warn("Error removing map:", error);
+    }
+  }
+  if (otpTimerInterval.value) {
+    clearInterval(otpTimerInterval.value);
+  }
+});
+// Watch for address modal opening to initialize map
 watch(
   [
     () => booking.value.startDate,
@@ -2009,38 +2211,54 @@ watch(
   }
 );
 
-watch(showAddressModal, (newValue) => {
-  if (newValue) {
-    setTimeout(() => {
-      if (showAddressModal.value) {
-        initializeMap().catch((error) => {
-          console.error("Error initializing map:", error);
-        });
-      }
-    }, 100);
-  } else {
-    if (map.value) {
+watch(
+  () => showAddressModal.value,
+  async (newValue) => {
+    if (newValue) {
       try {
-        map.value.remove();
+        await initializeMap();
       } catch (error) {
-        console.warn("Error removing map:", error);
+        console.error("Error initializing map:", error);
       }
-      map.value = null;
-      marker.value = null;
-      mapInitialized.value = false;
+    } else {
+      if (map.value) {
+        try {
+          map.value.remove();
+        } catch (error) {
+          console.warn("Error removing map:", error);
+        }
+        map.value = null;
+        marker.value = null;
+        mapInitialized.value = false;
+      }
     }
   }
-});
+);
 
-onMounted(() => {
-  loadProduct();
-  loadUserDetails();
+onMounted(async () => {
+  await loadProduct();
+  await loadUserDetails();
 
   if (route.query.startDate) {
     booking.value.startDate = route.query.startDate;
   }
   if (route.query.endDate) {
     booking.value.endDate = route.query.endDate;
+  }
+});
+
+onUnmounted(() => {
+  if (map.value) {
+    try {
+      map.value.remove();
+    } catch (error) {
+      console.warn("Error removing map:", error);
+    }
+    map.value = null;
+    mapInitialized.value = false;
+  }
+  if (otpTimerInterval.value) {
+    clearInterval(otpTimerInterval.value);
   }
 });
 </script>
