@@ -1,10 +1,14 @@
 <template>
   <div
-    class="min-h-screen bg-gradient-to-br from-[var(--Colors-Gray-25)] to-[var(--Colors-Gray-50)] dark:from-[var(--Colors-Gray-800)] dark:to-[var(--Colors-Gray-700)]"
+    class="min-h-screen"
+    :style="{
+      backgroundColor: 'var(--Color-Surface-Surface-Primary)',
+      color: 'var(--Color-Text-Text-Primary)',
+    }"
   >
-    <!-- Enhanced Header -->
+    <!-- Simplified Header -->
     <div
-      class="bg-[var(--Color-Surface-Surface-Primary)]/90 dark:bg-[var(--Color-Surface-Surface-Primary)]/90 backdrop-blur-sm shadow-lg border-b border-[var(--Color-Boarder-Border-Primary)]/50 sticky top-0 z-10"
+      class="bg-[var(--Color-Surface-Surface-Primary)] border-b border-[var(--Color-Boarder-Border-Primary)] sticky top-0 z-10"
     >
       <div class="max-w-7xl mx-auto px-4 py-4">
         <div class="flex items-center justify-between">
@@ -27,7 +31,7 @@
             <!-- Search Button -->
             <button
               @click="toggleSearch"
-              class="p-2 text-[var(--Color-Text-Text-Secondary)] hover:text-[var(--Color-Text-Text-Brand)] hover:bg-[var(--Colors-Primary-25)] dark:hover:bg-[var(--Colors-Primary-800)] rounded-lg transition-all duration-200"
+              class="p-2 text-[var(--Color-Text-Text-Secondary)] hover:text-[var(--Color-Text-Text-Brand)] hover:bg-[var(--color-primary-25)] dark:hover:bg-[var(--color-Gray-600)] rounded-lg transition-all duration-200"
               title="Search messages"
             >
               <i class="fas fa-search"></i>
@@ -36,7 +40,7 @@
             <button
               @click="refreshConversations"
               :disabled="loading"
-              class="p-2 text-[var(--Color-Text-Text-Secondary)] hover:text-[var(--Color-Text-Text-Brand)] hover:bg-[var(--Colors-Primary-25)] dark:hover:bg-[var(--Colors-Primary-800)] rounded-lg transition-all duration-200"
+              class="p-2 text-[var(--Color-Text-Text-Secondary)] hover:text-[var(--Color-Text-Text-Brand)] hover:bg-[var(--color-primary-25)] dark:hover:bg-[var(--color-Gray-600)] rounded-lg transition-all duration-200"
               title="Refresh conversations"
             >
               <i class="fas fa-sync-alt" :class="{ 'animate-spin': loading }"></i>
@@ -44,7 +48,7 @@
             <!-- Settings Button -->
             <button
               @click="showSettings = !showSettings"
-              class="p-2 text-[var(--Color-Text-Text-Secondary)] hover:text-[var(--Color-Text-Text-Brand)] hover:bg-[var(--Colors-Primary-25)] dark:hover:bg-[var(--Colors-Primary-800)] rounded-lg transition-all duration-200"
+              class="p-2 text-[var(--Color-Text-Text-Secondary)] hover:text-[var(--Color-Text-Text-Brand)] hover:bg-[var(--color-primary-25)] dark:hover:bg-[var(--color-Gray-600)] rounded-lg transition-all duration-200"
               title="Message settings"
             >
               <i class="fas fa-cog"></i>
@@ -59,7 +63,7 @@
               v-model="searchQuery"
               type="text"
               placeholder="Search conversations and messages..."
-              class="w-full px-4 py-3 pl-12 border border-[var(--Color-Boarder-Border-Primary)] rounded-xl focus:outline-none focus:ring-2 focus:ring-[var(--Color-Surface-Surface-Brand)] bg-[var(--Color-Surface-Surface-Primary)] text-[var(--Color-Text-Text-Primary)] transition-all duration-200"
+              class="w-full px-4 py-3 pl-12 border border-[var(--Color-Boarder-Border-Primary)] rounded-xl focus:outline-none bg-[var(--Color-Surface-Surface-Primary)] text-[var(--Color-Text-Text-Primary)] transition-all duration-200"
             />
             <i
               class="fas fa-search absolute left-4 top-1/2 transform -translate-y-1/2 text-[var(--Color-Text-Text-Secondary)]"
@@ -70,13 +74,13 @@
     </div>
 
     <div class="max-w-7xl mx-auto px-4 py-6">
-      <!-- Enhanced Authentication Check -->
+      <!-- Simplified Authentication Check -->
       <div v-if="!auth.currentUser" class="text-center py-12">
         <div
-          class="bg-[var(--Color-Surface-Surface-Primary)]/90 backdrop-blur-sm rounded-2xl shadow-2xl p-8 max-w-md mx-auto border border-[var(--Color-Boarder-Border-Primary)]/50"
+          class="bg-[var(--Color-Surface-Surface-Primary)] rounded-2xl p-8 max-w-md mx-auto border border-[var(--Color-Boarder-Border-Primary)]"
         >
           <div
-            class="p-4 bg-[var(--Colors-Primary-100)] dark:bg-[var(--Colors-Primary-800)] rounded-full w-20 h-20 mx-auto mb-6 flex items-center justify-center"
+            class="p-4 bg-[var(--color-Gray-25)] rounded-full w-20 h-20 mx-auto mb-6 flex items-center justify-center"
           >
             <i class="fas fa-lock text-3xl text-[var(--Color-Surface-Surface-Brand)]"></i>
           </div>
@@ -90,14 +94,14 @@
           <div class="space-y-4">
             <button
               @click="router.push('/login')"
-              class="w-full bg-gradient-to-r from-[var(--Color-Surface-Surface-Brand)] to-[var(--Colors-Primary-600)] text-[var(--Color-Text-Text-Invert)] py-4 px-6 rounded-xl font-semibold hover:from-[var(--Colors-Primary-600)] hover:to-[var(--Colors-Primary-700)] transform hover:scale-105 transition-all duration-200 shadow-lg"
+              class="w-full bg-[var(--Color-Surface-Surface-Brand)] text-[var(--Color-Text-Text-Invert)] py-4 px-6 rounded-xl font-semibold"
             >
               <i class="fas fa-sign-in-alt mr-2"></i>
               Login
             </button>
             <button
               @click="router.push('/signup')"
-              class="w-full border-2 border-[var(--Color-Surface-Surface-Brand)] text-[var(--Color-Text-Text-Brand)] py-4 px-6 rounded-xl font-semibold hover:bg-[var(--Colors-Primary-25)] dark:hover:bg-[var(--Colors-Primary-800)] transform hover:scale-105 transition-all duration-200"
+              class="w-full border-2 border-[var(--Color-Surface-Surface-Brand)] text-[var(--Color-Text-Text-Brand)] py-4 px-6 rounded-xl font-semibold"
             >
               <i class="fas fa-user-plus mr-2"></i>
               Sign Up
@@ -106,14 +110,14 @@
         </div>
       </div>
 
-      <!-- Enhanced Main Content -->
+      <!-- Simplified Main Content -->
       <div v-else class="grid grid-cols-1 lg:grid-cols-3 gap-6 main-content">
-        <!-- Enhanced Conversations List -->
+        <!-- Simplified Conversations List -->
         <div
-          class="w-full bg-[var(--Color-Surface-Surface-Primary)]/90 backdrop-blur-sm rounded-2xl shadow-xl overflow-hidden border border-[var(--Color-Boarder-Border-Primary)]/50 conversations-list"
+          class="w-full bg-[var(--Color-Surface-Surface-Primary)] rounded-2xl overflow-hidden border border-[var(--Color-Boarder-Border-Primary)] conversations-list"
         >
           <div
-            class="p-6 border-b border-[var(--Color-Boarder-Border-Primary)]/50 bg-gradient-to-r from-[var(--Colors-Primary-25)] to-transparent dark:from-[var(--Colors-Primary-800)]"
+            class="p-6 border-b border-[var(--Color-Boarder-Border-Primary)]"
           >
             <div class="flex items-center justify-between mb-2">
               <h2 class="text-xl font-bold text-[var(--Color-Text-Text-Primary)]">
@@ -138,17 +142,12 @@
             </p>
           </div>
 
-          <!-- Enhanced Loading State -->
+          <!-- Simplified Loading State -->
           <div v-if="loading" class="p-12 text-center">
             <div class="relative">
               <div
-                class="animate-spin rounded-full h-12 w-12 border-4 border-[var(--Colors-Primary-100)] border-t-[var(--Color-Surface-Surface-Brand)] mx-auto mb-6"
+                class="animate-spin rounded-full h-12 w-12 border-4 border-[var(--color-Gray-25)] border-t-[var(--Color-Surface-Surface-Brand)] mx-auto mb-6"
               ></div>
-              <div class="absolute inset-0 animate-pulse">
-                <div
-                  class="h-12 w-12 bg-[var(--Color-Surface-Surface-Brand)] rounded-full opacity-20"
-                ></div>
-              </div>
             </div>
             <h3 class="text-lg font-semibold text-[var(--Color-Text-Text-Primary)] mb-2">
               Loading Conversations
@@ -158,10 +157,10 @@
             </p>
           </div>
 
-          <!-- Enhanced Empty State -->
+          <!-- Simplified Empty State -->
           <div v-else-if="conversations.length === 0" class="p-12 text-center">
             <div
-              class="p-6 bg-gradient-to-br from-[var(--Colors-Primary-25)] to-[var(--Colors-Primary-100)] dark:from-[var(--Colors-Primary-800)] dark:to-[var(--Colors-Primary-700)] rounded-2xl mb-6"
+              class="p-6 bg-[var(--color-Gray-25)] rounded-2xl mb-6"
             >
               <i
                 class="fas fa-comments text-5xl text-[var(--Color-Surface-Surface-Brand)] mb-4"
@@ -176,32 +175,32 @@
             </p>
             <button
               @click="router.push('/products')"
-              class="inline-flex items-center gap-2 px-6 py-3 bg-[var(--Color-Surface-Surface-Brand)] text-[var(--Color-Text-Text-Invert)] rounded-xl font-semibold hover:bg-[var(--Colors-Primary-600)] transform hover:scale-105 transition-all duration-200 shadow-lg"
+              class="inline-flex items-center gap-2 px-6 py-3 bg-[var(--Color-Surface-Surface-Brand)] text-[var(--Color-Text-Text-Invert)] rounded-xl font-semibold"
             >
               <i class="fas fa-search"></i>
               Browse Products
             </button>
           </div>
 
-          <!-- Enhanced Conversations List -->
+          <!-- Simplified Conversations List -->
           <div v-else class="overflow-y-auto conversations-list-content">
             <div
               v-for="conversation in conversations"
               :key="conversation.id"
               @click="selectConversation(conversation)"
-              class="p-4 border-b border-[var(--Color-Boarder-Border-Primary)]/50 cursor-pointer hover:bg-gradient-to-r hover:from-[var(--Colors-Primary-25)] hover:to-transparent dark:hover:from-[var(--Colors-Primary-800)] transition-all duration-200 group"
+              class="p-4 border-b border-[var(--Color-Boarder-Border-Primary)] cursor-pointer hover:bg-[var(--color-primary-25)] dark:hover:bg-[var(--color-Gray-600)] transition-all duration-200 group"
               :class="{
-                'bg-gradient-to-r from-[var(--Colors-Primary-100)] to-[var(--Colors-Primary-50)] dark:from-[var(--Colors-Primary-800)] dark:to-[var(--Colors-Primary-900)] border-l-4 border-l-[var(--Color-Surface-Surface-Brand)]':
+                'bg-[var(--color-Gray-25)] border-l-4 border-l-[var(--Color-Surface-Surface-Brand)]':
                   selectedConversation?.id === conversation.id,
               }"
             >
               <div class="flex items-center gap-4">
-                <!-- Enhanced Avatar -->
+                <!-- Simplified Avatar -->
                 <div class="relative">
                   <img
                     :src="conversation.otherUserImage || require('@/assets/default.png')"
                     :alt="conversation.otherUserName"
-                    class="w-14 h-14 rounded-full object-cover ring-2 ring-[var(--Color-Surface-Surface-Primary)] shadow-lg"
+                    class="w-14 h-14 rounded-full object-cover ring-2 ring-[var(--Color-Surface-Surface-Primary)]"
                   />
                   <!-- Online Status Indicator -->
                   <div
@@ -220,7 +219,7 @@
                       <!-- Unread Badge -->
                       <span
                         v-if="conversation.unreadCount > 0"
-                        class="bg-[var(--Colors-Error-500)] text-[var(--Color-Text-Text-Invert)] text-xs rounded-full px-2 py-1 font-bold animate-pulse"
+                        class="bg-[var(--color-error-500)] text-[var(--Color-Text-Text-Invert)] text-xs rounded-full px-2 py-1 font-bold animate-pulse"
                       >
                         {{
                           conversation.unreadCount > 9 ? "9+" : conversation.unreadCount
@@ -255,42 +254,43 @@
           </div>
         </div>
 
-        <!-- Enhanced Chat Area -->
+        <!-- Simplified Chat Area -->
         <div
-          class="lg:col-span-2 bg-[var(--Color-Surface-Surface-Primary)]/90 backdrop-blur-sm rounded-2xl shadow-xl overflow-hidden border border-[var(--Color-Boarder-Border-Primary)]/50 chat-area"
+          class="lg:col-span-2 bg-[var(--Color-Surface-Surface-Primary)] rounded-2xl overflow-hidden border border-[var(--Color-Boarder-Border-Primary)] chat-area"
         >
-          <!-- Enhanced No Conversation Selected -->
+          <!-- Simplified No Conversation Selected -->
           <div
             v-if="!selectedConversation"
             class="h-full flex items-center justify-center p-8"
           >
             <div class="text-center max-w-md">
               <div
-                class="p-8 bg-gradient-to-br from-[var(--Colors-Primary-25)] to-[var(--Colors-Primary-100)] dark:from-[var(--Colors-Primary-800)] dark:to-[var(--Colors-Primary-700)] rounded-3xl mb-8"
+                class="p-8 bg-[var(--color-Gray-25)] rounded-2xl mb-8 inline-block"
               >
                 <i
-                  class="fas fa-comments text-6xl text-[var(--Color-Surface-Surface-Brand)]"
+                  class="fas fa-comments text-4xl text-[var(--Color-Surface-Surface-Brand)]"
                 ></i>
               </div>
-              <h3 class="text-2xl font-bold text-[var(--Color-Text-Text-Primary)] mb-4">
-                Select a Conversation
+              <h3
+                class="text-lg font-semibold text-[var(--Color-Text-Text-Primary)] mb-2"
+              >
+                Start the Conversation
               </h3>
-              <p class="text-[var(--Color-Text-Text-Secondary)] leading-relaxed">
-                Choose a conversation from the list to start messaging with product owners
-                and other users.
+              <p class="text-[var(--Color-Text-Text-Secondary)]">
+                Send the first message to begin chatting!
               </p>
             </div>
           </div>
 
           <!-- Chat Interface -->
           <div v-else class="h-full flex flex-col">
-            <!-- Enhanced Chat Header -->
+            <!-- Simplified Chat Header -->
             <div
-              class="p-6 border-b border-[var(--Color-Boarder-Border-Primary)]/50 bg-gradient-to-r from-[var(--Color-Surface-Surface-Brand)] to-[var(--Colors-Primary-600)] text-[var(--Color-Text-Text-Invert)] shadow-lg"
+              class="p-6 border-b border-[var(--Color-Boarder-Border-Primary)] bg-[var(--Color-Surface-Surface-Brand)] text-[var(--Color-Text-Text-Invert)]"
             >
               <div class="flex items-center justify-between">
                 <div class="flex items-center gap-4">
-                  <!-- Enhanced Avatar -->
+                  <!-- Simplified Avatar -->
                   <div class="relative">
                     <img
                       :src="
@@ -298,11 +298,11 @@
                         require('@/assets/default.png')
                       "
                       :alt="selectedConversation.otherUserName"
-                      class="w-12 h-12 rounded-full object-cover ring-2 ring-[var(--Color-Text-Text-Invert)]/20 shadow-lg"
+                      class="w-12 h-12 rounded-full object-cover ring-2 ring-[var(--Color-Text-Text-Invert)]/20"
                     />
                     <!-- Online Status -->
                     <div
-                      class="absolute -bottom-1 -right-1 w-4 h-4 bg-[var(--Colors-Success-400)] rounded-full border-2 border-[var(--Color-Text-Text-Invert)]"
+                      class="absolute -bottom-1 -right-1 w-4 h-4 bg-[var(--color-success-400)] rounded-full border-2 border-[var(--Color-Text-Text-Invert)]"
                     ></div>
                   </div>
                   <div>
@@ -353,21 +353,21 @@
                     <button
                       @click="viewProduct"
                       v-if="selectedConversation.productId"
-                      class="p-2 hover:bg-[var(--Color-Text-Text-Invert)]/20 rounded-lg transition-all duration-200 transform hover:scale-110"
+                      class="p-2 hover:bg-[var(--Color-Text-Text-Invert)]/20 rounded-lg transition-all duration-200"
                       title="View Product"
                     >
                       <i class="fas fa-external-link-alt"></i>
                     </button>
                     <button
                       @click="showChatSettings = !showChatSettings"
-                      class="p-2 hover:bg-[var(--Color-Text-Text-Invert)]/20 rounded-lg transition-all duration-200 transform hover:scale-110"
+                      class="p-2 hover:bg-[var(--Color-Text-Text-Invert)]/20 rounded-lg transition-all duration-200"
                       title="Chat Settings"
                     >
                       <i class="fas fa-ellipsis-v"></i>
                     </button>
                     <button
                       @click="clearSelectedConversation"
-                      class="p-2 hover:bg-[var(--Color-Text-Text-Invert)]/20 rounded-lg transition-all duration-200 transform hover:scale-110"
+                      class="p-2 hover:bg-[var(--Color-Text-Text-Invert)]/20 rounded-lg transition-all duration-200"
                       title="Close Chat"
                     >
                       <i class="fas fa-times"></i>
@@ -377,18 +377,18 @@
               </div>
             </div>
 
-            <!-- Enhanced Messages Area -->
+            <!-- Simplified Messages Area -->
             <div
               ref="messagesContainer"
               @scroll="markMessagesAsReadOnScroll"
               @click="markMessagesAsRead(selectedConversation.id)"
-              class="flex-1 overflow-y-auto p-6 space-y-6 bg-gradient-to-b from-[var(--Colors-Gray-25)] to-[var(--Colors-Gray-50)] dark:from-[var(--Colors-Gray-600)] dark:to-[var(--Colors-Gray-700)] messages-container"
+              class="flex-1 overflow-y-auto p-6 bg-[var(--Colors-Gray-25)] dark:bg-[var(--Color-Surface-Surface-Primary)] messages-container"
             >
-              <!-- Enhanced Loading Messages -->
+              <!-- Simplified Loading Messages -->
               <div v-if="loadingMessages" class="flex justify-center items-center h-32">
                 <div class="text-center">
                   <div
-                    class="animate-spin rounded-full h-12 w-12 border-4 border-[var(--Colors-Primary-100)] border-t-[var(--Color-Surface-Surface-Brand)] mx-auto mb-4"
+                    class="animate-spin rounded-full h-12 w-12 border-4 border-[var(--color-primary-25)] dark:border-[var(--color-Gray-600)] border-t-[var(--Color-Surface-Surface-Brand)] mx-auto mb-4"
                   ></div>
                   <p class="text-[var(--Color-Text-Text-Secondary)]">
                     Loading messages...
@@ -396,10 +396,10 @@
                 </div>
               </div>
 
-              <!-- Enhanced No Messages -->
+              <!-- Simplified No Messages -->
               <div v-else-if="currentMessages.length === 0" class="text-center p-12">
                 <div
-                  class="p-6 bg-gradient-to-br from-[var(--Colors-Primary-25)] to-[var(--Colors-Primary-100)] dark:from-[var(--Colors-Primary-800)] dark:to-[var(--Colors-Primary-700)] rounded-2xl mb-6 inline-block"
+                  class="p-6 bg-[var(--color-Gray-25)] rounded-2xl mb-6 inline-block"
                 >
                   <i
                     class="fas fa-comments text-4xl text-[var(--Color-Surface-Surface-Brand)]"
@@ -415,8 +415,8 @@
                 </p>
               </div>
 
-              <!-- Enhanced Messages -->
-              <div v-else>
+              <!-- Simplified Messages with Proper Margins -->
+              <div v-else class="space-y-4">
                 <div
                   v-for="message in currentMessages"
                   :key="message.id"
@@ -424,11 +424,11 @@
                   :class="isOwnMessage(message) ? 'justify-end' : 'justify-start'"
                 >
                   <div
-                    class="message-bubble max-w-xs lg:max-w-md px-6 py-3 rounded-2xl relative shadow-lg transition-all duration-200 hover:shadow-xl"
+                    class="message-bubble max-w-xs lg:max-w-md px-6 py-3 rounded-2xl relative transition-all duration-200"
                     :class="
                       isOwnMessage(message)
-                        ? 'bg-gradient-to-r from-[var(--Color-Surface-Surface-Brand)] to-[var(--Colors-Primary-600)] text-[var(--Color-Text-Text-Invert)]'
-                        : 'bg-[var(--Color-Surface-Surface-Primary)] text-[var(--Color-Text-Text-Primary)] border border-[var(--Color-Boarder-Border-Primary)]/50'
+                        ? 'bg-[var(--Color-Surface-Surface-Brand)] text-[var(--Color-Text-Text-Invert)]'
+                        : 'bg-[var(--Color-Surface-Surface-Primary)] text-[var(--Color-Text-Text-Primary)] border border-[var(--Color-Boarder-Border-Primary)]'
                     "
                     @mouseenter="
                       message.senderId !== auth.currentUser?.uid &&
@@ -454,19 +454,19 @@
                           <i
                             :class="
                               message.read
-                                ? 'fas fa-check-double text-[var(--Colors-Primary-300)]'
-                                : 'fas fa-check text-[var(--Colors-Gray-300)]'
+                                ? 'fas fa-check-double text-[var(--color-primary-300)]'
+                                : 'fas fa-check text-[var(--color-gray-300)]'
                             "
                           ></i>
                         </span>
                         <!-- Unread indicator for other's messages -->
                         <span
                           v-else-if="!message.read"
-                          class="w-2 h-2 bg-[var(--Colors-Error-500)] rounded-full animate-pulse"
+                          class="w-2 h-2 bg-[var(--color-error-500)] rounded-full animate-pulse"
                         ></span>
                         <!-- Read indicator for other's messages -->
                         <span v-else class="text-xs opacity-60">
-                          <i class="fas fa-check text-[var(--Colors-Success-400)]"></i>
+                          <i class="fas fa-check text-[var(--color-success-400)]"></i>
                         </span>
                       </div>
                     </div>
@@ -480,11 +480,11 @@
                         class="absolute -top-2 -right-2 opacity-0 group-hover:opacity-100 transition-opacity duration-200"
                       >
                         <div
-                          class="flex items-center gap-1 bg-[var(--Color-Surface-Surface-Primary)] rounded-lg shadow-lg p-1"
+                          class="flex items-center gap-1 bg-[var(--Color-Surface-Surface-Primary)] rounded-lg p-1"
                         >
                           <button
                             @click="reactToMessage(message.id, '👍')"
-                            class="p-1 hover:bg-[var(--Colors-Gray-100)] dark:hover:bg-[var(--Colors-Gray-600)] rounded transition-colors"
+                            class="p-1 hover:bg-[var(--color-gray-100)] rounded transition-colors"
                             title="React"
                           >
                             <i class="fas fa-thumbs-up text-xs"></i>
@@ -492,7 +492,7 @@
                           <button
                             v-if="isOwnMessage(message)"
                             @click="editMessage(message)"
-                            class="p-1 hover:bg-[var(--Colors-Gray-100)] dark:hover:bg-[var(--Colors-Gray-600)] rounded transition-colors"
+                            class="p-1 hover:bg-[var(--color-gray-100)] rounded transition-colors"
                             title="Edit"
                           >
                             <i class="fas fa-edit text-xs"></i>
@@ -505,16 +505,16 @@
               </div>
             </div>
 
-            <!-- Enhanced Message Input -->
+            <!-- Simplified Message Input -->
             <div
-              class="p-6 border-t border-[var(--Color-Boarder-Border-Primary)]/50 bg-[var(--Color-Surface-Surface-Primary)]/90 backdrop-blur-sm"
+              class="p-6 border-t border-[var(--Color-Boarder-Border-Primary)] bg-[var(--Color-Surface-Surface-Primary)]"
             >
               <form @submit.prevent="sendMessage" class="flex items-end gap-3">
                 <!-- Attachment Button -->
                 <button
                   type="button"
                   @click="showAttachmentMenu = !showAttachmentMenu"
-                  class="p-3 text-[var(--Color-Text-Text-Secondary)] hover:text-[var(--Color-Text-Text-Brand)] hover:bg-[var(--Colors-Primary-25)] dark:hover:bg-[var(--Colors-Primary-800)] rounded-xl transition-all duration-200"
+                  class="p-3 text-[var(--Color-Text-Text-Secondary)] hover:text-[var(--Color-Text-Text-Brand)] hover:bg-[var(--color-primary-25)] dark:hover:bg-[var(--color-Gray-600)] rounded-xl transition-all duration-200"
                   title="Attach file"
                 >
                   <i class="fas fa-paperclip text-lg"></i>
@@ -529,7 +529,7 @@
                     @keyup.enter.shift.exact="newMessage += '\n'"
                     @input="handleTyping"
                     rows="1"
-                    class="w-full px-4 py-3 pr-12 border border-[var(--Color-Boarder-Border-Primary)] rounded-xl focus:outline-none focus:ring-2 focus:ring-[var(--Color-Surface-Surface-Brand)] bg-[var(--Color-Surface-Surface-Primary)] text-[var(--Color-Text-Text-Primary)] resize-none transition-all duration-200"
+                    class="w-full px-4 py-3 pr-12 border border-[var(--Color-Boarder-Border-Primary)] rounded-xl focus:outline-none bg-[var(--Color-Surface-Surface-Primary)] text-[var(--Color-Text-Text-Primary)] resize-none transition-all duration-200"
                     style="min-height: 48px; max-height: 120px"
                   ></textarea>
 
@@ -545,7 +545,7 @@
                 <button
                   type="submit"
                   :disabled="!newMessage || !newMessage.trim() || newMessage.length > 500"
-                  class="p-3 bg-[var(--Color-Surface-Surface-Brand)] text-[var(--Color-Text-Text-Invert)] rounded-xl hover:bg-[var(--Colors-Primary-600)] disabled:bg-[var(--Colors-Gray-400)] disabled:cursor-not-allowed transition-all duration-200 transform hover:scale-105 shadow-lg"
+                  class="p-3 bg-[var(--Color-Surface-Surface-Brand)] text-[var(--Color-Text-Text-Invert)] rounded-xl disabled:bg-[var(--color-gray-400)] disabled:cursor-not-allowed transition-all duration-200"
                   title="Send message"
                 >
                   <i class="fas fa-paper-plane"></i>
@@ -555,12 +555,12 @@
               <!-- Attachment Menu -->
               <div
                 v-if="showAttachmentMenu"
-                class="mt-3 p-3 bg-[var(--Color-Surface-Surface-Primary)] rounded-xl shadow-lg border border-[var(--Color-Boarder-Border-Primary)]"
+                class="mt-3 p-3 bg-[var(--Color-Surface-Surface-Primary)] rounded-xl border border-[var(--Color-Boarder-Border-Primary)]"
               >
                 <div class="grid grid-cols-3 gap-3">
                   <button
                     @click="attachFile('image')"
-                    class="p-3 text-center hover:bg-[var(--Colors-Primary-25)] dark:hover:bg-[var(--Colors-Primary-800)] rounded-lg transition-colors"
+                    class="p-3 text-center hover:bg-[var(--color-primary-25)] dark:hover:bg-[var(--color-Gray-600)] rounded-lg transition-colors"
                   >
                     <i
                       class="fas fa-image text-2xl text-[var(--Color-Text-Text-Brand)] mb-2"
@@ -569,7 +569,7 @@
                   </button>
                   <button
                     @click="attachFile('document')"
-                    class="p-3 text-center hover:bg-[var(--Colors-Primary-25)] dark:hover:bg-[var(--Colors-Primary-800)] rounded-lg transition-colors"
+                    class="p-3 text-center hover:bg-[var(--color-primary-25)] dark:hover:bg-[var(--color-Gray-600)] rounded-lg transition-colors"
                   >
                     <i
                       class="fas fa-file text-2xl text-[var(--Color-Text-Text-Brand)] mb-2"
@@ -578,7 +578,7 @@
                   </button>
                   <button
                     @click="attachFile('location')"
-                    class="p-3 text-center hover:bg-[var(--Colors-Primary-25)] dark:hover:bg-[var(--Colors-Primary-800)] rounded-lg transition-colors"
+                    class="p-3 text-center hover:bg-[var(--color-primary-25)] dark:hover:bg-[var(--color-Gray-600)] rounded-lg transition-colors"
                   >
                     <i
                       class="fas fa-map-marker-alt text-2xl text-[var(--Color-Text-Text-Brand)] mb-2"
@@ -1201,11 +1201,11 @@ onUnmounted(() => {
 }
 
 .dark .messages-container::-webkit-scrollbar-thumb {
-  background: rgba(255, 255, 255, 0.2);
+  background:  'var(--Color-Surface-Surface-Primary)';
 }
 
 .dark .messages-container::-webkit-scrollbar-thumb:hover {
-  background: rgba(255, 255, 255, 0.3);
+  background:'var(--Color-Surface-Surface-Primary)';
 }
 
 /* Scrollbar styles for conversations list */
@@ -1232,7 +1232,7 @@ onUnmounted(() => {
 }
 
 .dark .conversations-list::-webkit-scrollbar-thumb:hover {
-  background: rgba(255, 255, 255, 0.2);
+  background: 'var(--Color-Surface-Surface-Primary)';
 }
 
 /* Desktop-specific styles */
