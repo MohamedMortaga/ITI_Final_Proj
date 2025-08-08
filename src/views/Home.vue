@@ -65,7 +65,6 @@
     </div>
 
     <CustomerReviews :reviews="formattedReviews" v-if="formattedReviews.length > 0" />
-
     <!-- Why Rento Section -->
     <WhyRento class="px-2 lg:px-4" />
 
@@ -375,7 +374,7 @@
     </div>
 
     <!-- Features Comparison Section -->
-    <div class="bg-[var(--Color-Surface-Surface-Primary)] py-16 overflow-hidden">
+    <!-- <div class="bg-[var(--Color-Surface-Surface-Primary)] py-16 overflow-hidden">
       <div class="max-w-7xl mx-auto px-4">
         <h2 class="text-3xl lg:text-4xl font-bold text-center mb-8 lg:mb-12">
           <span class="text-[var(--Color-Text-Text-Primary)]">{{ $t("compare") }}</span>
@@ -547,114 +546,9 @@
           </table>
         </div>
       </div>
-    </div>
+    </div> -->
   </div>
-  <!-- Customer Reviews Section -->
-  <div class="max-w-7xl mx-auto px-4 py-16 overflow-hidden">
-    <div class="text-center mb-12">
-      <h2 class="text-3xl lg:text-4xl font-bold mb-4">
-        <span class="text-[var(--Color-Text-Text-Primary)]">{{ $t("whatOur") }}</span>
-        <span class="text-[var(--Color-Text-Text-Brand)]">{{ $t("customersSay") }}</span>
-      </h2>
-      <p
-        class="text-lg lg:text-xl text-[var(--Color-Text-Text-Secondary)] max-w-3xl mx-auto"
-      >
-        {{ $t("customerReviewsDescription") }}
-      </p>
-    </div>
 
-    <div class="relative">
-      <button
-        @click="scrollReviews(-1)"
-        class="absolute left-0 top-1/2 transform -translate-y-1/2 z-10 bg-[var(--Color-Surface-Surface-Primary)] rounded-full p-2 shadow-md hover:bg-[var(--Color-Boarder-Border-Primary)] transition-colors"
-        :disabled="currentReviewIndex === 0"
-        :class="{ 'opacity-50 cursor-not-allowed': currentReviewIndex === 0 }"
-      >
-        <i class="fas fa-chevron-left text-[var(--Color-Text-Text-Primary)]"></i>
-      </button>
-
-      <div class="overflow-hidden">
-        <div
-          class="flex transition-transform duration-300 ease-in-out"
-          :style="{ transform: `translateX(-${currentReviewIndex * 33.333}%)` }"
-        >
-          <div
-            v-for="review in formattedReviews"
-            :key="review.id"
-            class="w-full flex-shrink-0 px-4"
-            :class="{ 'w-1/3': formattedReviews.length > 3 }"
-          >
-            <div
-              class="bg-[var(--Color-Surface-Surface-Primary)] border border-[var(--Color-Boarder-Border-Primary)] rounded-xl p-6 h-full"
-            >
-              <div class="flex items-center justify-between mb-4">
-                <div class="flex items-center">
-                  <div v-for="star in 5" :key="star" class="mr-1">
-                    <i
-                      class="fas fa-star"
-                      :class="star <= review.rating ? 'text-yellow-400' : 'text-gray-300'"
-                    ></i>
-                  </div>
-                </div>
-                <span class="text-sm text-[var(--Color-Text-Text-Secondary)]">
-                  {{ review.date }}
-                </span>
-              </div>
-              <h4 class="font-medium text-[var(--Color-Text-Text-Primary)] mb-2">
-                {{ review.productTitle }}
-              </h4>
-              <p class="text-[var(--Color-Text-Text-Primary)] mb-4 line-clamp-3">
-                "{{ review.comment }}"
-              </p>
-              <div class="flex items-center">
-                <img
-                  :src="review.userImage"
-                  alt="User"
-                  class="w-10 h-10 rounded-full object-cover mr-3"
-                />
-                <div>
-                  <span class="font-medium text-[var(--Color-Text-Text-Primary)] block">
-                    {{ review.userName }}
-                  </span>
-                  <span class="text-sm text-[var(--Color-Text-Text-Secondary)]">
-                    {{ review.userEmail }}
-                  </span>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <button
-        @click="scrollReviews(1)"
-        class="absolute right-0 top-1/2 transform -translate-y-1/2 z-10 bg-[var(--Color-Surface-Surface-Primary)] rounded-full p-2 shadow-md hover:bg-[var(--Color-Boarder-Border-Primary)] transition-colors"
-        :disabled="currentReviewIndex >= formattedReviews.length - 3"
-        :class="{
-          'opacity-50 cursor-not-allowed':
-            currentReviewIndex >= formattedReviews.length - 3,
-        }"
-      >
-        <i class="fas fa-chevron-right text-[var(--Color-Text-Text-Primary)]"></i>
-      </button>
-    </div>
-
-    <!-- Dots indicator -->
-    <div class="flex justify-center mt-6 space-x-2" v-if="formattedReviews.length > 3">
-      <button
-        v-for="(dot, index) in Math.ceil(formattedReviews.length / 3)"
-        :key="index"
-        @click="currentReviewIndex = index * 3"
-        class="w-2 h-2 rounded-full transition-colors"
-        :class="{
-          'bg-[var(--Color-Text-Text-Brand)]':
-            index === Math.floor(currentReviewIndex / 3),
-          'bg-[var(--Color-Boarder-Border-Primary)]':
-            index !== Math.floor(currentReviewIndex / 3),
-        }"
-      ></button>
-    </div>
-  </div>
   <AppFooter class="pt-16" />
 </template>
 
@@ -702,35 +596,88 @@ export default {
     const auth = getAuth();
     const router = useRouter();
     const allProducts = ref([]);
-    const currentReviewIndex = ref(0);
+    const currentReviewGroup = ref(0);
+    const reviewsPerGroup = 3;
+
+    // Group reviews into sets of 3
+    const reviewGroups = computed(() => {
+      if (!formattedReviews.value.length) return [];
+      const groups = [];
+      for (let i = 0; i < formattedReviews.value.length; i += reviewsPerGroup) {
+        groups.push(formattedReviews.value.slice(i, i + reviewsPerGroup));
+      }
+      return groups;
+    });
 
     const formattedReviews = computed(() => {
       if (!webReviews.value) return [];
 
       return webReviews.value
-        .filter((review) => review.status === "approved") // Only show approved reviews
-        .map((review) => ({
-          id: review.id,
-          rating: Number(review.rating) || 5, // Use the rating field from your data
-          comment: review.bookingId?.comment || review.comment || "No comment", // Get comment from bookingId or direct field
-          userImage: review.userImage || require("@/assets/default.png"),
-          userName: review.userName || "Anonymous",
-          date: review.timestamp
-            ? new Date(review.timestamp).toLocaleDateString("en-US", {
+        .filter((review) => review.status === "approved")
+        .map((review) => {
+          let displayDate = "Recently";
+          try {
+            if (review.timestamp) {
+              const date = review.timestamp.toDate
+                ? review.timestamp.toDate()
+                : new Date(review.timestamp);
+
+              displayDate = date.toLocaleDateString("en-US", {
                 year: "numeric",
-                month: "short",
+                month: "long",
                 day: "numeric",
-              })
-            : "Recently",
-          productTitle: review.productTitle || "Unknown Product",
-          userEmail: review.userEmail || "",
-        }))
-        .sort((a, b) => new Date(b.date) - new Date(a.date));
+              });
+            }
+          } catch (e) {
+            console.error("Date conversion error:", e);
+          }
+
+          return {
+            id: review.id,
+            rating: Number(review.rating) || 5,
+            comment: review.comment || review.bookingId?.comment || "Great product!",
+            productTitle: review.productTitle || "Camera Equipment",
+            userName: review.userName || "Anonymous",
+            userEmail: review.userEmail || "",
+            timestamp: review.timestamp,
+          };
+        });
     });
-    const scrollReviews = (direction) => {
-      const newIndex = currentReviewIndex.value + direction * 3;
-      if (newIndex >= 0 && newIndex <= formattedReviews.value.length - 3) {
-        currentReviewIndex.value = newIndex;
+
+    const formatReviewDate = (timestamp) => {
+      if (!timestamp) return "Recently";
+      try {
+        const date = timestamp.toDate ? timestamp.toDate() : new Date(timestamp);
+        return date.toLocaleDateString("en-US", {
+          year: "numeric",
+          month: "long",
+          day: "numeric",
+        });
+      } catch (e) {
+        console.error("Date formatting error:", e);
+        return "Recently";
+      }
+    };
+
+    const getInitials = (name) => {
+      if (!name) return "?";
+      return name
+        .split(" ")
+        .map((part) => part[0])
+        .join("")
+        .toUpperCase()
+        .substring(0, 2);
+    };
+
+    const prevReviewGroup = () => {
+      if (currentReviewGroup.value > 0) {
+        currentReviewGroup.value--;
+      }
+    };
+
+    const nextReviewGroup = () => {
+      if (currentReviewGroup.value < reviewGroups.value.length - 1) {
+        currentReviewGroup.value++;
       }
     };
 
@@ -831,12 +778,17 @@ export default {
       isAuthenticated,
       promptLogin,
       formattedReviews,
-      currentReviewIndex,
-      scrollReviews,
+      reviewGroups,
+      currentReviewGroup,
+      prevReviewGroup,
+      nextReviewGroup,
+      formatReviewDate,
+      getInitials,
     };
   },
 };
 </script>
+
 <style scoped>
 .line-clamp-3 {
   display: -webkit-box;
@@ -847,6 +799,36 @@ export default {
 
 .transition-transform {
   transition-property: transform;
+  transition-duration: 300ms;
+  transition-timing-function: ease-in-out;
 }
-/* No additional styles needed - all styling is handled by Tailwind */
+
+.navigation-arrow {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  z-index: 10;
+  background-color: white;
+  border-radius: 50%;
+  padding: 0.75rem;
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+  transition: background-color 0.2s;
+}
+
+.navigation-arrow:hover {
+  background-color: #f3f4f6;
+}
+
+.navigation-arrow:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.navigation-arrow.left {
+  left: 0;
+}
+
+.navigation-arrow.right {
+  right: 0;
+}
 </style>

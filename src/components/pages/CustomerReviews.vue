@@ -1,9 +1,15 @@
 <template>
   <div class="container mx-auto px-4 mt-6 mb-8">
     <h3 class="text-center text-3xl lg:text-4xl font-bold mb-6">
-      <span class="text-[var(--Color-Text-Text-Primary)]">{{ $t('whatCustomersSayPart1') }}</span>
-      <span class="text-[var(--Color-Text-Text-Brand)]">{{ $t('whatCustomersSayPart2') }}</span>
-      <span class="text-[var(--Color-Text-Text-Primary)]">{{ $t('whatCustomersSayPart3') }}</span>
+      <span class="text-[var(--Color-Text-Text-Primary)]">{{
+        $t("whatCustomersSayPart1")
+      }}</span>
+      <span class="text-[var(--Color-Text-Text-Brand)]">{{
+        $t("whatCustomersSayPart2")
+      }}</span>
+      <span class="text-[var(--Color-Text-Text-Primary)]">{{
+        $t("whatCustomersSayPart3")
+      }}</span>
     </h3>
     <div class="flex flex-col lg:flex-row gap-6 justify-center">
       <div
@@ -13,19 +19,28 @@
       >
         <div class="flex items-center mb-2">
           <span class="text-yellow-400 text-lg mr-2">{{ review.rating.toFixed(1) }}</span>
-          <i
-            class="fa-solid fa-star text-yellow-400"
-            v-for="n in Math.floor(review.rating)"
-            :key="n"
-          ></i>
-          <i
-            v-if="review.rating % 1 >= 0.5"
-            class="fa-solid fa-star-half-stroke text-yellow-400"
-          ></i>
+          <div class="flex">
+            <i
+              class="fa-solid fa-star text-yellow-400"
+              v-for="n in 5"
+              :key="n"
+              :class="{
+                'text-yellow-400': n <= review.rating,
+                'text-gray-300': n > review.rating,
+              }"
+            ></i>
+          </div>
         </div>
         <p class="text-sm mb-4">{{ review.comment }}</p>
         <div class="flex items-center gap-2">
+          <div
+            v-if="!review.userImage"
+            class="w-8 h-8 rounded-full bg-gray-200 flex items-center justify-center"
+          >
+            <span class="text-xs text-gray-600">{{ getInitials(review.userName) }}</span>
+          </div>
           <img
+            v-else
             :src="review.userImage"
             alt="user"
             class="w-8 h-8 rounded-full object-cover"
@@ -33,7 +48,7 @@
           <div>
             <div class="font-semibold text-xs">{{ review.userName }}</div>
             <div class="text-xs text-[var(--Color-Text-Text-Secondary)]">
-              {{ review.date }}
+              {{ formatReviewDate(review.timestamp) }}
             </div>
           </div>
         </div>
@@ -86,6 +101,29 @@ export default {
       if (this.currentIndex > 0) {
         this.currentIndex--;
       }
+    },
+    formatReviewDate(timestamp) {
+      if (!timestamp) return "Recently";
+      try {
+        const date = timestamp.toDate ? timestamp.toDate() : new Date(timestamp);
+        return date.toLocaleDateString("en-US", {
+          year: "numeric",
+          month: "long",
+          day: "numeric",
+        });
+      } catch (e) {
+        console.error("Date formatting error:", e);
+        return "Recently";
+      }
+    },
+    getInitials(name) {
+      if (!name) return "?";
+      return name
+        .split(" ")
+        .map((part) => part[0])
+        .join("")
+        .toUpperCase()
+        .substring(0, 2);
     },
   },
 };
