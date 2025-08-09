@@ -60,7 +60,8 @@
 
           <div class="text-xs space-y-1">
             <!-- Enhanced penalty display with countdown -->
-            <div v-if="product.daysExpired <= 2" class="text-yellow-700">
+            <!-- In the template section, change the penalty warning message -->
+            <div v-if="product.hoursExpired <= 48" class="text-yellow-700">
               <i class="fas fa-clock mr-1"></i>
               {{ product.hoursExpired }} hour(s) overdue - 30% penalty will apply in
               {{ 48 - product.hoursExpired }} hour(s)
@@ -69,10 +70,10 @@
                 Processing penalty...
               </div>
             </div>
-            <div v-else-if="product.daysExpired <= 4" class="text-orange-600">
+            <div v-else-if="product.hoursExpired <= 96" class="text-orange-600">
               <i class="fas fa-exclamation-circle mr-1"></i>
               30% penalty applied (EGP {{ product.penaltyAmount?.toFixed(2) || "0.00" }})
-              - Additional 20% in {{ 4 - product.daysExpired }} day(s)
+              - Additional 20% in {{ 96 - product.hoursExpired }} hour(s)
             </div>
             <div v-else class="text-red-700 font-semibold">
               <i class="fas fa-gavel mr-1"></i>
@@ -280,12 +281,10 @@ const userBookings = computed(() => {
       const expiredDate = new Date(booking.endDate);
       const now = new Date();
       const timeDiff = now - expiredDate;
-      const daysExpired = Math.max(0, Math.floor(timeDiff / (1000 * 60 * 60 * 24)));
       const hoursExpired = Math.max(0, Math.floor(timeDiff / (1000 * 60 * 60)));
 
       return {
         ...booking,
-        daysExpired,
         hoursExpired,
         penaltyPhase:
           hoursExpired <= 48 ? "first" : hoursExpired <= 96 ? "second" : "final",
@@ -380,32 +379,32 @@ const applyPenalty = async (booking, percentage, isAdditional = false) => {
   try {
     pendingPenalties.value[booking.id] = true;
 
-    const penaltyAmount = (booking.actualPrice * percentage) / 100;
-    const totalPercentage = isAdditional
-      ? (booking.penaltyPercentage || 0) + percentage
-      : percentage;
-    const totalAmount = isAdditional
-      ? (booking.penaltyAmount || 0) + penaltyAmount
-      : penaltyAmount;
+    // Ensure we're using the correct price field and converting to number
+    const price = Number(booking.actualPrice || booking.productPrice || 0);
 
-    // Update user balance
+    // Calculate penalty amount (30% of the price)
+    const penaltyAmount = (price * percentage) / 100;
+
+    // Get current balance
     const userBalanceRef = doc(db, "userbalance", userId.value);
     const userBalanceSnap = await getDoc(userBalanceRef);
-
     let currentBalance = 0;
+
     if (userBalanceSnap.exists()) {
       currentBalance = Number(userBalanceSnap.data().remainingBalance) || 0;
     }
 
+    // Calculate new balance after penalty
     const newBalance = currentBalance - penaltyAmount;
 
+    // Update user balance with penalty deduction
     await setDoc(
       userBalanceRef,
       {
         remainingBalance: newBalance,
         lastUpdated: Timestamp.now(),
         transactions: arrayUnion({
-          amount: -penaltyAmount,
+          amount: -penaltyAmount, // Negative amount for deduction
           type: "penalty",
           description: `Late return penalty (${percentage}%) for ${booking.productTitle}`,
           timestamp: Timestamp.now(),
@@ -414,42 +413,11 @@ const applyPenalty = async (booking, percentage, isAdditional = false) => {
       { merge: true }
     );
 
-    // Update booking record
-    await updateDoc(doc(db, "bookings", booking.id), {
-      penaltyApplied: true,
-      lastPenaltyApplied: Timestamp.now(),
-      penaltyAmount: totalAmount,
-      penaltyPercentage: totalPercentage,
-      statusHistory: arrayUnion({
-        status: "penalty_applied",
-        message: `${percentage}% penalty applied for late return (${booking.daysExpired} days overdue)`,
-        timestamp: Timestamp.now(),
-        updatedBy: "system",
-      }),
-    });
-
-    await Swal.fire({
-      title: "Penalty Applied",
-      html: `A ${percentage}% penalty (EGP ${penaltyAmount.toFixed(
-        2
-      )}) has been applied.<br><br>
-            <strong>Total penalty: ${totalPercentage}% (EGP ${totalAmount.toFixed(
-        2
-      )})</strong>`,
-      icon: "warning",
-    });
+    // Rest of your function...
   } catch (error) {
     console.error("Error applying penalty:", error);
-    Swal.fire({
-      title: "Error",
-      text: "Failed to apply penalty. Please try again.",
-      icon: "error",
-    });
-  } finally {
-    pendingPenalties.value[booking.id] = false;
   }
 };
-
 const checkAndApplyPenalties = async () => {
   const now = new Date();
   const bookingsToProcess = userBookings.value.filter(
@@ -491,6 +459,17 @@ const checkAndApplyPenalties = async () => {
     }
   }
 };
+
+// Update the interval to check every 10 seconds for testing
+onMounted(() => {
+  onAuthStateChanged(auth, async (user) => {
+    if (user) {
+      userId.value = user.uid;
+      await checkAndApplyPenalties();
+      penaltyCheckInterval.value = setInterval(checkAndApplyPenalties, 30 * 60 * 1000); // Check every 30 minutes
+    }
+  });
+});
 
 const getStatusColor = (status) => {
   switch (status) {
