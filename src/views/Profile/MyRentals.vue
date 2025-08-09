@@ -59,12 +59,15 @@
           </div>
 
           <div class="text-xs space-y-1">
-            <!-- Enhanced penalty display with countdown -->
-            <!-- In the template section, change the penalty warning message -->
             <div v-if="product.hoursExpired <= 48" class="text-yellow-700">
               <i class="fas fa-clock mr-1"></i>
-              {{ product.hoursExpired }} hour(s) overdue - 30% penalty will apply in
-              {{ 48 - product.hoursExpired }} hour(s)
+              {{ product.hoursExpired }} hour(s) overdue -
+              <strong>EGP {{ calculatePenalty(getProductPrice(product), 30) }}</strong>
+              (30%) penalty will apply in {{ 48 - product.hoursExpired }} hour(s)
+              <div class="text-xs mt-1">
+                <span class="font-medium">Actual Price:</span> EGP
+                {{ formatPrice(getProductPrice(product)) }}
+              </div>
               <div v-if="product.penaltyPending" class="text-xs text-gray-500 mt-1">
                 <i class="fas fa-spinner fa-spin mr-1"></i>
                 Processing penalty...
@@ -72,14 +75,21 @@
             </div>
             <div v-else-if="product.hoursExpired <= 96" class="text-orange-600">
               <i class="fas fa-exclamation-circle mr-1"></i>
-              30% penalty applied (EGP {{ product.penaltyAmount?.toFixed(2) || "0.00" }})
-              - Additional 20% in {{ 96 - product.hoursExpired }} hour(s)
+              30% penalty (<strong
+                >EGP {{ calculatePenalty(getProductPrice(product), 30) }}</strong
+              >) applied - Additional
+              <strong>EGP {{ calculatePenalty(getProductPrice(product), 20) }}</strong>
+              (20%) in {{ 96 - product.hoursExpired }} hour(s)
+              <div class="text-xs mt-1">
+                <span class="font-medium">Total potential penalty:</span> EGP
+                {{ calculatePenalty(getProductPrice(product), 50) }} (50%)
+              </div>
             </div>
             <div v-else class="text-red-700 font-semibold">
               <i class="fas fa-gavel mr-1"></i>
-              Total 50% penalty applied (EGP
-              {{ product.penaltyAmount?.toFixed(2) || "0.00" }}) - Legal action may be
-              taken
+              Total 50% penalty (<strong
+                >EGP {{ calculatePenalty(getProductPrice(product), 50) }}</strong
+              >) applied - Legal action may be taken
             </div>
           </div>
         </div>
@@ -239,7 +249,7 @@
 </template>
 
 <script setup>
-import { ref, computed, onMounted, onUnmounted } from "vue";
+import { ref, computed, onMounted, onUnmounted, watch } from "vue";
 import { useI18n } from "vue-i18n";
 import { db, auth } from "@/firebase/config";
 import { onAuthStateChanged } from "firebase/auth";
@@ -262,7 +272,46 @@ const { updateRentalStatusWithUI } = useRentalStatus();
 const searchQuery = ref("");
 const userId = ref(null);
 const penaltyCheckInterval = ref(null);
-const pendingPenalties = ref({}); // Track pending penalty operations
+const pendingPenalties = ref({});
+const productPrices = ref({});
+
+// Fetch product prices when bookings change
+watch(
+  bookings,
+  async (newBookings) => {
+    if (!newBookings || !userId.value) return;
+
+    const userBookings = newBookings.filter(
+      (booking) => booking.userId === userId.value && booking.hiddenForUser !== true
+    );
+
+    for (const booking of userBookings) {
+      if (!booking.productId || productPrices.value[booking.productId]) continue;
+
+      try {
+        const productRef = doc(db, "products", booking.productId);
+        const productSnap = await getDoc(productRef);
+
+        if (productSnap.exists()) {
+          productPrices.value[booking.productId] = Number(productSnap.data().actualPrice);
+        }
+      } catch (error) {
+        console.error("Error fetching product price:", error);
+      }
+    }
+  },
+  { immediate: true }
+);
+
+// Helper to get correct price
+const getProductPrice = (product) => {
+  return product.productId
+    ? productPrices.value[product.productId] ||
+        product.actualPrice ||
+        product.productPrice ||
+        0
+    : product.actualPrice || product.productPrice || 0;
+};
 
 // Computed properties
 const userBookings = computed(() => {
@@ -294,13 +343,13 @@ const userBookings = computed(() => {
       };
     });
 });
+
 const filteredProducts = computed(() => {
   if (!searchQuery.value) return userBookings.value;
   const q = searchQuery.value.toLowerCase();
   return userBookings.value.filter((p) => p.productTitle.toLowerCase().includes(q));
 });
 
-// Methods
 const getRemainingTime = (endDateStr) => {
   const [year, month, day] = endDateStr.split("-").map(Number);
   const returnDate = new Date(year, month - 1, day, 0, 0, 0);
@@ -359,10 +408,10 @@ const cancelBooking = async (id, productPrice, startDateStr, endDateStr) => {
     await setDoc(
       userBalanceRef,
       {
-        remainingBalance: currentBalance - refundAmount,
+        remainingBalance: currentBalance + refundAmount,
         lastUpdated: new Date(),
         transactions: arrayUnion({
-          amount: -refundAmount,
+          amount: refundAmount,
           type: "refund",
           description: `Cancellation refund for booking ${id}`,
           timestamp: new Date(),
@@ -370,54 +419,113 @@ const cancelBooking = async (id, productPrice, startDateStr, endDateStr) => {
       },
       { merge: true }
     );
+
+    Swal.fire({
+      title: "Booking Cancelled",
+      text: `Your booking has been cancelled and EGP ${refundAmount.toFixed(
+        2
+      )} has been refunded to your balance.`,
+      icon: "success",
+    });
   } catch (error) {
     console.error("Error canceling booking:", error);
+    Swal.fire({
+      title: "Error",
+      text: "Failed to cancel booking. Please try again.",
+      icon: "error",
+    });
   }
 };
-// New helper method for applying penalties
+
+const calculatePenalty = (price, percentage) => {
+  const numericPrice = Number(price);
+  if (isNaN(numericPrice)) {
+    console.error("Invalid price value:", price);
+    return "0.00";
+  }
+  const amount = (numericPrice * percentage) / 100;
+  return formatPrice(amount);
+};
+
+const formatPrice = (price) => {
+  return Number(price).toLocaleString("en-US", {
+    minimumFractionDigits: 2,
+    maximumFractionDigits: 2,
+  });
+};
+
 const applyPenalty = async (booking, percentage, isAdditional = false) => {
   try {
     pendingPenalties.value[booking.id] = true;
-
-    // Ensure we're using the correct price field and converting to number
-    const price = Number(booking.actualPrice || booking.productPrice || 0);
-
-    // Calculate penalty amount (30% of the price)
+    const price = getProductPrice(booking);
     const penaltyAmount = (price * percentage) / 100;
+    const totalPercentage = isAdditional
+      ? (booking.penaltyPercentage || 0) + percentage
+      : percentage;
+    const totalAmount = isAdditional
+      ? (booking.penaltyAmount || 0) + penaltyAmount
+      : penaltyAmount;
 
-    // Get current balance
     const userBalanceRef = doc(db, "userbalance", userId.value);
     const userBalanceSnap = await getDoc(userBalanceRef);
-    let currentBalance = 0;
+    let currentBalance = userBalanceSnap.exists()
+      ? Number(userBalanceSnap.data().remainingBalance) || 0
+      : 0;
 
-    if (userBalanceSnap.exists()) {
-      currentBalance = Number(userBalanceSnap.data().remainingBalance) || 0;
-    }
-
-    // Calculate new balance after penalty
-    const newBalance = currentBalance - penaltyAmount;
-
-    // Update user balance with penalty deduction
+    // Deduct penalty from user's balance
     await setDoc(
       userBalanceRef,
       {
-        remainingBalance: newBalance,
+        remainingBalance: currentBalance - penaltyAmount,
         lastUpdated: Timestamp.now(),
         transactions: arrayUnion({
-          amount: -penaltyAmount, // Negative amount for deduction
+          amount: -penaltyAmount,
           type: "penalty",
-          description: `Late return penalty (${percentage}%) for ${booking.productTitle}`,
+          description: `Late return penalty (${percentage}% of EGP ${price.toFixed(
+            2
+          )}) for ${booking.productTitle}`,
           timestamp: Timestamp.now(),
         }),
       },
       { merge: true }
     );
 
-    // Rest of your function...
+    // Update booking with penalty information
+    await updateDoc(doc(db, "bookings", booking.id), {
+      penaltyApplied: true,
+      lastPenaltyApplied: Timestamp.now(),
+      penaltyAmount: totalAmount,
+      penaltyPercentage: totalPercentage,
+      statusHistory: arrayUnion({
+        status: "penalty_applied",
+        message: `${percentage}% penalty (EGP ${penaltyAmount.toFixed(2)}) applied`,
+        timestamp: Timestamp.now(),
+        updatedBy: "system",
+      }),
+    });
+
+    await Swal.fire({
+      title: "Penalty Applied",
+      html: `A <strong>${percentage}% penalty (EGP ${penaltyAmount.toFixed(
+        2
+      )})</strong> has been deducted from your balance.<br><br>
+            <strong>Total penalties: ${totalPercentage}% (EGP ${totalAmount.toFixed(
+        2
+      )})</strong>`,
+      icon: "warning",
+    });
   } catch (error) {
     console.error("Error applying penalty:", error);
+    Swal.fire({
+      title: "Error",
+      text: "Failed to apply penalty. Please try again.",
+      icon: "error",
+    });
+  } finally {
+    pendingPenalties.value[booking.id] = false;
   }
 };
+
 const checkAndApplyPenalties = async () => {
   const now = new Date();
   const bookingsToProcess = userBookings.value.filter(
@@ -426,19 +534,15 @@ const checkAndApplyPenalties = async () => {
 
   for (const booking of bookingsToProcess) {
     try {
-      // Apply first penalty after 48 hours if not already applied
-      if (
-        booking.hoursExpired > 48 &&
-        booking.penaltyPhase === "second" &&
-        !booking.penaltyApplied
-      ) {
+      // Apply 30% penalty after 48 hours (2 days)
+      if (booking.hoursExpired > 48 && booking.penaltyPhase === "first") {
         await applyPenalty(booking, 30);
       }
-      // Apply additional penalty after 96 hours if total is less than 50%
+      // Apply additional 20% penalty after 96 hours (4 days)
       else if (booking.hoursExpired > 96 && (booking.penaltyPercentage || 0) < 50) {
         await applyPenalty(booking, 20, true);
       }
-      // Show legal warning after 96 hours if not shown
+      // Show legal warning if still not returned
       else if (booking.hoursExpired > 96 && !booking.legalWarningSent) {
         await Swal.fire({
           title: "Serious Warning",
@@ -459,17 +563,6 @@ const checkAndApplyPenalties = async () => {
     }
   }
 };
-
-// Update the interval to check every 10 seconds for testing
-onMounted(() => {
-  onAuthStateChanged(auth, async (user) => {
-    if (user) {
-      userId.value = user.uid;
-      await checkAndApplyPenalties();
-      penaltyCheckInterval.value = setInterval(checkAndApplyPenalties, 30 * 60 * 1000); // Check every 30 minutes
-    }
-  });
-});
 
 const getStatusColor = (status) => {
   switch (status) {
@@ -497,8 +590,18 @@ const hideBooking = async (id) => {
     await updateDoc(doc(db, "bookings", id), {
       hiddenForUser: true,
     });
+    Swal.fire({
+      title: "Removed",
+      text: "This rental has been removed from your view.",
+      icon: "success",
+    });
   } catch (error) {
     console.error("Error hiding booking:", error);
+    Swal.fire({
+      title: "Error",
+      text: "Failed to remove rental. Please try again.",
+      icon: "error",
+    });
   }
 };
 
@@ -508,7 +611,8 @@ onMounted(() => {
     if (user) {
       userId.value = user.uid;
       await checkAndApplyPenalties();
-      penaltyCheckInterval.value = setInterval(checkAndApplyPenalties, 30 * 60 * 1000); // Check every 30 minutes
+      // Check for penalties every 30 minutes
+      penaltyCheckInterval.value = setInterval(checkAndApplyPenalties, 30 * 60 * 1000);
     }
   });
 });
@@ -517,5 +621,10 @@ onUnmounted(() => {
   if (penaltyCheckInterval.value) {
     clearInterval(penaltyCheckInterval.value);
   }
+});
+
+defineExpose({
+  calculatePenalty,
+  formatPrice,
 });
 </script>
