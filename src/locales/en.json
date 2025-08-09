@@ -684,5 +684,13 @@
   "toolAccess": "Tool Access",
   "basicTools": "Basic tools",
   "allToolsEarlyAccess": "All tools + early access",
-  "allToolsExclusive": "All tools + exclusive"
+  "allToolsExclusive": "All tools + exclusive",
+  "userManagement": "User Management",
+  "allCategories": "All Categories",
+  "manageCustomerReviews": "Manage Customer Reviews",
+  "reviewsAfterBooking":"Reviews After Booking",
+  "webReviewsWithoutBooking": "Web Reviews Without Booking",
+  "idVerificationManagement": "ID Verification Management",
+  "contactMessages": "Contact Messages"
+
 }
