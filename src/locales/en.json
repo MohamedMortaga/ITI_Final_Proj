@@ -691,6 +691,13 @@
   "reviewsAfterBooking":"Reviews After Booking",
   "webReviewsWithoutBooking": "Web Reviews Without Booking",
   "idVerificationManagement": "ID Verification Management",
-  "contactMessages": "Contact Messages"
+  "contactMessages": "Contact Messages",
+  "pageNotFound": "Page Not Found",
+  "pageNotFoundDescription": "Oops! The page you are looking for doesn't exist. It might have been moved, deleted, or you entered the wrong URL.",
+  "goToHome": "Go to Home",
+  "goBack": "Go Back",
+  "needHelp": "Need Help?",
+  "contactSupport": "If you believe this is an error, please contact our support team.",
+  "contactUs": "Contact Us"
 
 }
