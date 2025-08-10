@@ -14,7 +14,7 @@
 
     <!-- Full-width divider that ignores parent padding -->
     <div
-      class="border-t border-[var(--Color-Boarder-Border-Primary)] w-screen -ml-4 lg:-ml-6 xl:-ml-[88px]"
+      class=" w-screen -ml-4 lg:-ml-6 xl:-ml-[88px]"
     ></div>
 
     <!-- Category Buttons -->

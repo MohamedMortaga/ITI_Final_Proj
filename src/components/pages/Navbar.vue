@@ -3,7 +3,7 @@
     <Disclosure
       as="nav"
       :class="[
-        'fixed top-0 w-full z-50 bg-[var(--Color-Surface-Surface-Primary)] text-[var(--Color-Text-Text-Primary)] mb-0 px-6 lg:px-[88px] transition-all duration-300',
+        'fixed border-b border-[var(--Color-Boarder-Border-Primary)] top-0 w-full z-50 bg-[var(--Color-Surface-Surface-Primary)] text-[var(--Color-Text-Text-Primary)] mb-0 px-6 lg:px-[88px] transition-all duration-300',
         isHomePage && !isScrolled
           ? ''
           : 'border-b border-[var(--Color-Boarder-Border-Primary)]',
