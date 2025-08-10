@@ -10,32 +10,25 @@
     />
 
     <!-- Admin Management Content -->
-    <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 mt-6">
+    <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mt-6">
       <!-- Current Admins -->
       <div class="lg:col-span-2">
         <div class="bg-white rounded-xl shadow border border-gray-50 p-6">
           <div class="flex items-center justify-between mb-6">
             <h2 class="text-xl font-semibold text-gray-800">{{ $t('currentAdmins') }}</h2>
             <div class="flex space-x-2" v-if="canManageAdmins">
-              <button
-                @click="handleConvertFirstToSuperAdmin"
-                class="bg-orange-500 hover:bg-orange-600 text-white px-4 py-2 rounded-lg flex items-center"
-                :disabled="loading"
-              >
-                <i class="fas fa-star mr-2"></i>
-                Convert First to Super Admin
-              </button>
+              
               <button
                 @click="handleConvertAllToSuperAdmin"
-                class="bg-purple-500 hover:bg-purple-600 text-white px-4 py-2 rounded-lg flex items-center"
+                class="bg-[var(--Color-Surface-Surface-Primary)]  text-[var(--Color-Text-Text-Brand)] px-4 py-2 rounded-lg flex items-center border border-[var(--Color-Boarder-Surface-Brand)]"
                 :disabled="loading"
               >
-                <i class="fas fa-crown mr-2"></i>
+                <i class="fas fa-crown mr-2"></i> 
                 Convert All to Super Admin
               </button>
               <button
                 @click="showAddAdminModal = true"
-                class="bg-teal-500 hover:bg-teal-600 text-white px-4 py-2 rounded-lg flex items-center"
+                class=" bg-[var(--Color-Surface-Surface-Brand)] hover:bg-[var(--Colors-Primary-600)] text-white px-4 py-2 rounded-lg flex items-center"
                 :disabled="loading"
               >
                 <i class="fas fa-plus mr-2"></i>
@@ -92,8 +85,8 @@
                       :class="[
                         'inline-flex px-2 py-1 text-xs font-semibold rounded-full',
                         admin.role === 'superAdmin' 
-                          ? 'bg-purple-100 text-purple-800' 
-                          : 'bg-blue-100 text-blue-800'
+                          ? 'bg-[var(--Colors-Primary-25)] text-[var(--Color-Text-Text-Brand)]' 
+                          : 'bg-[var(--Colors-Gray-25)] text-[var(--Colors-Gray-500)]'
                       ]"
                     >
                       {{ admin.role === 'superAdmin' ? $t('superAdmin') : $t('regularAdmin') }}
@@ -145,12 +138,12 @@
       </div>
 
       <!-- Admin Permissions Info -->
-      <div class="lg:col-span-1">
+      <div class="lg:col-span-1 ">
         <div class="bg-white rounded-xl shadow border border-gray-50 p-6">
           <h3 class="text-lg font-semibold text-gray-800 mb-4">{{ $t('adminPermissions') }}</h3>
           
-          <div class="space-y-4">
-            <div class="border-l-4 border-purple-500 pl-4">
+          <div class="space-y-4 justify-between flex flex-row ">
+            <div class="border-l-4 border-[var(--Color-Surface-Surface-Brand)] pl-4">
               <h4 class="font-medium text-gray-900">{{ $t('superAdmin') }}</h4>
               <p class="text-sm text-gray-600 mt-1">{{ $t('fullAccess') }}</p>
               <ul class="text-xs text-gray-500 mt-2 space-y-1">
@@ -166,7 +159,7 @@
               </ul>
             </div>
 
-            <div class="border-l-4 border-blue-500 pl-4">
+            <div class="border-l-4  border-[var(--Color-Boarder-Border-Primary)] pl-4">
               <h4 class="font-medium text-gray-900">{{ $t('regularAdmin') }}</h4>
               <p class="text-sm text-gray-600 mt-1">{{ $t('limitedAccess') }}</p>
               <ul class="text-xs text-gray-500 mt-2 space-y-1">
