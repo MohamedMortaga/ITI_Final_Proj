@@ -55,7 +55,7 @@
               </button>
               <button
                 @click="toggleBlockUser(user)"
-                :class="user.blocked ? 'text-green-500 hover:text-green-700' : 'text-blue-500 hover:text-blue-700'"
+                :class="user.blocked ? 'text-green-500 hover:text-green-700' : 'text-[var(--Colors-Gray-400)] hover:text-[var(--Colors-Gray-600)]'"
                 :title="user.blocked ? $t('unblock') : $t('block')"
               >
                 <i :class="user.blocked ? 'fas fa-unlock' : 'fas fa-ban'"></i>

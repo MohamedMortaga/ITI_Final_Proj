@@ -3,10 +3,10 @@
   <header class="bg-white border-b border-gray-50 px-6 py-4 flex items-center justify-between shadow-sm">
     <!-- Logo/Brand Section -->
     <div class="flex items-center space-x-4">
-      <div class="flex items-center space-x-2">
+      <!-- <div class="flex items-center space-x-2">
         
         <span class="text-xl font-bold text-gray-800">Admin Panel</span>
-      </div>
+      </div> -->
     </div>
 
     <!-- Search Section -->

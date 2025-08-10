@@ -2,9 +2,7 @@
   <div class="flex items-center justify-between mb-6">
     <h1 class="text-2xl font-bold">{{ title }}</h1>
     <div class="flex items-center space-x-2">
-      <button class="bg-teal-500 text-white px-4 py-2 rounded-md flex items-center" @click="emit('export')">
-        <i class="fas fa-download mr-2"></i> Export
-      </button>
+  
 
       <div class="relative ">
         <input

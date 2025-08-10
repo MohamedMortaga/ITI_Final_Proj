@@ -21,46 +21,46 @@
         </div>
         
         <div v-else class="grid grid-cols-1 md:grid-cols-6 gap-4">
-          <div class="bg-blue-50 border border-blue-200 rounded-lg p-4">
-            <h3 class="text-sm font-medium text-blue-800">Total Revenue</h3>
-            <p class="text-2xl font-bold text-blue-900">EGP {{ platformBalance.totalRevenue.toFixed(2) }}</p>
-            <p class="text-xs text-blue-600 mt-1">From all rentals</p>
+          <div class="bg-[var(--Color-Surface-Surface-Primary)] border border-[var(--Color-Boarder-Surface-Brand)] rounded-lg p-4">
+            <h3 class="text-sm font-medium text-[var(--Color-Text-Text-Primary)]">Total Revenue</h3>
+            <p class="text-2xl font-bold text-[var(--Color-Text-Text-Primary)]">EGP {{ platformBalance.totalRevenue.toFixed(2) }}</p>
+            <p class="text-xs text-[var(--Color-Text-Text-Secondary)] mt-1">From all rentals</p>
           </div>
           
-          <div class="bg-orange-50 border border-orange-200 rounded-lg p-4">
-            <h3 class="text-sm font-medium text-orange-800">Service Fees</h3>
-            <p class="text-2xl font-bold text-orange-900">EGP {{ platformBalance.totalServiceFees.toFixed(2) }}</p>
-            <p class="text-xs text-orange-600 mt-1">Platform commission</p>
+          <div class="bg-[var(--Color-Surface-Surface-Primary)] border border-[var(--Color-Boarder-Surface-Brand)] rounded-lg p-4">
+            <h3 class="text-sm font-medium text-[var(--Color-Text-Text-Primary)]">Service Fees</h3>
+            <p class="text-2xl font-bold text-[var(--Color-Text-Text-Primary)]">EGP {{ platformBalance.totalServiceFees.toFixed(2) }}</p>
+            <p class="text-xs text-[var(--Color-Text-Text-Secondary)] mt-1">Platform commission</p>
           </div>
           
-          <div class="bg-green-50 border border-green-200 rounded-lg p-4">
-            <h3 class="text-sm font-medium text-green-800">User Profits</h3>
-            <p class="text-2xl font-bold text-green-900">EGP {{ platformBalance.totalUserProfits.toFixed(2) }}</p>
-            <p class="text-xs text-green-600 mt-1">Paid to users</p>
+          <div class="bg-[var(--Color-Surface-Surface-Primary)] border border-[var(--Color-Boarder-Surface-Brand)] rounded-lg p-4">
+            <h3 class="text-sm font-medium text-[var(--Color-Text-Text-Primary)]">User Profits</h3>
+            <p class="text-2xl font-bold text-[var(--Color-Text-Text-Primary)]">EGP {{ platformBalance.totalUserProfits.toFixed(2) }}</p>
+            <p class="text-xs text-[var(--Color-Text-Text-Secondary)] mt-1">Paid to users</p>
           </div>
           
-          <div class="bg-purple-50 border border-purple-200 rounded-lg p-4">
-            <h3 class="text-sm font-medium text-purple-800">Total Withdrawn</h3>
-            <p class="text-2xl font-bold text-purple-900">EGP {{ platformBalance.totalWithdrawn.toFixed(2) }}</p>
-            <p class="text-xs text-purple-600 mt-1">By all users</p>
+          <div class="bg-[var(--Color-Surface-Surface-Primary)] border border-[var(--Color-Boarder-Surface-Brand)] rounded-lg p-4">
+            <h3 class="text-sm font-medium text-[var(--Color-Text-Text-Primary)]">Total Withdrawn</h3>
+            <p class="text-2xl font-bold text-[var(--Color-Text-Text-Primary)]">EGP {{ platformBalance.totalWithdrawn.toFixed(2) }}</p>
+            <p class="text-xs text-[var(--Color-Text-Text-Secondary)] mt-1">By all users</p>
           </div>
           
-          <div class="bg-teal-50 border border-teal-200 rounded-lg p-4">
-            <h3 class="text-sm font-medium text-teal-800">Available Balance</h3>
-            <p class="text-2xl font-bold text-teal-900">EGP {{ platformBalance.availableBalance.toFixed(2) }}</p>
-            <p class="text-xs text-teal-600 mt-1">Remaining for users</p>
+          <div class="bg-[var(--Color-Surface-Surface-Primary)] border border-[var(--Color-Boarder-Surface-Brand)] rounded-lg p-4">
+            <h3 class="text-sm font-medium text-[var(--Color-Text-Text-Primary)]">Available Balance</h3>
+            <p class="text-2xl font-bold text-[var(--Color-Text-Text-Primary)]">EGP {{ platformBalance.availableBalance.toFixed(2) }}</p>
+            <p class="text-xs text-[var(--Color-Text-Text-Secondary)] mt-1">Remaining for users</p>
           </div>
           
-          <div class="bg-indigo-50 border border-indigo-200 rounded-lg p-4">
-            <h3 class="text-sm font-medium text-indigo-800">Active Rentals</h3>
-            <p class="text-2xl font-bold text-indigo-900">{{ platformBalance.activeRentals }}</p>
-            <p class="text-xs text-indigo-600 mt-1">Currently active</p>
+          <div class="bg-[var(--Color-Surface-Surface-Primary)] border border-[var(--Color-Boarder-Surface-Brand)] rounded-lg p-4">
+            <h3 class="text-sm font-medium text-[var(--Color-Text-Text-Primary)]">Active Rentals</h3>
+            <p class="text-2xl font-bold text-[var(--Color-Text-Text-Primary)]">{{ platformBalance.activeRentals }}</p>
+            <p class="text-xs text-[var(--Color-Text-Text-Secondary)] mt-1">Currently active</p>
           </div>
         </div>
         
         <!-- Detailed Balance Breakdown -->
         <div class="mt-6 grid grid-cols-1 lg:grid-cols-2 gap-6">
-          <div class="bg-gray-25 rounded-lg p-4">
+          <div class="bg-[var(--Color-Surface-Surface-Primary)] border border-[var(--Color-Boarder-Border-Primary)] rounded-lg p-4">
             <h3 class="text-lg font-semibold text-gray-800 mb-3">Payment Data Breakdown</h3>
             <div class="space-y-2 text-sm">
               <div class="flex justify-between">
@@ -81,12 +81,12 @@
               </div>
               <div class="flex justify-between border-t border-gray-50 pt-2">
                 <span class="font-semibold text-gray-800">Available Balance (After Withdrawals):</span>
-                <span class="font-bold text-teal-600">EGP {{ platformBalance.availableBalance.toFixed(2) }}</span>
+                <span class="font-bold text-[var(--Color-Text-Text-Brand)]">EGP {{ platformBalance.availableBalance.toFixed(2) }}</span>
               </div>
             </div>
           </div>
           
-          <div class="bg-gray-25 rounded-lg p-4">
+          <div class="bg-[var(--Color-Surface-Surface-Primary)] border border-[var(--Color-Boarder-Border-Primary)] rounded-lg p-4">
             <h3 class="text-lg font-semibold text-gray-800 mb-3">User Balance Summary</h3>
             <div class="space-y-2 text-sm">
               <div class="flex justify-between">
@@ -107,7 +107,7 @@
               </div>
               <div class="flex justify-between border-t border-gray-50 pt-2">
                 <span class="font-semibold text-gray-800">Total Available for Users:</span>
-                <span class="font-bold text-green-600">EGP {{ platformBalance.availableBalance.toFixed(2) }}</span>
+                <span class="font-bold text-[var(--Color-Text-Text-Brand)]">EGP {{ platformBalance.availableBalance.toFixed(2) }}</span>
               </div>
             </div>
           </div>
