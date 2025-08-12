@@ -124,7 +124,7 @@
                   v-if="verification.status === 'pending'"
                   @click="approveVerification(verification)"
                   class="text-green-500 hover:text-green-700"
-                  title="{{ $t('approve') }}"
+                  :title="$t('approve')"
                 >
                   <i class="fas fa-check"></i>
                 </button>
@@ -132,14 +132,14 @@
                   v-if="verification.status === 'pending'"
                   @click="rejectVerification(verification)"
                   class="text-red-500 hover:text-red-700"
-                  title="{{ $t('reject') }}"
+                  :title="$t('reject')"
                 >
                   <i class="fas fa-times"></i>
                 </button>
                 <button
                   @click="viewDetails(verification)"
                   class="text-blue-500 hover:text-blue-700"
-                  title="{{ $t('viewDetails') }}"
+                  :title="$t('viewDetails')"
                 >
                   <i class="fas fa-eye"></i>
                 </button>
@@ -149,12 +149,10 @@
         </tbody>
       </table>
 
-      <!-- No Verifications Fallback -->
       <div v-if="!paginatedVerifications.length" class="text-gray-600 mt-8 text-center">
         <p>{{ $t("noVerificationsFound") }}</p>
       </div>
 
-      <!-- Pagination -->
       <div
         v-if="totalPages > 1"
         class="flex items-center justify-between px-4 py-3 border-t border-gray-50"
@@ -280,7 +278,6 @@
           <div class="bg-gray-50 rounded-lg p-4">
             <h3 class="font-medium text-gray-900 mb-2">{{ $t("idCardPreview") }}</h3>
             <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-              <!-- Front ID Card -->
               <div class="space-y-2">
                 <h4 class="font-medium text-gray-700">{{ $t("frontIDCard") }}</h4>
                 <div class="flex justify-center">
@@ -291,8 +288,6 @@
                   />
                 </div>
               </div>
-
-              <!-- Back ID Card -->
               <div class="space-y-2">
                 <h4 class="font-medium text-gray-700">{{ $t("backIDCard") }}</h4>
                 <div class="flex justify-center">
@@ -302,6 +297,49 @@
                     class="max-w-full max-h-48 object-contain rounded-lg border"
                   />
                 </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Visa Information (masked number) -->
+          <div v-if="selectedVerification.visa" class="bg-gray-50 rounded-lg p-4">
+            <h3 class="font-medium text-gray-900 mb-2">{{ $t("visaInformation") }}</h3>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm">
+              <div>
+                <span class="text-gray-600">{{ $t("visaNumber") }}:</span>
+                <span class="ml-2 font-medium">{{
+                  maskVisaNumber(selectedVerification.visa.number)
+                }}</span>
+              </div>
+              <div>
+                <span class="text-gray-600">{{ $t("nameOnVisa") }}:</span>
+                <span class="ml-2 font-medium">{{
+                  selectedVerification.visa.name || $t("notAvailable")
+                }}</span>
+              </div>
+              <div>
+                <span class="text-gray-600">{{ $t("issuingCountry") }}:</span>
+                <span class="ml-2 font-medium">{{
+                  selectedVerification.visa.issuingCountry || $t("notAvailable")
+                }}</span>
+              </div>
+              <div>
+                <span class="text-gray-600">{{ $t("visaType") }}:</span>
+                <span class="ml-2 font-medium">{{
+                  selectedVerification.visa.type || $t("notAvailable")
+                }}</span>
+              </div>
+              <div>
+                <span class="text-gray-600">{{ $t("expiryDate") }}:</span>
+                <span class="ml-2 font-medium">{{
+                  selectedVerification.visa.expiry || $t("notAvailable")
+                }}</span>
+              </div>
+              <div v-if="selectedVerification.visa.passportNumber">
+                <span class="text-gray-600">{{ $t("passportNumber") }}:</span>
+                <span class="ml-2 font-medium">{{
+                  selectedVerification.visa.passportNumber
+                }}</span>
               </div>
             </div>
           </div>
@@ -340,15 +378,7 @@
 import TopBar from "@/components/admin/TopBar.vue";
 import { ref, computed, onMounted } from "vue";
 import { useI18n } from "vue-i18n";
-import {
-  doc,
-  updateDoc,
-  getDoc,
-  collection,
-  query,
-  getDocs,
-  where,
-} from "firebase/firestore";
+import { doc, updateDoc, getDoc, collection, query, getDocs } from "firebase/firestore";
 import { db } from "@/firebase/config";
 import Swal from "sweetalert2";
 import { useNotifications } from "@/composables/useNotifications";
@@ -367,122 +397,75 @@ const rejectionReason = ref("");
 const pendingRejection = ref(null);
 const { notifyIDVerificationApproved, notifyIDVerificationRejected } = useNotifications();
 
-// Computed properties
 const filteredVerifications = computed(() => {
   let filtered = verifications.value;
-
-  // Filter by search query
   if (searchQuery.value) {
-    const query = searchQuery.value.toLowerCase();
+    const q = searchQuery.value.toLowerCase();
     filtered = filtered.filter(
       (v) =>
-        v.userName?.toLowerCase().includes(query) ||
-        v.userEmail?.toLowerCase().includes(query)
+        v.userName?.toLowerCase().includes(q) || v.userEmail?.toLowerCase().includes(q)
     );
   }
-
-  // Filter by status
-  if (filterStatus.value) {
+  if (filterStatus.value)
     filtered = filtered.filter((v) => v.status === filterStatus.value);
-  }
-
   return filtered;
 });
 
 const sortedVerifications = computed(() => {
-  const sorted = [...filteredVerifications.value];
-
+  const s = [...filteredVerifications.value];
   switch (sortOption.value) {
     case "Newest First":
-      return sorted.sort((a, b) => {
-        const dateA = a.submittedAt?.toDate
-          ? a.submittedAt.toDate()
-          : new Date(a.submittedAt || 0);
-        const dateB = b.submittedAt?.toDate
-          ? b.submittedAt.toDate()
-          : new Date(b.submittedAt || 0);
-        return dateB - dateA;
-      });
+      return s.sort((a, b) => getDate(b.submittedAt) - getDate(a.submittedAt));
     case "Oldest First":
-      return sorted.sort((a, b) => {
-        const dateA = a.submittedAt?.toDate
-          ? a.submittedAt.toDate()
-          : new Date(a.submittedAt || 0);
-        const dateB = b.submittedAt?.toDate
-          ? b.submittedAt.toDate()
-          : new Date(b.submittedAt || 0);
-        return dateA - dateB;
-      });
+      return s.sort((a, b) => getDate(a.submittedAt) - getDate(b.submittedAt));
     case "Status":
-      return sorted.sort((a, b) => a.status.localeCompare(b.status));
+      return s.sort((a, b) => a.status.localeCompare(b.status));
     default:
-      return sorted;
+      return s;
   }
 });
 
 const paginatedVerifications = computed(() => {
   const start = (currentPage.value - 1) * itemsPerPage;
-  const end = start + itemsPerPage;
-  return sortedVerifications.value.slice(start, end);
+  return sortedVerifications.value.slice(start, start + itemsPerPage);
 });
 
-const totalPages = computed(() => {
-  return Math.ceil(sortedVerifications.value.length / itemsPerPage);
-});
+const totalPages = computed(() =>
+  Math.ceil(sortedVerifications.value.length / itemsPerPage)
+);
 
 const statistics = computed(() => {
   const total = verifications.value.length;
   const pending = verifications.value.filter((v) => v.status === "pending").length;
   const approved = verifications.value.filter((v) => v.status === "approved").length;
   const rejected = verifications.value.filter((v) => v.status === "rejected").length;
-
   return { total, pending, approved, rejected };
 });
 
-// Methods
-const handleSearch = (query) => {
-  searchQuery.value = query;
+const handleSearch = (q) => {
+  searchQuery.value = q;
+  currentPage.value = 1;
+};
+const handleSort = (opt) => {
+  sortOption.value = opt;
+};
+const handleFilter = (st) => {
+  filterStatus.value = st;
   currentPage.value = 1;
 };
 
-const handleSort = (option) => {
-  sortOption.value = option;
-};
-
-const handleFilter = (status) => {
-  filterStatus.value = status;
-  currentPage.value = 1;
+const getDate = (ts) => {
+  if (!ts) return new Date(0);
+  if (ts.toDate) return ts.toDate();
+  if (typeof ts === "string") return new Date(ts);
+  if (ts.seconds) return new Date(ts.seconds * 1000);
+  return new Date(0);
 };
 
 const formatDate = (timestamp) => {
   if (!timestamp) return t("notAvailable");
-
-  // Handle Firebase server timestamp
-  if (timestamp.toDate) {
-    const date = timestamp.toDate();
-    return date.toLocaleDateString() + " " + date.toLocaleTimeString();
-  }
-
-  // Handle regular date strings
-  if (typeof timestamp === "string") {
-    const date = new Date(timestamp);
-    return date.toLocaleDateString() + " " + date.toLocaleTimeString();
-  }
-
-  // Handle timestamp objects
-  if (timestamp.seconds) {
-    const date = new Date(timestamp.seconds * 1000);
-    return date.toLocaleDateString() + " " + date.toLocaleTimeString();
-  }
-
-  return t("notAvailable");
-};
-
-const formatFileSize = (bytes) => {
-  if (!bytes) return t("notAvailable");
-  const sizes = ["Bytes", "KB", "MB", "GB"];
-  const i = Math.floor(Math.log(bytes) / Math.log(1024));
-  return Math.round((bytes / Math.pow(1024, i)) * 100) / 100 + " " + sizes[i];
+  const d = getDate(timestamp);
+  return d.toLocaleDateString() + " " + d.toLocaleTimeString();
 };
 
 const getStatusBadgeClass = (status) => {
@@ -512,7 +495,6 @@ const getStatusText = (status) => {
 };
 
 const viewIDCard = (verification) => {
-  // Show a modal to choose which image to view
   Swal.fire({
     title: t("selectImageToView"),
     html: `
@@ -530,19 +512,23 @@ const viewIDCard = (verification) => {
     cancelButtonText: t("cancel"),
     didOpen: () => {
       document.getElementById("view-front").addEventListener("click", () => {
-        if (verification.frontIdCardUrl) {
+        if (verification.frontIdCardUrl)
           window.open(verification.frontIdCardUrl, "_blank");
-        }
         Swal.close();
       });
       document.getElementById("view-back").addEventListener("click", () => {
-        if (verification.backIdCardUrl) {
-          window.open(verification.backIdCardUrl, "_blank");
-        }
+        if (verification.backIdCardUrl) window.open(verification.backIdCardUrl, "_blank");
         Swal.close();
       });
     },
   });
+};
+
+const maskVisaNumber = (value) => {
+  const digits = (value || "").replace(/\s/g, "");
+  if (!digits) return t("notAvailable");
+  const masked = digits.replace(/\d(?=\d{4})/g, "X"); // mask all but last 4
+  return masked.replace(/(.{4})/g, "$1 ").trim(); // re-space every 4
 };
 
 const approveVerification = async (verification) => {
@@ -559,23 +545,19 @@ const approveVerification = async (verification) => {
     });
 
     if (result.isConfirmed) {
-      // Update verification status
       await updateDoc(doc(db, "user-verifications", verification.id), {
         status: "approved",
         reviewedAt: new Date().toISOString(),
-        reviewedBy: "Admin", // You can get the actual admin name here
+        reviewedBy: "Admin",
       });
 
-      // Update user's verification status in users collection
       await updateDoc(doc(db, "users", verification.userId), {
         isVerified: true,
         verifiedAt: new Date().toISOString(),
       });
 
-      // Send notification
       await notifyIDVerificationApproved(verification.userName || "User");
 
-      // Update local state
       const index = verifications.value.findIndex((v) => v.id === verification.id);
       if (index !== -1) {
         verifications.value[index].status = "approved";
@@ -611,7 +593,6 @@ const confirmRejection = async () => {
   if (!pendingRejection.value || !rejectionReason.value.trim()) return;
 
   try {
-    // Update verification status
     await updateDoc(doc(db, "user-verifications", pendingRejection.value.id), {
       status: "rejected",
       reviewedAt: new Date().toISOString(),
@@ -619,19 +600,16 @@ const confirmRejection = async () => {
       rejectionReason: rejectionReason.value.trim(),
     });
 
-    // Update user's verification status in users collection
     await updateDoc(doc(db, "users", pendingRejection.value.userId), {
       isVerified: false,
       verifiedAt: null,
     });
 
-    // Send notification
     await notifyIDVerificationRejected(
       pendingRejection.value.userName || "User",
       rejectionReason.value.trim()
     );
 
-    // Update local state
     const index = verifications.value.findIndex(
       (v) => v.id === pendingRejection.value.id
     );
@@ -668,32 +646,27 @@ const viewDetails = (verification) => {
   selectedVerification.value = verification;
 };
 
-// Load verifications
 const loadVerifications = async () => {
   try {
     const verificationsQuery = query(collection(db, "user-verifications"));
     const querySnapshot = await getDocs(verificationsQuery);
 
     const verificationsData = [];
-
-    for (const doc of querySnapshot.docs) {
-      const data = doc.data();
-
-      // Use user information that's already stored in the verification data
+    for (const d of querySnapshot.docs) {
+      const data = d.data();
       const userName = data.userName || "Unknown User";
       const userEmail = data.userEmail || "No email";
       const userImage = data.userImage || null;
 
       verificationsData.push({
-        id: doc.id,
-        userId: data.userId || doc.id,
+        id: d.id,
+        userId: data.userId || d.id,
         userName,
         userEmail,
         userImage,
-        ...data,
+        ...data, // includes visa object if present
       });
     }
-
     verifications.value = verificationsData;
   } catch (error) {
     console.error("Error loading verifications:", error);
