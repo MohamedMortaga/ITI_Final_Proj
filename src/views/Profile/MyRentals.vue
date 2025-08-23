@@ -26,11 +26,14 @@
         class="border rounded-lg p-4 bg-[var(--Color-Surface-Surface-Primary)] border-[var(--Color-Boarder-Border-Primary)] dark:bg-[var(--Color-Surface-Surface-Primary)] text-[var(--Color-Text-Text-Primary)] dark:text-[var(--Color-Text-Text-Primary)]"
       >
         <img
-          :src="product.productImage"
-          alt="Product"
+          :src="product.productImage || placeholderImage"
+          :alt="product.productTitle || 'Product'"
           class="w-full h-48 object-cover rounded-lg mb-3"
+          @error="(e) => (e.target.src = placeholderImage)"
         />
+
         <h2 class="text-lg font-semibold mb-1">{{ product.productTitle }}</h2>
+
         <p
           class="text-sm text-[var(--Color-Text-Text-Secondary)] dark:text-[var(--Color-Text-Text-Secondary)] mb-2"
         >
@@ -81,8 +84,8 @@
               <strong>EGP {{ calculatePenalty(getProductPrice(product), 20) }}</strong>
               (20%) in {{ 96 - product.hoursExpired }} hour(s)
               <div class="text-xs mt-1">
-                <span class="font-medium">Total potential penalty:</span> EGP
-                {{ calculatePenalty(getProductPrice(product), 50) }} (50%)
+                <span class="font-medium">Total potential penalty:</span>
+                EGP {{ calculatePenalty(getProductPrice(product), 50) }} (50%)
               </div>
             </div>
             <div v-else class="text-red-700 font-semibold">
@@ -273,73 +276,119 @@ const searchQuery = ref("");
 const userId = ref(null);
 const penaltyCheckInterval = ref(null);
 const pendingPenalties = ref({});
-const productPrices = ref({});
 
-// Fetch product prices when bookings change
+/**
+ * productMeta: central store per productId:
+ * {
+ *   [productId]: { price: number, image: string }
+ * }
+ */
+const productMeta = ref({});
+const placeholderImage = "/placeholder.png";
+
+/* ------------------------ Fetch product meta on bookings change ------------------------ */
 watch(
   bookings,
   async (newBookings) => {
     if (!newBookings || !userId.value) return;
 
     const userBookings = newBookings.filter(
-      (booking) => booking.userId === userId.value && booking.hiddenForUser !== true
+      (b) => b.userId === userId.value && b.hiddenForUser !== true
     );
 
     for (const booking of userBookings) {
-      if (!booking.productId || productPrices.value[booking.productId]) continue;
+      // Skip if we already loaded meta for this productId
+      if (!booking.productId || productMeta.value[booking.productId]) continue;
 
       try {
         const productRef = doc(db, "products", booking.productId);
-        const productSnap = await getDoc(productRef);
+        const snap = await getDoc(productRef);
+        if (snap.exists()) {
+          const data = snap.data();
 
-        if (productSnap.exists()) {
-          productPrices.value[booking.productId] = Number(productSnap.data().actualPrice);
+          // Determine the first image to show
+          const firstImage =
+            typeof data.image1 === "string" && data.image1.startsWith("data:image")
+              ? data.image1
+              : data.image1Path ||
+                (Array.isArray(data.images) && data.images[0]) ||
+                data.imageUrl ||
+                "";
+
+          productMeta.value[booking.productId] = {
+            price:
+              Number(data.actualPrice) ||
+              Number(data.price) ||
+              Number(booking.actualPrice || booking.productPrice || 0),
+            image: firstImage,
+          };
+        } else {
+          productMeta.value[booking.productId] = {
+            price: Number(booking.actualPrice || booking.productPrice || 0),
+            image: booking.productImage || "",
+          };
         }
-      } catch (error) {
-        console.error("Error fetching product price:", error);
+      } catch (err) {
+        console.error("Error fetching product meta:", err);
+        productMeta.value[booking.productId] = {
+          price: Number(booking.actualPrice || booking.productPrice || 0),
+          image: booking.productImage || "",
+        };
       }
     }
   },
   { immediate: true }
 );
 
-// Helper to get correct price
-const getProductPrice = (product) => {
-  return product.productId
-    ? productPrices.value[product.productId] ||
-        product.actualPrice ||
-        product.productPrice ||
-        0
-    : product.actualPrice || product.productPrice || 0;
+/* ------------------------ Helpers ------------------------ */
+const getProductPrice = (booking) => {
+  if (booking.productId && productMeta.value[booking.productId]) {
+    return productMeta.value[booking.productId].price || 0;
+  }
+  return Number(booking.actualPrice || booking.productPrice || 0);
 };
 
-// Computed properties
+const getProductImage = (booking) => {
+  // booking.productImage takes precedence if you already store one on the booking
+  return (
+    booking.productImage ||
+    (booking.productId && productMeta.value[booking.productId]?.image) ||
+    ""
+  );
+};
+
+/* ------------------------ Computed: map our bookings to UI items ------------------------ */
 const userBookings = computed(() => {
   if (!userId.value || !bookings.value) return [];
 
   return bookings.value
-    .filter(
-      (booking) => booking.userId === userId.value && booking.hiddenForUser !== true
-    )
-    .map((booking) => {
-      const remainingTime = getRemainingTime(booking.endDate);
+    .filter((b) => b.userId === userId.value && b.hiddenForUser !== true)
+    .map((b) => {
+      const remainingTime = getRemainingTime(b.endDate);
       const isExpired = remainingTime === "Expired";
 
-      if (!isExpired) return booking;
+      if (!isExpired) {
+        return {
+          ...b,
+          // inject resolved image into the card
+          productImage: getProductImage(b),
+        };
+      }
 
-      const expiredDate = new Date(booking.endDate);
+      const expiredDate = new Date(b.endDate);
       const now = new Date();
       const timeDiff = now - expiredDate;
       const hoursExpired = Math.max(0, Math.floor(timeDiff / (1000 * 60 * 60)));
 
       return {
-        ...booking,
+        ...b,
+        productImage: getProductImage(b),
         hoursExpired,
         penaltyPhase:
           hoursExpired <= 48 ? "first" : hoursExpired <= 96 ? "second" : "final",
-        penaltyPending: pendingPenalties.value[booking.id],
-        penaltyAmount: booking.penaltyAmount || 0,
-        penaltyPercentage: booking.penaltyPercentage || 0,
+        penaltyPending: pendingPenalties.value[b.id],
+        penaltyAmount: b.penaltyAmount || 0,
+        penaltyPercentage: b.penaltyPercentage || 0,
       };
     });
 });
@@ -347,7 +396,9 @@ const userBookings = computed(() => {
 const filteredProducts = computed(() => {
   if (!searchQuery.value) return userBookings.value;
   const q = searchQuery.value.toLowerCase();
-  return userBookings.value.filter((p) => p.productTitle.toLowerCase().includes(q));
+  return userBookings.value.filter((p) =>
+    (p.productTitle || "").toLowerCase().includes(q)
+  );
 });
 
 const getRemainingTime = (endDateStr) => {
@@ -373,8 +424,8 @@ const formatDate = (dateStr) => {
 };
 
 const isCancelable = (startDateStr) => {
-  const [year, month, day] = startDateStr.split("-").map(Number);
-  const startDate = new Date(year, month - 1, day, 0, 0, 0);
+  const [y, m, d] = startDateStr.split("-").map(Number);
+  const startDate = new Date(y, m - 1, d, 0, 0, 0);
   const now = new Date();
   const diffMs = now - startDate;
   const hoursPassed = diffMs / (1000 * 60 * 60);
@@ -383,14 +434,12 @@ const isCancelable = (startDateStr) => {
 
 const cancelBooking = async (id, productPrice, startDateStr, endDateStr) => {
   try {
-    await updateDoc(doc(db, "bookings", id), {
-      hiddenForUser: true,
-    });
+    await updateDoc(doc(db, "bookings", id), { hiddenForUser: true });
 
-    const [startYear, startMonth, startDay] = startDateStr.split("-").map(Number);
-    const [endYear, endMonth, endDay] = endDateStr.split("-").map(Number);
-    const startDate = new Date(startYear, startMonth - 1, startDay, 0, 0, 0);
-    const endDate = new Date(endYear, endMonth - 1, endDay, 0, 0, 0);
+    const [sy, sm, sd] = startDateStr.split("-").map(Number);
+    const [ey, em, ed] = endDateStr.split("-").map(Number);
+    const startDate = new Date(sy, sm - 1, sd, 0, 0, 0);
+    const endDate = new Date(ey, em - 1, ed, 0, 0, 0);
     const diffMs = endDate - startDate;
     const daysRented = Math.ceil(diffMs / (1000 * 60 * 60 * 24));
 
@@ -399,11 +448,9 @@ const cancelBooking = async (id, productPrice, startDateStr, endDateStr) => {
 
     const userBalanceRef = doc(db, "userbalance", userId.value);
     const userBalanceSnap = await getDoc(userBalanceRef);
-
-    let currentBalance = 0;
-    if (userBalanceSnap.exists()) {
-      currentBalance = Number(userBalanceSnap.data().remainingBalance) || 0;
-    }
+    let currentBalance = userBalanceSnap.exists()
+      ? Number(userBalanceSnap.data().remainingBalance) || 0
+      : 0;
 
     await setDoc(
       userBalanceRef,
@@ -447,12 +494,11 @@ const calculatePenalty = (price, percentage) => {
   return formatPrice(amount);
 };
 
-const formatPrice = (price) => {
-  return Number(price).toLocaleString("en-US", {
+const formatPrice = (price) =>
+  Number(price).toLocaleString("en-US", {
     minimumFractionDigits: 2,
     maximumFractionDigits: 2,
   });
-};
 
 const applyPenalty = async (booking, percentage, isAdditional = false) => {
   try {
@@ -472,7 +518,6 @@ const applyPenalty = async (booking, percentage, isAdditional = false) => {
       ? Number(userBalanceSnap.data().remainingBalance) || 0
       : 0;
 
-    // Deduct penalty from user's balance
     await setDoc(
       userBalanceRef,
       {
@@ -490,7 +535,6 @@ const applyPenalty = async (booking, percentage, isAdditional = false) => {
       { merge: true }
     );
 
-    // Update booking with penalty information
     await updateDoc(doc(db, "bookings", booking.id), {
       penaltyApplied: true,
       lastPenaltyApplied: Timestamp.now(),
@@ -527,23 +571,17 @@ const applyPenalty = async (booking, percentage, isAdditional = false) => {
 };
 
 const checkAndApplyPenalties = async () => {
-  const now = new Date();
   const bookingsToProcess = userBookings.value.filter(
     (b) => b.hoursExpired > 0 && b.status !== "completed" && !b.penaltyPending
   );
 
   for (const booking of bookingsToProcess) {
     try {
-      // Apply 30% penalty after 48 hours (2 days)
       if (booking.hoursExpired > 48 && booking.penaltyPhase === "first") {
         await applyPenalty(booking, 30);
-      }
-      // Apply additional 20% penalty after 96 hours (4 days)
-      else if (booking.hoursExpired > 96 && (booking.penaltyPercentage || 0) < 50) {
+      } else if (booking.hoursExpired > 96 && (booking.penaltyPercentage || 0) < 50) {
         await applyPenalty(booking, 20, true);
-      }
-      // Show legal warning if still not returned
-      else if (booking.hoursExpired > 96 && !booking.legalWarningSent) {
+      } else if (booking.hoursExpired > 96 && !booking.legalWarningSent) {
         await Swal.fire({
           title: "Serious Warning",
           html: `Your rental is ${Math.floor(
@@ -554,9 +592,7 @@ const checkAndApplyPenalties = async () => {
           confirmButtonText: "I Understand",
         });
 
-        await updateDoc(doc(db, "bookings", booking.id), {
-          legalWarningSent: true,
-        });
+        await updateDoc(doc(db, "bookings", booking.id), { legalWarningSent: true });
       }
     } catch (error) {
       console.error("Error processing penalty:", error);
@@ -573,7 +609,6 @@ const getStatusColor = (status) => {
     case "completed":
       return "bg-blue-100 text-blue-800";
     case "cancelled":
-      return "bg-red-100 text-red-800";
     case "rejected":
       return "bg-red-100 text-red-800";
     default:
@@ -581,15 +616,12 @@ const getStatusColor = (status) => {
   }
 };
 
-const updateRentalStatus = async (bookingId, newStatus, updatedBy) => {
-  return await updateRentalStatusWithUI(bookingId, newStatus, updatedBy, t);
-};
+const updateRentalStatus = async (bookingId, newStatus, updatedBy) =>
+  await updateRentalStatusWithUI(bookingId, newStatus, updatedBy, t);
 
 const hideBooking = async (id) => {
   try {
-    await updateDoc(doc(db, "bookings", id), {
-      hiddenForUser: true,
-    });
+    await updateDoc(doc(db, "bookings", id), { hiddenForUser: true });
     Swal.fire({
       title: "Removed",
       text: "This rental has been removed from your view.",
@@ -605,26 +637,20 @@ const hideBooking = async (id) => {
   }
 };
 
-// Initialize
+/* ------------------------ Init ------------------------ */
 onMounted(() => {
   onAuthStateChanged(auth, async (user) => {
     if (user) {
       userId.value = user.uid;
       await checkAndApplyPenalties();
-      // Check for penalties every 30 minutes
       penaltyCheckInterval.value = setInterval(checkAndApplyPenalties, 30 * 60 * 1000);
     }
   });
 });
 
 onUnmounted(() => {
-  if (penaltyCheckInterval.value) {
-    clearInterval(penaltyCheckInterval.value);
-  }
+  if (penaltyCheckInterval.value) clearInterval(penaltyCheckInterval.value);
 });
 
-defineExpose({
-  calculatePenalty,
-  formatPrice,
-});
+defineExpose({ calculatePenalty, formatPrice });
 </script>
