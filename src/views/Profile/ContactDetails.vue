@@ -17,21 +17,26 @@
         :key="booking.id"
         class="bg-[var(--Color-Surface-Surface-Tertiary)] border border-[var(--Color-Boarder-Border-Primary)] rounded-xl p-6"
       >
-        <!-- Product Info -->
+        <!-- USER IMAGE (not product) -->
         <div class="mb-4">
           <img
-            :src="booking.productImage || require('@/assets/default.png')"
-            alt="Product"
+            :src="booking.userImage || DEFAULT_AVATAR"
+            :alt="booking.userName || 'User'"
             class="w-full h-32 object-cover rounded-lg mb-3"
+            @error="(e) => (e.target.src = DEFAULT_AVATAR)"
           />
           <h3 class="font-semibold text-[var(--Color-Text-Text-Primary)] mb-1">
             {{ booking.productTitle }}
           </h3>
           <p class="text-sm text-[var(--Color-Text-Text-Secondary)]">
-            {{ $t("rentalPeriod") }}: {{ formatDate(booking.startDate) }} - {{ formatDate(booking.endDate) }}
+            {{ $t("rentalPeriod") }}: {{ formatDate(booking.startDate) }} -
+            {{ formatDate(booking.endDate) }}
           </p>
           <p class="text-xs text-[var(--Color-Text-Text-Secondary)] mt-1">
-            {{ $t("status") }}: <span class="font-medium" :class="getStatusColor(booking.status)">{{ $t(booking.status) }}</span>
+            {{ $t("status") }}:
+            <span class="font-medium" :class="getStatusColor(booking.status)">
+              {{ $t(booking.status) }}
+            </span>
           </p>
         </div>
 
@@ -40,13 +45,15 @@
           <h4 class="font-semibold text-[var(--Color-Text-Text-Primary)] text-sm">
             {{ $t("renterContactInfo") }}
           </h4>
-          
-          <!-- Renter Name with Verification Badge -->
+
+          <!-- Renter Name + Verified -->
           <div v-if="booking.userName" class="flex items-center gap-2">
             <i class="fas fa-user text-[var(--Color-Text-Text-Brand)] w-4"></i>
-            <span class="text-sm text-[var(--Color-Text-Text-Secondary)]">{{ $t("name") }}:</span>
-            <VerificationBadge 
-              :userName="booking.userName" 
+            <span class="text-sm text-[var(--Color-Text-Text-Secondary)]"
+              >{{ $t("name") }}:</span
+            >
+            <VerificationBadge
+              :userName="booking.userName"
               :isVerified="booking.userVerificationStatus"
             />
           </div>
@@ -54,55 +61,80 @@
           <!-- Renter Phone -->
           <div v-if="booking.phoneNumber" class="flex items-center gap-2">
             <i class="fas fa-phone text-[var(--Color-Text-Text-Brand)] w-4"></i>
-            <span class="text-sm text-[var(--Color-Text-Text-Secondary)]">{{ $t("renterPhone") }}:</span>
-            <span class="text-sm font-medium text-[var(--Color-Text-Text-Primary)]">{{ booking.phoneNumber }}</span>
+            <span class="text-sm text-[var(--Color-Text-Text-Secondary)]"
+              >{{ $t("renterPhone") }}:</span
+            >
+            <span class="text-sm font-medium text-[var(--Color-Text-Text-Primary)]">{{
+              booking.phoneNumber
+            }}</span>
           </div>
 
           <!-- Renter Email -->
           <div v-if="booking.userEmail" class="flex items-center gap-2">
             <i class="fas fa-envelope text-[var(--Color-Text-Text-Brand)] w-4"></i>
-            <span class="text-sm text-[var(--Color-Text-Text-Secondary)]">{{ $t("renterEmail") }}:</span>
-            <span class="text-sm font-medium text-[var(--Color-Text-Text-Primary)]">{{ booking.userEmail }}</span>
+            <span class="text-sm text-[var(--Color-Text-Text-Secondary)]"
+              >{{ $t("renterEmail") }}:</span
+            >
+            <span class="text-sm font-medium text-[var(--Color-Text-Text-Primary)]">{{
+              booking.userEmail
+            }}</span>
           </div>
 
           <!-- Delivery Method -->
-          <div class="flex items-center gap-2 mt-4 pt-3 border-t border-[var(--Color-Boarder-Border-Primary)]">
+          <div
+            class="flex items-center gap-2 mt-4 pt-3 border-t border-[var(--Color-Boarder-Border-Primary)]"
+          >
             <i class="fas fa-truck text-[var(--Color-Text-Text-Brand)] w-4"></i>
             <span class="text-sm text-[var(--Color-Text-Text-Secondary)]">
-              {{ booking.deliveryMethod === 'pickup' ? $t("pickupLocation") : $t("deliveryAddress") }}:
+              {{
+                booking.deliveryMethod === "pickup"
+                  ? $t("pickupLocation")
+                  : $t("deliveryAddress")
+              }}:
             </span>
             <span class="text-sm font-medium text-[var(--Color-Text-Text-Primary)]">
-              {{ booking.deliveryMethod === 'pickup' ? (booking.sellerContactInfo?.sellerAddress || '') : booking.deliveryAddress }}
+              {{
+                booking.deliveryMethod === "pickup"
+                  ? booking.sellerContactInfo?.sellerAddress || ""
+                  : booking.deliveryAddress
+              }}
             </span>
           </div>
 
           <!-- Price Breakdown -->
-          <div class="space-y-2 mt-4 pt-3 border-t border-[var(--Color-Boarder-Border-Primary)]">
-            <!-- Subtotal -->
+          <div
+            class="space-y-2 mt-4 pt-3 border-t border-[var(--Color-Boarder-Border-Primary)]"
+          >
             <div class="flex justify-between items-center">
-              <span class="text-sm text-[var(--Color-Text-Text-Secondary)]">{{ $t("subtotal") }}:</span>
+              <span class="text-sm text-[var(--Color-Text-Text-Secondary)]"
+                >{{ $t("subtotal") }}:</span
+              >
               <span class="text-sm font-medium text-[var(--Color-Text-Text-Primary)]">
                 {{ $t("egp") }} {{ calculateSubtotal(booking) }}
               </span>
             </div>
-            
-            <!-- Delivery Fee -->
             <div class="flex justify-between items-center">
-              <span class="text-sm text-[var(--Color-Text-Text-Secondary)]">{{ $t("deliveryFee") }}:</span>
+              <span class="text-sm text-[var(--Color-Text-Text-Secondary)]"
+                >{{ $t("deliveryFee") }}:</span
+              >
               <span class="text-sm font-medium text-[var(--Color-Text-Text-Primary)]">
                 {{ $t("egp") }} {{ calculateDeliveryFee(booking) }}
               </span>
             </div>
-            
-            <!-- Service Fee -->
             <div class="flex justify-between items-center">
-              <span class="text-sm text-[var(--Color-Text-Text-Secondary)]">{{ $t("serviceFee") }}:</span>
-              <span class="text-sm font-medium text-[var(--Color-Text-Text-Primary)]">{{ $t("egp") }} 5.00</span>
+              <span class="text-sm text-[var(--Color-Text-Text-Secondary)]"
+                >{{ $t("serviceFee") }}:</span
+              >
+              <span class="text-sm font-medium text-[var(--Color-Text-Text-Primary)]"
+                >{{ $t("egp") }} 5.00</span
+              >
             </div>
-            
-            <!-- Total -->
-            <div class="flex justify-between items-center pt-2 border-t border-[var(--Color-Boarder-Border-Primary)]">
-              <span class="text-sm font-bold text-[var(--Color-Text-Text-Primary)]">{{ $t("total") }}:</span>
+            <div
+              class="flex justify-between items-center pt-2 border-t border-[var(--Color-Boarder-Border-Primary)]"
+            >
+              <span class="text-sm font-bold text-[var(--Color-Text-Text-Primary)]"
+                >{{ $t("total") }}:</span
+              >
               <span class="text-sm font-bold text-[var(--Color-Text-Text-Brand)]">
                 {{ $t("egp") }} {{ getTotalPrice(booking) }}
               </span>
@@ -110,25 +142,26 @@
           </div>
         </div>
 
-        <!-- Action Buttons -->
+        <!-- Actions -->
         <div class="mt-4 pt-3 border-t border-[var(--Color-Boarder-Border-Primary)]">
-          <!-- Rental Status Management Section -->
           <div class="mb-4">
             <h4 class="font-semibold text-[var(--Color-Text-Text-Primary)] text-sm mb-3">
               {{ $t("rentalStatusManagement") }}
             </h4>
-            
-            <!-- Current Status Display -->
+
             <div class="flex items-center gap-2 mb-3">
-              <span class="text-sm text-[var(--Color-Text-Text-Secondary)]">{{ $t("currentStatus") }}:</span>
-              <span class="font-medium px-2 py-1 rounded text-xs" :class="getStatusColor(booking.status)">
+              <span class="text-sm text-[var(--Color-Text-Text-Secondary)]"
+                >{{ $t("currentStatus") }}:</span
+              >
+              <span
+                class="font-medium px-2 py-1 rounded text-xs"
+                :class="getStatusColor(booking.status)"
+              >
                 {{ $t(booking.status) }}
               </span>
             </div>
-            
-            <!-- Status Update Buttons -->
+
             <div class="flex gap-2 flex-wrap">
-              <!-- Seller can set to Active when handing over item -->
               <button
                 v-if="isCurrentUserSeller(booking) && booking.status === 'pending'"
                 @click="updateRentalStatusWithUI(booking.id, 'active', 'seller', $t)"
@@ -138,8 +171,7 @@
                 <i class="fas fa-check"></i>
                 {{ $t("setActive") }}
               </button>
-              
-              <!-- Renter can confirm Active when receiving item -->
+
               <button
                 v-if="isCurrentUserRenter(booking) && booking.status === 'pending'"
                 @click="updateRentalStatusWithUI(booking.id, 'active', 'renter', $t)"
@@ -149,8 +181,7 @@
                 <i class="fas fa-check-double"></i>
                 {{ $t("confirmActive") }}
               </button>
-              
-              <!-- Completion Confirmation Buttons -->
+
               <button
                 v-if="booking.status === 'active' && isCurrentUserSeller(booking)"
                 @click="updateRentalStatusWithUI(booking.id, 'completed', 'seller', $t)"
@@ -160,7 +191,7 @@
                 <i class="fas fa-check-circle"></i>
                 {{ $t("confirmCompletion") }}
               </button>
-              
+
               <button
                 v-if="booking.status === 'active' && isCurrentUserRenter(booking)"
                 @click="updateRentalStatusWithUI(booking.id, 'completed', 'renter', $t)"
@@ -170,22 +201,34 @@
                 <i class="fas fa-check-circle"></i>
                 {{ $t("confirmCompletion") }}
               </button>
-              
-              <!-- Both can reject the rental -->
+
               <button
                 v-if="booking.status === 'pending'"
-                @click="updateRentalStatusWithUI(booking.id, 'rejected', isCurrentUserSeller(booking) ? 'seller' : 'renter', $t)"
+                @click="
+                  updateRentalStatusWithUI(
+                    booking.id,
+                    'rejected',
+                    isCurrentUserSeller(booking) ? 'seller' : 'renter',
+                    $t
+                  )
+                "
                 class="bg-red-500 text-white px-3 py-2 rounded-lg text-xs font-medium hover:bg-red-600 transform hover:scale-105 transition-all duration-200 shadow-lg flex items-center gap-1"
                 title="Reject this rental"
               >
                 <i class="fas fa-times"></i>
                 {{ $t("rejectRental") }}
               </button>
-              
-              <!-- Reset to Pending if needed -->
+
               <button
                 v-if="booking.status === 'rejected'"
-                @click="updateRentalStatusWithUI(booking.id, 'pending', isCurrentUserSeller(booking) ? 'seller' : 'renter', $t)"
+                @click="
+                  updateRentalStatusWithUI(
+                    booking.id,
+                    'pending',
+                    isCurrentUserSeller(booking) ? 'seller' : 'renter',
+                    $t
+                  )
+                "
                 class="bg-yellow-500 text-white px-3 py-2 rounded-lg text-xs font-medium hover:bg-yellow-600 transform hover:scale-105 transition-all duration-200 shadow-lg flex items-center gap-1"
                 title="Reset to Pending status"
               >
@@ -193,46 +236,95 @@
                 {{ $t("resetToPending") }}
               </button>
             </div>
-            
-            <!-- Dual Confirmation Status Display -->
-            <div v-if="booking.status === 'active' && (booking.sellerConfirmed || booking.renterConfirmed)" class="mt-3 pt-3 border-t border-[var(--Color-Boarder-Border-Primary)]">
-              <h5 class="text-xs font-medium text-[var(--Color-Text-Text-Secondary)] mb-2">{{ $t("completionConfirmation") }}:</h5>
+
+            <div
+              v-if="
+                booking.status === 'active' &&
+                (booking.sellerConfirmed || booking.renterConfirmed)
+              "
+              class="mt-3 pt-3 border-t border-[var(--Color-Boarder-Border-Primary)]"
+            >
+              <h5
+                class="text-xs font-medium text-[var(--Color-Text-Text-Secondary)] mb-2"
+              >
+                {{ $t("completionConfirmation") }}:
+              </h5>
               <div class="space-y-2">
                 <div class="flex items-center gap-2 text-xs">
                   <i class="fas fa-user-tie text-blue-500"></i>
-                  <span class="text-[var(--Color-Text-Text-Secondary)]">{{ $t("seller") }}:</span>
-                  <span v-if="booking.sellerConfirmed" class="text-green-600 font-medium">{{ $t("confirmed") }}</span>
+                  <span class="text-[var(--Color-Text-Text-Secondary)]"
+                    >{{ $t("seller") }}:</span
+                  >
+                  <span
+                    v-if="booking.sellerConfirmed"
+                    class="text-green-600 font-medium"
+                    >{{ $t("confirmed") }}</span
+                  >
                   <span v-else class="text-gray-500">{{ $t("pending") }}</span>
                 </div>
                 <div class="flex items-center gap-2 text-xs">
                   <i class="fas fa-user text-blue-500"></i>
-                  <span class="text-[var(--Color-Text-Text-Secondary)]">{{ $t("renter") }}:</span>
-                  <span v-if="booking.renterConfirmed" class="text-green-600 font-medium">{{ $t("confirmed") }}</span>
+                  <span class="text-[var(--Color-Text-Text-Secondary)]"
+                    >{{ $t("renter") }}:</span
+                  >
+                  <span
+                    v-if="booking.renterConfirmed"
+                    class="text-green-600 font-medium"
+                    >{{ $t("confirmed") }}</span
+                  >
                   <span v-else class="text-gray-500">{{ $t("pending") }}</span>
                 </div>
-                <div v-if="booking.fullyCompleted" class="flex items-center gap-2 text-xs">
+                <div
+                  v-if="booking.fullyCompleted"
+                  class="flex items-center gap-2 text-xs"
+                >
                   <i class="fas fa-check-circle text-green-500"></i>
-                  <span class="text-green-600 font-medium">{{ $t("rentalCompleted") }}</span>
+                  <span class="text-green-600 font-medium">{{
+                    $t("rentalCompleted")
+                  }}</span>
                 </div>
               </div>
             </div>
-            
-            <!-- Status History -->
-            <div v-if="booking.statusHistory && booking.statusHistory.length > 0" class="mt-3 pt-3 border-t border-[var(--Color-Boarder-Border-Primary)]">
-              <h5 class="text-xs font-medium text-[var(--Color-Text-Text-Secondary)] mb-2">{{ $t("statusHistory") }}:</h5>
+
+            <div
+              v-if="booking.statusHistory && booking.statusHistory.length > 0"
+              class="mt-3 pt-3 border-t border-[var(--Color-Boarder-Border-Primary)]"
+            >
+              <h5
+                class="text-xs font-medium text-[var(--Color-Text-Text-Secondary)] mb-2"
+              >
+                {{ $t("statusHistory") }}:
+              </h5>
               <div class="space-y-1">
-                <div v-for="(history, index) in booking.statusHistory.slice(-3)" :key="index" class="flex items-center gap-2 text-xs">
-                  <span class="text-[var(--Color-Text-Text-Secondary)]">{{ formatDate(history.timestamp) }}:</span>
-                  <span class="font-medium" :class="getStatusColor(history.status)">{{ $t(history.status) }}</span>
-                  <span class="text-[var(--Color-Text-Text-Secondary)]">({{ history.updatedBy }})</span>
+                <div
+                  v-for="(history, index) in booking.statusHistory.slice(-3)"
+                  :key="index"
+                  class="flex items-center gap-2 text-xs"
+                >
+                  <span class="text-[var(--Color-Text-Text-Secondary)]"
+                    >{{ formatDate(history.timestamp) }}:</span
+                  >
+                  <span class="font-medium" :class="getStatusColor(history.status)">{{
+                    $t(history.status)
+                  }}</span>
+                  <span class="text-[var(--Color-Text-Text-Secondary)]"
+                    >({{ history.updatedBy }})</span
+                  >
                 </div>
               </div>
             </div>
           </div>
-          
+
           <div class="flex gap-2">
             <button
-              @click="messageUser(booking.userId, booking.userName, booking.productId, booking.productTitle)"
+              @click="
+                messageUser(
+                  booking.userId,
+                  booking.userName,
+                  booking.productId,
+                  booking.productTitle
+                )
+              "
               class="flex-1 bg-[var(--Color-Surface-Surface-Brand)] text-[var(--Color-Text-Text-Invert)] py-3 px-4 rounded-lg text-sm font-medium hover:bg-[var(--Colors-Primary-600)] transform hover:scale-105 transition-all duration-200 shadow-lg flex items-center justify-center gap-2"
               title="Start a conversation with this user"
             >
@@ -260,7 +352,9 @@
 
     <!-- Empty State -->
     <div v-if="bookingsWithContactInfo.length === 0" class="text-center py-12">
-      <i class="fas fa-address-book text-6xl text-[var(--Color-Text-Text-Secondary)] mb-4 opacity-50"></i>
+      <i
+        class="fas fa-address-book text-6xl text-[var(--Color-Text-Text-Secondary)] mb-4 opacity-50"
+      ></i>
       <h3 class="text-xl font-semibold text-[var(--Color-Text-Text-Primary)] mb-2">
         {{ $t("noContactDetails") }}
       </h3>
@@ -279,961 +373,634 @@ import { db, auth } from "@/firebase/config";
 import { onAuthStateChanged } from "firebase/auth";
 import { useGlobalRealTime } from "@/composables/useGlobalRealTime";
 import { useRentalStatus } from "@/composables/useRentalStatus";
-import { collection, addDoc, serverTimestamp, query, where, getDocs, updateDoc, doc, getDoc } from "firebase/firestore";
+import {
+  collection,
+  addDoc,
+  serverTimestamp,
+  query,
+  where,
+  getDocs,
+  updateDoc,
+  doc,
+  getDoc,
+} from "firebase/firestore";
 import Swal from "sweetalert2";
 import VerificationBadge from "@/components/VerificationBadge.vue";
 
 const { t } = useI18n();
 const router = useRouter();
-
-// Initialize real-time data
 const { bookings } = useGlobalRealTime();
-
-// Initialize rental status composable
 const { updateRentalStatusWithUI } = useRentalStatus();
 
 const userId = ref(null);
 const userVerificationStatuses = ref({});
-const productDetails = ref({}); // Cache for product details
-const calculatedPrices = ref({}); // Cache for calculated prices
+const productDetails = ref({});
+const calculatedPrices = ref({});
 
-// Function to get user verification status
-const getUserVerificationStatus = async (userId) => {
+/* --- NEW: renter profiles cache (imageUrl, displayName, etc.) --- */
+const renterProfiles = ref({}); // { [userId]: { imageUrl?: string, displayName?: string } }
+
+/* Built-in neutral avatar (SVG data URL) so you don’t need an asset file */
+const DEFAULT_AVATAR =
+  'data:image/svg+xml;utf8,\
+<svg xmlns="http://www.w3.org/2000/svg" width="600" height="240" viewBox="0 0 600 240">\
+  <rect width="600" height="240" rx="16" fill="#D1D5DB"/>\
+  <circle cx="300" cy="100" r="55" fill="#F3F4F6"/><path d="M120 240c20-45 70-75 180-75s160 30 180 75" fill="#F3F4F6"/>\
+</svg>';
+
+/* ---------------- user + product helpers ---------------- */
+const getUserVerificationStatus = async (uid) => {
   try {
-    const userDoc = await getDoc(doc(db, 'users', userId));
-    if (userDoc.exists()) {
-      const userData = userDoc.data();
-      return userData.isVerified || false;
-    }
-    return false;
-  } catch (error) {
-    console.error('Error fetching user verification status:', error);
+    const snap = await getDoc(doc(db, "users", uid));
+    return snap.exists() ? !!snap.data().isVerified : false;
+  } catch (e) {
+    console.error("getUserVerificationStatus error:", e);
     return false;
   }
 };
 
-// Function to get product details
-const getProductDetails = async (productId) => {
-  if (!productId) return null;
-  
-  // Check if we already have the product details cached
-  if (productDetails.value[productId]) {
-    return productDetails.value[productId];
-  }
-  
+const getProductDetails = async (pid) => {
+  if (!pid) return null;
+  if (productDetails.value[pid]) return productDetails.value[pid];
   try {
-    const productDoc = await getDoc(doc(db, 'products', productId));
-    if (productDoc.exists()) {
-      const productData = productDoc.data();
-      // Cache the product details
-      productDetails.value[productId] = productData;
-      return productData;
+    const snap = await getDoc(doc(db, "products", pid));
+    if (snap.exists()) {
+      productDetails.value[pid] = snap.data();
+      return snap.data();
     }
-    return null;
-  } catch (error) {
-    console.error('Error fetching product details:', error);
-    return null;
+  } catch (e) {
+    console.error("getProductDetails error:", e);
+  }
+  return null;
+};
+
+/* --- NEW: load renter profile (for imageUrl) --- */
+const loadRenterProfile = async (uid) => {
+  if (!uid) return;
+  if (renterProfiles.value[uid]) return; // cached
+
+  try {
+    const snap = await getDoc(doc(db, "users", uid));
+    if (snap.exists()) {
+      const data = snap.data();
+      renterProfiles.value[uid] = {
+        imageUrl: data.imageUrl || data.photoURL || "",
+        displayName: data.displayName || "",
+      };
+    } else {
+      renterProfiles.value[uid] = { imageUrl: "", displayName: "" };
+    }
+  } catch (e) {
+    console.error("loadRenterProfile error:", e);
+    renterProfiles.value[uid] = { imageUrl: "", displayName: "" };
   }
 };
 
-// Computed property to filter bookings where current user is the seller
+/* ---------------- computed (inject user image) ---------------- */
 const bookingsWithContactInfo = computed(() => {
   if (!userId.value || !bookings.value) return [];
-  
-  // Filter bookings where current user is the seller (owner)
-  const sellerBookings = bookings.value.filter((booking) => booking.sellerId === userId.value);
-  const bookingsWithRenterInfo = sellerBookings.filter((booking) => 
-    booking.userName && booking.phoneNumber && ['pending', 'active', 'completed', 'rejected'].includes(booking.status)
+  const sellerBookings = bookings.value.filter((b) => b.sellerId === userId.value);
+  const withRenterInfo = sellerBookings.filter(
+    (b) =>
+      b.userName &&
+      b.phoneNumber &&
+      ["pending", "active", "completed", "rejected"].includes(b.status)
   );
-  const visibleBookings = bookingsWithRenterInfo.filter((booking) => booking.hiddenForSeller !== true);
-  
-  // Add verification status to each booking
-  const bookingsWithVerification = visibleBookings.map(booking => ({
-    ...booking,
-    userVerificationStatus: userVerificationStatuses.value[booking.userId] || false
-  }));
-  
-  // Debug logging
-  console.log('ContactDetails Debug (Seller View):', {
-    totalBookings: bookings.value?.length || 0,
-    sellerBookings: sellerBookings.length,
-    bookingsWithRenterInfo: bookingsWithRenterInfo.length,
-    visibleBookings: visibleBookings.length,
-    userId: userId.value,
-    sampleBooking: bookingsWithVerification[0] || null
+  const visible = withRenterInfo.filter((b) => b.hiddenForSeller !== true);
+
+  return visible.map((b) => {
+    const profile = renterProfiles.value[b.userId] || {};
+    return {
+      ...b,
+      userVerificationStatus: userVerificationStatuses.value[b.userId] || false,
+      /* Prefer booking.userImage, then profile.imageUrl, then default */
+      userImage: b.userImage || profile.imageUrl || "",
+    };
   });
-  
-  // Log sample booking fields for debugging
-  if (bookingsWithVerification[0]) {
-    const sample = bookingsWithVerification[0];
-    console.log('Sample booking fields:', {
-      id: sample.id,
-      startDate: sample.startDate,
-      endDate: sample.endDate,
-      productPrice: sample.productPrice,
-      price: sample.price,
-      dailyPrice: sample.dailyPrice,
-      totalPrice: sample.totalPrice,
-      deliveryMethod: sample.deliveryMethod,
-      productTitle: sample.productTitle
-    });
-  }
-  
-  return bookingsWithVerification;
 });
 
-// Load verification statuses for all users in bookings
+/* ---------------- bulk loaders ---------------- */
 const loadUserVerificationStatuses = async () => {
   if (!bookings.value) return;
-  
-  const uniqueUserIds = [...new Set(bookings.value.map(booking => booking.userId).filter(Boolean))];
-  
-  for (const userId of uniqueUserIds) {
-    if (!userVerificationStatuses.value[userId]) {
-      const isVerified = await getUserVerificationStatus(userId);
-      userVerificationStatuses.value[userId] = isVerified;
+  const uids = [...new Set(bookings.value.map((b) => b.userId).filter(Boolean))];
+  for (const uid of uids) {
+    if (!userVerificationStatuses.value[uid]) {
+      userVerificationStatuses.value[uid] = await getUserVerificationStatus(uid);
     }
   }
 };
 
-// Load product details for all bookings
-const loadProductDetails = async () => {
+const loadProductDetailsAll = async () => {
   if (!bookings.value) return;
-  
-  const uniqueProductIds = [...new Set(bookings.value.map(booking => booking.productId).filter(Boolean))];
-  
-  for (const productId of uniqueProductIds) {
-    if (!productDetails.value[productId]) {
-      await getProductDetails(productId);
-    }
+  const pids = [...new Set(bookings.value.map((b) => b.productId).filter(Boolean))];
+  for (const pid of pids) {
+    if (!productDetails.value[pid]) await getProductDetails(pid);
   }
 };
 
-// Format date
+/* --- NEW: bulk load renter images for cards --- */
+const loadRenterProfilesAll = async () => {
+  if (!bookings.value) return;
+  const uids = [...new Set(bookings.value.map((b) => b.userId).filter(Boolean))];
+  await Promise.all(uids.map((uid) => loadRenterProfile(uid)));
+};
+
+/* ---------------- utilities (kept from your version) ---------------- */
 const formatDate = (dateStr) => {
   if (!dateStr) return "";
-  const date = new Date(dateStr);
-  return date.toLocaleDateString();
+  const d = new Date(dateStr);
+  return isNaN(d) ? "" : d.toLocaleDateString();
 };
 
-// Get status color class
 const getStatusColor = (status) => {
   switch (status) {
-    case 'pending':
-      return 'text-yellow-600';
-    case 'active':
-      return 'text-green-600';
-    case 'completed':
-      return 'text-blue-600';
-    case 'cancelled':
-      return 'text-red-600';
-    case 'rejected':
-      return 'text-red-600';
+    case "pending":
+      return "text-yellow-600";
+    case "active":
+      return "text-green-600";
+    case "completed":
+      return "text-blue-600";
+    case "cancelled":
+    case "rejected":
+      return "text-red-600";
     default:
-      return 'text-gray-600';
+      return "text-gray-600";
   }
 };
 
-// Calculate subtotal for a booking (same as RentConfirmation)
 const calculateSubtotal = (booking) => {
-  console.log('calculateSubtotal called for booking:', booking.id);
-  
-  if (!booking.startDate || !booking.endDate) {
-    console.log('Missing dates, returning 0');
-    return 0;
-  }
+  if (!booking.startDate || !booking.endDate) return 0;
   const start = new Date(booking.startDate);
   const end = new Date(booking.endDate);
-  const diffTime = Math.ceil((end - start) / (1000 * 60 * 60 * 24));
-  const days = diffTime + 1; // Include both start and end dates
-  
-  // Get price from booking data or product details
+  const diffDays = Math.ceil((end - start) / (1000 * 60 * 60 * 24)) + 1;
+
   let pricePerDay = booking.productPrice || booking.price || booking.dailyPrice || 0;
-  
-  // If no price in booking data, try to get from cached product details
-  if (!pricePerDay || pricePerDay <= 0) {
-    if (booking.productId && productDetails.value[booking.productId]) {
-      pricePerDay = productDetails.value[booking.productId].price || 0;
-    }
+  if (
+    (!pricePerDay || pricePerDay <= 0) &&
+    booking.productId &&
+    productDetails.value[booking.productId]
+  ) {
+    pricePerDay = productDetails.value[booking.productId].price || 0;
   }
-  
-  // If still no price, use default
-  if (!pricePerDay || pricePerDay <= 0) {
-    pricePerDay = 50; // Default price per day
-  }
-  
-  const subtotal = days * pricePerDay;
-  
-  console.log('Subtotal calculation:', {
-    startDate: booking.startDate,
-    endDate: booking.endDate,
-    days,
-    pricePerDay,
-    subtotal
-  });
-  
-  return subtotal;
+  if (!pricePerDay || pricePerDay <= 0) pricePerDay = 50;
+
+  return diffDays * pricePerDay;
 };
 
-// Calculate delivery fee for a booking (same as RentConfirmation)
+const calculateDistance = (lat1, lon1, lat2, lon2) => {
+  const R = 6371;
+  const dLat = ((lat2 - lat1) * Math.PI) / 180;
+  const dLon = ((lon2 - lon1) * Math.PI) / 180;
+  const a =
+    Math.sin(dLat / 2) ** 2 +
+    Math.cos((lat1 * Math.PI) / 180) *
+      Math.cos((lat2 * Math.PI) / 180) *
+      Math.sin(dLon / 2) ** 2;
+  return 2 * R * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+};
+
 const calculateDeliveryFee = (booking) => {
-  console.log('calculateDeliveryFee called for booking:', booking.id, 'method:', booking.deliveryMethod);
-  
-  if (booking.deliveryMethod === 'pickup') {
-    console.log('Pickup method, returning 0');
-    return 0;
-  }
-  
-  if (booking.deliveryMethod === 'delivery') {
-    // Check if we have both renter and lender coordinates
-    if (booking.renterLat && booking.renterLng && 
-        booking.lenderLat && booking.lenderLng) {
-      
-      // Calculate real distance between renter and lender
+  if (booking.deliveryMethod === "pickup") return 0;
+
+  if (booking.deliveryMethod === "delivery") {
+    if (
+      booking.renterLat &&
+      booking.renterLng &&
+      booking.lenderLat &&
+      booking.lenderLng
+    ) {
       const distance = calculateDistance(
-        booking.lenderLat, 
+        booking.lenderLat,
         booking.lenderLng,
-        booking.renterLat, 
+        booking.renterLat,
         booking.renterLng
       );
-      
-      // Base delivery fee
-      const baseFee = 25;
-      
-      // Distance-based fee (5 EGP per km, max 200 EGP)
+      const base = 25;
       const distanceFee = Math.min(distance * 5, 200);
-      const totalFee = baseFee + distanceFee;
-      
-      console.log('Delivery fee calculation (coordinates):', {
-        distance: distance.toFixed(2),
-        baseFee,
-        distanceFee,
-        totalFee
-      });
-      
-      return totalFee;
+      return base + distanceFee;
     }
-    
-    // Fallback: if coordinates not available, use address-based calculation
-    const address = booking.deliveryAddress || '';
-    if (address.trim() === '') {
-      console.log('No delivery address, returning 0');
-      return 0;
-    }
-    
-    const baseFee = 25;
-    let distanceFee = 0;
-    const addressLower = address.toLowerCase();
-    
-    if (addressLower.includes('cairo') || addressLower.includes('القاهرة')) {
-      distanceFee = 15;
-    } else if (addressLower.includes('giza') || addressLower.includes('الجيزة')) {
-      distanceFee = 25;
-    } else if (addressLower.includes('alexandria') || addressLower.includes('الإسكندرية')) {
-      distanceFee = 80;
-    } else if (addressLower.includes('sharm') || addressLower.includes('شرم')) {
-      distanceFee = 150;
-    } else if (addressLower.includes('hurghada') || addressLower.includes('الغردقة')) {
-      distanceFee = 120;
-    } else {
-      distanceFee = 35;
-    }
-    
-    const totalFee = baseFee + distanceFee;
-    
-    console.log('Delivery fee calculation (address):', {
-      address,
-      baseFee,
-      distanceFee,
-      totalFee
-    });
-    
-    return totalFee;
+    const address = (booking.deliveryAddress || "").toLowerCase();
+    const base = 25;
+    let df = 0;
+    if (address.includes("cairo") || address.includes("القاهرة")) df = 15;
+    else if (address.includes("giza") || address.includes("الجيزة")) df = 25;
+    else if (address.includes("alexandria") || address.includes("الإسكندرية")) df = 80;
+    else if (address.includes("sharm") || address.includes("شرم")) df = 150;
+    else if (address.includes("hurghada") || address.includes("الغردقة")) df = 120;
+    else df = 35;
+    return base + df;
   }
-  
-  console.log('No delivery method or pickup, returning 0');
   return 0;
 };
 
-// Calculate total price for a booking (same as RentConfirmation)
 const calculateTotalPrice = async (booking) => {
-  console.log('Calculating total price for booking:', booking);
-  
-  // If totalPrice is already calculated and stored, use it
-  if (booking.totalPrice && booking.totalPrice > 0) {
-    console.log('Using stored totalPrice:', booking.totalPrice);
+  if (booking.totalPrice && booking.totalPrice > 0)
     return parseFloat(booking.totalPrice).toFixed(2);
-  }
-  
-  // Use the same calculation logic as RentConfirmation
   const subtotal = calculateSubtotal(booking);
   const deliveryFee = calculateDeliveryFee(booking);
-  const serviceFee = 5; // Fixed service fee (same as RentConfirmation)
-  const total = subtotal + deliveryFee + serviceFee;
-  
-  console.log('Final calculation:', { subtotal, deliveryFee, serviceFee, total });
-  
-  return total.toFixed(2);
+  const serviceFee = 5;
+  return (subtotal + deliveryFee + serviceFee).toFixed(2);
 };
 
-// Synchronous function to get total price (with caching) - same as RentConfirmation
 const getTotalPrice = (booking) => {
-  console.log('getTotalPrice called for booking:', booking.id);
-  
-  // If we have a cached calculated price, use it
-  if (calculatedPrices.value[booking.id]) {
-    console.log('Using cached price:', calculatedPrices.value[booking.id]);
-    return calculatedPrices.value[booking.id];
-  }
-  
-  // If booking has a stored totalPrice, use it
-  if (booking.totalPrice && booking.totalPrice > 0) {
-    console.log('Using stored totalPrice:', booking.totalPrice);
+  if (calculatedPrices.value[booking.id]) return calculatedPrices.value[booking.id];
+  if (booking.totalPrice && booking.totalPrice > 0)
     return parseFloat(booking.totalPrice).toFixed(2);
-  }
-  
-  // Use the same calculation logic as RentConfirmation
+
   const subtotal = calculateSubtotal(booking);
   const deliveryFee = calculateDeliveryFee(booking);
-  const serviceFee = 5; // Fixed service fee (same as RentConfirmation)
-  const total = subtotal + deliveryFee + serviceFee;
-  const priceString = total.toFixed(2);
-  
-  console.log('Calculated price breakdown:', {
-    subtotal,
-    deliveryFee,
-    serviceFee,
-    total,
-    priceString
-  });
-  
-  // Cache the calculated price
-  calculatedPrices.value[booking.id] = priceString;
-  
-  // Trigger async calculation for more accurate price
-  calculateTotalPriceAsync(booking);
-  
-  return priceString;
+  const serviceFee = 5;
+  const total = (subtotal + deliveryFee + serviceFee).toFixed(2);
+  calculatedPrices.value[booking.id] = total;
+  calculateTotalPrice(booking).then((v) => (calculatedPrices.value[booking.id] = v));
+  return total;
 };
 
-// Async function to calculate more accurate price
-const calculateTotalPriceAsync = async (booking) => {
-  try {
-    const accuratePrice = await calculateTotalPrice(booking);
-    calculatedPrices.value[booking.id] = accuratePrice;
-  } catch (error) {
-    console.error('Error calculating accurate price:', error);
-  }
-};
-
-// Calculate distance between two points using Haversine formula
-const calculateDistance = (lat1, lon1, lat2, lon2) => {
-  const R = 6371; // Earth's radius in kilometers
-  const dLat = (lat2 - lat1) * Math.PI / 180;
-  const dLon = (lon2 - lon1) * Math.PI / 180;
-  const a = 
-    Math.sin(dLat/2) * Math.sin(dLat/2) +
-    Math.cos(lat1 * Math.PI / 180) * Math.cos(lat2 * Math.PI / 180) * 
-    Math.sin(dLon/2) * Math.sin(dLon/2);
-  const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
-  const distance = R * c; // Distance in kilometers
-  return distance;
-};
-
-// Copy contact information to clipboard
 const copyToClipboard = async (text) => {
   try {
     await navigator.clipboard.writeText(text);
     showToast(t("contactInfoCopied"), "success");
-  } catch (error) {
-    console.error("Failed to copy to clipboard:", error);
-    // Fallback for older browsers
-    const textArea = document.createElement("textarea");
-    textArea.value = text;
-    document.body.appendChild(textArea);
-    textArea.select();
+  } catch {
+    const ta = document.createElement("textarea");
+    ta.value = text;
+    document.body.appendChild(ta);
+    ta.select();
     document.execCommand("copy");
-    document.body.removeChild(textArea);
+    document.body.removeChild(ta);
     showToast(t("contactInfoCopied"), "success");
   }
 };
 
-// Copy all contact information
-const copyAllContactInfo = (booking) => {
-  const contactText = [
-    `Renter Name: ${booking.userName || ''}`,
-    `Phone: ${booking.phoneNumber || ''}`,
-    `Email: ${booking.userEmail || ''}`,
-    `Product: ${booking.productTitle || ''}`,
-    `Rental Period: ${formatDate(booking.startDate)} - ${formatDate(booking.endDate)}`,
-    `Total Price: ${t("egp")} ${getTotalPrice(booking)}`,
-    `Delivery Method: ${booking.deliveryMethod || ''}`
-  ].filter(line => line.split(': ')[1]).join('\n');
-  
-  copyToClipboard(contactText);
+const copyAllContactInfo = (b) => {
+  const lines = [
+    `Renter Name: ${b.userName || ""}`,
+    `Phone: ${b.phoneNumber || ""}`,
+    `Email: ${b.userEmail || ""}`,
+    `Product: ${b.productTitle || ""}`,
+    `Rental Period: ${formatDate(b.startDate)} - ${formatDate(b.endDate)}`,
+    `Total Price: ${t("egp")} ${getTotalPrice(b)}`,
+    `Delivery Method: ${b.deliveryMethod || ""}`,
+  ].filter((x) => x.split(": ")[1]);
+  copyToClipboard(lines.join("\n"));
 };
 
-// Get directions using Google Maps
 const getDirections = (address) => {
-  const encodedAddress = encodeURIComponent(address);
-  const mapsUrl = `https://www.google.com/maps/dir/?api=1&destination=${encodedAddress}`;
-  window.open(mapsUrl, '_blank');
+  window.open(
+    `https://www.google.com/maps/dir/?api=1&destination=${encodeURIComponent(address)}`,
+    "_blank"
+  );
 };
 
-// Show toast notification
 const showToast = (message, type = "success") => {
-  const event = new CustomEvent('show-toast', {
-    detail: {
-      message,
-      type
-    }
-  });
+  const event = new CustomEvent("show-toast", { detail: { message, type } });
   window.dispatchEvent(event);
 };
 
-// Message user function - Enhanced to create chat and navigate to Messages
-const messageUser = async (userId, userName, productId = null, productTitle = null) => {
+/* messaging / calls / delete kept as-is */
+const messageUser = async (uid, name, productId = null, productTitle = null) => {
   try {
     if (!auth.currentUser) {
-      Swal.fire({
-        icon: 'warning',
-        title: 'Authentication Required',
-        text: 'Please log in to send messages.',
-        confirmButtonText: 'OK'
+      return Swal.fire({
+        icon: "warning",
+        title: "Authentication Required",
+        text: "Please log in to send messages.",
       });
-      return;
     }
-
-    // Prevent messaging yourself
-    if (userId === auth.currentUser.uid) {
-      Swal.fire({
-        icon: 'warning',
-        title: 'Cannot Message Yourself',
-        text: 'You cannot send a message to yourself.',
-        confirmButtonText: 'OK'
+    if (uid === auth.currentUser.uid) {
+      return Swal.fire({
+        icon: "warning",
+        title: "Cannot Message Yourself",
+        text: "You cannot send a message to yourself.",
       });
-      return;
     }
-
-    // Show confirmation dialog
-    const result = await Swal.fire({
-      title: 'Start Conversation?',
-      text: `Do you want to start a conversation with ${userName}?`,
-      icon: 'question',
+    const confirm = await Swal.fire({
+      title: "Start Conversation?",
+      text: `Do you want to start a conversation with ${name}?`,
+      icon: "question",
       showCancelButton: true,
-      confirmButtonText: 'Yes, Start Chat',
-      cancelButtonText: 'Cancel',
-      confirmButtonColor: '#3085d6',
-      cancelButtonColor: '#d33',
-      reverseButtons: true
+      confirmButtonText: "Yes, Start Chat",
+      cancelButtonText: "Cancel",
+      reverseButtons: true,
     });
+    if (!confirm.isConfirmed) return;
 
-    if (!result.isConfirmed) {
-      return;
-    }
-
-    // Show loading state
     Swal.fire({
-      title: 'Creating Chat...',
-      text: `Setting up conversation with ${userName}`,
+      title: "Creating Chat...",
       allowOutsideClick: false,
-      allowEscapeKey: false,
       showConfirmButton: false,
-      didOpen: () => {
-        Swal.showLoading();
-      }
+      didOpen: () => Swal.showLoading(),
     });
 
-    // Check if chat room already exists
-    const chatRoomsRef = collection(db, 'user-chats');
-    const existingChatQuery = query(
-      chatRoomsRef,
-      where('participants', 'array-contains', auth.currentUser.uid)
+    const chatsRef = collection(db, "user-chats");
+    const q = query(
+      chatsRef,
+      where("participants", "array-contains", auth.currentUser.uid)
     );
-    
-    const existingChats = await getDocs(existingChatQuery);
-    let existingChatRoom = null;
-    
-    existingChats.forEach(doc => {
-      const chatData = doc.data();
-      if (chatData.participants.includes(userId)) {
-        existingChatRoom = { id: doc.id, ...chatData };
-      }
+    const existing = await getDocs(q);
+    let room = null;
+    existing.forEach((d) => {
+      const data = d.data();
+      if (data.participants.includes(uid)) room = { id: d.id, ...data };
     });
 
-    let chatRoomId;
-
-    if (existingChatRoom) {
-      // Use existing chat room
-      chatRoomId = existingChatRoom.id;
-      console.log('Using existing chat room:', chatRoomId);
-    } else {
-      // Create new chat room
-      const chatRoomData = {
-        participants: [auth.currentUser.uid, userId],
+    let roomId = room?.id;
+    if (!roomId) {
+      const newRoom = await addDoc(chatsRef, {
+        participants: [auth.currentUser.uid, uid],
         createdAt: serverTimestamp(),
         lastMessage: null,
         lastMessageTime: null,
-        productId: productId,
-        productTitle: productTitle
-      };
-
-      const newChatRoom = await addDoc(chatRoomsRef, chatRoomData);
-      chatRoomId = newChatRoom.id;
-      console.log('Created new chat room:', chatRoomId);
+        productId,
+        productTitle,
+      });
+      roomId = newRoom.id;
     }
 
-    // Store the selected conversation info for Messages component
-    const selectedConversationInfo = {
-      id: chatRoomId,
-      otherUserId: userId,
-      otherUserName: userName,
-      productId: productId,
-      productTitle: productTitle,
-      timestamp: Date.now()
-    };
-    
-    localStorage.setItem('selectedConversation', JSON.stringify(selectedConversationInfo));
+    localStorage.setItem(
+      "selectedConversation",
+      JSON.stringify({
+        id: roomId,
+        otherUserId: uid,
+        otherUserName: name,
+        productId,
+        productTitle,
+        timestamp: Date.now(),
+      })
+    );
 
-    // Close loading dialog
     Swal.close();
-    
-    // Navigate to Messages page
-    router.push('/messages');
-    
-    // Show success message
+    router.push("/messages");
     Swal.fire({
-      icon: 'success',
-      title: 'Chat Started',
-      text: `Opening chat with ${userName}`,
+      icon: "success",
+      title: "Chat Started",
+      text: `Opening chat with ${name}`,
       timer: 2000,
       showConfirmButton: false,
-      position: 'top-end'
+      position: "top-end",
     });
-
-  } catch (error) {
-    console.error('Error creating chat:', error);
-    Swal.close(); // Close loading dialog
+  } catch (e) {
+    console.error("create chat error:", e);
+    Swal.close();
     Swal.fire({
-      icon: 'error',
-      title: 'Error',
-      text: 'Failed to start chat. Please try again.',
-      confirmButtonText: 'OK'
+      icon: "error",
+      title: "Error",
+      text: "Failed to start chat. Please try again.",
     });
   }
 };
 
-// Call contact function
-const callContact = (phoneNumber) => {
-  if (!phoneNumber) {
-    Swal.fire({
-      icon: 'warning',
-      title: 'No Phone Number',
-      text: 'This contact does not have a phone number available.',
-      confirmButtonText: 'OK'
+const callContact = (phone) => {
+  if (!phone)
+    return Swal.fire({
+      icon: "warning",
+      title: "No Phone Number",
+      text: "This contact does not have a phone number available.",
     });
-    return;
-  }
-
-  // Show confirmation dialog
   Swal.fire({
-    title: 'Make Phone Call?',
-    text: `Do you want to call ${phoneNumber}?`,
-    icon: 'question',
+    title: "Make Phone Call?",
+    text: `Do you want to call ${phone}?`,
+    icon: "question",
     showCancelButton: true,
-    confirmButtonText: 'Yes, Call',
-    cancelButtonText: 'Cancel',
-    confirmButtonColor: '#3085d6',
-    cancelButtonColor: '#d33',
-    reverseButtons: true
-  }).then((result) => {
-    if (result.isConfirmed) {
-      // Open phone dialer
-      window.open(`tel:${phoneNumber}`, '_self');
-    }
+    confirmButtonText: "Yes, Call",
+    cancelButtonText: "Cancel",
+    reverseButtons: true,
+  }).then((r) => {
+    if (r.isConfirmed) window.open(`tel:${phone}`, "_self");
   });
 };
 
-// Delete contact details entry
 const deleteContactDetails = async (bookingId) => {
-  try {
-    // Show confirmation dialog
-    const result = await Swal.fire({
-      title: 'Delete Contact Details?',
-      text: 'Are you sure you want to delete this contact details entry? This action cannot be undone.',
-      icon: 'warning',
-      showCancelButton: true,
-      confirmButtonText: 'Yes, Delete',
-      cancelButtonText: 'Cancel',
-      confirmButtonColor: '#d33',
-      cancelButtonColor: '#3085d6',
-      reverseButtons: true
-    });
+  const confirm = await Swal.fire({
+    title: "Delete Contact Details?",
+    text:
+      "Are you sure you want to delete this contact details entry? This action cannot be undone.",
+    icon: "warning",
+    showCancelButton: true,
+    confirmButtonText: "Yes, Delete",
+    cancelButtonText: "Cancel",
+    confirmButtonColor: "#d33",
+    cancelButtonColor: "#3085d6",
+    reverseButtons: true,
+  });
+  if (!confirm.isConfirmed) return;
 
-    if (!result.isConfirmed) {
-      return;
-    }
-
-    // Show loading state
-    Swal.fire({
-      title: 'Deleting...',
-      text: 'Removing contact details entry',
-      allowOutsideClick: false,
-      allowEscapeKey: false,
-      showConfirmButton: false,
-      didOpen: () => {
-        Swal.showLoading();
-      }
-    });
-
-    // Update the booking to hide it from seller view
-    await updateDoc(doc(db, "bookings", bookingId), {
-      hiddenForSeller: true
-    });
-
-    // Close loading dialog
-    Swal.close();
-    
-    // Show success message
-    Swal.fire({
-      icon: 'success',
-      title: 'Deleted Successfully',
-      text: 'Contact details entry has been removed',
-      timer: 2000,
-      showConfirmButton: false,
-      position: 'top-end'
-    });
-
-  } catch (error) {
-    console.error('Error deleting contact details:', error);
-    Swal.close(); // Close loading dialog
-    Swal.fire({
-      icon: 'error',
-      title: 'Error',
-      text: 'Failed to delete contact details. Please try again.',
-      confirmButtonText: 'OK'
-    });
-  }
+  Swal.fire({
+    title: "Deleting...",
+    allowOutsideClick: false,
+    showConfirmButton: false,
+    didOpen: () => Swal.showLoading(),
+  });
+  await updateDoc(doc(db, "bookings", bookingId), { hiddenForSeller: true });
+  Swal.close();
+  Swal.fire({
+    icon: "success",
+    title: "Deleted Successfully",
+    text: "Contact details entry has been removed",
+    timer: 2000,
+    showConfirmButton: false,
+    position: "top-end",
+  });
 };
 
-// Validate booking data
-const validateBookingData = (bookingData, currentUserId) => {
+/* permissions + status updates (kept) */
+const validateBookingData = (b, currentUid) => {
   const errors = [];
-  
-  if (!bookingData) {
-    errors.push('Booking data is missing');
-    return errors;
-  }
-  
-  if (!bookingData.sellerId && !bookingData.userId) {
-    errors.push('Booking does not have valid user information');
-  }
-  
-  if (!bookingData.status) {
-    errors.push('Booking status is missing');
-  }
-  
-  if (!bookingData.sellerId && !bookingData.userId) {
-    errors.push('Booking does not have valid user information');
-  }
-  
-  // Check if current user is involved in this booking
-  const isSeller = bookingData.sellerId === currentUserId;
-  const isRenter = bookingData.userId === currentUserId;
-  
-  if (!isSeller && !isRenter) {
-    errors.push('You do not have permission to update this booking');
-  }
-  
+  if (!b) errors.push("Booking data is missing");
+  if (!b?.status) errors.push("Booking status is missing");
+  if (!b?.sellerId && !b?.userId)
+    errors.push("Booking does not have valid user information");
+  const isSeller = b?.sellerId === currentUid;
+  const isRenter = b?.userId === currentUid;
+  if (!isSeller && !isRenter)
+    errors.push("You do not have permission to update this booking");
   return errors;
 };
 
-// Check Firebase connectivity
 const checkFirebaseConnectivity = async () => {
   try {
-    // Try to read a document to test connectivity
-    const testDoc = doc(db, 'bookings', 'test-connection');
-    await getDoc(testDoc);
+    await getDoc(doc(db, "bookings", "test-connection"));
     return true;
-  } catch (error) {
-    console.error('Firebase connectivity test failed:', error);
+  } catch {
     return false;
   }
 };
 
-// Update rental status function with retry mechanism
 const updateRentalStatus = async (bookingId, newStatus, updatedBy, retryCount = 0) => {
   const maxRetries = 3;
-  
   try {
-    // Check if user is authenticated
     if (!auth.currentUser) {
-      Swal.fire({
-        icon: 'error',
-        title: 'Authentication Required',
-        text: 'Please log in to update rental status.',
-        confirmButtonText: 'OK'
+      return Swal.fire({
+        icon: "error",
+        title: "Authentication Required",
+        text: "Please log in to update rental status.",
       });
-      return;
     }
-
-    // Validate input parameters
     if (!bookingId || !newStatus || !updatedBy) {
-      console.error('Invalid parameters:', { bookingId, newStatus, updatedBy });
-      Swal.fire({
-        icon: 'error',
-        title: 'Invalid Parameters',
-        text: 'Missing required information for status update.',
-        confirmButtonText: 'OK'
+      return Swal.fire({
+        icon: "error",
+        title: "Invalid Parameters",
+        text: "Missing required information for status update.",
       });
-      return;
     }
-
-    // Check network connectivity
     if (!navigator.onLine) {
-      Swal.fire({
-        icon: 'error',
-        title: 'No Internet Connection',
-        text: 'Please check your internet connection and try again.',
-        confirmButtonText: 'OK'
+      return Swal.fire({
+        icon: "error",
+        title: "No Internet Connection",
+        text: "Please check your internet connection and try again.",
       });
-      return;
     }
-
-    // Check Firebase connectivity on first attempt
     if (retryCount === 0) {
-      const isFirebaseConnected = await checkFirebaseConnectivity();
-      if (!isFirebaseConnected) {
-        Swal.fire({
-          icon: 'error',
-          title: 'Service Unavailable',
-          text: 'Unable to connect to the service. Please try again later.',
-          confirmButtonText: 'OK'
+      const ok = await checkFirebaseConnectivity();
+      if (!ok)
+        return Swal.fire({
+          icon: "error",
+          title: "Service Unavailable",
+          text: "Unable to connect to the service. Please try again later.",
         });
-        return;
-      }
     }
-
-    // Show confirmation dialog (only on first attempt)
     if (retryCount === 0) {
-      const result = await Swal.fire({
-        title: 'Confirm Status Change?',
-        text: `Are you sure you want to change the status to "${t(newStatus)}"? This action cannot be undone.`,
-        icon: 'question',
+      const ask = await Swal.fire({
+        title: "Confirm Status Change?",
+        text: `Are you sure you want to change the status to "${t(newStatus)}"?`,
+        icon: "question",
         showCancelButton: true,
-        confirmButtonText: 'Yes, Change Status',
-        cancelButtonText: 'Cancel',
-        confirmButtonColor: '#3085d6',
-        cancelButtonColor: '#d33',
-        reverseButtons: true
+        confirmButtonText: "Yes, Change Status",
+        cancelButtonText: "Cancel",
+        reverseButtons: true,
       });
-
-      if (!result.isConfirmed) {
-        return;
-      }
+      if (!ask.isConfirmed) return;
     }
 
-    // Show loading state
-    const loadingText = retryCount > 0 ? `Retrying... (Attempt ${retryCount + 1}/${maxRetries + 1})` : `Changing status to ${t(newStatus)}`;
     Swal.fire({
-      title: retryCount > 0 ? 'Retrying Update...' : 'Updating...',
-      text: loadingText,
+      title: retryCount ? "Retrying Update..." : "Updating...",
       allowOutsideClick: false,
-      allowEscapeKey: false,
       showConfirmButton: false,
-      didOpen: () => {
-        Swal.showLoading();
-      }
+      didOpen: () => Swal.showLoading(),
     });
 
-    // Get the current booking document
-    const bookingDoc = doc(db, "bookings", bookingId);
-    
-    // First, check if the document exists
-    const bookingSnap = await getDoc(bookingDoc);
-
-    if (!bookingSnap.exists()) {
+    const ref = doc(db, "bookings", bookingId);
+    const snap = await getDoc(ref);
+    if (!snap.exists()) {
       Swal.close();
-      Swal.fire({
-        icon: 'error',
-        title: 'Booking Not Found',
-        text: 'The booking you are trying to update does not exist.',
-        confirmButtonText: 'OK'
+      return Swal.fire({
+        icon: "error",
+        title: "Booking Not Found",
+        text: "The booking you are trying to update does not exist.",
       });
-      return;
     }
 
-    const bookingData = bookingSnap.data();
-    const currentUserId = auth.currentUser.uid;
-
-    // Validate booking data
-    const validationErrors = validateBookingData(bookingData, currentUserId);
-    if (validationErrors.length > 0) {
+    const data = snap.data();
+    const currentUid = auth.currentUser.uid;
+    const errs = validateBookingData(data, currentUid);
+    if (errs.length) {
       Swal.close();
-      Swal.fire({
-        icon: 'error',
-        title: 'Invalid Booking Data',
-        text: validationErrors.join('. '),
-        confirmButtonText: 'OK'
+      return Swal.fire({
+        icon: "error",
+        title: "Invalid Booking Data",
+        text: errs.join(". "),
       });
-      return;
     }
 
-    // Check if user has permission to update this booking
-    const isSeller = bookingData.sellerId === currentUserId;
-    const isRenter = bookingData.userId === currentUserId;
-
+    const isSeller = data.sellerId === currentUid;
+    const isRenter = data.userId === currentUid;
     if (!isSeller && !isRenter) {
       Swal.close();
-      Swal.fire({
-        icon: 'error',
-        title: 'Permission Denied',
-        text: 'You do not have permission to update this rental status.',
-        confirmButtonText: 'OK'
+      return Swal.fire({
+        icon: "error",
+        title: "Permission Denied",
+        text: "You do not have permission to update this rental status.",
       });
-      return;
     }
 
-    // Validate status transition
-    const currentStatus = bookingData.status;
-    const validTransitions = {
-      'pending': ['active', 'rejected'],
-      'active': ['completed'],
-      'rejected': ['pending'],
-      'completed': []
+    const valid = {
+      pending: ["active", "rejected"],
+      active: ["completed"],
+      rejected: ["pending"],
+      completed: [],
     };
-
-    if (!validTransitions[currentStatus]?.includes(newStatus)) {
+    if (!valid[data.status]?.includes(newStatus)) {
       Swal.close();
-      Swal.fire({
-        icon: 'error',
-        title: 'Invalid Status Transition',
-        text: `Cannot change status from "${t(currentStatus)}" to "${t(newStatus)}".`,
-        confirmButtonText: 'OK'
+      return Swal.fire({
+        icon: "error",
+        title: "Invalid Status Transition",
+        text: `Cannot change status from "${t(data.status)}" to "${t(newStatus)}".`,
       });
-      return;
     }
 
-    // Add new status to history with more detailed information
-    const newStatusHistory = [...bookingData.statusHistory || [], {
-      status: newStatus,
-      timestamp: serverTimestamp(),
-      updatedBy: updatedBy,
-      updatedByUserId: currentUserId,
-      previousStatus: currentStatus,
-      reason: `Status changed from ${currentStatus} to ${newStatus}`,
-      retryCount: retryCount
-    }];
+    const newHistory = [
+      ...(data.statusHistory || []),
+      {
+        status: newStatus,
+        timestamp: serverTimestamp(),
+        updatedBy,
+        updatedByUserId: currentUid,
+        previousStatus: data.status,
+        reason: `Status changed from ${data.status} to ${newStatus}`,
+        retryCount,
+      },
+    ];
 
-    // Prepare update data
-    const updateData = {
+    await updateDoc(ref, {
       status: newStatus,
-      statusHistory: newStatusHistory,
+      statusHistory: newHistory,
       lastUpdated: serverTimestamp(),
-      lastUpdatedBy: currentUserId
-    };
+      lastUpdatedBy: currentUid,
+    });
 
-    // Update the booking document
-    await updateDoc(bookingDoc, updateData);
-
-    // Close loading dialog
     Swal.close();
-    
-    // Show success message
     Swal.fire({
-      icon: 'success',
-      title: 'Status Updated Successfully',
+      icon: "success",
+      title: "Status Updated Successfully",
       text: `Rental status changed to ${t(newStatus)}`,
       timer: 2000,
       showConfirmButton: false,
-      position: 'top-end'
+      position: "top-end",
     });
-
   } catch (error) {
-    console.error('Error updating rental status:', error);
-    console.error('Error details:', {
-      code: error.code,
-      message: error.message,
-      stack: error.stack,
-      retryCount,
-      bookingId,
-      newStatus,
-      updatedBy
-    });
-    
-    // Close loading dialog
     Swal.close();
-    
-    // Handle retry logic for network-related errors
-    if (retryCount < maxRetries && (
-      error.code === 'unavailable' || 
-      error.code === 'deadline-exceeded' ||
-      error.message?.includes('network') ||
-      error.message?.includes('timeout')
-    )) {
-      console.log(`Retrying update (attempt ${retryCount + 1}/${maxRetries})`);
-      
-      // Wait before retrying (exponential backoff)
-      const delay = Math.pow(2, retryCount) * 1000;
-      await new Promise(resolve => setTimeout(resolve, delay));
-      
-      // Retry the update
+    if (
+      retryCount < 3 &&
+      (/unavailable|deadline-exceeded/i.test(error.code || "") ||
+        /network|timeout/i.test(error.message || ""))
+    ) {
+      await new Promise((r) => setTimeout(r, Math.pow(2, retryCount) * 1000));
       return updateRentalStatus(bookingId, newStatus, updatedBy, retryCount + 1);
     }
-    
-    // Provide more specific error messages based on error type
-    let errorMessage = 'Failed to update rental status. Please try again.';
-    
-    if (error.code === 'permission-denied') {
-      errorMessage = 'Permission denied. You may not have the right to update this rental.';
-    } else if (error.code === 'unavailable') {
-      errorMessage = 'Service temporarily unavailable. Please check your internet connection and try again.';
-    } else if (error.code === 'unauthenticated') {
-      errorMessage = 'Please log in again to update rental status.';
-    } else if (error.code === 'not-found') {
-      errorMessage = 'The booking was not found. It may have been deleted.';
-    } else if (error.code === 'already-exists') {
-      errorMessage = 'This status update has already been applied.';
-    } else if (error.code === 'deadline-exceeded') {
-      errorMessage = 'Request timed out. Please check your internet connection and try again.';
-    } else if (error.message) {
-      errorMessage = `Error: ${error.message}`;
-    }
-    
     Swal.fire({
-      icon: 'error',
-      title: 'Update Failed',
-      text: errorMessage,
-      confirmButtonText: 'OK'
+      icon: "error",
+      title: "Update Failed",
+      text: error?.message || "Failed to update rental status.",
     });
   }
 };
 
-// Helper to check if current user is the seller
-const isCurrentUserSeller = (booking) => {
-  return booking.sellerId === userId.value;
-};
+const isCurrentUserSeller = (b) => b.sellerId === userId.value;
+const isCurrentUserRenter = (b) => b.userId === userId.value;
 
-// Helper to check if current user is the renter
-const isCurrentUserRenter = (booking) => {
-  return booking.userId === userId.value;
-};
+/* ---------------- watchers & init ---------------- */
+watch(
+  bookings,
+  async (list) => {
+    if (!list || !userId.value) return;
+    await Promise.all([
+      loadRenterProfilesAll(),
+      loadUserVerificationStatuses(),
+      loadProductDetailsAll(),
+    ]);
+  },
+  { immediate: true }
+);
 
-// Watch for bookings changes to load product details
-watch(bookings, async (newBookings) => {
-  if (newBookings && newBookings.length > 0 && userId.value) {
-    await loadProductDetails();
-  }
-}, { immediate: true });
-
-// Initialize user on mount
 onMounted(() => {
   onAuthStateChanged(auth, async (user) => {
     if (user) {
       userId.value = user.uid;
-      await loadUserVerificationStatuses(); // Load verification statuses when user is logged in
-      await loadProductDetails(); // Load product details for accurate pricing
+      await Promise.all([
+        loadRenterProfilesAll(),
+        loadUserVerificationStatuses(),
+        loadProductDetailsAll(),
+      ]);
     }
   });
 });
-</script> 
+</script>

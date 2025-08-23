@@ -23,20 +23,25 @@
       <div
         v-for="product in filteredProducts"
         :key="product.id"
-        class="border rounded-lg p-4 bg-[var(--Color-Surface-Surface-Primary)] border-[var(--Color-Boarder-Border-Primary)] dark:bg-[var(--Color-Surface-Surface-Primary)] text-[var(--Color-Text-Text-Primary)] dark:text-[var(--Color-Text-Text-Primary)]"
+        class="border rounded-lg p-4 bg-[var(--Color-Surface-Surface-Primary)] border-[var(--Color-Boarder-Border-Primary)] text-[var(--Color-Text-Text-Primary)]"
       >
+        <!-- IMAGE: key includes productId + resolved URL + metaVersion to force remount -->
         <img
-          :src="product.productImage || placeholderImage"
+          :key="
+            product.productId +
+            ':' +
+            (resolvedImage(product) || placeholderImage) +
+            ':' +
+            metaVersion
+          "
+          :src="resolvedImage(product) || placeholderImage"
           :alt="product.productTitle || 'Product'"
           class="w-full h-48 object-cover rounded-lg mb-3"
-          @error="(e) => (e.target.src = placeholderImage)"
         />
 
         <h2 class="text-lg font-semibold mb-1">{{ product.productTitle }}</h2>
 
-        <p
-          class="text-sm text-[var(--Color-Text-Text-Secondary)] dark:text-[var(--Color-Text-Text-Secondary)] mb-2"
-        >
+        <p class="text-sm text-[var(--Color-Text-Text-Secondary)] mb-2">
           Return in:
           <span
             class="font-medium"
@@ -277,63 +282,66 @@ const userId = ref(null);
 const penaltyCheckInterval = ref(null);
 const pendingPenalties = ref({});
 
-/**
- * productMeta: central store per productId:
- * {
- *   [productId]: { price: number, image: string }
- * }
- */
-const productMeta = ref({});
-const placeholderImage = "/placeholder.png";
+/** meta by productId -> { price, image } */
+const productMeta = ref(Object.create(null));
+/** bump this to force <img> remount when meta changes */
+const metaVersion = ref(0);
 
-/* ------------------------ Fetch product meta on bookings change ------------------------ */
+/** lightweight placeholder */
+const placeholderImage =
+  "data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='800' height='400'><rect width='100%' height='100%' rx='12' ry='12' fill='%23eee'/><text x='50%' y='50%' dominant-baseline='middle' text-anchor='middle' font-family='sans-serif' fill='%23999' font-size='18'>Loading image…</text></svg>";
+
+/* ---------- Fetch product meta on bookings change (seed immediately, then refine) ---------- */
 watch(
   bookings,
   async (newBookings) => {
     if (!newBookings || !userId.value) return;
 
-    const userBookings = newBookings.filter(
+    const mine = newBookings.filter(
       (b) => b.userId === userId.value && b.hiddenForUser !== true
     );
 
-    for (const booking of userBookings) {
-      // Skip if we already loaded meta for this productId
-      if (!booking.productId || productMeta.value[booking.productId]) continue;
+    for (const b of mine) {
+      if (!b.productId) continue;
 
+      // Seed once with anything we already have on the booking (so first paint isn't blank)
+      if (!productMeta.value[b.productId]) {
+        productMeta.value[b.productId] = {
+          price: Number(b.actualPrice || b.productPrice || 0),
+          image: b.productImage || "",
+        };
+        metaVersion.value++; // trigger first paint
+      }
+
+      // Fetch authoritative product doc and refine
       try {
-        const productRef = doc(db, "products", booking.productId);
+        const productRef = doc(db, "products", b.productId);
         const snap = await getDoc(productRef);
-        if (snap.exists()) {
-          const data = snap.data();
+        if (!snap.exists()) continue;
 
-          // Determine the first image to show
-          const firstImage =
-            typeof data.image1 === "string" && data.image1.startsWith("data:image")
-              ? data.image1
-              : data.image1Path ||
-                (Array.isArray(data.images) && data.images[0]) ||
-                data.imageUrl ||
-                "";
+        const data = snap.data();
+        const firstImage =
+          (typeof data.image1 === "string" &&
+            data.image1.startsWith("data:image") &&
+            data.image1) ||
+          data.image1Path ||
+          (Array.isArray(data.images) && data.images[0]) ||
+          data.imageUrl ||
+          productMeta.value[b.productId]?.image ||
+          "";
+        const price =
+          Number(data.actualPrice) ||
+          Number(data.price) ||
+          Number(productMeta.value[b.productId]?.price || 0);
 
-          productMeta.value[booking.productId] = {
-            price:
-              Number(data.actualPrice) ||
-              Number(data.price) ||
-              Number(booking.actualPrice || booking.productPrice || 0),
-            image: firstImage,
-          };
-        } else {
-          productMeta.value[booking.productId] = {
-            price: Number(booking.actualPrice || booking.productPrice || 0),
-            image: booking.productImage || "",
-          };
+        // Only bump if something actually changed (prevents useless reflows)
+        const prev = productMeta.value[b.productId] || {};
+        if (prev.image !== firstImage || prev.price !== price) {
+          productMeta.value[b.productId] = { price, image: firstImage };
+          metaVersion.value++; // force <img> remount to reload src
         }
       } catch (err) {
         console.error("Error fetching product meta:", err);
-        productMeta.value[booking.productId] = {
-          price: Number(booking.actualPrice || booking.productPrice || 0),
-          image: booking.productImage || "",
-        };
       }
     }
   },
@@ -341,6 +349,9 @@ watch(
 );
 
 /* ------------------------ Helpers ------------------------ */
+const resolvedImage = (booking) =>
+  booking.productImage || productMeta.value[booking.productId]?.image || "";
+
 const getProductPrice = (booking) => {
   if (booking.productId && productMeta.value[booking.productId]) {
     return productMeta.value[booking.productId].price || 0;
@@ -348,41 +359,32 @@ const getProductPrice = (booking) => {
   return Number(booking.actualPrice || booking.productPrice || 0);
 };
 
-const getProductImage = (booking) => {
-  // booking.productImage takes precedence if you already store one on the booking
-  return (
-    booking.productImage ||
-    (booking.productId && productMeta.value[booking.productId]?.image) ||
-    ""
-  );
-};
-
-/* ------------------------ Computed: map our bookings to UI items ------------------------ */
+/* ------------------------ Computed: map bookings to UI items ------------------------ */
 const userBookings = computed(() => {
   if (!userId.value || !bookings.value) return [];
+
+  // Access productMeta to keep reactivity
+  // eslint-disable-next-line no-unused-vars
+  const _track = productMeta.value;
 
   return bookings.value
     .filter((b) => b.userId === userId.value && b.hiddenForUser !== true)
     .map((b) => {
       const remainingTime = getRemainingTime(b.endDate);
       const isExpired = remainingTime === "Expired";
+      const base = { ...b };
 
-      if (!isExpired) {
-        return {
-          ...b,
-          // inject resolved image into the card
-          productImage: getProductImage(b),
-        };
-      }
+      if (!isExpired) return base;
 
       const expiredDate = new Date(b.endDate);
       const now = new Date();
-      const timeDiff = now - expiredDate;
-      const hoursExpired = Math.max(0, Math.floor(timeDiff / (1000 * 60 * 60)));
+      const hoursExpired = Math.max(
+        0,
+        Math.floor((now - expiredDate) / (1000 * 60 * 60))
+      );
 
       return {
-        ...b,
-        productImage: getProductImage(b),
+        ...base,
         hoursExpired,
         penaltyPhase:
           hoursExpired <= 48 ? "first" : hoursExpired <= 96 ? "second" : "final",
@@ -427,8 +429,7 @@ const isCancelable = (startDateStr) => {
   const [y, m, d] = startDateStr.split("-").map(Number);
   const startDate = new Date(y, m - 1, d, 0, 0, 0);
   const now = new Date();
-  const diffMs = now - startDate;
-  const hoursPassed = diffMs / (1000 * 60 * 60);
+  const hoursPassed = (now - startDate) / (1000 * 60 * 60);
   return hoursPassed > 10;
 };
 
@@ -571,11 +572,11 @@ const applyPenalty = async (booking, percentage, isAdditional = false) => {
 };
 
 const checkAndApplyPenalties = async () => {
-  const bookingsToProcess = userBookings.value.filter(
+  const toProcess = userBookings.value.filter(
     (b) => b.hoursExpired > 0 && b.status !== "completed" && !b.penaltyPending
   );
 
-  for (const booking of bookingsToProcess) {
+  for (const booking of toProcess) {
     try {
       if (booking.hoursExpired > 48 && booking.penaltyPhase === "first") {
         await applyPenalty(booking, 30);
@@ -591,7 +592,6 @@ const checkAndApplyPenalties = async () => {
           icon: "error",
           confirmButtonText: "I Understand",
         });
-
         await updateDoc(doc(db, "bookings", booking.id), { legalWarningSent: true });
       }
     } catch (error) {
