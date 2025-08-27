@@ -144,32 +144,32 @@
               style="display: none"
             />
             <button type="submit" :disabled="isProcessing">Send</button>
-            <button
+            <!-- <button
               type="button"
               @click="$refs.imageUpload.click()"
               :disabled="isProcessing"
             >
               Upload Image
-            </button>
-            <button
+            </button> -->
+            <!-- <button
               type="button"
               @click="captureImage"
               v-if="isCameraSupported"
               :disabled="isProcessing"
             >
               Camera
-            </button>
+            </button> -->
             <button type="button" @click="clearChat" :disabled="isProcessing">
               Clear Chat
             </button>
-            <button
+            <!-- <button
               type="button"
               id="generate-image"
               @click="handleGenerateImage"
               :disabled="isProcessing"
             >
               Generate Image
-            </button>
+            </button> -->
           </div>
         </form>
       </main>

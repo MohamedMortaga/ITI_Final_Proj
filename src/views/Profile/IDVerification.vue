@@ -142,11 +142,8 @@
               :class="{ 'border-red-400': errors.visaType }"
             >
               <option value="">{{ $t("select") }}</option>
-              <option value="tourist">{{ $t("visaTypeTourist") }}</option>
-              <option value="work">{{ $t("visaTypeWork") }}</option>
-              <option value="student">{{ $t("visaTypeStudent") }}</option>
-              <option value="residence">{{ $t("visaTypeResidence") }}</option>
-              <option value="other">{{ $t("other") }}</option>
+              <option value="tourist">{{ $t("Credit") }}</option>
+              <option value="work">{{ $t("Debit") }}</option>
             </select>
             <p v-if="errors.visaType" class="text-xs text-red-500 mt-1">
               {{ errors.visaType }}
@@ -176,10 +173,10 @@
             <label
               class="block text-sm font-medium text-[var(--Color-Text-Text-Primary)] mb-1"
             >
-              {{ $t("passportNumber") }}
+              {{ $t("cvv") }}
             </label>
             <input
-              v-model.trim="form.visa.passportNumber"
+              v-model.trim="form.visa.cvv"
               type="text"
               maxlength="20"
               class="w-full px-3 py-2 rounded-lg border border-[var(--Color-Boarder-Border-Primary)] bg-[var(--Color-Surface-Surface-Primary)] text-[var(--Color-Text-Text-Primary)] focus:outline-none focus:ring-2 focus:ring-[var(--Colors-Primary-500)]"
@@ -269,7 +266,7 @@ const form = ref({
     issuingCountry: "",
     type: "",
     expiry: "", // YYYY-MM-DD
-    passportNumber: "",
+    cvv: "",
   },
 });
 
@@ -444,7 +441,7 @@ const submitVerification = async () => {
         issuingCountry: form.value.visa.issuingCountry,
         type: form.value.visa.type,
         expiry: form.value.visa.expiry,
-        passportNumber: form.value.visa.passportNumber || null,
+        cvv: form.value.visa.cvv || null,
       },
     };
 
@@ -469,7 +466,7 @@ const submitVerification = async () => {
         issuingCountry: "",
         type: "",
         expiry: "",
-        passportNumber: "",
+        cvv: "",
       },
     };
 

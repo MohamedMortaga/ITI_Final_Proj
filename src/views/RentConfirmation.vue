@@ -273,6 +273,7 @@
                   type="email"
                   class="text-right bg-transparent border-none outline-none text-[var(--Color-Text-Text-Primary)] placeholder-[var(--Color-Text-Text-Secondary)]"
                   :placeholder="$t('emailPlaceholder')"
+                  disabled
                 />
               </div>
             </div>
@@ -956,6 +957,16 @@ import AppFooter from "@/components/pages/AppFooter.vue";
 import SearchBar from "@/components/pages/SearchBar.vue";
 import Navbar from "@/components/pages/Navbar.vue";
 import { useI18n } from "vue-i18n";
+import { onAuthStateChanged } from "firebase/auth";
+
+const buildName = (u = {}) => {
+  // prefer displayName; else join first/last; else Auth displayName; else empty
+  const dn = u.displayName || u.name || "";
+  const first = (u.firstName || u.first_name || "").trim();
+  const last = (u.lastName || u.last_name || "").trim();
+  return dn || [first, last].filter(Boolean).join(" ");
+};
+
 const { t } = useI18n();
 import {
   doc,
@@ -1116,18 +1127,33 @@ const loadSellerDetails = async (sellerId) => {
   }
 };
 
-const loadUserDetails = async () => {
-  if (auth.currentUser) {
-    try {
-      const userDetails = await rentService.loadUserDetails(auth.currentUser.uid);
-      if (userDetails) {
-        booking.value.userName = userDetails.displayName || userDetails.name || "";
-        booking.value.userEmail = userDetails.email || auth.currentUser.email || "";
-        booking.value.phoneNumber = userDetails.phoneNumber || userDetails.phone || "";
-      }
-    } catch (error) {
-      console.error("Error loading user details:", error);
+const loadUserDetails = async (uid) => {
+  try {
+    if (!uid) return;
+
+    // 1) try Firestore: users/{uid}
+    const userDocRef = doc(db, "users", uid);
+    const snap = await getDoc(userDocRef);
+
+    let u = {};
+    if (snap.exists()) {
+      u = snap.data() || {};
     }
+
+    // 2) fallbacks from Auth
+    const authUser = auth.currentUser || {};
+    const emailFromAuth = authUser.email || "";
+    const phoneFromAuth = authUser.phoneNumber || "";
+
+    // 3) resolve fields with graceful fallbacks
+    booking.value.userName = buildName(u) || authUser.displayName || "";
+    booking.value.userEmail = u.email || emailFromAuth || "";
+    booking.value.phoneNumber = (u.phone || u.phoneNumber || phoneFromAuth || "").trim();
+
+    // (optional) if you later want the city for delivery defaults
+    // booking.value.deliveryAddress ||= u.city || u.district || "";
+  } catch (err) {
+    console.error("loadUserDetails failed:", err);
   }
 };
 
@@ -2174,9 +2200,32 @@ const submitBooking = async () => {
 };
 onMounted(async () => {
   await loadProduct();
-  await loadUserDetails();
+
+  // hydrate from auth immediately if already signed in
+  if (auth.currentUser?.uid) {
+    await loadUserDetails(auth.currentUser.uid);
+  }
+
+  // keep in sync with sign-in/out
+  onAuthStateChanged(auth, async (user) => {
+    if (user?.uid) {
+      await loadUserDetails(user.uid);
+    } else {
+      // clear fields when logged out
+      booking.value.userName = "";
+      booking.value.userEmail = "";
+      booking.value.phoneNumber = "";
+    }
+  });
+
+  // map after the DOM is ready (only when modal opens you re-init it)
   await initializeMap();
+
+  // seed dates from query if present
+  if (route.query.startDate) booking.value.startDate = route.query.startDate;
+  if (route.query.endDate) booking.value.endDate = route.query.endDate;
 });
+
 onUnmounted(() => {
   if (map.value) {
     try {
