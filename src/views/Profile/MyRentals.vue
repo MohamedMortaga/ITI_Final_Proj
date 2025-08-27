@@ -18,47 +18,60 @@
       </div>
     </div>
 
-    <!-- Product Grid -->
+    <!-- Cards -->
     <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
       <div
-        v-for="product in filteredProducts"
-        :key="product.id"
+        v-for="b in filteredProducts"
+        :key="b.id"
         class="border rounded-lg p-4 bg-[var(--Color-Surface-Surface-Primary)] border-[var(--Color-Boarder-Border-Primary)] text-[var(--Color-Text-Text-Primary)]"
       >
-        <!-- IMAGE: key includes productId + resolved URL + metaVersion to force remount -->
+        <!-- IMAGE -->
         <img
           :key="
-            product.productId +
-            ':' +
-            (resolvedImage(product) || placeholderImage) +
-            ':' +
-            metaVersion
+            b.productId + ':' + (resolvedImage(b) || placeholderImage) + ':' + metaVersion
           "
-          :src="resolvedImage(product) || placeholderImage"
-          :alt="product.productTitle || 'Product'"
+          :src="resolvedImage(b) || placeholderImage"
+          :alt="b.productTitle || 'Product'"
           class="w-full h-48 object-cover rounded-lg mb-3"
         />
 
-        <h2 class="text-lg font-semibold mb-1">{{ product.productTitle }}</h2>
+        <h2 class="text-lg font-semibold mb-1">{{ b.productTitle }}</h2>
 
         <p class="text-sm text-[var(--Color-Text-Text-Secondary)] mb-2">
-          Return in:
+          {{ $t("Return in") }}:
           <span
             class="font-medium"
             :class="{
-              'text-[var(--Colors-Error-400)]':
-                getRemainingTime(product.endDate) === 'Expired',
-              'text-[var(--Color-Text-Text-Brand)]':
-                getRemainingTime(product.endDate) !== 'Expired',
+              'text-[var(--Colors-Error-400)]': remain(b.endDate) === 'Expired',
+              'text-[var(--Color-Text-Text-Brand)]': remain(b.endDate) !== 'Expired',
             }"
           >
-            {{ getRemainingTime(product.endDate) }}
+            {{ remain(b.endDate) }}
           </span>
         </p>
 
-        <!-- Penalty Warning Section -->
+        <!-- Completed ribbon: ONLY when both confirmed -->
         <div
-          v-if="getRemainingTime(product.endDate) === 'Expired'"
+          v-if="b.status === 'completed' && b.renterConfirmed && b.sellerConfirmed"
+          class="mb-3 p-3 rounded-lg border bg-green-50 border-green-200 text-green-800 text-sm"
+        >
+          <div class="flex items-center gap-2">
+            <i class="fas fa-badge-check"></i>
+            <span class="font-semibold">Both confirmed — Rental completed.</span>
+          </div>
+          <div class="mt-1 text-xs">
+            Final penalty:
+            <strong v-if="(b.penaltyPercentage || 0) === 0">Waived (0%)</strong>
+            <strong v-else
+              >{{ b.penaltyPercentage }}% (EGP
+              {{ formatPrice((getPrice(b) * (b.penaltyPercentage || 0)) / 100) }})</strong
+            >
+          </div>
+        </div>
+
+        <!-- 🔴 Expired warning: show for ANY status except completed -->
+        <div
+          v-if="remain(b.endDate) === 'Expired' && b.status !== 'completed'"
           class="mb-3 p-3 bg-red-50 rounded-lg border border-red-100"
         >
           <div class="flex items-center text-red-600 mb-1">
@@ -66,135 +79,174 @@
             <span class="font-medium">Rental Expired</span>
           </div>
 
-          <div class="text-xs space-y-1">
-            <div v-if="product.hoursExpired <= 48" class="text-yellow-700">
+          <div class="text-xs space-y-2">
+            <div v-if="b.hoursExpired <= 48" class="text-yellow-700">
               <i class="fas fa-clock mr-1"></i>
-              {{ product.hoursExpired }} hour(s) overdue -
-              <strong>EGP {{ calculatePenalty(getProductPrice(product), 30) }}</strong>
-              (30%) penalty will apply in {{ 48 - product.hoursExpired }} hour(s)
-              <div class="text-xs mt-1">
+              {{ b.hoursExpired }} hour(s) overdue –
+              <strong>EGP {{ calcPenalty(getPrice(b), 30) }}</strong>
+              (30%) penalty will apply in {{ Math.max(0, 48 - b.hoursExpired) }} hour(s)
+              <div class="mt-1">
                 <span class="font-medium">Actual Price:</span> EGP
-                {{ formatPrice(getProductPrice(product)) }}
-              </div>
-              <div v-if="product.penaltyPending" class="text-xs text-gray-500 mt-1">
-                <i class="fas fa-spinner fa-spin mr-1"></i>
-                Processing penalty...
+                {{ formatPrice(getPrice(b)) }}
               </div>
             </div>
-            <div v-else-if="product.hoursExpired <= 96" class="text-orange-600">
+
+            <div v-else-if="b.hoursExpired <= 96" class="text-orange-600">
               <i class="fas fa-exclamation-circle mr-1"></i>
-              30% penalty (<strong
-                >EGP {{ calculatePenalty(getProductPrice(product), 30) }}</strong
-              >) applied - Additional
-              <strong>EGP {{ calculatePenalty(getProductPrice(product), 20) }}</strong>
-              (20%) in {{ 96 - product.hoursExpired }} hour(s)
+              30% penalty (<strong>EGP {{ calcPenalty(getPrice(b), 30) }}</strong
+              >) applied – Additional
+              <strong>EGP {{ calcPenalty(getPrice(b), 20) }}</strong> (20%) in
+              {{ Math.max(0, 96 - b.hoursExpired) }} hour(s)
               <div class="text-xs mt-1">
                 <span class="font-medium">Total potential penalty:</span>
-                EGP {{ calculatePenalty(getProductPrice(product), 50) }} (50%)
+                EGP {{ calcPenalty(getPrice(b), 50) }} (50%)
               </div>
             </div>
+
             <div v-else class="text-red-700 font-semibold">
               <i class="fas fa-gavel mr-1"></i>
-              Total 50% penalty (<strong
-                >EGP {{ calculatePenalty(getProductPrice(product), 50) }}</strong
-              >) applied - Legal action may be taken
+              Total 50% penalty (<strong>EGP {{ calcPenalty(getPrice(b), 50) }}</strong
+              >) applied – Legal action may be taken
+            </div>
+
+            <!-- If seller confirmed after expiry and we capped/adjusted -->
+            <div
+              v-if="b.sellerConfirmed && b.penaltyAdjustedOnSellerConfirm"
+              class="p-2 rounded bg-green-50 border border-green-200 text-green-700 text-xs"
+            >
+              <i class="fas fa-badge-check mr-1"></i>
+              Seller confirmed receipt — penalties adjusted to
+              {{ b.penaltyPercentage || 0 }}%.
             </div>
           </div>
         </div>
 
-        <!-- Rental Status Management Section -->
+        <!-- Rental Status Management -->
         <div class="mt-4 pt-3 border-t border-[var(--Color-Boarder-Border-Primary)]">
           <h4 class="font-semibold text-[var(--Color-Text-Text-Primary)] text-sm mb-3">
             {{ $t("rentalStatusManagement") }}
           </h4>
 
-          <!-- Current Status Display -->
+          <!-- Current Status -->
           <div class="flex items-center gap-2 mb-3">
             <span class="text-sm text-[var(--Color-Text-Text-Secondary)]"
               >{{ $t("currentStatus") }}:</span
             >
             <span
               class="font-medium px-2 py-1 rounded text-xs"
-              :class="getStatusColor(product.status)"
+              :class="statusChip(b.status)"
             >
-              {{ $t(product.status) }}
+              {{ $t(b.status) }}
             </span>
           </div>
 
-          <!-- Status Update Buttons -->
+          <!-- Update buttons -->
           <div class="flex gap-2 flex-wrap">
             <button
-              v-if="product.status === 'pending'"
-              @click="updateRentalStatus(product.id, 'active', 'renter')"
+              v-if="b.status === 'pending'"
+              @click="updateStatus(b.id, 'active', 'renter')"
               class="bg-blue-500 text-white px-3 py-2 rounded-lg text-xs font-medium hover:bg-blue-600 transform hover:scale-105 transition-all duration-200 shadow-lg flex items-center gap-1"
             >
-              <i class="fas fa-check-double"></i>
-              {{ $t("confirmReceived") }}
+              <i class="fas fa-check-double"></i>{{ $t("confirmReceived") }}
             </button>
 
             <button
-              v-if="product.status === 'active'"
-              @click="updateRentalStatus(product.id, 'completed', 'renter')"
+              v-if="b.status === 'active'"
+              @click="updateStatus(b.id, 'completed', 'renter')"
               class="bg-purple-500 text-white px-3 py-2 rounded-lg text-xs font-medium hover:bg-purple-600 transform hover:scale-105 transition-all duration-200 shadow-lg flex items-center gap-1"
             >
-              <i class="fas fa-check-circle"></i>
-              {{ $t("confirmCompletion") }}
+              <i class="fas fa-check-circle"></i>{{ $t("confirmCompletion") }}
             </button>
 
             <button
-              v-if="product.status === 'pending'"
-              @click="updateRentalStatus(product.id, 'rejected', 'renter')"
+              v-if="b.status === 'pending'"
+              @click="updateStatus(b.id, 'rejected', 'renter')"
               class="bg-red-500 text-white px-3 py-2 rounded-lg text-xs font-medium hover:bg-red-600 transform hover:scale-105 transition-all duration-200 shadow-lg flex items-center gap-1"
             >
-              <i class="fas fa-times"></i>
-              {{ $t("rejectRental") }}
+              <i class="fas fa-times"></i>{{ $t("rejectRental") }}
             </button>
 
             <button
-              v-if="product.status === 'rejected'"
-              @click="updateRentalStatus(product.id, 'pending', 'renter')"
+              v-if="b.status === 'rejected'"
+              @click="updateStatus(b.id, 'pending', 'renter')"
               class="bg-yellow-500 text-white px-3 py-2 rounded-lg text-xs font-medium hover:bg-yellow-600 transform hover:scale-105 transition-all duration-200 shadow-lg flex items-center gap-1"
             >
-              <i class="fas fa-undo"></i>
-              {{ $t("resetToPending") }}
+              <i class="fas fa-undo"></i>{{ $t("resetToPending") }}
             </button>
           </div>
 
-          <!-- Dual Confirmation Status Display -->
-          <div
-            v-if="product.status === 'active'"
-            class="mt-3 pt-3 border-t border-[var(--Color-Boarder-Border-Primary)]"
-          >
+          <!-- Completion Confirmation -->
+          <div class="mt-4 pt-3 border-t border-[var(--Color-Boarder-Border-Primary)]">
             <h5 class="text-xs font-medium text-[var(--Color-Text-Text-Secondary)] mb-2">
               {{ $t("completionConfirmation") }}:
             </h5>
-            <div class="space-y-2">
-              <div class="flex items-center gap-2 text-xs">
+
+            <div class="space-y-2 text-xs">
+              <div class="flex items-center gap-2">
                 <i class="fas fa-user-tie text-blue-500"></i>
-                <span class="text-[var(--Color-Text-Text-Secondary)]"
-                  >{{ $t("seller") }}:</span
+                <span class="text-[var(--Color-Text-Text-Secondary)] w-16">Seller:</span>
+                <span
+                  :class="
+                    b.sellerConfirmed
+                      ? 'bg-green-100 text-green-800'
+                      : 'bg-gray-100 text-gray-600'
+                  "
+                  class="px-2 py-0.5 rounded"
                 >
-                <span v-if="product.sellerConfirmed" class="text-green-600 font-medium">{{
-                  $t("confirmed")
-                }}</span>
-                <span v-else class="text-gray-500">{{ $t("pending") }}</span>
+                  {{ b.sellerConfirmed ? "Confirmed" : "Pending" }}
+                </span>
+                <span
+                  v-if="b.sellerConfirmedAt"
+                  class="text-[var(--Color-Text-Text-Secondary)] ml-2"
+                >
+                  {{ formatDate(b.sellerConfirmedAt) }}
+                </span>
               </div>
-              <div class="flex items-center gap-2 text-xs">
+
+              <div class="flex items-center gap-2">
                 <i class="fas fa-user text-blue-500"></i>
-                <span class="text-[var(--Color-Text-Text-Secondary)]"
-                  >{{ $t("renter") }}:</span
+                <span class="text-[var(--Color-Text-Text-Secondary)] w-16">Renter:</span>
+                <span
+                  :class="
+                    b.renterConfirmed
+                      ? 'bg-green-100 text-green-800'
+                      : 'bg-gray-100 text-gray-600'
+                  "
+                  class="px-2 py-0.5 rounded"
                 >
-                <span v-if="product.renterConfirmed" class="text-green-600 font-medium">{{
-                  $t("confirmed")
-                }}</span>
-                <span v-else class="text-gray-500">{{ $t("pending") }}</span>
+                  {{ b.renterConfirmed ? "Confirmed" : "Pending" }}
+                </span>
+                <span
+                  v-if="b.renterConfirmedAt"
+                  class="text-[var(--Color-Text-Text-Secondary)] ml-2"
+                >
+                  {{ formatDate(b.renterConfirmedAt) }}
+                </span>
+              </div>
+
+              <div
+                v-if="b.renterConfirmed && b.sellerConfirmed"
+                class="mt-2 p-2 rounded bg-emerald-50 border border-emerald-200 text-emerald-800"
+              >
+                <i class="fas fa-check-circle mr-1"></i>
+                Both parties confirmed. Status set to <strong>completed</strong>.
+                <span class="ml-2">
+                  Penalty:
+                  <strong v-if="(b.penaltyPercentage || 0) === 0">Waived</strong>
+                  <strong v-else
+                    >{{ b.penaltyPercentage }}% (EGP
+                    {{
+                      formatPrice((getPrice(b) * (b.penaltyPercentage || 0)) / 100)
+                    }})</strong
+                  >
+                </span>
               </div>
             </div>
           </div>
 
           <!-- Status History -->
           <div
-            v-if="product.statusHistory && product.statusHistory.length > 0"
+            v-if="b.statusHistory && b.statusHistory.length > 0"
             class="mt-3 pt-3 border-t border-[var(--Color-Boarder-Border-Primary)]"
           >
             <h5 class="text-xs font-medium text-[var(--Color-Text-Text-Secondary)] mb-2">
@@ -202,52 +254,36 @@
             </h5>
             <div class="space-y-1">
               <div
-                v-for="(history, index) in product.statusHistory
-                  .slice()
-                  .reverse()
-                  .slice(0, 3)"
-                :key="index"
+                v-for="(h, i) in b.statusHistory.slice().reverse().slice(0, 6)"
+                :key="i"
                 class="flex items-baseline gap-2 text-xs"
               >
-                <span class="text-[var(--Color-Text-Text-Secondary)]">{{
-                  formatDate(history.timestamp)
+                <span class="text-[var(--Color-Text-Text-Secondary)] w-28">{{
+                  formatDate(h.timestamp)
                 }}</span>
-                <span class="font-medium" :class="getStatusColor(history.status)">{{
-                  $t(history.status)
-                }}</span>
-                <span class="text-[var(--Color-Text-Text-Secondary)] text-xxs"
-                  >({{ history.updatedBy }})</span
+                <span
+                  :class="statusChip(h.status)"
+                  class="px-2 py-0.5 rounded capitalize"
+                  >{{ h.status }}</span
+                >
+                <span class="text-[var(--Color-Text-Text-Secondary)]"
+                  >({{ h.updatedBy }})</span
+                >
+                <span
+                  v-if="h.message"
+                  class="text-[var(--Color-Text-Text-Secondary)] truncate"
+                  >— {{ h.message }}</span
                 >
               </div>
             </div>
           </div>
         </div>
 
-        <!-- Cancel Button -->
+        <!-- Hide expired -->
         <button
-          v-if="
-            isCancelable(product.startDate) &&
-            getRemainingTime(product.endDate) !== 'Expired' &&
-            product.status === 'pending'
-          "
-          @click="
-            cancelBooking(
-              product.id,
-              product.productPrice,
-              product.startDate,
-              product.endDate
-            )
-          "
-          class="mt-2 px-4 py-2 bg-[var(--Colors-Error-400)] text-white rounded hover:bg-[var(--Colors-Error-500)]"
-        >
-          Cancel Booking
-        </button>
-
-        <!-- Hide Button for Expired -->
-        <button
-          v-if="getRemainingTime(product.endDate) === 'Expired'"
-          @click="hideBooking(product.id)"
-          class="mt-2 px-4 py-2 bg-yellow-600 text-white rounded hover:bg-yellow-700"
+          v-if="remain(b.endDate) === 'Expired'"
+          @click="hide(b.id)"
+          class="mt-3 px-4 py-2 bg-yellow-600 text-white rounded hover:bg-yellow-700"
         >
           Remove from My Rentals
         </button>
@@ -280,47 +316,64 @@ const { updateRentalStatusWithUI } = useRentalStatus();
 const searchQuery = ref("");
 const userId = ref(null);
 const penaltyCheckInterval = ref(null);
-const pendingPenalties = ref({});
+const pendingPenalties = ref(Object.create(null));
 
-/** meta by productId -> { price, image } */
+/** product meta cache */
 const productMeta = ref(Object.create(null));
-/** bump this to force <img> remount when meta changes */
 const metaVersion = ref(0);
 
-/** lightweight placeholder */
+/** placeholder */
 const placeholderImage =
   "data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='800' height='400'><rect width='100%' height='100%' rx='12' ry='12' fill='%23eee'/><text x='50%' y='50%' dominant-baseline='middle' text-anchor='middle' font-family='sans-serif' fill='%23999' font-size='18'>Loading image…</text></svg>";
 
-/* ---------- Fetch product meta on bookings change (seed immediately, then refine) ---------- */
+/* ---------- date helpers ---------- */
+const endOfDay = (d) => {
+  const x = new Date(d.getTime());
+  x.setHours(23, 59, 59, 999);
+  return x;
+};
+const parseDateish = (v) => {
+  if (!v) return null;
+  if (typeof v === "object" && v?.toDate) return v.toDate();
+  if (v instanceof Date) return v;
+  if (typeof v === "number") return new Date(v);
+  if (typeof v === "string") {
+    const m = /^(\d{4})-(\d{1,2})-(\d{1,2})$/.exec(v.trim());
+    if (m) {
+      const [_, y, mo, d] = m.map(Number);
+      return endOfDay(new Date(y, mo - 1, d));
+    }
+    const p = new Date(v);
+    if (!isNaN(p)) return p;
+  }
+  return null;
+};
+const hoursExpiredNow = (endDate) => {
+  const e = parseDateish(endDate) || new Date();
+  return Math.max(0, Math.floor((new Date() - e) / (1000 * 60 * 60)));
+};
+
+/* ---------- product meta ---------- */
 watch(
   bookings,
-  async (newBookings) => {
-    if (!newBookings || !userId.value) return;
-
-    const mine = newBookings.filter(
-      (b) => b.userId === userId.value && b.hiddenForUser !== true
-    );
-
-    for (const b of mine) {
+  async (list) => {
+    if (!list || !userId.value) return;
+    for (const b of list.filter(
+      (x) => x.userId === userId.value && x.hiddenForUser !== true
+    )) {
       if (!b.productId) continue;
-
-      // Seed once with anything we already have on the booking (so first paint isn't blank)
       if (!productMeta.value[b.productId]) {
         productMeta.value[b.productId] = {
-          price: Number(b.actualPrice || b.productPrice || 0),
+          price: Number(b.actualPrice ?? b.productPrice ?? 0),
           image: b.productImage || "",
         };
-        metaVersion.value++; // trigger first paint
+        metaVersion.value++;
       }
-
-      // Fetch authoritative product doc and refine
       try {
-        const productRef = doc(db, "products", b.productId);
-        const snap = await getDoc(productRef);
+        const snap = await getDoc(doc(db, "products", b.productId));
         if (!snap.exists()) continue;
-
         const data = snap.data();
-        const firstImage =
+        const img =
           (typeof data.image1 === "string" &&
             data.image1.startsWith("data:image") &&
             data.image1) ||
@@ -329,70 +382,59 @@ watch(
           data.imageUrl ||
           productMeta.value[b.productId]?.image ||
           "";
-        const price =
-          Number(data.actualPrice) ||
-          Number(data.price) ||
-          Number(productMeta.value[b.productId]?.price || 0);
-
-        // Only bump if something actually changed (prevents useless reflows)
+        const price = Number(
+          data.actualPrice ?? data.price ?? productMeta.value[b.productId]?.price ?? 0
+        );
         const prev = productMeta.value[b.productId] || {};
-        if (prev.image !== firstImage || prev.price !== price) {
-          productMeta.value[b.productId] = { price, image: firstImage };
-          metaVersion.value++; // force <img> remount to reload src
+        if (prev.image !== img || prev.price !== price) {
+          productMeta.value[b.productId] = { price, image: img };
+          metaVersion.value++;
         }
-      } catch (err) {
-        console.error("Error fetching product meta:", err);
+      } catch (e) {
+        console.error(e);
       }
     }
   },
   { immediate: true }
 );
 
-/* ------------------------ Helpers ------------------------ */
-const resolvedImage = (booking) =>
-  booking.productImage || productMeta.value[booking.productId]?.image || "";
+/* ---------- helpers ---------- */
+const resolvedImage = (b) =>
+  b.productImage || productMeta.value[b.productId]?.image || "";
+const getPrice = (b) =>
+  b.productId && productMeta.value[b.productId]
+    ? productMeta.value[b.productId].price || 0
+    : Number(b.actualPrice ?? b.productPrice ?? 0);
 
-const getProductPrice = (booking) => {
-  if (booking.productId && productMeta.value[booking.productId]) {
-    return productMeta.value[booking.productId].price || 0;
-  }
-  return Number(booking.actualPrice || booking.productPrice || 0);
-};
-
-/* ------------------------ Computed: map bookings to UI items ------------------------ */
+/* ---------- computed user bookings (dedup + enrich) ---------- */
 const userBookings = computed(() => {
   if (!userId.value || !bookings.value) return [];
-
-  // Access productMeta to keep reactivity
+  // track meta reactivity
   // eslint-disable-next-line no-unused-vars
   const _track = productMeta.value;
 
-  return bookings.value
-    .filter((b) => b.userId === userId.value && b.hiddenForUser !== true)
-    .map((b) => {
-      const remainingTime = getRemainingTime(b.endDate);
-      const isExpired = remainingTime === "Expired";
-      const base = { ...b };
+  const byId = new Map();
+  for (const b of bookings.value) {
+    if (b.userId === userId.value && b.hiddenForUser !== true) {
+      const key = b.id || `${b.productId}|${b.startDate}|${b.endDate}`;
+      byId.set(key, { ...b, id: b.id ?? key });
+    }
+  }
+  const unique = Array.from(byId.values());
 
-      if (!isExpired) return base;
-
-      const expiredDate = new Date(b.endDate);
-      const now = new Date();
-      const hoursExpired = Math.max(
-        0,
-        Math.floor((now - expiredDate) / (1000 * 60 * 60))
-      );
-
-      return {
-        ...base,
-        hoursExpired,
-        penaltyPhase:
-          hoursExpired <= 48 ? "first" : hoursExpired <= 96 ? "second" : "final",
-        penaltyPending: pendingPenalties.value[b.id],
-        penaltyAmount: b.penaltyAmount || 0,
-        penaltyPercentage: b.penaltyPercentage || 0,
-      };
-    });
+  return unique.map((b) => {
+    const expired = remain(b.endDate) === "Expired";
+    if (!expired) return b; // only enrich if expired
+    const hrs = hoursExpiredNow(b.endDate);
+    return {
+      ...b,
+      hoursExpired: hrs,
+      penaltyPhase: hrs <= 48 ? "first" : hrs <= 96 ? "second" : "final",
+      penaltyPending: !!pendingPenalties.value[b.id],
+      penaltyAmount: b.penaltyAmount || 0,
+      penaltyPercentage: b.penaltyPercentage || 0,
+    };
+  });
 });
 
 const filteredProducts = computed(() => {
@@ -403,254 +445,186 @@ const filteredProducts = computed(() => {
   );
 });
 
-const getRemainingTime = (endDateStr) => {
-  const [year, month, day] = endDateStr.split("-").map(Number);
-  const returnDate = new Date(year, month - 1, day, 0, 0, 0);
-  const now = new Date();
-  const diffMs = returnDate - now;
-  if (diffMs <= 0) return "Expired";
-  const days = Math.floor(diffMs / (1000 * 60 * 60 * 24));
-  const hours = Math.floor((diffMs / (1000 * 60 * 60)) % 24);
-  const minutes = Math.floor((diffMs / (1000 * 60)) % 60);
-  return `${days}d ${hours}h ${minutes}m`;
+/* ---------- remaining time ---------- */
+const remain = (end) => {
+  const e = parseDateish(end);
+  if (!e) return "—";
+  const diff = endOfDay(e) - new Date();
+  if (diff <= 0) return "Expired";
+  const d = Math.floor(diff / (1000 * 60 * 60 * 24));
+  const h = Math.floor((diff / (1000 * 60 * 60)) % 24);
+  const m = Math.floor((diff / (1000 * 60)) % 60);
+  return `${d}d ${h}h ${m}m`;
 };
-
-const formatDate = (dateStr) => {
-  if (!dateStr) return "";
-  const date = new Date(dateStr);
-  return date.toLocaleDateString("en-US", {
+const formatDate = (v) => {
+  const d = parseDateish(v);
+  if (!d) return "";
+  return d.toLocaleDateString("en-US", {
     month: "short",
     day: "numeric",
     year: "numeric",
   });
 };
-
-const isCancelable = (startDateStr) => {
-  const [y, m, d] = startDateStr.split("-").map(Number);
-  const startDate = new Date(y, m - 1, d, 0, 0, 0);
-  const now = new Date();
-  const hoursPassed = (now - startDate) / (1000 * 60 * 60);
-  return hoursPassed > 10;
-};
-
-const cancelBooking = async (id, productPrice, startDateStr, endDateStr) => {
-  try {
-    await updateDoc(doc(db, "bookings", id), { hiddenForUser: true });
-
-    const [sy, sm, sd] = startDateStr.split("-").map(Number);
-    const [ey, em, ed] = endDateStr.split("-").map(Number);
-    const startDate = new Date(sy, sm - 1, sd, 0, 0, 0);
-    const endDate = new Date(ey, em - 1, ed, 0, 0, 0);
-    const diffMs = endDate - startDate;
-    const daysRented = Math.ceil(diffMs / (1000 * 60 * 60 * 24));
-
-    const perDayPrice = Number(productPrice) / daysRented;
-    const refundAmount = perDayPrice * 0.5;
-
-    const userBalanceRef = doc(db, "userbalance", userId.value);
-    const userBalanceSnap = await getDoc(userBalanceRef);
-    let currentBalance = userBalanceSnap.exists()
-      ? Number(userBalanceSnap.data().remainingBalance) || 0
-      : 0;
-
-    await setDoc(
-      userBalanceRef,
-      {
-        remainingBalance: currentBalance + refundAmount,
-        lastUpdated: new Date(),
-        transactions: arrayUnion({
-          amount: refundAmount,
-          type: "refund",
-          description: `Cancellation refund for booking ${id}`,
-          timestamp: new Date(),
-        }),
-      },
-      { merge: true }
-    );
-
-    Swal.fire({
-      title: "Booking Cancelled",
-      text: `Your booking has been cancelled and EGP ${refundAmount.toFixed(
-        2
-      )} has been refunded to your balance.`,
-      icon: "success",
-    });
-  } catch (error) {
-    console.error("Error canceling booking:", error);
-    Swal.fire({
-      title: "Error",
-      text: "Failed to cancel booking. Please try again.",
-      icon: "error",
-    });
-  }
-};
-
-const calculatePenalty = (price, percentage) => {
-  const numericPrice = Number(price);
-  if (isNaN(numericPrice)) {
-    console.error("Invalid price value:", price);
-    return "0.00";
-  }
-  const amount = (numericPrice * percentage) / 100;
-  return formatPrice(amount);
-};
-
-const formatPrice = (price) =>
-  Number(price).toLocaleString("en-US", {
+const calcPenalty = (price, pct) => formatPrice((Number(price) * pct) / 100);
+const formatPrice = (n) =>
+  Number(n).toLocaleString("en-US", {
     minimumFractionDigits: 2,
     maximumFractionDigits: 2,
   });
 
-const applyPenalty = async (booking, percentage, isAdditional = false) => {
-  try {
-    pendingPenalties.value[booking.id] = true;
-    const price = getProductPrice(booking);
-    const penaltyAmount = (price * percentage) / 100;
-    const totalPercentage = isAdditional
-      ? (booking.penaltyPercentage || 0) + percentage
-      : percentage;
-    const totalAmount = isAdditional
-      ? (booking.penaltyAmount || 0) + penaltyAmount
-      : penaltyAmount;
+/* ---------- chips ---------- */
+const statusChip = (s) =>
+  ({
+    pending: "bg-yellow-100 text-yellow-800",
+    active: "bg-green-100 text-green-800",
+    completed: "bg-blue-100 text-blue-800",
+    cancelled: "bg-red-100 text-red-800",
+    rejected: "bg-red-100 text-red-800",
+  }[s] || "bg-gray-100 text-gray-800");
 
-    const userBalanceRef = doc(db, "userbalance", userId.value);
-    const userBalanceSnap = await getDoc(userBalanceRef);
-    let currentBalance = userBalanceSnap.exists()
-      ? Number(userBalanceSnap.data().remainingBalance) || 0
-      : 0;
+/* ---------- completion rules ---------- */
+const completeIfBothConfirmed = async (b) => {
+  if (!b) return;
+  if (b.status === "completed") return;
+  if (b.renterConfirmed === true && b.sellerConfirmed === true) {
+    const patch = {
+      status: "completed",
+      lastUpdated: Timestamp.now(),
+      statusHistory: arrayUnion({
+        status: "completed",
+        message: "Both renter & seller confirmed; auto-completed.",
+        timestamp: Timestamp.now(),
+        updatedBy: "system",
+      }),
+      noFurtherPenalties: true,
+    };
+    if (!b.penaltyApplied) {
+      Object.assign(patch, {
+        penaltyPercentage: 0,
+        penaltyAmount: 0,
+        penaltyForgiven: true,
+      });
+    }
+    await updateDoc(doc(db, "bookings", b.id), patch);
+  }
+};
+const correctEarlyCompletion = async (b) => {
+  if (b && b.status === "completed" && !(b.renterConfirmed && b.sellerConfirmed)) {
+    await updateDoc(doc(db, "bookings", b.id), {
+      status: "active",
+      lastUpdated: Timestamp.now(),
+      statusHistory: arrayUnion({
+        status: "active",
+        message: "Auto-corrected: completion requires both renter & seller confirmation.",
+        timestamp: Timestamp.now(),
+        updatedBy: "system",
+      }),
+    });
+  }
+};
+watch(
+  userBookings,
+  async (list) => {
+    for (const b of list) {
+      await correctEarlyCompletion(b);
+      await completeIfBothConfirmed(b);
+    }
+  },
+  { deep: true }
+);
+
+/* ---------- penalties ---------- */
+const applyPenalty = async (b, pct, isAdditional = false) => {
+  try {
+    pendingPenalties.value[b.id] = true;
+    const price = getPrice(b);
+    const amt = (price * pct) / 100;
+    const totalPct = isAdditional ? (b.penaltyPercentage || 0) + pct : pct;
+    const totalAmt = isAdditional ? (b.penaltyAmount || 0) + amt : amt;
+
+    const wb = doc(db, "userbalance", userId.value);
+    const snap = await getDoc(wb);
+    const cur = snap.exists() ? Number(snap.data().remainingBalance) || 0 : 0;
 
     await setDoc(
-      userBalanceRef,
+      wb,
       {
-        remainingBalance: currentBalance - penaltyAmount,
+        remainingBalance: cur - amt,
         lastUpdated: Timestamp.now(),
         transactions: arrayUnion({
-          amount: -penaltyAmount,
+          amount: -amt,
           type: "penalty",
-          description: `Late return penalty (${percentage}% of EGP ${price.toFixed(
-            2
-          )}) for ${booking.productTitle}`,
+          description: `Late return penalty (${pct}% of EGP ${price.toFixed(2)}) for ${
+            b.productTitle
+          }`,
           timestamp: Timestamp.now(),
         }),
       },
       { merge: true }
     );
 
-    await updateDoc(doc(db, "bookings", booking.id), {
+    await updateDoc(doc(db, "bookings", b.id), {
       penaltyApplied: true,
       lastPenaltyApplied: Timestamp.now(),
-      penaltyAmount: totalAmount,
-      penaltyPercentage: totalPercentage,
+      penaltyAmount: totalAmt,
+      penaltyPercentage: totalPct,
       statusHistory: arrayUnion({
         status: "penalty_applied",
-        message: `${percentage}% penalty (EGP ${penaltyAmount.toFixed(2)}) applied`,
+        message: `${pct}% penalty (EGP ${amt.toFixed(2)}) applied`,
         timestamp: Timestamp.now(),
         updatedBy: "system",
       }),
     });
-
-    await Swal.fire({
-      title: "Penalty Applied",
-      html: `A <strong>${percentage}% penalty (EGP ${penaltyAmount.toFixed(
-        2
-      )})</strong> has been deducted from your balance.<br><br>
-            <strong>Total penalties: ${totalPercentage}% (EGP ${totalAmount.toFixed(
-        2
-      )})</strong>`,
-      icon: "warning",
-    });
-  } catch (error) {
-    console.error("Error applying penalty:", error);
-    Swal.fire({
-      title: "Error",
-      text: "Failed to apply penalty. Please try again.",
-      icon: "error",
-    });
   } finally {
-    pendingPenalties.value[booking.id] = false;
+    pendingPenalties.value[b.id] = false;
   }
 };
 
+/* ⚠️ Apply penalties for ANY expired booking except completed */
 const checkAndApplyPenalties = async () => {
-  const toProcess = userBookings.value.filter(
-    (b) => b.hoursExpired > 0 && b.status !== "completed" && !b.penaltyPending
-  );
-
-  for (const booking of toProcess) {
-    try {
-      if (booking.hoursExpired > 48 && booking.penaltyPhase === "first") {
-        await applyPenalty(booking, 30);
-      } else if (booking.hoursExpired > 96 && (booking.penaltyPercentage || 0) < 50) {
-        await applyPenalty(booking, 20, true);
-      } else if (booking.hoursExpired > 96 && !booking.legalWarningSent) {
-        await Swal.fire({
-          title: "Serious Warning",
-          html: `Your rental is ${Math.floor(
-            booking.hoursExpired / 24
-          )} days overdue.<br><br>
-                <strong>Legal action may be taken if not returned immediately.</strong>`,
-          icon: "error",
-          confirmButtonText: "I Understand",
-        });
-        await updateDoc(doc(db, "bookings", booking.id), { legalWarningSent: true });
-      }
-    } catch (error) {
-      console.error("Error processing penalty:", error);
-    }
+  const list = userBookings.value.filter((b) => {
+    const expired = remain(b.endDate) === "Expired";
+    return (
+      expired &&
+      b.status !== "completed" &&
+      !b.penaltyPending &&
+      !b.penaltyForgiven &&
+      !b.noFurtherPenalties
+    );
+  });
+  for (const b of list) {
+    if (b.hoursExpired > 48 && (b.penaltyPercentage || 0) < 30) await applyPenalty(b, 30);
+    else if (b.hoursExpired > 96 && (b.penaltyPercentage || 0) < 50)
+      await applyPenalty(b, 20, true);
   }
 };
 
-const getStatusColor = (status) => {
-  switch (status) {
-    case "pending":
-      return "bg-yellow-100 text-yellow-800";
-    case "active":
-      return "bg-green-100 text-green-800";
-    case "completed":
-      return "bg-blue-100 text-blue-800";
-    case "cancelled":
-    case "rejected":
-      return "bg-red-100 text-red-800";
-    default:
-      return "bg-gray-100 text-gray-800";
-  }
-};
-
-const updateRentalStatus = async (bookingId, newStatus, updatedBy) =>
-  await updateRentalStatusWithUI(bookingId, newStatus, updatedBy, t);
-
-const hideBooking = async (id) => {
+/* ---------- actions ---------- */
+const updateStatus = async (id, status, by) =>
+  updateRentalStatusWithUI(id, status, by, t);
+const hide = async (id) => {
   try {
     await updateDoc(doc(db, "bookings", id), { hiddenForUser: true });
-    Swal.fire({
-      title: "Removed",
-      text: "This rental has been removed from your view.",
-      icon: "success",
-    });
-  } catch (error) {
-    console.error("Error hiding booking:", error);
-    Swal.fire({
-      title: "Error",
-      text: "Failed to remove rental. Please try again.",
-      icon: "error",
-    });
+    Swal.fire({ title: "Removed", icon: "success" });
+  } catch (e) {
+    Swal.fire({ title: "Error", text: "Failed to remove rental.", icon: "error" });
   }
 };
 
-/* ------------------------ Init ------------------------ */
+/* ---------- init ---------- */
 onMounted(() => {
-  onAuthStateChanged(auth, async (user) => {
-    if (user) {
-      userId.value = user.uid;
+  onAuthStateChanged(auth, async (u) => {
+    if (u) {
+      userId.value = u.uid;
       await checkAndApplyPenalties();
       penaltyCheckInterval.value = setInterval(checkAndApplyPenalties, 30 * 60 * 1000);
     }
   });
 });
+onUnmounted(
+  () => penaltyCheckInterval.value && clearInterval(penaltyCheckInterval.value)
+);
 
-onUnmounted(() => {
-  if (penaltyCheckInterval.value) clearInterval(penaltyCheckInterval.value);
-});
-
-defineExpose({ calculatePenalty, formatPrice });
+/* ---------- expose ---------- */
+defineExpose({ formatPrice, calcPenalty });
 </script>

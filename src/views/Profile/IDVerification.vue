@@ -71,7 +71,7 @@
         </h3>
 
         <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-          <!-- Visa Number: 16 digits, spaced every 4 -->
+          <!-- Visa Number -->
           <div>
             <label
               class="block text-sm font-medium text-[var(--Color-Text-Text-Primary)] mb-1"
@@ -111,45 +111,6 @@
             </p>
           </div>
 
-          <!-- Issuing Country -->
-          <div>
-            <label
-              class="block text-sm font-medium text-[var(--Color-Text-Text-Primary)] mb-1"
-            >
-              {{ $t("issuingCountry") }}
-            </label>
-            <input
-              v-model.trim="form.visa.issuingCountry"
-              type="text"
-              class="w-full px-3 py-2 rounded-lg border border-[var(--Color-Boarder-Border-Primary)] bg-[var(--Color-Surface-Surface-Primary)] text-[var(--Color-Text-Text-Primary)] focus:outline-none focus:ring-2 focus:ring-[var(--Colors-Primary-500)]"
-              :class="{ 'border-red-400': errors.issuingCountry }"
-            />
-            <p v-if="errors.issuingCountry" class="text-xs text-red-500 mt-1">
-              {{ errors.issuingCountry }}
-            </p>
-          </div>
-
-          <!-- Visa Type -->
-          <div>
-            <label
-              class="block text-sm font-medium text-[var(--Color-Text-Text-Primary)] mb-1"
-            >
-              {{ $t("visaType") }}
-            </label>
-            <select
-              v-model="form.visa.type"
-              class="w-full px-3 py-2 rounded-lg border border-[var(--Color-Boarder-Border-Primary)] bg-[var(--Color-Surface-Surface-Primary)] text-[var(--Color-Text-Text-Primary)] focus:outline-none focus:ring-2 focus:ring-[var(--Colors-Primary-500)]"
-              :class="{ 'border-red-400': errors.visaType }"
-            >
-              <option value="">{{ $t("select") }}</option>
-              <option value="tourist">{{ $t("Credit") }}</option>
-              <option value="work">{{ $t("Debit") }}</option>
-            </select>
-            <p v-if="errors.visaType" class="text-xs text-red-500 mt-1">
-              {{ errors.visaType }}
-            </p>
-          </div>
-
           <!-- Expiry Date -->
           <div>
             <label
@@ -168,7 +129,7 @@
             </p>
           </div>
 
-          <!-- (Optional) Passport Number -->
+          <!-- CVV (3 digits, masked with dots) -->
           <div>
             <label
               class="block text-sm font-medium text-[var(--Color-Text-Text-Primary)] mb-1"
@@ -177,15 +138,18 @@
             </label>
             <input
               v-model.trim="form.visa.cvv"
-              type="text"
-              maxlength="20"
+              type="password"
+              maxlength="3"
+              inputmode="numeric"
+              autocomplete="off"
+              @input="formatCVV"
               class="w-full px-3 py-2 rounded-lg border border-[var(--Color-Boarder-Border-Primary)] bg-[var(--Color-Surface-Surface-Primary)] text-[var(--Color-Text-Text-Primary)] focus:outline-none focus:ring-2 focus:ring-[var(--Colors-Primary-500)]"
             />
           </div>
         </div>
       </div>
 
-      <!-- Submit Button: only when all required fields are present -->
+      <!-- Submit Button -->
       <div v-if="canSubmit" class="text-center">
         <button
           @click="submitVerification"
@@ -237,7 +201,7 @@ import Swal from "sweetalert2";
 import { useNotifications } from "@/composables/useNotifications";
 
 const { t } = useI18n();
-const { notifyIDVerificationSubmitted } = useNotifications();
+const { notifyIDVerificationSubmitted } = useNotifications(); // if you use it elsewhere
 const { uploadImage, url, error: uploadError } = useStorageUpload();
 
 const userId = ref(null);
@@ -245,12 +209,10 @@ const uploadingFront = ref(false);
 const uploadingBack = ref(false);
 const isSubmitting = ref(false);
 
-// errors for visa fields
+// errors
 const errors = ref({
   visaNumber: "",
   visaName: "",
-  issuingCountry: "",
-  visaType: "",
   expiry: "",
 });
 
@@ -261,41 +223,38 @@ const form = ref({
   frontImagePath: "",
   backImagePath: "",
   visa: {
-    number: "", // formatted: "1234 5678 9012 3456"
+    number: "",
     name: "",
-    issuingCountry: "",
-    type: "",
-    expiry: "", // YYYY-MM-DD
+    expiry: "",
     cvv: "",
   },
 });
 
-// gate for showing the button
+// button gate
 const canSubmit = computed(() => {
   const hasImages = !!(form.value.frontImage && form.value.backImage);
   const v = form.value.visa;
   const digits = (v.number || "").replace(/\s/g, "");
-  const hasVisa =
-    digits.length === 16 && v.name && v.issuingCountry && v.type && v.expiry;
+  const hasVisa = digits.length === 16 && v.name && v.expiry;
   return hasImages && hasVisa;
 });
 
-// format visa number: only digits, max 16, spaced every 4
+// format visa number: only digits, groups of 4
 const formatVisaNumber = () => {
   let digits = (form.value.visa.number || "").replace(/\D/g, "");
   digits = digits.substring(0, 16);
   form.value.visa.number = digits.replace(/(.{4})/g, "$1 ").trim();
 };
 
-// validation on submit
+// force CVV to 3 digits only
+const formatCVV = () => {
+  let digits = (form.value.visa.cvv || "").replace(/\D/g, "");
+  form.value.visa.cvv = digits.substring(0, 3);
+};
+
+// validation (CVV is optional)
 const validateVisa = () => {
-  errors.value = {
-    visaNumber: "",
-    visaName: "",
-    issuingCountry: "",
-    visaType: "",
-    expiry: "",
-  };
+  errors.value = { visaNumber: "", visaName: "", expiry: "" };
 
   const digits = (form.value.visa.number || "").replace(/\s/g, "");
   if (digits.length !== 16) {
@@ -303,12 +262,6 @@ const validateVisa = () => {
   }
   if (!form.value.visa.name || form.value.visa.name.length < 2) {
     errors.value.visaName = t("requiredField") || "Required.";
-  }
-  if (!form.value.visa.issuingCountry || form.value.visa.issuingCountry.length < 2) {
-    errors.value.issuingCountry = t("requiredField") || "Required.";
-  }
-  if (!form.value.visa.type) {
-    errors.value.visaType = t("requiredField") || "Required.";
   }
   if (!form.value.visa.expiry) {
     errors.value.expiry = t("requiredField") || "Required.";
@@ -320,6 +273,13 @@ const validateVisa = () => {
       errors.value.expiry = t("expiryMustBeFuture") || "Expiry must be a future date.";
     }
   }
+
+  // If CVV provided, ensure 3 digits (no error messaging UI by request, just enforce via input)
+  if (form.value.visa.cvv && form.value.visa.cvv.length !== 3) {
+    // silently trim via formatCVV already; no blocking error
+    formatCVV();
+  }
+
   return Object.values(errors.value).every((v) => !v);
 };
 
@@ -438,10 +398,8 @@ const submitVerification = async () => {
       visa: {
         number: form.value.visa.number,
         name: form.value.visa.name,
-        issuingCountry: form.value.visa.issuingCountry,
-        type: form.value.visa.type,
         expiry: form.value.visa.expiry,
-        cvv: form.value.visa.cvv || null,
+        cvv: form.value.visa.cvv || null, // optional; enforced to 3 digits if present
       },
     };
 
@@ -449,9 +407,7 @@ const submitVerification = async () => {
 
     await setDoc(
       doc(db, "users", currentUser.uid),
-      {
-        visa: { ...verificationData.visa },
-      },
+      { visa: { ...verificationData.visa } },
       { merge: true }
     );
 
@@ -463,8 +419,6 @@ const submitVerification = async () => {
       visa: {
         number: "",
         name: "",
-        issuingCountry: "",
-        type: "",
         expiry: "",
         cvv: "",
       },
