@@ -110,7 +110,9 @@
             class="bg-[var(--Color-Surface-Surface-Tertiary)] rounded-xl border border-[var(--Color-Boarder-Border-Primary)] p-6"
           >
             <div class="flex items-center justify-between mb-4 gap-2">
-              <h1 class="md:text-2xl  sm:text-sm font-bold text-[var(--Color-Text-Text-Primary)]">
+              <h1
+                class="md:text-2xl sm:text-sm font-bold text-[var(--Color-Text-Text-Primary)]"
+              >
                 {{ product.title }}
               </h1>
               <button
@@ -930,58 +932,79 @@
     <!-- Add Review Form Modal -->
     <div
       v-if="showReviewForm"
-      class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50"
+      class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4"
     >
       <div
-        class="bg-[var(--Color-Surface-Surface-Tertiary)] p-6 rounded-lg border border-[var(--Color-Boarder-Border-Primary)] w-full max-w-md"
+        class="relative bg-[var(--Color-Surface-Surface-Tertiary)] rounded-2xl border border-[var(--Color-Boarder-Border-Primary)] w-full max-w-lg shadow-2xl"
       >
-        <button
-          @click="showReviewForm = false"
-          class="absolute top-2 right-2 text-[var(--Color-Text-Text-Secondary)] hover:text-[var(--Color-Text-Text-Primary)] text-2xl font-bold"
+        <!-- Header -->
+        <div
+          class="flex justify-between items-center p-6 border-b border-[var(--Color-Boarder-Border-Primary)]"
         >
-          ×
-        </button>
-        <h2 class="text-xl font-bold text-[var(--Color-Text-Text-Brand)] mb-4">
-          {{ $t("addAReview") }}
-        </h2>
-        <form @submit.prevent="submitReview" class="space-y-4">
+          <h2 class="text-xl font-bold text-[var(--Color-Text-Text-Brand)]">
+            {{ $t("addAReview") }}
+          </h2>
+          <button
+            @click="showReviewForm = false"
+            class="text-[var(--Color-Text-Text-Secondary)] hover:text-[var(--Color-Text-Text-Primary)] text-2xl font-bold transition-colors"
+          >
+            ×
+          </button>
+        </div>
+
+        <!-- Form -->
+        <form @submit.prevent="submitReview" class="p-6 space-y-6">
+          <!-- Review Text -->
           <div>
-            <label class="block text-[var(--Color-Text-Text-Primary)]">{{
-              $t("review")
-            }}</label>
+            <label
+              class="block text-sm font-medium text-[var(--Color-Text-Text-Primary)] mb-2"
+              >{{ $t("review") }}</label
+            >
             <textarea
               v-model="newReview.review"
-              class="w-full p-2 rounded-lg bg-[var(--Color-Surface-Surface-Primary)] border border-[var(--Color-Surface-Border-Primary)]"
+              rows="4"
+              class="w-full p-3 rounded-lg bg-[var(--Color-Surface-Surface-Primary)] border border-[var(--Color-Surface-Border-Primary)] focus:outline-none focus:ring-2 focus:ring-[var(--Color-Surface-Surface-Brand)] transition"
               :placeholder="$t('writeReview')"
               required
             ></textarea>
           </div>
+
+          <!-- Rating -->
           <div>
-            <label class="block text-[var(--Color-Text-Text-Primary)]"
+            <label
+              class="block text-sm font-medium text-[var(--Color-Text-Text-Primary)] mb-2"
               >{{ $t("rate") }} (1 - 5)</label
             >
-            <input
-              v-model.number="newReview.rate"
-              type="range"
-              min="1"
-              max="5"
-              step="1"
-              class="w-full p-2 rounded-lg bg-[var(--Color-Surface-Surface-Secondary)] border border-[var(--Color-Boarder-Border-Primary)]"
-              required
-            />
-            <span class="ml-2">{{ newReview.rate }} ★★★★★</span>
+            <div class="flex items-center gap-4">
+              <input
+                v-model.number="newReview.rate"
+                type="range"
+                min="1"
+                max="5"
+                step="1"
+                class="flex-1"
+                required
+              />
+              <span class="text-lg font-semibold text-yellow-500">
+                {{ "★".repeat(newReview.rate) }}{{ "☆".repeat(5 - newReview.rate) }}
+              </span>
+            </div>
           </div>
-          <div class="flex justify-end gap-4">
+
+          <!-- Actions -->
+          <div
+            class="flex justify-end gap-3 pt-4 border-t border-[var(--Color-Boarder-Border-Primary)]"
+          >
             <button
               type="button"
               @click="showReviewForm = false"
-              class="bg-[var(--Color-Surface-Surface-Primary)] text-[var(--Color-Text-Text-Brand)] py-2 px-4 rounded-lg border border-[var(--Color-Boarder-Surface-Brand)]"
+              class="px-5 py-2 rounded-lg border border-[var(--Color-Boarder-Surface-Brand)] bg-[var(--Color-Surface-Surface-Primary)] text-[var(--Color-Text-Text-Brand)] hover:bg-[var(--Color-Surface-Surface-Secondary)] transition"
             >
               {{ $t("cancel") }}
             </button>
             <button
               type="submit"
-              class="bg-[var(--Color-Surface-Surface-Brand)] text-[var(--Color-Text-Text-Invert)] py-2 px-4 rounded-lg hover:bg-[var(--Color-Text-Text-Brand)] hover:text-white"
+              class="px-6 py-2 rounded-lg bg-[var(--Color-Surface-Surface-Brand)] text-[var(--Color-Text-Text-Invert)] font-semibold hover:bg-[var(--Color-Text-Text-Brand)] hover:text-white transition"
             >
               {{ $t("submitReview") }}
             </button>
@@ -1051,17 +1074,13 @@
               <div
                 class="animate-spin rounded-full h-12 w-12 border-4 border-[var(--color-primary-25)] dark:border-[var(--color-Gray-600)] border-t-[var(--Color-Surface-Surface-Brand)] mx-auto mb-4"
               ></div>
-              <p class="text-[var(--Color-Text-Text-Secondary)]">
-                Loading messages...
-              </p>
+              <p class="text-[var(--Color-Text-Text-Secondary)]">Loading messages...</p>
             </div>
           </div>
 
           <!-- Error State -->
           <div v-else-if="chatError" class="text-center p-12">
-            <div
-              class="p-6 bg-[var(--color-Gray-25)] rounded-2xl mb-6 inline-block"
-            >
+            <div class="p-6 bg-[var(--color-Gray-25)] rounded-2xl mb-6 inline-block">
               <i class="fas fa-exclamation-triangle text-4xl text-red-500"></i>
             </div>
             <h3 class="text-lg font-semibold text-[var(--Color-Text-Text-Primary)] mb-2">
@@ -1073,20 +1092,13 @@
           </div>
 
           <!-- No Messages -->
-          <div
-            v-else-if="chatMessages.length === 0"
-            class="text-center p-12"
-          >
-            <div
-              class="p-6 bg-[var(--color-Gray-25)] rounded-2xl mb-6 inline-block"
-            >
+          <div v-else-if="chatMessages.length === 0" class="text-center p-12">
+            <div class="p-6 bg-[var(--color-Gray-25)] rounded-2xl mb-6 inline-block">
               <i
                 class="fas fa-comments text-4xl text-[var(--Color-Surface-Surface-Brand)]"
               ></i>
             </div>
-            <h3
-              class="text-lg font-semibold text-[var(--Color-Text-Text-Primary)] mb-2"
-            >
+            <h3 class="text-lg font-semibold text-[var(--Color-Text-Text-Primary)] mb-2">
               Start the Conversation
             </h3>
             <p class="text-[var(--Color-Text-Text-Secondary)]">
@@ -1148,8 +1160,6 @@
                 <!-- Message Content -->
                 <div class="relative">
                   <p class="text-sm leading-relaxed">{{ message.content }}</p>
-
-
                 </div>
               </div>
             </div>
@@ -1185,7 +1195,12 @@
             <!-- Send Button -->
             <button
               type="submit"
-              :disabled="!newChatMessage || !newChatMessage.trim() || newChatMessage.length > 500 || !auth.currentUser"
+              :disabled="
+                !newChatMessage ||
+                !newChatMessage.trim() ||
+                newChatMessage.length > 500 ||
+                !auth.currentUser
+              "
               class="p-3 bg-[var(--Color-Surface-Surface-Brand)] text-[var(--Color-Text-Text-Invert)] rounded-xl disabled:bg-[var(--color-gray-400)] disabled:cursor-not-allowed transition-all duration-200"
               title="Send message"
             >
@@ -2925,6 +2940,4 @@ const handleKeydown = (event) => {
       break;
   }
 };
-
-
 </script>

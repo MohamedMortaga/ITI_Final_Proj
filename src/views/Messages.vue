@@ -116,9 +116,7 @@
         <div
           class="w-full bg-[var(--Color-Surface-Surface-Primary)] rounded-2xl overflow-hidden border border-[var(--Color-Boarder-Border-Primary)] conversations-list"
         >
-          <div
-            class="p-6 border-b border-[var(--Color-Boarder-Border-Primary)]"
-          >
+          <div class="p-6 border-b border-[var(--Color-Boarder-Border-Primary)]">
             <div class="flex items-center justify-between mb-2">
               <h2 class="text-xl font-bold text-[var(--Color-Text-Text-Primary)]">
                 Conversations
@@ -159,9 +157,7 @@
 
           <!-- Simplified Empty State -->
           <div v-else-if="conversations.length === 0" class="p-12 text-center">
-            <div
-              class="p-6 bg-[var(--color-Gray-25)] rounded-2xl mb-6"
-            >
+            <div class="p-6 bg-[var(--color-Gray-25)] rounded-2xl mb-6">
               <i
                 class="fas fa-comments text-5xl text-[var(--Color-Surface-Surface-Brand)] mb-4"
               ></i>
@@ -264,9 +260,7 @@
             class="h-full flex items-center justify-center p-8"
           >
             <div class="text-center max-w-md">
-              <div
-                class="p-8 bg-[var(--color-Gray-25)] rounded-2xl mb-8 inline-block"
-              >
+              <div class="p-8 bg-[var(--color-Gray-25)] rounded-2xl mb-8 inline-block">
                 <i
                   class="fas fa-comments text-4xl text-[var(--Color-Surface-Surface-Brand)]"
                 ></i>
@@ -398,9 +392,7 @@
 
               <!-- Simplified No Messages -->
               <div v-else-if="currentMessages.length === 0" class="text-center p-12">
-                <div
-                  class="p-6 bg-[var(--color-Gray-25)] rounded-2xl mb-6 inline-block"
-                >
+                <div class="p-6 bg-[var(--color-Gray-25)] rounded-2xl mb-6 inline-block">
                   <i
                     class="fas fa-comments text-4xl text-[var(--Color-Surface-Surface-Brand)]"
                   ></i>
@@ -474,8 +466,6 @@
                     <!-- Message Content -->
                     <div class="relative">
                       <p class="text-sm leading-relaxed">{{ message.content }}</p>
-
-
                     </div>
                   </div>
                 </div>
@@ -568,6 +558,7 @@
           </div>
         </div>
       </div>
+      <!-- /main content -->
     </div>
   </div>
 </template>
@@ -587,6 +578,7 @@ import {
   doc,
   updateDoc,
   getDocs,
+  getDoc, // ✅ added
   limit,
 } from "firebase/firestore";
 import { db, auth } from "@/firebase/config";
@@ -595,7 +587,19 @@ import Swal from "sweetalert2";
 const { t } = useI18n();
 const router = useRouter();
 
-// Reactive state
+/* ---------------- helpers ---------------- */
+const normalizeUser = (raw = {}) => ({
+  name:
+    raw.displayName ||
+    raw.fullName ||
+    raw.name ||
+    raw.username ||
+    (raw.email ? raw.email.split("@")[0] : null) ||
+    "Unknown User",
+  image: raw.imageUrl || raw.photoURL || raw.image || null,
+});
+
+/* ---------------- state ---------------- */
 const conversations = ref([]);
 const selectedConversation = ref(null);
 const currentMessages = ref([]);
@@ -604,7 +608,7 @@ const loading = ref(false);
 const loadingMessages = ref(false);
 const messagesContainer = ref(null);
 
-// Enhanced UI state
+/* ---------------- UI state ---------------- */
 const showSearch = ref(false);
 const searchQuery = ref("");
 const showSettings = ref(false);
@@ -614,21 +618,20 @@ const isTyping = ref(false);
 const typingTimeout = ref(null);
 const isMarkingAsRead = ref(false);
 
-// Firebase listeners
+/* ---------------- listeners ---------------- */
 let conversationsUnsubscribe = null;
 let messagesUnsubscribe = null;
 
-// Computed properties
+/* ---------------- computed ---------------- */
 const isAuthenticated = computed(() => !!auth.currentUser);
 
-// Methods
+/* ---------------- methods ---------------- */
 const loadConversations = async () => {
   if (!auth.currentUser) return;
 
   try {
     loading.value = true;
 
-    // Get all chat rooms where the current user is involved
     const chatRoomsRef = collection(db, "user-chats");
     const chatRoomsQuery = query(
       chatRoomsRef,
@@ -638,60 +641,61 @@ const loadConversations = async () => {
     conversationsUnsubscribe = onSnapshot(
       chatRoomsQuery,
       async (snapshot) => {
-        const conversationsData = [];
+        // build each conversation in parallel
+        const results = await Promise.all(
+          snapshot.docs.map(async (roomDoc) => {
+            const room = roomDoc.data();
 
-        for (const doc of snapshot.docs) {
-          const chatRoomData = doc.data();
-
-          // Get the other user's ID
-          const otherUserId = chatRoomData.participants.find(
-            (id) => id !== auth.currentUser.uid
-          );
-
-          if (otherUserId) {
-            // Get the other user's information
-            const userDoc = await getDocs(
-              query(collection(db, "users"), where("uid", "==", otherUserId))
+            // find the other participant
+            const otherUserId = (room.participants || []).find(
+              (id) => id !== auth.currentUser.uid
             );
-            const otherUserData = userDoc.docs[0]?.data() || {};
 
-            // Get the last message
-            const messagesRef = collection(db, "user-chats", doc.id, "messages");
-            const messagesQuery = query(
-              messagesRef,
-              orderBy("timestamp", "desc"),
-              limit(1)
+            // ---- fetch other user BY DOCUMENT ID (uid) ----
+            let otherUser = { name: "Unknown User", image: null };
+            if (otherUserId) {
+              const userSnap = await getDoc(doc(db, "users", otherUserId));
+              if (userSnap.exists()) {
+                otherUser = normalizeUser(userSnap.data());
+              }
+            }
+
+            // last message
+            const messagesRef = collection(db, "user-chats", roomDoc.id, "messages");
+            const lastMessageSnapshot = await getDocs(
+              query(messagesRef, orderBy("timestamp", "desc"), limit(1))
             );
-            const lastMessageSnapshot = await getDocs(messagesQuery);
             const lastMessage = lastMessageSnapshot.docs[0]?.data();
 
-            // Count unread messages
-            const unreadQuery = query(
-              messagesRef,
-              where("senderId", "==", otherUserId),
-              where("read", "==", false)
-            );
-            const unreadSnapshot = await getDocs(unreadQuery);
-            const unreadCount = unreadSnapshot.size;
+            // unread count
+            let unreadSize = 0;
+            if (otherUserId) {
+              const unreadSnapshot = await getDocs(
+                query(
+                  messagesRef,
+                  where("senderId", "==", otherUserId),
+                  where("read", "==", false)
+                )
+              );
+              unreadSize = unreadSnapshot.size;
+            }
 
-            conversationsData.push({
-              id: doc.id,
+            return {
+              id: roomDoc.id,
               otherUserId,
-              otherUserName:
-                otherUserData.displayName || otherUserData.email || "Unknown User",
-              otherUserImage: otherUserData.imageUrl || otherUserData.photoURL,
+              otherUserName: otherUser.name,
+              otherUserImage: otherUser.image,
               lastMessage: lastMessage?.content || "No messages yet",
               lastMessageTime: lastMessage?.timestamp?.toDate() || new Date(),
-              unreadCount,
-              productId: chatRoomData.productId,
-              productTitle: chatRoomData.productTitle,
-            });
-          }
-        }
+              unreadCount: unreadSize,
+              productId: room.productId,
+              productTitle: room.productTitle,
+            };
+          })
+        );
 
-        // Sort by last message time (most recent first)
-        conversationsData.sort((a, b) => b.lastMessageTime - a.lastMessageTime);
-        conversations.value = conversationsData;
+        results.sort((a, b) => b.lastMessageTime - a.lastMessageTime);
+        conversations.value = results;
         loading.value = false;
       },
       (error) => {
@@ -708,17 +712,10 @@ const loadConversations = async () => {
 const selectConversation = async (conversation) => {
   selectedConversation.value = conversation;
   await loadMessages(conversation.id);
-
-  // Mark messages as read immediately when entering chat
   await markMessagesAsRead(conversation.id);
 
-  // Update conversation unread count in the list
-  const conversationIndex = conversations.value.findIndex(
-    (c) => c.id === conversation.id
-  );
-  if (conversationIndex !== -1) {
-    conversations.value[conversationIndex].unreadCount = 0;
-  }
+  const idx = conversations.value.findIndex((c) => c.id === conversation.id);
+  if (idx !== -1) conversations.value[idx].unreadCount = 0;
 };
 
 const loadMessages = async (chatRoomId) => {
@@ -728,10 +725,7 @@ const loadMessages = async (chatRoomId) => {
     loadingMessages.value = true;
     currentMessages.value = [];
 
-    // Unsubscribe from previous messages listener
-    if (messagesUnsubscribe) {
-      messagesUnsubscribe();
-    }
+    if (messagesUnsubscribe) messagesUnsubscribe();
 
     const messagesRef = collection(db, "user-chats", chatRoomId, "messages");
     const messagesQuery = query(messagesRef, orderBy("timestamp", "asc"));
@@ -739,33 +733,26 @@ const loadMessages = async (chatRoomId) => {
     messagesUnsubscribe = onSnapshot(
       messagesQuery,
       (snapshot) => {
-        const messages = [];
-        let hasNewMessages = false;
+        const msgs = [];
+        let hasNew = false;
 
-        snapshot.forEach((doc) => {
-          const messageData = {
-            id: doc.id,
-            ...doc.data(),
-            timestamp: doc.data().timestamp?.toDate() || new Date(),
+        snapshot.forEach((d) => {
+          const data = d.data();
+          const message = {
+            id: d.id,
+            ...data,
+            timestamp: data.timestamp?.toDate() || new Date(),
           };
-
-          // Check if this is a new message from another user
-          if (messageData.senderId !== auth.currentUser?.uid && !messageData.read) {
-            hasNewMessages = true;
-          }
-
-          messages.push(messageData);
+          if (message.senderId !== auth.currentUser?.uid && !message.read) hasNew = true;
+          msgs.push(message);
         });
 
-        currentMessages.value = messages;
+        currentMessages.value = msgs;
         loadingMessages.value = false;
 
-        // Scroll to bottom after messages load
         nextTick(() => {
           scrollToBottom();
-
-          // Mark messages as read if user is actively viewing the chat
-          if (hasNewMessages && document.hasFocus()) {
+          if (hasNew && document.hasFocus()) {
             markMessagesAsRead(chatRoomId);
           }
         });
@@ -808,8 +795,6 @@ const sendMessage = async () => {
 
     await addDoc(messagesRef, messageData);
     newMessage.value = "";
-
-    // Scroll to bottom after sending
     await nextTick();
     scrollToBottom();
   } catch (error) {
@@ -829,66 +814,40 @@ const markMessagesAsRead = async (chatRoomId) => {
   try {
     isMarkingAsRead.value = true;
 
-    const messagesRef = collection(db, "user-chats", chatRoomId, "messages");
-
-    // Get unread messages from other user
-    const unreadMessages = currentMessages.value.filter(
-      (message) => message.senderId !== auth.currentUser.uid && !message.read
+    const unread = currentMessages.value.filter(
+      (m) => m.senderId !== auth.currentUser.uid && !m.read
     );
-
-    if (unreadMessages.length === 0) {
+    if (unread.length === 0) {
       isMarkingAsRead.value = false;
       return;
     }
 
-    console.log(`📖 Marking ${unreadMessages.length} messages as read`);
-
-    // Mark them as read with enhanced status
-    const updatePromises = unreadMessages.map((message) => {
-      const messageRef = doc(db, "user-chats", chatRoomId, "messages", message.id);
-      return updateDoc(messageRef, {
+    const updates = unread.map((m) =>
+      updateDoc(doc(db, "user-chats", chatRoomId, "messages", m.id), {
         read: true,
         readAt: serverTimestamp(),
         readBy: [auth.currentUser.uid],
-      });
+      })
+    );
+
+    await Promise.all(updates);
+
+    unread.forEach((m) => {
+      m.read = true;
+      m.readAt = new Date();
+      m.readBy = [auth.currentUser.uid];
     });
 
-    await Promise.all(updatePromises);
-
-    // Update local message state to reflect read status
-    unreadMessages.forEach((message) => {
-      message.read = true;
-      message.readAt = new Date();
-      message.readBy = [auth.currentUser.uid];
-    });
-
-    console.log("✅ Messages marked as read successfully");
-
-    // Show success notification if messages were marked as read
-    if (unreadMessages.length > 0) {
-      Swal.fire({
-        icon: "success",
-        title: "Messages Read",
-        text: `${unreadMessages.length} message${
-          unreadMessages.length > 1 ? "s" : ""
-        } marked as read`,
-        toast: true,
-        position: "top-end",
-        showConfirmButton: false,
-        timer: 2000,
-        timerProgressBar: true,
-      });
-    }
+    // optional toast
+    // Swal.fire({ ... })
   } catch (error) {
-    console.error("❌ Error marking messages as read:", error);
+    console.error("Error marking messages as read:", error);
   } finally {
     isMarkingAsRead.value = false;
   }
 };
 
-const isOwnMessage = (message) => {
-  return message.senderId === auth.currentUser?.uid;
-};
+const isOwnMessage = (message) => message.senderId === auth.currentUser?.uid;
 
 const formatTime = (timestamp) => {
   if (!timestamp) return "";
@@ -897,15 +856,11 @@ const formatTime = (timestamp) => {
   const diffMs = now - date;
   const diffDays = Math.floor(diffMs / (1000 * 60 * 60 * 24));
 
-  if (diffDays === 0) {
+  if (diffDays === 0)
     return date.toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" });
-  } else if (diffDays === 1) {
-    return "Yesterday";
-  } else if (diffDays < 7) {
-    return date.toLocaleDateString([], { weekday: "short" });
-  } else {
-    return date.toLocaleDateString([], { month: "short", day: "numeric" });
-  }
+  if (diffDays === 1) return "Yesterday";
+  if (diffDays < 7) return date.toLocaleDateString([], { weekday: "short" });
+  return date.toLocaleDateString([], { month: "short", day: "numeric" });
 };
 
 const scrollToBottom = () => {
@@ -914,37 +869,29 @@ const scrollToBottom = () => {
   }
 };
 
-// Mark messages as read when they come into view
 const markMessagesAsReadOnScroll = () => {
   if (!selectedConversation.value || !auth.currentUser) return;
-
   const container = messagesContainer.value;
   if (!container) return;
 
   const containerRect = container.getBoundingClientRect();
   const containerBottom = containerRect.bottom;
 
-  // Check which messages are visible
   const messageElements = container.querySelectorAll(".message-bubble");
   const visibleMessages = [];
 
-  messageElements.forEach((element, index) => {
-    const elementRect = element.getBoundingClientRect();
-    const elementBottom = elementRect.bottom;
-
-    // If message is visible in the container
-    if (elementBottom <= containerBottom && elementBottom >= containerRect.top) {
-      const message = currentMessages.value[index];
-      if (message && message.senderId !== auth.currentUser.uid && !message.read) {
-        visibleMessages.push(message);
+  messageElements.forEach((el, idx) => {
+    const rect = el.getBoundingClientRect();
+    const bottom = rect.bottom;
+    if (bottom <= containerBottom && bottom >= containerRect.top) {
+      const msg = currentMessages.value[idx];
+      if (msg && msg.senderId !== auth.currentUser.uid && !msg.read) {
+        visibleMessages.push(msg);
       }
     }
   });
 
-  // Mark visible unread messages as read
-  if (visibleMessages.length > 0) {
-    markMessagesAsRead(selectedConversation.value.id);
-  }
+  if (visibleMessages.length > 0) markMessagesAsRead(selectedConversation.value.id);
 };
 
 const clearSelectedConversation = () => {
@@ -963,64 +910,30 @@ const viewProduct = () => {
 };
 
 const refreshConversations = () => {
-  if (conversationsUnsubscribe) {
-    conversationsUnsubscribe();
-  }
+  if (conversationsUnsubscribe) conversationsUnsubscribe();
   loadConversations();
 };
 
-// Enhanced UI methods
 const toggleSearch = () => {
   showSearch.value = !showSearch.value;
-  if (!showSearch.value) {
-    searchQuery.value = "";
-  }
+  if (!showSearch.value) searchQuery.value = "";
 };
 
 const handleTyping = () => {
   if (!selectedConversation.value) return;
-
-  // Clear existing timeout
-  if (typingTimeout.value) {
-    clearTimeout(typingTimeout.value);
-  }
-
-  // Set typing indicator
+  if (typingTimeout.value) clearTimeout(typingTimeout.value);
   isTyping.value = true;
-
-  // Mark messages as read when user starts typing (indicating they're engaged)
-  if (auth.currentUser) {
-    markMessagesAsRead(selectedConversation.value.id);
-  }
-
-  // Clear typing indicator after 3 seconds
-  typingTimeout.value = setTimeout(() => {
-    isTyping.value = false;
-  }, 3000);
+  if (auth.currentUser) markMessagesAsRead(selectedConversation.value.id);
+  typingTimeout.value = setTimeout(() => (isTyping.value = false), 3000);
 };
-
-
 
 const attachFile = (type) => {
   showAttachmentMenu.value = false;
-
-  switch (type) {
-    case "image":
-      // TODO: Implement image attachment
-      console.log("Attach image");
-      break;
-    case "document":
-      // TODO: Implement document attachment
-      console.log("Attach document");
-      break;
-    case "location":
-      // TODO: Implement location sharing
-      console.log("Share location");
-      break;
-  }
+  // TODO: implement uploads if needed
+  console.log("Attach:", type);
 };
 
-// Watch for authentication changes
+/* ---------------- watchers ---------------- */
 watch(
   () => auth.currentUser,
   (user) => {
@@ -1034,44 +947,34 @@ watch(
   }
 );
 
-// Watch for selected conversation changes to mark messages as read
 watch(
   () => selectedConversation.value,
   async (newConversation) => {
     if (newConversation && auth.currentUser) {
-      // Mark messages as read when conversation is selected
       await markMessagesAsRead(newConversation.id);
     }
   }
 );
 
-// Watch for conversations to load and auto-select stored conversation
 watch(
   () => conversations.value,
-  (newConversations) => {
-    if (newConversations.length > 0) {
-      const storedConversation = localStorage.getItem("selectedConversation");
-      if (storedConversation) {
+  (list) => {
+    if (list.length > 0) {
+      const stored = localStorage.getItem("selectedConversation");
+      if (stored) {
         try {
-          const conversationInfo = JSON.parse(storedConversation);
+          const info = JSON.parse(stored);
           const now = Date.now();
-          const timeDiff = now - conversationInfo.timestamp;
-
-          // Only auto-select if the conversation was created within the last 5 seconds
-          if (timeDiff < 5000) {
-            const targetConversation = newConversations.find(
-              (conv) => conv.id === conversationInfo.id
-            );
-            if (targetConversation && !selectedConversation.value) {
-              selectConversation(targetConversation);
-              console.log("Auto-selected conversation from watch:", targetConversation);
+          if (now - info.timestamp < 5000) {
+            const target = list.find((c) => c.id === info.id);
+            if (target && !selectedConversation.value) {
+              selectConversation(target);
               localStorage.removeItem("selectedConversation");
             }
           } else {
             localStorage.removeItem("selectedConversation");
           }
-        } catch (error) {
-          console.error("Error parsing stored conversation in watch:", error);
+        } catch {
           localStorage.removeItem("selectedConversation");
         }
       }
@@ -1079,164 +982,123 @@ watch(
   }
 );
 
-// Lifecycle
+/* ---------------- lifecycle ---------------- */
 onMounted(() => {
-  if (auth.currentUser) {
-    loadConversations();
-  }
+  if (auth.currentUser) loadConversations();
 
-  // Check for stored conversation selection
-  const storedConversation = localStorage.getItem("selectedConversation");
-  if (storedConversation) {
+  const stored = localStorage.getItem("selectedConversation");
+  if (stored) {
     try {
-      const conversationInfo = JSON.parse(storedConversation);
+      const info = JSON.parse(stored);
       const now = Date.now();
-      const timeDiff = now - conversationInfo.timestamp;
-
-      // Only auto-select if the conversation was created within the last 5 seconds
-      if (timeDiff < 5000) {
-        // Wait for conversations to load, then select the stored conversation
-        const checkAndSelectConversation = () => {
+      if (now - info.timestamp < 5000) {
+        const trySelect = () => {
           if (conversations.value.length > 0) {
-            const targetConversation = conversations.value.find(
-              (conv) => conv.id === conversationInfo.id
-            );
-            if (targetConversation) {
-              selectConversation(targetConversation);
-              console.log("Auto-selected conversation:", targetConversation);
-            }
-            // Clear the stored conversation
+            const target = conversations.value.find((c) => c.id === info.id);
+            if (target) selectConversation(target);
             localStorage.removeItem("selectedConversation");
           } else {
-            // If conversations haven't loaded yet, try again in 500ms
-            setTimeout(checkAndSelectConversation, 500);
+            setTimeout(trySelect, 500);
           }
         };
-
-        // Start checking after a short delay to allow conversations to load
-        setTimeout(checkAndSelectConversation, 1000);
+        setTimeout(trySelect, 1000);
       } else {
-        // Clear old stored conversation
         localStorage.removeItem("selectedConversation");
       }
-    } catch (error) {
-      console.error("Error parsing stored conversation:", error);
+    } catch {
       localStorage.removeItem("selectedConversation");
     }
   }
 
-  // Mark messages as read when window gains focus
   const handleWindowFocus = () => {
     if (selectedConversation.value && auth.currentUser) {
       markMessagesAsRead(selectedConversation.value.id);
     }
   };
-
   window.addEventListener("focus", handleWindowFocus);
 
-  // Cleanup event listener
   onUnmounted(() => {
     window.removeEventListener("focus", handleWindowFocus);
   });
 });
 
 onUnmounted(() => {
-  if (conversationsUnsubscribe) {
-    conversationsUnsubscribe();
-  }
-  if (messagesUnsubscribe) {
-    messagesUnsubscribe();
-  }
+  if (conversationsUnsubscribe) conversationsUnsubscribe();
+  if (messagesUnsubscribe) messagesUnsubscribe();
 });
 </script>
+
 <style scoped>
 /* Scrollbar styles for messages container */
 .messages-container::-webkit-scrollbar {
   width: 8px;
 }
-
 .messages-container::-webkit-scrollbar-track {
   background: transparent;
 }
-
 .messages-container::-webkit-scrollbar-thumb {
   background: rgba(0, 0, 0, 0.2);
   border-radius: 4px;
   transition: background 0.2s ease;
 }
-
 .messages-container::-webkit-scrollbar-thumb:hover {
   background: rgba(0, 0, 0, 0.3);
 }
-
 .dark .messages-container::-webkit-scrollbar-thumb {
-  background:  'var(--Color-Surface-Surface-Primary)';
+  background: "var(--Color-Surface-Surface-Primary)";
 }
-
 .dark .messages-container::-webkit-scrollbar-thumb:hover {
-  background:'var(--Color-Surface-Surface-Primary)';
+  background: "var(--Color-Surface-Surface-Primary)";
 }
 
 /* Scrollbar styles for conversations list */
 .conversations-list::-webkit-scrollbar {
   width: 6px;
 }
-
 .conversations-list::-webkit-scrollbar-track {
   background: transparent;
 }
-
 .conversations-list::-webkit-scrollbar-thumb {
   background: rgba(0, 0, 0, 0.1);
   border-radius: 3px;
   transition: background 0.2s ease;
 }
-
 .conversations-list::-webkit-scrollbar-thumb:hover {
   background: rgba(0, 0, 0, 0.2);
 }
-
 .dark .conversations-list::-webkit-scrollbar-thumb {
   background: rgba(255, 255, 255, 0.1);
 }
-
 .dark .conversations-list::-webkit-scrollbar-thumb:hover {
-  background: 'var(--Color-Surface-Surface-Primary)';
+  background: "var(--Color-Surface-Surface-Primary)";
 }
 
 /* Desktop-specific styles */
 .main-content {
-  height: calc(100vh - 120px); /* Account for header (~80px) and padding (~40px) */
+  height: calc(100vh - 120px);
   display: grid;
-  gap: 24px; /* Match the gap-6 (1.5rem = 24px) */
+  gap: 24px;
 }
-
 .conversations-list {
-  max-height: calc(100vh - 120px); /* Full viewport height minus header and padding */
-  overflow-y: auto; /* Enable scrolling for overflow */
-}
-
-.conversations-list-content {
-  max-height: calc(100vh - 200px); /* Adjust for conversation header (~80px) */
+  max-height: calc(100vh - 120px);
   overflow-y: auto;
 }
-
-.chat-area {
-  max-height: calc(100vh - 120px); /* Full viewport height minus header and padding */
-  overflow-y: auto; /* Enable scrolling for overflow */
+.conversations-list-content {
+  max-height: calc(100vh - 200px);
+  overflow-y: auto;
 }
-
+.chat-area {
+  max-height: calc(100vh - 120px);
+  overflow-y: auto;
+}
 .chat-area .h-full {
   height: 100%;
   display: flex;
   flex-direction: column;
 }
-
 .messages-container {
-  max-height: calc(
-    100vh - 260px
-  ); /* Adjust for chat header (~80px), input (~60px), and padding */
-  overflow-y: auto; /* Ensure scrolling */
+  max-height: calc(100vh - 260px);
+  overflow-y: auto;
 }
 
 /* Animations */
@@ -1250,7 +1112,6 @@ onUnmounted(() => {
     transform: translateY(0);
   }
 }
-
 @keyframes fadeIn {
   from {
     opacity: 0;
@@ -1259,19 +1120,15 @@ onUnmounted(() => {
     opacity: 1;
   }
 }
-
 .message-enter-active {
   animation: slideIn 0.3s ease-out;
 }
-
 .message-leave-active {
   animation: fadeIn 0.2s ease-in reverse;
 }
-
 .typing-dots {
   animation: typing 1.4s infinite;
 }
-
 @keyframes typing {
   0%,
   20% {
@@ -1292,7 +1149,6 @@ onUnmounted(() => {
 .hover-lift {
   transition: transform 0.2s ease, box-shadow 0.2s ease;
 }
-
 .hover-lift:hover {
   transform: translateY(-2px);
   box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
@@ -1310,50 +1166,37 @@ onUnmounted(() => {
   .main-content {
     display: flex;
     flex-direction: column;
-    height: calc(140vh - 120px); /* Account for header (~80px) and padding (~40px) */
-    min-height: 0; /* Prevent overflow */
+    height: calc(140vh - 120px);
+    min-height: 0;
   }
-
   .lg\:grid-cols-3 {
     grid-template-columns: 1fr;
   }
-
   .lg\:col-span-2 {
     grid-column: 1;
   }
-
-  /* Conversations list styling */
   .conversations-list {
-    max-height: 35vh; /* 35% of viewport height for conversations */
-    overflow-y: auto; /* Enable scrolling */
-    flex-shrink: 0; /* Prevent shrinking */
+    max-height: 35vh;
+    overflow-y: auto;
+    flex-shrink: 0;
   }
-
   .conversations-list-content {
-    max-height: calc(100vh - 80px); /* Adjust for conversation header (~80px) */
+    max-height: calc(100vh - 80px);
     overflow-y: auto;
   }
-
-  /* Chat area styling */
   .chat-area {
-    max-height: calc(100vh - 120px); /* Remaining height minus header and padding */
-    overflow-y: auto; /* Enable scrolling */
-    flex-grow: 1; /* Fill remaining space */
+    max-height: calc(100vh - 120px);
+    overflow-y: auto;
+    flex-grow: 1;
   }
-
-  /* Ensure chat interface takes full height */
   .chat-area .h-full {
     height: 100%;
     display: flex;
     flex-direction: column;
   }
-
-  /* Messages container within chat area */
   .messages-container {
-    max-height: calc(
-      100vh - 200px
-    ); /* Adjust for chat header (~80px) and input (~60px) */
-    overflow-y: auto; /* Ensure scrolling */
+    max-height: calc(100vh - 200px);
+    overflow-y: auto;
   }
 }
 
@@ -1374,13 +1217,11 @@ textarea:focus {
     background-position: calc(200px + 100%) 0;
   }
 }
-
 .skeleton {
   background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
   background-size: 200px 100%;
   animation: shimmer 1.5s infinite;
 }
-
 .dark .skeleton {
   background: linear-gradient(90deg, #374151 25%, #4b5563 50%, #374151 75%);
   background-size: 200px 100%;
